@@ -3,6 +3,7 @@ chunks.jsonl
 chunks_inspect.txt
 graph_entities.jsonl
 graph_inspect.txt
+chroma/db/
 
 # Secrets
 .env
@@ -10,6 +11,9 @@ Neo4j-*.txt
 
 # Generated reports
 unknown_terms_report.md
+
+# Chroma local vector store
+chroma/db/
 
 # Python
 __pycache__/
