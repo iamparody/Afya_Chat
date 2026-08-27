@@ -59,6 +59,10 @@ Assign one of three values per candidate:
 
 Do not use numerical probabilities.
 
+IMPORTANT: Assign confidence based on clinical features documented in the presentation, not on whether confirmatory tests have been done. If the presentation shows the classic symptom constellation for a condition, that is high confidence — even if lab results are absent. Absent tests go in missing_information. They do not lower confidence by themselves.
+
+IMPORTANT: When a candidate has arguing_against evidence that matches the patient presentation, this MUST actively reduce its ranking. If two candidates share the same confidence level and one has arguing_against evidence while the other does not, the candidate WITHOUT arguing_against evidence MUST be the leading_candidate. Only override this rule if the supporting features for the candidate with arguing_against evidence are substantially stronger and you explain why.
+
 ---
 
 RED FLAGS
@@ -68,6 +72,10 @@ Each red flag entry must indicate its status explicitly:
 - If not documented but the knowledge base identifies it as safety-critical for this candidate: "Check for — [feature]. Not documented in the presentation."
 
 Do not mix the two. A clinician reading the output must be able to immediately distinguish a present red flag from a precautionary one.
+
+SCOPE: List red flags ONLY for the leading candidate and any candidates that share the same confidence level as the leading candidate. Do not include red flags for candidates with lower confidence. Limit the total list to 5 entries — prioritise the most safety-critical features.
+
+IMPORTANT: A negative finding ("no fever", "no cough", "no chest pain") is NEVER a red flag, regardless of whether it is documented. Red flags are safety-critical features that are present or that must be actively checked for. A documented absence is not a red flag.
 
 ---
 
@@ -201,18 +209,19 @@ def build_context(presentation, candidates, prose_passages):
 
     lines.append("## Retrieved candidates")
     lines.append(
-        "Match counts reflect symptom overlap with the knowledge base. "
-        "They indicate retrieval relevance, not clinical probability. "
-        "Equal counts do not imply equal clinical likelihood."
+        "Candidates are retrieved by semantic similarity. "
+        "Symptom overlap is listed where exact term matches were found, "
+        "but absence of a listed match does NOT indicate the condition is unlikely — "
+        "the prose passages below contain the authoritative clinical evidence."
     )
     lines.append("")
 
     for c in candidates:
-        lines.append(f"### {c['condition']} — {c['matched_count']} matched symptom(s)")
+        lines.append(f"### {c['condition']}")
         if c["matched_symptoms"]:
-            lines.append(f"Matched symptoms: {', '.join(c['matched_symptoms'])}")
+            lines.append(f"Terms from patient presentation matching knowledge-base symptoms: {', '.join(c['matched_symptoms'])}")
         else:
-            lines.append("Matched symptoms: none on cardinal/associated symptoms")
+            lines.append("No exact term matches against knowledge-base symptom list (assess via prose passages below)")
 
         ag = c.get("argues_against", [])
         if ag:
