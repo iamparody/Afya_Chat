@@ -1,256 +1,132 @@
-# Diagnostic RAG — Knowledge Corpus
+# CDS — Clinical Decision Support
 
-Structured diagnostic presentation cards for use as a RAG retrieval layer.
-
-## Purpose
-
-Each file is a self-contained diagnostic card covering one condition. The corpus is designed for symptom-based and presentation-based retrieval, not for management guidance. Treatment protocols are out of scope for this corpus and live in a separate `management/` corpus when built.
-
-## Retrieval intent
-
-A retrieval query should return candidate diagnoses plus their key differentials and discriminating features — not a single answer. The RAG layer is one step in a reasoning chain:
-
-```
-User presentation
-    → symptom / presentation retrieval
-    → candidate diagnoses
-    → differential + discriminating features
-    → guideline / diagnostic-criteria retrieval
-    → clinical reasoning
-```
-
-## Directory structure
-
-```
-diagnostic_rag/
-├── symptoms_dictionary/
-│   ├── index.md                      machine-friendly index with ICD-11 and category
-│   ├── type_2_diabetes.md
-│   ├── hypertension.md
-│   ├── obesity.md
-│   ├── malaria.md
-│   ├── pulmonary_tb.md
-│   ├── pneumonia.md
-│   ├── uti.md
-│   ├── anaemia.md
-│   ├── peptic_ulcer_disease.md
-│   └── acute_gastroenteritis.md
-└── README.md
-```
-
-## File format
-
-Each condition file uses YAML frontmatter for structured metadata and clinical prose for semantic content.
-
-**Frontmatter fields:**
-```yaml
-condition:        canonical condition name
-icd11:            WHO ICD-11 code — verify before production
-category:         disease category
-corpus_version:   content batch version — changes when clinical content is updated
-schema_version:   document format version — changes when frontmatter structure changes
-review_status:    draft | clinician_reviewed | clinician_verified
-reviewed_by:      clinician identifier (required for production ingestion)
-last_reviewed:    YYYY-MM-DD
-sources:
-  - organization: source organisation name
-    title:        exact guideline or document title
-    year:         publication year (leave blank if unverified)
-```
-
-`corpus_version` and `schema_version` are distinct. Updating clinical content increments `corpus_version`. Changing the frontmatter structure (adding or renaming fields) increments `schema_version`. Never conflate the two.
-
-**Production ingestion rule:** The ingestion pipeline must reject any card with `review_status: draft`. Only `clinician_verified` cards are permitted in production mode.
-
-**Section order (all sections required):**
-
-| Section | Purpose |
-|---|---|
-| Cardinal symptoms | Core presenting features with mechanism where useful |
-| Associated symptoms and signs | Broader clinical picture and examination findings |
-| Diagnostic features | Objective findings and criteria that support or establish the diagnosis |
-| Predisposing factors | Epidemiological and patient-level risk — not diagnostic evidence |
-| Typical presentation | What the patient looks like when they walk in |
-| Important differential diagnoses | Competing diagnoses with discriminating features |
-| Features that argue against this diagnosis | Findings that reduce the probability of this diagnosis |
-| Red flags | Safety-critical features requiring urgent escalation |
-| Diagnostic context | When to test, what test, confirmation criteria, limitations |
-
-## Clinical governance workflow
-
-```
-Clinical source
-      ↓
-Draft condition card  (review_status: draft)
-      ↓
-Clinical review + corrections
-      ↓
-Clinical approval  (review_status: clinician_verified, reviewed_by: <ID>)
-      ↓
-Versioned corpus
-      ↓
-Ingestion  (rejects draft cards in production mode)
-      ↓
-Evaluation
-      ↓
-RAG
-```
-
-## ICD-11 codes
-
-All ICD-11 codes should be verified against the current WHO ICD-11 browser before production use.
-WHO ICD-11 browser: https://icd.who.int/browse/2024-01/mms/en
-
-## Ingestion design
-
-### Three-layer model
-
-Every condition file produces three distinct outputs at ingestion time:
-
-| Layer | Content | Purpose |
-|---|---|---|
-| Embedded text | Condition name + section context + clinical prose | Semantic retrieval |
-| Metadata | ICD-11, category, section type, governance fields, provenance | Deterministic filtering |
-| Source file | Original markdown, untouched | Human review and editing |
-
-These layers are separate. Metadata must not contaminate embedded text. Embedded text must not be the raw markdown file.
-
-### Pipeline flow
-
-```
-Markdown file
-    │
-    ├── Parse frontmatter ──────────────────→ metadata (condition, icd11, category,
-    │                                          review_status, corpus_version, etc.)
-    │
-    ├── Parse H1 heading ───────────────────→ condition identifier (injected into
-    │                                          every chunk's embedded text)
-    │
-    ├── Parse section heading + prose ──────→ chunk text (see format below)
-    │                                          + section metadata
-    │
-    └── Parse source citation ─────────────→ provenance metadata (source_organization,
-                                               source_title, source_year)
-                                               NOT embedded text
-```
-
-Parse first, then route. Never embed the whole file and chunk afterward — that loses control over what each embedding represents.
-
-### Embedded chunk format
-
-Each chunk's embedded text should follow this structure:
-
-```
-{Condition name} — {Section name}
-
-{Clinical prose, stripped of markdown syntax only}
-```
-
-Example:
-```
-Malaria — Cardinal symptoms
-
-Fever is a common presenting feature and may be accompanied by chills,
-rigors, headache, myalgia, and malaise...
-```
-
-The condition name and section name must appear in the embedded text, not only in metadata. Once a file is split into section chunks, the H1 heading no longer provides context — the condition anchor must be injected explicitly. This is useful redundancy: the same condition and section information lives in both the text (for semantic retrieval) and metadata (for filtering).
-
-### What to strip vs preserve
-
-**Strip from embedded text:**
-- YAML frontmatter block (`---` ... `---`)
-- Markdown syntax characters (`**`, `*`, `##`, `#`, `_`) — strip the formatting, keep the words
-- Source citation line — move to provenance metadata
-- Empty governance fields (`reviewed_by: ""`) — metadata only, never embedded
-
-**Keep in embedded text:**
-- All clinical prose
-- Section context prefix (condition + section name, injected by the pipeline)
-- Numeric thresholds, lab values, clinical criteria — these are semantic content
-
-**Blank `year` in sources means "not specified in the source record,"** not "unknown publication year." Do not infer or fill in years from memory.
-
-**Never strip clinical qualifiers.** The following carry clinical meaning that must survive ingestion:
-
-> "usually" / "may" / "rarely" / "particularly in children" / "absence of X makes Y less likely" / "not sufficient to confirm the diagnosis"
-
-`"Fever is common in malaria"` is not the same as `"Fever confirms malaria"`. Stripping hedging language converts probabilistic clinical reasoning into false certainty. The ingestion pipeline must be conservative about transforming prose.
-
-### Metadata per chunk
-
-```json
-{
-  "condition": "Malaria (unspecified)",
-  "icd11": "1F40",
-  "category": "infectious",
-  "section": "cardinal_symptoms",
-  "corpus_version": "1.1",
-  "schema_version": "1.1",
-  "review_status": "draft",
-  "reviewed_by": null,
-  "last_reviewed": null,
-  "sources": [
-    {"organization": "WHO", "title": "Guidelines for Malaria", "year": "2023"},
-    {"organization": "WHO", "title": "Severe Malaria Treatment Guidelines", "year": "2023"}
-  ]
-}
-```
-
-Governance and provenance fields belong here. The application can use `source_organization` and `source_title` to attribute retrieved evidence without re-embedding citation text.
-
-### Chunking strategy
-
-Chunk by section header, not by fixed token window. Each section (`Cardinal symptoms`, `Diagnostic features`, `Red flags`, etc.) is one natural semantic unit and should produce one chunk in most cases.
-
-If a section is long enough to require splitting, split at paragraph boundaries — never mid-sentence. Clinical prose paragraphs are complete reasoning units; breaking them mid-thought destroys the clinical relationship.
-
-Conventional sliding-window overlap is not needed when chunking by section. If a section spans multiple paragraphs where the first establishes context and the second explains a discriminator, keep them in the same chunk rather than splitting for size uniformity.
-
-**Semantic completeness is more important than equal chunk sizes.**
-
-### Tables (future cards)
-
-If future condition cards introduce tables, do not strip them. Convert to prose before embedding:
-
-```markdown
-| Finding     | Significance          |
-| ----------- | --------------------- |
-| Haemoptysis | Raises concern for TB |
-```
-
-becomes:
-
-```
-Finding: Haemoptysis. Significance: Raises concern for pulmonary tuberculosis.
-```
-
-The current prose-only format avoids this problem, but the rule applies as the corpus grows.
-
-### Production gate
-
-The ingestion pipeline must reject any card where `review_status` is not `clinician_verified` in production mode. Development and staging environments may ingest `draft` cards for testing. This enforcement belongs in the ingestion script, not in the markdown files.
+Symptom-driven diagnostic RAG system for East Africa / Kenya primary care. Given a patient presentation, returns candidate diagnoses with differentials, discriminating features, and red flags.
 
 ---
 
-## Scaling notes
+## Stack
 
-**Current approach (v1, <50 conditions):** One markdown file per condition, hand-authored. The filesystem handles 2000 files without issue. The human curation bottleneck is the real constraint — you cannot hand-write 2000 condition cards. At that scale, files must be generated from a structured source (ICD-11 browser API, SNOMED CT, curated medical ontology) and the markdown becomes a rendered artifact, not the source of truth.
-
-**Chunking strategy as the corpus grows:** Chunking by whole file breaks down when condition files become too long for a single embedding window. The correct approach at scale is to chunk by section header — `Cardinal symptoms`, `Differentials`, `Red flags`, etc. — producing approximately 7 chunks per condition. At 2000 conditions that yields ~14,000 chunks, which is well within the range of any production vector store. YAML frontmatter fields (`condition`, `icd11`, `category`) should be injected into each chunk's metadata so that deterministic filtering by category or ICD-11 code is possible without relying on embedding similarity alone.
-
-**Embedding at scale:** 14,000 chunks embeds in minutes via a modern embedding API. Cold ingestion is a one-time cost. Incremental updates are cheap — updating one condition re-embeds approximately 7 chunks. Avoid full index rebuilds on individual file changes.
-
-**Recommended architecture beyond 50 conditions:**
 ```
-Structured database (Postgres / document store)
-    → render to section-level text chunks on ingest
-    → embed (OpenAI, Cohere, local model)
-    → vector store (Chroma, Pinecone, Weaviate)
-    → metadata filter + semantic retrieval at query time
+symptoms_dictionary/*.md          ← condition cards (source of truth)
+        │
+        ▼
+    ingest.py                     ← dual-output ingestion pipeline
+        │
+        ├──► chunks.jsonl         ── prose chunks → Chroma vector store (Phase 4)
+        │
+        └──► graph_entities.jsonl ── structured graph → Neo4j AuraDB (done)
 ```
-The markdown files become a human-readable view layer. The database is the canonical store. This decouples curation, rendering, and retrieval so each can scale independently.
 
-## Version notes
+**Retrieval (Phase 5):** Cypher traversal (graph) + semantic search (vector) → LLM synthesis → ranked diagnoses + clinical reasoning.
 
-v1 — 10 conditions. East Africa / Kenya primary care oriented. Conditions prioritised by burden: NCDs, infectious disease, and common acute presentations. Expand to include asthma, COPD, heart failure, HIV, typhoid, sickle cell disease, STIs, and pregnancy-related conditions in v2.
+---
+
+## Directory
+
+```
+cds/
+├── ingest.py                         pipeline — run after any card edit
+├── report_unknowns.py                vocabulary gap analysis tool
+├── symptoms_dictionary/
+│   ├── index.md                      condition index (ICD-11 + filenames)
+│   ├── glossary.md                   shared clinical term definitions
+│   ├── symptom_vocabulary.md         canonical symptom/sign/risk term list
+│   ├── conditions_vocabulary.md      canonical condition names (for differentials)
+│   └── *.md                          10 condition cards
+└── neo4j/
+    ├── migrations/001_initial_schema.cypher
+    ├── neo4j_loader.py               loads graph_entities.jsonl → AuraDB
+    └── run_queries.py                dev verification queries
+```
+
+---
+
+## Condition cards
+
+Each card is a `.md` file with YAML frontmatter and 9 fixed prose sections.
+
+**Frontmatter:**
+```yaml
+condition:       canonical condition name
+icd11:           WHO ICD-11 code
+category:        disease category
+corpus_version:  increment on clinical content change
+schema_version:  increment on frontmatter structure change
+review_status:   draft | under_review | clinician_verified
+reviewed_by:     clinician name + credential
+last_reviewed:   YYYY-MM-DD
+sources:
+  - organization: WHO
+    title: Guidelines for Malaria
+    year: "2023"
+graph:
+  cardinal_symptoms:   [fever, chills, rigors]
+  associated_symptoms: [myalgia, splenomegaly]
+  risk_factors:        [endemic area residence, pregnancy]
+  differentials:       [typhoid fever, dengue fever]
+  argues_against:      [no endemic area exposure]
+  red_flags:           [altered consciousness, coma]
+  confirms:            [positive malaria RDT, positive thick blood film]
+```
+
+**9 prose sections (fixed order — parser depends on it):**
+
+| # | Section |
+|---|---------|
+| 1 | Cardinal symptoms |
+| 2 | Associated symptoms and signs |
+| 3 | Diagnostic features |
+| 4 | Predisposing factors |
+| 5 | Typical presentation |
+| 6 | Important differential diagnoses |
+| 7 | Features that argue against this diagnosis |
+| 8 | Red flags |
+| 9 | Diagnostic context |
+
+---
+
+## Running the pipeline
+
+```bash
+# Regenerate both output files after any card edit
+python ingest.py
+
+# Load graph into Neo4j (requires .env with AuraDB credentials)
+python neo4j/neo4j_loader.py
+
+# Run verification queries
+python neo4j/run_queries.py
+
+# Check vocabulary gaps after adding new cards
+python report_unknowns.py
+```
+
+---
+
+## Clinical governance
+
+```
+draft → under_review → clinician_verified
+```
+
+- `draft` — authored, not reviewed; blocked from production ingestion
+- `clinician_verified` — reviewed and approved; production-ready
+
+**Production gate:** `ingest.py` warns on draft cards. Only `clinician_verified` cards enter production. All 10 current cards are `draft` — dev proceeds freely.
+
+---
+
+## Current state
+
+| Phase | Description | Status |
+|-------|-------------|--------|
+| 1 | Corpus — 10 condition cards | ✅ Done |
+| 2 | Graph extraction + vocabulary normalization | ✅ Done |
+| 3 | Neo4j load — 10 conditions in AuraDB | ✅ Done |
+| 4 | Vector store — Chroma + prose chunks | 🔴 Next |
+| 5 | Hybrid RAG — graph + vector → LLM | 🔴 Planned |
+| 6 | UI — real-time diagnosis suggestions | 🔴 Planned |
+
+**Corpus:** East Africa / Kenya primary care. Conditions prioritised by burden: malaria, TB, pneumonia, UTI, anaemia, T2DM, hypertension, obesity, PUD, acute gastroenteritis.
+
+**Sources:** WHO guidelines, Kenya MOH, Kenya NLTP, British Thoracic Society, ADA, ISH.

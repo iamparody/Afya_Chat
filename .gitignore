@@ -4,6 +4,13 @@ chunks_inspect.txt
 graph_entities.jsonl
 graph_inspect.txt
 
+# Secrets
+.env
+Neo4j-*.txt
+
+# Generated reports
+unknown_terms_report.md
+
 # Python
 __pycache__/
 *.pyc
