@@ -123,8 +123,8 @@ draft → under_review → clinician_verified
 | 1 | Corpus — 10 condition cards | ✅ Done |
 | 2 | Graph extraction + vocabulary normalization | ✅ Done |
 | 3 | Neo4j load — 10 conditions in AuraDB | ✅ Done |
-| 4 | Vector store — Chroma + prose chunks | 🔴 Next |
-| 5 | Hybrid RAG — graph + vector → LLM | 🔴 Planned |
+| 4 | Vector store — Chroma + prose chunks | ✅ Done |
+| 5 | Hybrid RAG — graph + vector → LLM | 🟡 In progress |
 | 6 | UI — real-time diagnosis suggestions | 🔴 Planned |
 
 **Corpus:** East Africa / Kenya primary care. Conditions prioritised by burden: malaria, TB, pneumonia, UTI, anaemia, T2DM, hypertension, obesity, PUD, acute gastroenteritis.
