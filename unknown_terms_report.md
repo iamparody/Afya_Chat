@@ -8,28 +8,14 @@
 
 | Class | Count | Action |
 |-------|-------|--------|
-| simple | 4 | Add to vocabulary after naming review |
+| simple | 2 | Add to vocabulary after naming review |
 | threshold | 0 | Add as-is — numeric criteria are already precise |
 | compound | 37 | **Do not add** — flag for structured parsing in v2 |
-| **Total** | **41** | |
+| **Total** | **39** | |
 
 ---
 
-## `cardinal_symptoms`
-
-### Simple — Add to vocabulary
-
-| Term | Appears in |
-|------|-----------|
-| `asymptomatic` | Essential hypertension |
-
 ## `risk_factors`
-
-### Simple — Add to vocabulary
-
-| Term | Appears in |
-|------|-----------|
-| `Zollinger-Ellison syndrome` | Peptic ulcer disease |
 
 ### Compound — Do not add — compound finding, flag for v2
 

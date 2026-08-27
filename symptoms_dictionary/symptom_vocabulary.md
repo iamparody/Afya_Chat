@@ -197,6 +197,7 @@
 | urinary stones | renal calculi, kidney stones |
 | sexual intercourse | recent sexual intercourse |
 | silicosis | |
+| Zollinger-Ellison syndrome | |
 | previous TB treatment | prior TB treatment |
 | household contact with smear-positive TB | TB contact |
 | socioeconomic disadvantage | low socioeconomic status |

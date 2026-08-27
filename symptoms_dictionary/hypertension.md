@@ -18,7 +18,7 @@ sources:
     title: "Hypertension Guidelines"
     year: "2021"
 graph:
-  cardinal_symptoms: [asymptomatic, occipital headache on waking]
+  cardinal_symptoms: [occipital headache on waking]
   associated_symptoms: [visual disturbance, palpitations, chest pain, epistaxis, dyspnoea, fundoscopic changes, left ventricular heave]
   risk_factors: [advancing age, male sex, family history of hypertension, obesity, high sodium intake, physical inactivity, excessive alcohol, smoking, diabetes mellitus, chronic kidney disease, sub-Saharan Africa ethnicity]
   differentials: [white coat hypertension, primary hyperaldosteronism, phaeochromocytoma, renovascular hypertension, Cushing syndrome, aortic coarctation, pre-eclampsia]
