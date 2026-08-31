@@ -5,8 +5,10 @@ Runs all 8 contract cases through rag.run(), scores each against
 chroma/evaluation_contract.md criteria.
 
 Usage:
-    python phase5/evaluate.py            # all cases
-    python phase5/evaluate.py 2a         # single case by id
+    python phase5/evaluate.py                    # all cases, dense-only (Cohere baseline)
+    python phase5/evaluate.py --hybrid           # all cases, BM25 + dense RRF
+    python phase5/evaluate.py 2a                 # single case
+    python phase5/evaluate.py --hybrid 2a 2b     # specific cases, hybrid mode
 """
 
 import json
@@ -398,7 +400,7 @@ def print_paired(comp: dict):
 
 # ── Runner ────────────────────────────────────────────────────────────────────
 
-def run_all(case_ids=None, embedder=None):
+def run_all(case_ids=None, embedder=None, hybrid=False):
     cases_to_run = CASES
     if case_ids:
         cases_to_run = [c for c in CASES if c["id"] in case_ids]
@@ -409,7 +411,7 @@ def run_all(case_ids=None, embedder=None):
     for case in cases_to_run:
         print(f"\nRunning Case {case['id']}: {case['label']} ...", flush=True)
         try:
-            result = rag.run(case["presentation"], embedder=embedder)
+            result = rag.run(case["presentation"], embedder=embedder, hybrid=hybrid)
             scored = score(case, result)
             results_by_id[case["id"]] = result
             scored_list.append(scored)
@@ -461,6 +463,10 @@ if __name__ == "__main__":
         "--backend", default="cohere", choices=["cohere", "pubmedbert"],
         help="Embedding backend to use (default: cohere)",
     )
+    parser.add_argument(
+        "--hybrid", action="store_true",
+        help="Use BM25 + dense vector RRF for candidate selection (default: dense-only)",
+    )
     parser.add_argument("cases", nargs="*", help="Optional case IDs to run (e.g. 2a 4b)")
     args = parser.parse_args()
 
@@ -471,4 +477,9 @@ if __name__ == "__main__":
         embedder = PubMedBertEmbedder()
         print(f"Model loaded. Using collection: {embedder.COLLECTION}\n")
 
-    run_all(args.cases or None, embedder=embedder)
+    if args.hybrid:
+        print("Retrieval mode: BM25 + dense vector RRF\n")
+    else:
+        print("Retrieval mode: dense-only (Cohere baseline)\n")
+
+    run_all(args.cases or None, embedder=embedder, hybrid=args.hybrid)

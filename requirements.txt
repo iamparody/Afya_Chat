@@ -6,3 +6,4 @@ jsonschema
 python-dotenv
 anthropic
 pytest
+rank-bm25
