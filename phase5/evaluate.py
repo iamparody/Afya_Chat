@@ -398,7 +398,7 @@ def print_paired(comp: dict):
 
 # ── Runner ────────────────────────────────────────────────────────────────────
 
-def run_all(case_ids=None):
+def run_all(case_ids=None, embedder=None):
     cases_to_run = CASES
     if case_ids:
         cases_to_run = [c for c in CASES if c["id"] in case_ids]
@@ -409,7 +409,7 @@ def run_all(case_ids=None):
     for case in cases_to_run:
         print(f"\nRunning Case {case['id']}: {case['label']} ...", flush=True)
         try:
-            result = rag.run(case["presentation"])
+            result = rag.run(case["presentation"], embedder=embedder)
             scored = score(case, result)
             results_by_id[case["id"]] = result
             scored_list.append(scored)
@@ -455,5 +455,20 @@ def run_all(case_ids=None):
 
 
 if __name__ == "__main__":
-    ids = sys.argv[1:] if len(sys.argv) > 1 else None
-    run_all(ids)
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--backend", default="cohere", choices=["cohere", "pubmedbert"],
+        help="Embedding backend to use (default: cohere)",
+    )
+    parser.add_argument("cases", nargs="*", help="Optional case IDs to run (e.g. 2a 4b)")
+    args = parser.parse_args()
+
+    embedder = None  # CohereEmbedder initialised inside rag.run() by default
+    if args.backend == "pubmedbert":
+        from embed_provider import PubMedBertEmbedder
+        print("Loading PubMedBERT model...")
+        embedder = PubMedBertEmbedder()
+        print(f"Model loaded. Using collection: {embedder.COLLECTION}\n")
+
+    run_all(args.cases or None, embedder=embedder)

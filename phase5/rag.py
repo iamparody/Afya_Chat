@@ -17,7 +17,6 @@ import sys
 from pathlib import Path
 
 from dotenv import load_dotenv
-import cohere
 import chromadb
 import jsonschema
 from neo4j import GraphDatabase
@@ -29,22 +28,16 @@ sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 from prompts import SYSTEM_PROMPT, OUTPUT_SCHEMA, build_context
 from providers import get_provider
 
-CHROMA_DIR      = ROOT / "chroma" / "db"
-COLLECTION_NAME = "cds_conditions"
-EMBED_MODEL     = "embed-multilingual-v3.0"
+CHROMA_DIR       = ROOT / "chroma" / "db"
 TOP_N_CANDIDATES = 6
 TOP_N_PASSAGES   = 5  # per candidate — wider window to ensure red flag + diagnostic sections are included
 
 
 # ── Retrieval: vector candidate generation ────────────────────────────────────
 
-def get_vector_candidates(co, collection, presentation, n=TOP_N_CANDIDATES):
+def get_vector_candidates(embedder, collection, presentation, n=TOP_N_CANDIDATES):
     """Unrestricted semantic search → top N unique conditions."""
-    emb = co.embed(
-        texts=[presentation],
-        model=EMBED_MODEL,
-        input_type="search_query",
-    ).embeddings[0]
+    emb = embedder.embed_query(presentation)
 
     results = collection.query(
         query_embeddings=[emb],
@@ -87,13 +80,9 @@ def count_overlap(presentation_lower, terms):
 
 # ── Retrieval: filtered vector passages ───────────────────────────────────────
 
-def get_filtered_passages(co, collection, presentation, conditions):
+def get_filtered_passages(embedder, collection, presentation, conditions):
     """Semantic search restricted to the graph's top candidates."""
-    emb = co.embed(
-        texts=[presentation],
-        model=EMBED_MODEL,
-        input_type="search_query",
-    ).embeddings[0]
+    emb = embedder.embed_query(presentation)
 
     passages = []
     for condition in conditions:
@@ -141,14 +130,20 @@ def validate(raw_text: str) -> dict:
 
 # ── Main pipeline ─────────────────────────────────────────────────────────────
 
-def run(presentation: str) -> dict:
+def run(presentation: str, embedder=None) -> dict:
     """
     Full RAG pipeline for a patient presentation.
     Returns validated dict or raises ValueError on failure.
+
+    embedder: optional embed_provider.CohereEmbedder or PubMedBertEmbedder.
+              Defaults to CohereEmbedder when not supplied.
     """
-    co       = cohere.Client(os.environ["COHERE_API_KEY"])
+    if embedder is None:
+        from embed_provider import CohereEmbedder
+        embedder = CohereEmbedder()
+
     db       = chromadb.PersistentClient(path=str(CHROMA_DIR))
-    col      = db.get_or_create_collection(COLLECTION_NAME)
+    col      = db.get_or_create_collection(embedder.COLLECTION)
     driver   = GraphDatabase.driver(
         os.environ["NEO4J_URI"],
         auth=(os.environ["NEO4J_USERNAME"], os.environ["NEO4J_PASSWORD"]),
@@ -157,7 +152,7 @@ def run(presentation: str) -> dict:
 
     try:
         # Step 1 — Vector: candidate generation (unrestricted)
-        candidate_conditions = get_vector_candidates(co, col, presentation)
+        candidate_conditions = get_vector_candidates(embedder, col, presentation)
 
         # Step 2 — Graph: symptom profiles + argues_against per candidate
         presentation_lower = presentation.lower()
@@ -179,7 +174,7 @@ def run(presentation: str) -> dict:
 
         # Step 3 — Vector: prose passages filtered to candidates only
         top_conditions = [c["condition"] for c in candidates]
-        passages = get_filtered_passages(co, col, presentation, top_conditions)
+        passages = get_filtered_passages(embedder, col, presentation, top_conditions)
 
         # Step 4 — Build context and call LLM
         context = build_context(presentation, candidates, passages)
