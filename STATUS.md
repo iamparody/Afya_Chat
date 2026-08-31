@@ -167,6 +167,15 @@ Markdown cards → ingest.py → chunks.jsonl → [Chroma vector store, Phase 4]
 - [x] Structured response format — `OUTPUT_SCHEMA` + jsonschema validation, fail-closed
 - [x] Evaluation harness — `phase5/evaluate.py`; 7/8 auto-pass, both paired comparisons pass
 
+### Phase 5e — Retrieval + Pipeline Hardening ← **current phase**
+- [x] **5a** pytest suite — `phase5/tests/`: card validation, ingest output, Neo4j edges, Chroma count, RAG schema; 100/100 non-integration pass; integration tests require live AuraDB (`pytest -m "not integration"` for offline)
+- [ ] **5b** ClinicalBERT embeddings — replace Cohere general model; re-embed 89 chunks; validate eval ≥ 7/8
+- [ ] **5c** Qdrant + BM25 — migrate from Chroma; dense + sparse vectors in one index; retire Chroma
+- [ ] **5d** Reciprocal Rank Fusion — merge dense + sparse ranked lists; target Case 2b fix (TB vs CAP)
+- [ ] **5e** Prefect orchestration — `flows/cds_pipeline.py`; card validation → ingest → Neo4j → Qdrant → eval as single flow
+
+> Gate: each step requires pytest green + eval ≥ 7/8 before proceeding to the next.
+
 ### Phase 6 — UI
 - [ ] Real-time typing → streaming symptom query → ranked diagnosis suggestions
 - [ ] Clinical documentation output — structured note with ICD-10/11, diagnosis, symptoms, red flags
