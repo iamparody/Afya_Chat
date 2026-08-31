@@ -6,61 +6,61 @@
 
 ---
 
-## Session Handoff — 2026-08-31 (Phase 5b complete — rejected; 5c next)
+## Session Handoff — 2026-08-31 (Phase 5c + Case 2b prompt fix — both rejected; 7/8 is ceiling)
 
 > **For the agent picking up after a compact or new session — read this first.**
 
 ### What this session accomplished
 
-**5a — Integration tests confirmed (54/54 green)**
-- AuraDB resumed; ran `pytest phase5/tests/test_neo4j.py phase5/tests/test_rag_schema.py -v`
-- 42/42 Neo4j + 12/12 RAG schema — all pass
-- Added `requirements.txt` (direct deps only: cohere, chromadb, neo4j, google-genai, jsonschema, python-dotenv, anthropic, pytest)
+**5c — BM25 hybrid retrieval: BUILT, EVALUATED, REJECTED**
+- Built `phase5/bm25_index.py` — lazy BM25 index over chunks.jsonl (`rank_bm25`, pure Python, 89 chunks)
+- Added `get_vector_candidates_hybrid()` to `rag.py` — dense + BM25 → RRF (k=60) → top 6 conditions
+- Added `--hybrid` flag to `evaluate.py`; `hybrid=False` default preserves Cohere dense-only baseline
+- Evaluation result: hybrid 7/8 BUT introduced 4a→4b T2DM confidence regression (no longer drops)
+- Dense-only: 7/8, both paired comparisons pass. Hybrid: 7/8, 4a→4b paired check fails.
+- Confirmed: Case 2b is NOT a retrieval problem. BM25 changes nothing for it.
+- Decision: dense-only stays as default. BM25 infrastructure preserved; `--hybrid` available for future experiments.
 
-**5b — PubMedBERT embedding experiment: REJECTED (6/8, gate is ≥7/8)**
-- Built embedding abstraction: `phase5/embed_provider.py` (`CohereEmbedder`, `PubMedBertEmbedder`)
-- Created `chroma/chroma_loader_pubmedbert.py` → collection `cds_conditions_pubmedbert` (768d, 89 chunks)
-- Modified `phase5/rag.py`: `run(presentation, embedder=None)` — Cohere is still the default
-- Modified `phase5/evaluate.py`: `--backend cohere|pubmedbert` flag
-- A/B result: Cohere 7/8 vs PubMedBERT 6/8 (Case 3 regression: Malaria leads for UTI/AGE)
-- Root-cause debugged via `phase5/inspect_retrieval.py` + `phase5/debug_case3.py`
-- Finding: retrieval is fine for PubMedBERT (UTI #1, Malaria #11); failure is in filtered passages — PubMedBERT's biomedical space makes Malaria passages look more relevant; `against` section not retrieved for Malaria → no counter-evidence → Gemini picks Malaria
-- Attempted fix: force `against` section into filtered passages — caused context interference in Case 5 (hypertension red flags changed). Reverted.
-- Decision: Cohere stays. PubMedBERT infrastructure preserved for reference. BM25 (Phase 5c) is the correct next fix.
+**Case 2b prompt fix: ATTEMPTED, REGRESSED, REVERTED**
+- Failure mode: Gemini correctly populates TB `arguing_against` but ignores the ranking rule
+- Fix attempted: replaced hard "MUST" instruction with softer comparative net-evidence instruction
+- Result: 6/8 — TB `arguing_against` field went EMPTY + Case 4a hyperosmolar red flag lost
+- Finding: the original "MUST" instruction is load-bearing for arguing_against population in all cases; softening it removes the documentation constraint, not just the ranking constraint
+- Reverted to original instruction. No net change to `prompts.py` (git sees zero diff).
+- **7/8 is the prompt ceiling for Case 2b.** Gemini documents the counter-evidence but treats the leading_candidate selection as its own judgment.
 
 ### Current state
-- Cohere: **7/8** (baseline restored, unchanged)
-- PubMedBERT: 6/8 (rejected, collection preserved for reference)
-- `rag.py`: Cohere default, `embedder=None` param for A/B testing
-- All session changes committed except: `phase5/rag.py`, `phase5/evaluate.py`, new debug/infra files
+- Cohere dense-only: **7/8** (baseline, unchanged)
+- BM25 hybrid: 7/8 but with regression — rejected, `hybrid=False` default
+- Case 2b: TB still leads for 3-day cough — confirmed model reasoning problem, not retrieval
+- All changes committed and pushed (origin up to date)
 
 ### Pick up here
-**Immediate next task: Phase 5c — Cohere dense + BM25 sparse → RRF → evaluate**
+**Phase 5c is complete (rejected).** Case 2b prompt fix is exhausted at this approach.
 
-Success criterion: ≥7/8 overall **without regressions** in Cases 1, 2, 4–6.
-Primary target: Case 3 (UTI/AGE vs Malaria) and Case 2b (CAP vs TB) — both currently failing.
+**Next decision:** Phase 5e Prefect orchestration, or accept 7/8 as MVP and proceed to Phase 6 (UI)?
 
-Before implementing: assess the BM25 approach (per colleague guidance — assess before implementing).
+If 7/8 is acceptable as the RAG MVP ceiling:
+- Phase 6 requires ICD-10 codes in all 10 condition card frontmatters (currently ICD-11 only)
+- Clinician review (Phase 2) is the production gate — all 10 cards remain `draft`
 
-Assessment questions to answer first:
-1. Which library: `rank_bm25` (pure Python, no infra) vs Qdrant sparse vectors?
-2. What corpus to index: same 89 chunks from chunks.jsonl?
-3. How to merge: RRF formula `score = Σ 1/(k + rank)`, k=60 is standard
-4. Where to integrate: new `get_vector_candidates_hybrid()` function in `rag.py`, keeping old as fallback
+If attempting Case 2b further:
+- Post-generation structural check: if `leading_candidate.arguing_against` is non-empty AND another candidate has empty `arguing_against`, swap the leading_candidate — deterministic, not LLM-dependent
+- Risk: could produce clinically wrong output if TB has overwhelmingly stronger support despite counter-evidence
+- Requires new validation step in `rag.py` after `validate()`
 
-### Key files from this session
-- `phase5/embed_provider.py` — CohereEmbedder, PubMedBertEmbedder with COLLECTION attribute
-- `phase5/evaluate.py` — added `--backend cohere|pubmedbert` CLI flag
-- `phase5/rag.py` — `run(presentation, embedder=None)`, embed abstraction wired in
-- `chroma/chroma_loader_pubmedbert.py` — PubMedBERT loader (768d)
-- `phase5/inspect_retrieval.py` — shows top-18 chunks per backend for any presentation
-- `phase5/debug_case3.py` — full pipeline trace: candidates → graph → passages → context → Gemini output
-- `requirements.txt` — direct project dependencies
+### Key files (current)
+- `phase5/rag.py` — `run(presentation, embedder=None, hybrid=False)`: dense-only default, hybrid available
+- `phase5/bm25_index.py` — BM25 lazy index builder (chunks.jsonl)
+- `phase5/evaluate.py` — `--backend` + `--hybrid` flags; `python phase5/evaluate.py` = Cohere dense baseline
+- `phase5/prompts.py` — unchanged from Phase 5 MVP; original MUST-based arguing_against rule restored
+- `requirements.txt` — added `rank-bm25`
 
-### Known architectural limitations (unchanged from Phase 5)
-- Case 2b: TB leads for 3-day cough — semantic vector always ranks TB first; args_against applied but LLM doesn't flip
-- Case 3: AGE leads with Cohere (correct), Malaria leads with PubMedBERT (embedding space issue)
-- Red flag stochasticity: ANN non-determinism means red flag content varies across runs; Cases 1, 2a, 3, 6 red flag checks are manual only
+### Known architectural limitations (confirmed through experimentation)
+- Case 2b: 7/8 is the prompt ceiling — Gemini documents TB counter-evidence but overrides the ranking rule
+- BM25 hybrid: introduces 4a→4b paired confidence regression; dense-only is strictly better for this corpus
+- PubMedBERT: failure in filtered passages step (against section not retrieved); dense-only stays
+- Red flag stochasticity: ANN non-determinism means red flag content varies; Cases 1, 2a, 3, 6 red flag checks are manual
 
 ---
 
@@ -227,12 +227,13 @@ Markdown cards → ingest.py → chunks.jsonl → [Chroma vector store, Phase 4]
 
 ### Phase 5e — Retrieval + Pipeline Hardening ← **current phase**
 - [x] **5a** pytest suite — `phase5/tests/`: card validation, ingest output, Neo4j edges, Chroma count, RAG schema; 54/54 including integration pass (AuraDB + Gemini confirmed)
-- [x] **5b** PubMedBERT embedding experiment — built A/B infrastructure; result 6/8 < gate; **rejected**. Cohere stays. Failure: filtered passages missing `against` section in PubMedBERT space; forced-inject fix caused context interference. BM25 is the right fix.
-- [ ] **5c** Qdrant + BM25 — migrate from Chroma; dense + sparse vectors in one index; retire Chroma
-- [ ] **5d** Reciprocal Rank Fusion — merge dense + sparse ranked lists; target Case 2b fix (TB vs CAP)
-- [ ] **5e** Prefect orchestration — `flows/cds_pipeline.py`; card validation → ingest → Neo4j → Qdrant → eval as single flow
+- [x] **5b** PubMedBERT embedding experiment — A/B infrastructure built; result 6/8 < gate; **rejected**. Cohere stays. Root cause: filtered passages miss `against` section in PubMedBERT biomedical space; forced-inject caused context interference across other cases.
+- [x] **5c** BM25 hybrid retrieval — `rank_bm25` index + RRF (k=60) in `get_vector_candidates_hybrid()`; `--hybrid` flag in evaluate.py; result: hybrid 7/8 but introduces 4a→4b regression; **rejected**. Dense-only confirmed superior for 89-chunk corpus. Case 2b confirmed as model reasoning problem, not retrieval.
+- [x] **5d** Case 2b prompt fix — softened arguing_against ranking rule; result 6/8 (arguing_against field went empty, Case 4a regressed); **reverted**. 7/8 is the prompt ceiling.
+- [ ] **5e** Prefect orchestration — `flows/cds_pipeline.py`; card validation → ingest → Neo4j → Chroma → eval as single flow
 
 > Gate: each step requires pytest green + eval ≥ 7/8 before proceeding to the next.
+> Current eval: **7/8** (Cohere dense-only, Cases 1–6 pass, Case 2b structural limit).
 
 ### Phase 6 — UI
 - [ ] Real-time typing → streaming symptom query → ranked diagnosis suggestions
