@@ -1,0 +1,8 @@
+﻿cohere
+chromadb
+neo4j
+google-genai
+jsonschema
+python-dotenv
+anthropic
+pytest

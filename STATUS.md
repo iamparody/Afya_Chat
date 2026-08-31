@@ -6,6 +6,56 @@
 
 ---
 
+## Session Handoff — 2026-08-31 (Phase 5e in progress — pytest suite done)
+
+> **For the agent picking up after a compact or new session — read this first.**
+
+### What this session accomplished
+- Answered architecture questions: new cards auto-adapt (no code changes needed), pipeline changes were all prompt/retrieval layer
+- Planned retrieval hardening stack: pytest → ClinicalBERT → Qdrant+BM25 → RRF → Prefect (tracked in Phase 5e checklist below)
+- **5a complete**: pytest suite written and passing — `phase5/tests/` (5 files, 100/100 non-integration tests green)
+  - `test_card_validation.py` — 70 tests: all 10 cards × 7 checks (sections, frontmatter, graph keys)
+  - `test_ingest.py` — 15 tests: chunks.jsonl + graph_entities.jsonl schema and counts
+  - `test_chroma.py` — 5 tests: collection count ≥ 89, all conditions indexed, metadata fields
+  - `test_neo4j.py` — 33 tests: condition nodes + 3 edge types per condition *(integration — needs AuraDB)*
+  - `test_rag_schema.py` — 12 tests: output schema, leading_candidate, confidence levels *(integration — needs AuraDB + Gemini)*
+- AuraDB was paused (free tier inactivity); user is resuming it now
+
+### Pick up here
+**Immediate next task: run integration tests once AuraDB is back up**
+
+```bash
+python check_neo4j.py          # confirm connectivity first (delete after use)
+pytest phase5/tests/            # full suite including integration
+```
+
+If integration tests pass → move to **5b: ClinicalBERT embedding swap**
+
+### Run commands
+```bash
+# Non-integration (offline-safe):
+pytest -m "not integration"
+
+# Full suite (requires AuraDB + Gemini):
+pytest
+
+# Single module:
+pytest phase5/tests/test_neo4j.py -v
+pytest phase5/tests/test_rag_schema.py -v
+```
+
+### Key files added this session
+- `phase5/tests/conftest.py` — path setup + .env load
+- `phase5/tests/helpers.py` — shared ROOT, CORPUS_DIR, get_condition_cards(), get_condition_names_from_graph()
+- `phase5/tests/test_card_validation.py`
+- `phase5/tests/test_ingest.py`
+- `phase5/tests/test_chroma.py`
+- `phase5/tests/test_neo4j.py`
+- `phase5/tests/test_rag_schema.py`
+- `pytest.ini` — rootdir config, integration marker
+
+---
+
 ## Session Handoff — 2026-08-27 (Phase 5 complete)
 
 > **For the agent picking up after a compact or new session — read this first.**
