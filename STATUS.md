@@ -6,53 +6,61 @@
 
 ---
 
-## Session Handoff — 2026-08-31 (Phase 5e in progress — pytest suite done)
+## Session Handoff — 2026-08-31 (Phase 5b complete — rejected; 5c next)
 
 > **For the agent picking up after a compact or new session — read this first.**
 
 ### What this session accomplished
-- Answered architecture questions: new cards auto-adapt (no code changes needed), pipeline changes were all prompt/retrieval layer
-- Planned retrieval hardening stack: pytest → ClinicalBERT → Qdrant+BM25 → RRF → Prefect (tracked in Phase 5e checklist below)
-- **5a complete**: pytest suite written and passing — `phase5/tests/` (5 files, 100/100 non-integration tests green)
-  - `test_card_validation.py` — 70 tests: all 10 cards × 7 checks (sections, frontmatter, graph keys)
-  - `test_ingest.py` — 15 tests: chunks.jsonl + graph_entities.jsonl schema and counts
-  - `test_chroma.py` — 5 tests: collection count ≥ 89, all conditions indexed, metadata fields
-  - `test_neo4j.py` — 33 tests: condition nodes + 3 edge types per condition *(integration — needs AuraDB)*
-  - `test_rag_schema.py` — 12 tests: output schema, leading_candidate, confidence levels *(integration — needs AuraDB + Gemini)*
-- AuraDB was paused (free tier inactivity); user is resuming it now
+
+**5a — Integration tests confirmed (54/54 green)**
+- AuraDB resumed; ran `pytest phase5/tests/test_neo4j.py phase5/tests/test_rag_schema.py -v`
+- 42/42 Neo4j + 12/12 RAG schema — all pass
+- Added `requirements.txt` (direct deps only: cohere, chromadb, neo4j, google-genai, jsonschema, python-dotenv, anthropic, pytest)
+
+**5b — PubMedBERT embedding experiment: REJECTED (6/8, gate is ≥7/8)**
+- Built embedding abstraction: `phase5/embed_provider.py` (`CohereEmbedder`, `PubMedBertEmbedder`)
+- Created `chroma/chroma_loader_pubmedbert.py` → collection `cds_conditions_pubmedbert` (768d, 89 chunks)
+- Modified `phase5/rag.py`: `run(presentation, embedder=None)` — Cohere is still the default
+- Modified `phase5/evaluate.py`: `--backend cohere|pubmedbert` flag
+- A/B result: Cohere 7/8 vs PubMedBERT 6/8 (Case 3 regression: Malaria leads for UTI/AGE)
+- Root-cause debugged via `phase5/inspect_retrieval.py` + `phase5/debug_case3.py`
+- Finding: retrieval is fine for PubMedBERT (UTI #1, Malaria #11); failure is in filtered passages — PubMedBERT's biomedical space makes Malaria passages look more relevant; `against` section not retrieved for Malaria → no counter-evidence → Gemini picks Malaria
+- Attempted fix: force `against` section into filtered passages — caused context interference in Case 5 (hypertension red flags changed). Reverted.
+- Decision: Cohere stays. PubMedBERT infrastructure preserved for reference. BM25 (Phase 5c) is the correct next fix.
+
+### Current state
+- Cohere: **7/8** (baseline restored, unchanged)
+- PubMedBERT: 6/8 (rejected, collection preserved for reference)
+- `rag.py`: Cohere default, `embedder=None` param for A/B testing
+- All session changes committed except: `phase5/rag.py`, `phase5/evaluate.py`, new debug/infra files
 
 ### Pick up here
-**Immediate next task: run integration tests once AuraDB is back up**
+**Immediate next task: Phase 5c — Cohere dense + BM25 sparse → RRF → evaluate**
 
-```bash
-python check_neo4j.py          # confirm connectivity first (delete after use)
-pytest phase5/tests/            # full suite including integration
-```
+Success criterion: ≥7/8 overall **without regressions** in Cases 1, 2, 4–6.
+Primary target: Case 3 (UTI/AGE vs Malaria) and Case 2b (CAP vs TB) — both currently failing.
 
-If integration tests pass → move to **5b: ClinicalBERT embedding swap**
+Before implementing: assess the BM25 approach (per colleague guidance — assess before implementing).
 
-### Run commands
-```bash
-# Non-integration (offline-safe):
-pytest -m "not integration"
+Assessment questions to answer first:
+1. Which library: `rank_bm25` (pure Python, no infra) vs Qdrant sparse vectors?
+2. What corpus to index: same 89 chunks from chunks.jsonl?
+3. How to merge: RRF formula `score = Σ 1/(k + rank)`, k=60 is standard
+4. Where to integrate: new `get_vector_candidates_hybrid()` function in `rag.py`, keeping old as fallback
 
-# Full suite (requires AuraDB + Gemini):
-pytest
+### Key files from this session
+- `phase5/embed_provider.py` — CohereEmbedder, PubMedBertEmbedder with COLLECTION attribute
+- `phase5/evaluate.py` — added `--backend cohere|pubmedbert` CLI flag
+- `phase5/rag.py` — `run(presentation, embedder=None)`, embed abstraction wired in
+- `chroma/chroma_loader_pubmedbert.py` — PubMedBERT loader (768d)
+- `phase5/inspect_retrieval.py` — shows top-18 chunks per backend for any presentation
+- `phase5/debug_case3.py` — full pipeline trace: candidates → graph → passages → context → Gemini output
+- `requirements.txt` — direct project dependencies
 
-# Single module:
-pytest phase5/tests/test_neo4j.py -v
-pytest phase5/tests/test_rag_schema.py -v
-```
-
-### Key files added this session
-- `phase5/tests/conftest.py` — path setup + .env load
-- `phase5/tests/helpers.py` — shared ROOT, CORPUS_DIR, get_condition_cards(), get_condition_names_from_graph()
-- `phase5/tests/test_card_validation.py`
-- `phase5/tests/test_ingest.py`
-- `phase5/tests/test_chroma.py`
-- `phase5/tests/test_neo4j.py`
-- `phase5/tests/test_rag_schema.py`
-- `pytest.ini` — rootdir config, integration marker
+### Known architectural limitations (unchanged from Phase 5)
+- Case 2b: TB leads for 3-day cough — semantic vector always ranks TB first; args_against applied but LLM doesn't flip
+- Case 3: AGE leads with Cohere (correct), Malaria leads with PubMedBERT (embedding space issue)
+- Red flag stochasticity: ANN non-determinism means red flag content varies across runs; Cases 1, 2a, 3, 6 red flag checks are manual only
 
 ---
 
@@ -218,8 +226,8 @@ Markdown cards → ingest.py → chunks.jsonl → [Chroma vector store, Phase 4]
 - [x] Evaluation harness — `phase5/evaluate.py`; 7/8 auto-pass, both paired comparisons pass
 
 ### Phase 5e — Retrieval + Pipeline Hardening ← **current phase**
-- [x] **5a** pytest suite — `phase5/tests/`: card validation, ingest output, Neo4j edges, Chroma count, RAG schema; 100/100 non-integration pass; integration tests require live AuraDB (`pytest -m "not integration"` for offline)
-- [ ] **5b** ClinicalBERT embeddings — replace Cohere general model; re-embed 89 chunks; validate eval ≥ 7/8
+- [x] **5a** pytest suite — `phase5/tests/`: card validation, ingest output, Neo4j edges, Chroma count, RAG schema; 54/54 including integration pass (AuraDB + Gemini confirmed)
+- [x] **5b** PubMedBERT embedding experiment — built A/B infrastructure; result 6/8 < gate; **rejected**. Cohere stays. Failure: filtered passages missing `against` section in PubMedBERT space; forced-inject fix caused context interference. BM25 is the right fix.
 - [ ] **5c** Qdrant + BM25 — migrate from Chroma; dense + sparse vectors in one index; retire Chroma
 - [ ] **5d** Reciprocal Rank Fusion — merge dense + sparse ranked lists; target Case 2b fix (TB vs CAP)
 - [ ] **5e** Prefect orchestration — `flows/cds_pipeline.py`; card validation → ingest → Neo4j → Qdrant → eval as single flow
