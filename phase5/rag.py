@@ -78,6 +78,56 @@ def count_overlap(presentation_lower, terms):
     return [t for t in terms if t.lower() in presentation_lower]
 
 
+# ── Retrieval: hybrid candidate generation (dense + BM25 → RRF) ──────────────
+
+def get_vector_candidates_hybrid(embedder, collection, presentation, n=TOP_N_CANDIDATES):
+    """Dense vector + BM25 sparse → RRF merge → top N unique conditions."""
+    from bm25_index import get_bm25_index
+
+    k = 60
+    pool = n * 3
+
+    # Dense: top pool chunks
+    emb = embedder.embed_query(presentation)
+    dense_results = collection.query(
+        query_embeddings=[emb],
+        n_results=pool,
+        include=["metadatas"],
+    )
+
+    dense_rank = {}
+    for rank, meta in enumerate(dense_results["metadatas"][0]):
+        cond = meta["condition"]
+        if cond not in dense_rank:
+            dense_rank[cond] = rank  # 0-indexed; lower = better
+
+    # BM25: score all chunks, take top pool by score
+    bm25, bm25_chunks = get_bm25_index()
+    tokens = presentation.lower().split()
+    scores = bm25.get_scores(tokens)
+    bm25_order = sorted(range(len(scores)), key=lambda i: scores[i], reverse=True)[:pool]
+
+    bm25_rank = {}
+    for rank, idx in enumerate(bm25_order):
+        cond = bm25_chunks[idx]["metadata"]["condition"]
+        if cond not in bm25_rank:
+            bm25_rank[cond] = rank  # 0-indexed; lower = better
+
+    # RRF: score = Σ 1/(k + rank) across both retrievers
+    # Conditions absent from a retriever get fallback rank = pool (just outside window)
+    all_conditions = set(dense_rank) | set(bm25_rank)
+    rrf = {
+        cond: (
+            1.0 / (k + dense_rank.get(cond, pool))
+            + 1.0 / (k + bm25_rank.get(cond, pool))
+        )
+        for cond in all_conditions
+    }
+
+    ranked = sorted(rrf.items(), key=lambda x: -x[1])
+    return [cond for cond, _ in ranked[:n]]
+
+
 # ── Retrieval: filtered vector passages ───────────────────────────────────────
 
 def get_filtered_passages(embedder, collection, presentation, conditions):
@@ -130,13 +180,15 @@ def validate(raw_text: str) -> dict:
 
 # ── Main pipeline ─────────────────────────────────────────────────────────────
 
-def run(presentation: str, embedder=None) -> dict:
+def run(presentation: str, embedder=None, hybrid=False) -> dict:
     """
     Full RAG pipeline for a patient presentation.
     Returns validated dict or raises ValueError on failure.
 
     embedder: optional embed_provider.CohereEmbedder or PubMedBertEmbedder.
               Defaults to CohereEmbedder when not supplied.
+    hybrid:   if True, uses BM25 + dense vector RRF for candidate selection.
+              if False (default), uses dense-only — preserves the Cohere 7/8 baseline.
     """
     if embedder is None:
         from embed_provider import CohereEmbedder
@@ -151,8 +203,11 @@ def run(presentation: str, embedder=None) -> dict:
     provider = get_provider()
 
     try:
-        # Step 1 — Vector: candidate generation (unrestricted)
-        candidate_conditions = get_vector_candidates(embedder, col, presentation)
+        # Step 1 — Candidate generation: dense-only or hybrid BM25+dense RRF
+        if hybrid:
+            candidate_conditions = get_vector_candidates_hybrid(embedder, col, presentation)
+        else:
+            candidate_conditions = get_vector_candidates(embedder, col, presentation)
 
         # Step 2 — Graph: symptom profiles + argues_against per candidate
         presentation_lower = presentation.lower()
