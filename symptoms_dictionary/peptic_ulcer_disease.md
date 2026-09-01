@@ -1,9 +1,10 @@
 ---
 condition: Peptic ulcer disease
 icd11: DA60
+icd10: K27
 category: gastroenterological
-corpus_version: "1.1"
-schema_version: "1.1"
+corpus_version: "1.2"
+schema_version: "1.2"
 review_status: draft
 reviewed_by: ""
 last_reviewed: ""

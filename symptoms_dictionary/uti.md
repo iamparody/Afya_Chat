@@ -1,9 +1,10 @@
 ---
 condition: Urinary tract infection
 icd11: GC08
+icd10: N39.0
 category: urogenital / infectious
-corpus_version: "1.1"
-schema_version: "1.1"
+corpus_version: "1.2"
+schema_version: "1.2"
 review_status: draft
 reviewed_by: ""
 last_reviewed: ""

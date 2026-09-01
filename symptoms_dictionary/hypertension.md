@@ -1,9 +1,10 @@
 ---
 condition: Essential hypertension
 icd11: BA00
+icd10: I10
 category: cardiovascular
-corpus_version: "1.1"
-schema_version: "1.1"
+corpus_version: "1.2"
+schema_version: "1.2"
 review_status: draft
 reviewed_by: ""
 last_reviewed: ""

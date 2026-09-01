@@ -1,9 +1,10 @@
 ---
 condition: Malaria (unspecified)
 icd11: 1F40
+icd10: B54
 category: infectious
-corpus_version: "1.1"
-schema_version: "1.1"
+corpus_version: "1.2"
+schema_version: "1.2"
 review_status: draft
 reviewed_by: ""
 last_reviewed: ""

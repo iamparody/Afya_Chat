@@ -1,9 +1,10 @@
 ---
 condition: Pulmonary tuberculosis
 icd11: 1B10
+icd10: A15
 category: infectious / respiratory
-corpus_version: "1.1"
-schema_version: "1.1"
+corpus_version: "1.2"
+schema_version: "1.2"
 review_status: draft
 reviewed_by: ""
 last_reviewed: ""

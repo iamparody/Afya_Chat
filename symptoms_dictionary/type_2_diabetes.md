@@ -1,9 +1,10 @@
 ---
 condition: Type 2 diabetes mellitus
 icd11: 5A11
+icd10: E11
 category: endocrine / metabolic
-corpus_version: "1.1"
-schema_version: "1.1"
+corpus_version: "1.2"
+schema_version: "1.2"
 review_status: draft
 reviewed_by: ""
 last_reviewed: ""
