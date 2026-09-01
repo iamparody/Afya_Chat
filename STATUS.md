@@ -230,13 +230,13 @@ Markdown cards → ingest.py → chunks.jsonl → [Chroma vector store, Phase 4]
 - [x] **5b** PubMedBERT embedding experiment — A/B infrastructure built; result 6/8 < gate; **rejected**. Cohere stays. Root cause: filtered passages miss `against` section in PubMedBERT biomedical space; forced-inject caused context interference across other cases.
 - [x] **5c** BM25 hybrid retrieval — `rank_bm25` index + RRF (k=60) in `get_vector_candidates_hybrid()`; `--hybrid` flag in evaluate.py; result: hybrid 7/8 but introduces 4a→4b regression; **rejected**. Dense-only confirmed superior for 89-chunk corpus. Case 2b confirmed as model reasoning problem, not retrieval.
 - [x] **5d** Case 2b prompt fix — softened arguing_against ranking rule; result 6/8 (arguing_against field went empty, Case 4a regressed); **reverted**. 7/8 is the prompt ceiling.
-- [ ] **5e** Pipeline orchestration — `Makefile` with named targets (`make ingest`, `make load-neo4j`, `make embed`, `make eval`, `make pipeline`); hard eval gate (exit non-zero if <7/8); `GitHub Actions` workflow triggered on changes to `symptoms_dictionary/` or `chunks.jsonl`
+- [x] **5e** Pipeline orchestration — `Makefile` (5 targets: ingest, load-neo4j, embed, eval, pipeline); hard eval gate in `evaluate.py` (exits non-zero if <7/8 on full suite); `.github/workflows/cds_pipeline.yml` triggers on `symptoms_dictionary/**`, `ingest.py`, `phase5/**` changes
   - Prefect deferred: pipeline is linear + single-environment; revisit if Phase 6 introduces scheduled inference, cloud deployment, or multi-stage branching
 
 > Gate: each step requires pytest green + eval ≥ 7/8 before proceeding to the next.
 > Current eval: **7/8** (Cohere dense-only, Cases 1–6 pass, Case 2b structural limit).
 
-### Phase 6 — UI
+### Phase 6 — UI ← **current phase**
 - [x] ICD-10 codes added to all 10 condition card frontmatters — schema_version 1.2, ingest.py updated, index.md updated
 - [ ] Streamlit MVP — one presentation in, one structured report out; candidates as expandable cards with confidence colour-coding, red flags section, missing information list
 - [ ] Clinical documentation output — structured note with ICD-10/11, diagnosis, symptoms, red flags

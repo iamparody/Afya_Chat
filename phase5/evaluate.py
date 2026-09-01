@@ -482,4 +482,13 @@ if __name__ == "__main__":
     else:
         print("Retrieval mode: dense-only (Cohere baseline)\n")
 
-    run_all(args.cases or None, embedder=embedder, hybrid=args.hybrid)
+    scored = run_all(args.cases or None, embedder=embedder, hybrid=args.hybrid)
+
+    # Hard gate — only enforced on full suite runs; single-case runs are exempt
+    if not args.cases:
+        THRESHOLD = 7
+        passes = sum(1 for s in scored if s["failed"] == 0)
+        if passes < THRESHOLD:
+            print(f"\nGATE FAIL — {passes}/{len(CASES)} < {THRESHOLD} required. Pipeline blocked.")
+            sys.exit(1)
+        print(f"\nGATE PASS — {passes}/{len(CASES)} >= {THRESHOLD}.")
