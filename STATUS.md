@@ -230,15 +230,18 @@ Markdown cards → ingest.py → chunks.jsonl → [Chroma vector store, Phase 4]
 - [x] **5b** PubMedBERT embedding experiment — A/B infrastructure built; result 6/8 < gate; **rejected**. Cohere stays. Root cause: filtered passages miss `against` section in PubMedBERT biomedical space; forced-inject caused context interference across other cases.
 - [x] **5c** BM25 hybrid retrieval — `rank_bm25` index + RRF (k=60) in `get_vector_candidates_hybrid()`; `--hybrid` flag in evaluate.py; result: hybrid 7/8 but introduces 4a→4b regression; **rejected**. Dense-only confirmed superior for 89-chunk corpus. Case 2b confirmed as model reasoning problem, not retrieval.
 - [x] **5d** Case 2b prompt fix — softened arguing_against ranking rule; result 6/8 (arguing_against field went empty, Case 4a regressed); **reverted**. 7/8 is the prompt ceiling.
-- [ ] **5e** Prefect orchestration — `flows/cds_pipeline.py`; card validation → ingest → Neo4j → Chroma → eval as single flow
+- [ ] **5e** Pipeline orchestration — `Makefile` with named targets (`make ingest`, `make load-neo4j`, `make embed`, `make eval`, `make pipeline`); hard eval gate (exit non-zero if <7/8); `GitHub Actions` workflow triggered on changes to `symptoms_dictionary/` or `chunks.jsonl`
+  - Prefect deferred: pipeline is linear + single-environment; revisit if Phase 6 introduces scheduled inference, cloud deployment, or multi-stage branching
 
 > Gate: each step requires pytest green + eval ≥ 7/8 before proceeding to the next.
 > Current eval: **7/8** (Cohere dense-only, Cases 1–6 pass, Case 2b structural limit).
 
 ### Phase 6 — UI
-- [ ] Real-time typing → streaming symptom query → ranked diagnosis suggestions
+- [ ] ICD-10 codes added to all 10 condition card frontmatters (currently ICD-11 only) ← **blocker before UI**
+- [ ] Streamlit MVP — one presentation in, one structured report out; candidates as expandable cards with confidence colour-coding, red flags section, missing information list
 - [ ] Clinical documentation output — structured note with ICD-10/11, diagnosis, symptoms, red flags
-- [ ] ICD-10 codes added to all cards (currently ICD-11 only) ← **needed before UI**
+- [ ] Post-MVP: evaluate Chainlit if conversational follow-up ("what if patient also has X?") is required; Reflex for production web app deployment
+  - UI path confirmed: **Streamlit MVP → Chainlit (if conversational) → Reflex (production)**
 
 ### Phase 7 — Corpus v2
 - [ ] Asthma
@@ -266,6 +269,8 @@ Markdown cards → ingest.py → chunks.jsonl → [Chroma vector store, Phase 4]
 | 2026-08-26 | Normalization layer between YAML and Neo4j | Prevents synonym drift across large corpus; vocabulary controlled via [[symptom_vocabulary]] |
 | 2026-08-26 | Edge properties designed in schema from day one | Allows provenance (`source`, `year`) to be added later without schema migration |
 | 2026-08-26 | `argues_against` as flat edges for v1 | Multi-finding evidence pattern logic deferred to LLM synthesis layer; graph keeps it simple |
+| 2026-08-31 | Makefile + GitHub Actions over Prefect for 5e | Pipeline is linear, deterministic, single-environment; only growth is more cards (not more stages); Prefect deferred to Phase 6 if scheduled/cloud/multi-branch needed |
+| 2026-08-31 | Streamlit for Phase 6 UI MVP | Team already has it deployed (Ortho, Gates Malaria); CDS is one-in one-out (not chat); Chainlit if conversational follow-up added; Reflex at production |
 
 ---
 
@@ -273,6 +278,8 @@ Markdown cards → ingest.py → chunks.jsonl → [Chroma vector store, Phase 4]
 
 - [x] Neo4j hosting → AuraDB free tier (resolved)
 - [x] Embedding model → Cohere `embed-multilingual-v3.0` (resolved)
-- [ ] ICD-10 codes — add to frontmatter now or defer to UI phase?
+- [x] ICD-10 codes — defer to Phase 6 (blocker before UI build, not before orchestration)
+- [x] RAG output format — structured JSON confirmed (required for Streamlit card rendering)
+- [x] UI library — Streamlit MVP confirmed; Chainlit/Reflex path documented
+- [x] Orchestrator — Makefile + GitHub Actions confirmed; Prefect deferred
 - [ ] Management corpus — separate RAG index or unified with diagnostic corpus?
-- [ ] RAG output format — structured JSON for UI consumption or free-text narrative? (currently JSON)
