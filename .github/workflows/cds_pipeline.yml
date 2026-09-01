@@ -24,7 +24,36 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Run pipeline
+      - name: Ingest
+        run: make ingest
+        env:
+          COHERE_API_KEY: ${{ secrets.COHERE_API_KEY }}
+
+      - name: Load Neo4j
+        run: make load-neo4j
+        env:
+          NEO4J_URI:      ${{ secrets.NEO4J_URI }}
+          NEO4J_USERNAME: ${{ secrets.NEO4J_USERNAME }}
+          NEO4J_PASSWORD: ${{ secrets.NEO4J_PASSWORD }}
+          NEO4J_DATABASE: ${{ secrets.NEO4J_DATABASE }}
+
+      - name: Embed
+        run: make embed
+        env:
+          COHERE_API_KEY: ${{ secrets.COHERE_API_KEY }}
+
+      - name: Eval (gate — retry up to 3x on Gemini 503)
+        run: |
+          for i in 1 2 3; do
+            make eval && break
+            if [ $i -lt 3 ]; then
+              echo "Attempt $i failed — retrying in 30s..."
+              sleep 30
+            else
+              echo "All 3 attempts failed."
+              exit 1
+            fi
+          done
         env:
           NEO4J_URI:      ${{ secrets.NEO4J_URI }}
           NEO4J_USERNAME: ${{ secrets.NEO4J_USERNAME }}
@@ -32,4 +61,3 @@ jobs:
           NEO4J_DATABASE: ${{ secrets.NEO4J_DATABASE }}
           COHERE_API_KEY: ${{ secrets.COHERE_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: make pipeline
