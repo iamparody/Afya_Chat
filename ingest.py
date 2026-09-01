@@ -4,7 +4,7 @@ Diagnostic RAG ingestion prototype.
 Reads each condition card from symptoms_dictionary/, splits into section-level
 chunks, extracts and normalizes graph declarations, and writes four output files:
 
-  chunks.jsonl           — one JSON object per chunk (text + metadata incl. icd10, icd11)
+  chunks.jsonl           — one JSON object per chunk (text + metadata: condition, icd10, icd11, category)
   chunks_inspect.txt     — human-readable preview of prose chunks
   graph_entities.jsonl   — one JSON object per condition (normalized graph declarations)
   graph_inspect.txt      — human-readable preview of graph records
