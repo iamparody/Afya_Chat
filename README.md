@@ -1,23 +1,57 @@
 # CDS — Clinical Decision Support
 
-Symptom-driven diagnostic RAG system for East Africa / Kenya primary care. Given a patient presentation, returns candidate diagnoses with differentials, discriminating features, and red flags.
+Symptom-driven diagnostic RAG system for East Africa / Kenya primary care. Given a patient presentation, returns candidate diagnoses with differentials, discriminating features, and red flags — a reasoning aid, not a single-answer lookup.
+
+---
+
+## Current state
+
+| Phase | Description | Status |
+|-------|-------------|--------|
+| 1 | Corpus — 10 condition cards authored | ✅ Done |
+| 2 | Graph extraction + vocabulary normalization | ✅ Done |
+| 3 | Neo4j load — 10 conditions in AuraDB | ✅ Done |
+| 4 | Vector store — Chroma + Cohere embeddings | ✅ Done |
+| 5 | RAG pipeline — graph + vector → Gemini | ✅ Done (7/8 eval) |
+| 5e | Pipeline orchestration — Makefile + GitHub Actions | ✅ Done |
+| 6 | UI — Streamlit MVP | 🟡 In progress |
+| 7 | Corpus v2 — expand to 20+ conditions | 🔴 Planned |
+
+**Eval baseline:** 7/8 cases auto-pass. Case 2b (TB leads for 3-day cough) is a confirmed model reasoning limit, not a retrieval problem.
+
+**Production gate:** All 10 cards remain `draft`. Clinician review required before production ingestion.
 
 ---
 
 ## Stack
 
 ```
-symptoms_dictionary/*.md          ← condition cards (source of truth)
+symptoms_dictionary/*.md      ← condition cards (source of truth)
         │
         ▼
-    ingest.py                     ← dual-output ingestion pipeline
+    ingest.py                 ← dual-output ingestion pipeline
         │
-        ├──► chunks.jsonl         ── prose chunks → Chroma vector store (Phase 4)
+        ├──► chunks.jsonl     ── prose chunks (section-level)
+        │         │
+        │         ▼
+        │    chroma/chroma_loader.py  ── Cohere embed → Chroma vector store
         │
-        └──► graph_entities.jsonl ── structured graph → Neo4j AuraDB (done)
+        └──► graph_entities.jsonl ── normalized graph declarations
+                  │
+                  ▼
+             neo4j/neo4j_loader.py  ── Cypher MERGE → Neo4j AuraDB
+
+Patient presentation
+    → Cohere embed → Chroma (top 6 candidate conditions)
+    → Neo4j (symptom profiles + argues_against per candidate)
+    → Cohere embed → Chroma (top 5 prose passages per candidate)
+    → Gemini gemini-flash-lite (temperature=0, JSON schema enforced)
+    → jsonschema validate → structured differential assessment
 ```
 
-**Retrieval (Phase 5):** Cypher traversal (graph) + semantic search (vector) → LLM synthesis → ranked diagnoses + clinical reasoning.
+**Embedding:** Cohere `embed-multilingual-v3.0`
+**LLM:** Gemini `gemini-flash-lite-latest` (Anthropic Claude fallback)
+**Graph:** Neo4j AuraDB free tier
 
 ---
 
@@ -25,19 +59,61 @@ symptoms_dictionary/*.md          ← condition cards (source of truth)
 
 ```
 cds/
-├── ingest.py                         pipeline — run after any card edit
-├── report_unknowns.py                vocabulary gap analysis tool
+├── Makefile                          pipeline entry point
+├── ingest.py                         dual-output ingestion pipeline
+├── report_unknowns.py                vocabulary gap analysis
+├── requirements.txt
 ├── symptoms_dictionary/
-│   ├── index.md                      condition index (ICD-11 + filenames)
-│   ├── glossary.md                   shared clinical term definitions
+│   ├── index.md                      condition index (ICD-11 + ICD-10 + filenames)
+│   ├── glossary.md                   shared clinical term definitions (24 terms)
 │   ├── symptom_vocabulary.md         canonical symptom/sign/risk term list
 │   ├── conditions_vocabulary.md      canonical condition names (for differentials)
 │   └── *.md                          10 condition cards
-└── neo4j/
-    ├── migrations/001_initial_schema.cypher
-    ├── neo4j_loader.py               loads graph_entities.jsonl → AuraDB
-    └── run_queries.py                dev verification queries
+├── neo4j/
+│   ├── migrations/001_initial_schema.cypher
+│   ├── neo4j_loader.py               loads graph_entities.jsonl → AuraDB
+│   └── run_queries.py                dev verification queries
+├── chroma/
+│   ├── chroma_loader.py              embeds chunks.jsonl → Chroma
+│   ├── retrieval_baseline.md         baseline retrieval results (8 cases)
+│   └── evaluation_contract.md        pass/fail criteria for all 8 eval cases
+├── phase5/
+│   ├── rag.py                        RAG orchestrator (5-step pipeline)
+│   ├── prompts.py                    system prompt + OUTPUT_SCHEMA + build_context()
+│   ├── providers.py                  GeminiProvider + AnthropicProvider
+│   ├── evaluate.py                   8-case evaluation harness
+│   ├── embed_provider.py             CohereEmbedder + PubMedBertEmbedder
+│   ├── bm25_index.py                 BM25 sparse index (--hybrid flag, not default)
+│   └── tests/                        pytest suite (100 tests)
+└── .github/workflows/
+    └── cds_pipeline.yml              CI — triggers on card/pipeline changes
 ```
+
+---
+
+## Running the pipeline
+
+```bash
+# Full pipeline — ingest → load Neo4j → embed → evaluate (gate: ≥ 7/8)
+make pipeline
+
+# Individual stages
+make ingest        # parse cards → chunks.jsonl + graph_entities.jsonl
+make load-neo4j    # load graph_entities.jsonl → Neo4j AuraDB
+make embed         # embed chunks.jsonl → Chroma vector store
+make eval          # run 8-case evaluation harness
+
+# Single query
+python phase5/rag.py "45F, 3 weeks cough, night sweats, weight loss"
+
+# Evaluation — specific cases
+python phase5/evaluate.py 2a 2b
+
+# Vocabulary gap check (after adding new cards)
+python report_unknowns.py
+```
+
+Credentials are loaded from `.env` (local) or environment variables (CI). See `.env.example` if present.
 
 ---
 
@@ -45,10 +121,11 @@ cds/
 
 Each card is a `.md` file with YAML frontmatter and 9 fixed prose sections.
 
-**Frontmatter:**
+**Frontmatter (schema v1.2):**
 ```yaml
 condition:       canonical condition name
 icd11:           WHO ICD-11 code
+icd10:           ICD-10 code
 category:        disease category
 corpus_version:  increment on clinical content change
 schema_version:  increment on frontmatter structure change
@@ -85,21 +162,48 @@ graph:
 
 ---
 
-## Running the pipeline
+## RAG output schema
 
-```bash
-# Regenerate both output files after any card edit
-python ingest.py
+Every query returns a validated JSON object:
 
-# Load graph into Neo4j (requires .env with AuraDB credentials)
-python neo4j/neo4j_loader.py
-
-# Run verification queries
-python neo4j/run_queries.py
-
-# Check vocabulary gaps after adding new cards
-python report_unknowns.py
+```json
+{
+  "leading_candidate": "Malaria (unspecified)",
+  "candidates": [
+    {
+      "diagnosis": "Malaria (unspecified)",
+      "confidence_level": "high",
+      "why_considered": "...",
+      "supporting_features": ["fever", "chills", "Kisumu travel"],
+      "arguing_against": [],
+      "missing_information": ["RDT result", "blood film"]
+    }
+  ],
+  "red_flags": [
+    "Check for — altered consciousness. Not documented in the presentation."
+  ],
+  "relevant_comorbidities_or_context": []
+}
 ```
+
+Confidence levels: `high` / `moderate` / `low`. No numerical probabilities.
+
+---
+
+## Conditions (10 cards, corpus v1.2)
+
+| Condition | ICD-11 | ICD-10 |
+|-----------|--------|--------|
+| Type 2 Diabetes Mellitus | 5A11 | E11 |
+| Essential Hypertension | BA00 | I10 |
+| Obesity | 5B81 | E66 |
+| Malaria (unspecified) | 1F40 | B54 |
+| Pulmonary Tuberculosis | 1B10 | A15 |
+| Community-Acquired Pneumonia | CA40 | J18 |
+| Urinary Tract Infection | GC08 | N39.0 |
+| Iron Deficiency Anaemia | 3A00 | D50 |
+| Peptic Ulcer Disease | DA60 | K27 |
+| Acute Gastroenteritis (Infectious) | 1A09 | A09 |
 
 ---
 
@@ -110,23 +214,10 @@ draft → under_review → clinician_verified
 ```
 
 - `draft` — authored, not reviewed; blocked from production ingestion
+- `under_review` — sent to clinician
 - `clinician_verified` — reviewed and approved; production-ready
 
-**Production gate:** `ingest.py` warns on draft cards. Only `clinician_verified` cards enter production. All 10 current cards are `draft` — dev proceeds freely.
-
----
-
-## Current state
-
-| Phase | Description | Status |
-|-------|-------------|--------|
-| 1 | Corpus — 10 condition cards | ✅ Done |
-| 2 | Graph extraction + vocabulary normalization | ✅ Done |
-| 3 | Neo4j load — 10 conditions in AuraDB | ✅ Done |
-| 4 | Vector store — Chroma + prose chunks | ✅ Done |
-| 5 | Hybrid RAG — graph + vector → LLM | 🟡 In progress |
-| 6 | UI — real-time diagnosis suggestions | 🔴 Planned |
-
-**Corpus:** East Africa / Kenya primary care. Conditions prioritised by burden: malaria, TB, pneumonia, UTI, anaemia, T2DM, hypertension, obesity, PUD, acute gastroenteritis.
+`ingest.py` warns on draft cards. Only `clinician_verified` cards enter production.
 
 **Sources:** WHO guidelines, Kenya MOH, Kenya NLTP, British Thoracic Society, ADA, ISH.
+**Regional orientation:** East Africa / Kenya primary care.
