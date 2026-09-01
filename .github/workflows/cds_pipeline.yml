@@ -6,6 +6,7 @@ on:
       - 'symptoms_dictionary/**'
       - 'ingest.py'
       - 'phase5/**'
+  workflow_dispatch:
 
 jobs:
   pipeline:
