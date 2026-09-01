@@ -1,9 +1,10 @@
 ---
 condition: Acute gastroenteritis (infectious)
 icd11: 1A09
+icd10: A09
 category: gastroenterological / infectious
-corpus_version: "1.1"
-schema_version: "1.1"
+corpus_version: "1.2"
+schema_version: "1.2"
 review_status: draft
 reviewed_by: ""
 last_reviewed: ""

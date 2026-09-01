@@ -237,7 +237,7 @@ Markdown cards → ingest.py → chunks.jsonl → [Chroma vector store, Phase 4]
 > Current eval: **7/8** (Cohere dense-only, Cases 1–6 pass, Case 2b structural limit).
 
 ### Phase 6 — UI
-- [ ] ICD-10 codes added to all 10 condition card frontmatters (currently ICD-11 only) ← **blocker before UI**
+- [x] ICD-10 codes added to all 10 condition card frontmatters — schema_version 1.2, ingest.py updated, index.md updated
 - [ ] Streamlit MVP — one presentation in, one structured report out; candidates as expandable cards with confidence colour-coding, red flags section, missing information list
 - [ ] Clinical documentation output — structured note with ICD-10/11, diagnosis, symptoms, red flags
 - [ ] Post-MVP: evaluate Chainlit if conversational follow-up ("what if patient also has X?") is required; Reflex for production web app deployment
@@ -271,6 +271,9 @@ Markdown cards → ingest.py → chunks.jsonl → [Chroma vector store, Phase 4]
 | 2026-08-26 | `argues_against` as flat edges for v1 | Multi-finding evidence pattern logic deferred to LLM synthesis layer; graph keeps it simple |
 | 2026-08-31 | Makefile + GitHub Actions over Prefect for 5e | Pipeline is linear, deterministic, single-environment; only growth is more cards (not more stages); Prefect deferred to Phase 6 if scheduled/cloud/multi-branch needed |
 | 2026-08-31 | Streamlit for Phase 6 UI MVP | Team already has it deployed (Ortho, Gates Malaria); CDS is one-in one-out (not chat); Chainlit if conversational follow-up added; Reflex at production |
+| 2026-09-01 | Case 2b closed — 7/8 is the Phase 5 ceiling | Three retrieval approaches exhausted (PubMedBERT, BM25, prompt strengthening); model documents TB counter-evidence but overrides ranking rule; further prompt/CoT work not justified at MVP stage |
+| 2026-09-01 | Management corpus — unified index with content_type metadata | Separate index doubles infrastructure without benefit at MVP scale; metadata filter (content_type: clinical \| management) gives clean retrieval separation; no routing layer required in Streamlit MVP |
+| 2026-09-01 | ICD-10 codes — add to all 10 frontmatters now (before 5e) | Low-cost structured metadata; avoids carrying known incompleteness into Phase 6; unblocks UI build when Phase 5e is done |
 
 ---
 
@@ -278,8 +281,9 @@ Markdown cards → ingest.py → chunks.jsonl → [Chroma vector store, Phase 4]
 
 - [x] Neo4j hosting → AuraDB free tier (resolved)
 - [x] Embedding model → Cohere `embed-multilingual-v3.0` (resolved)
-- [x] ICD-10 codes — defer to Phase 6 (blocker before UI build, not before orchestration)
+- [x] ICD-10 codes — add now before Phase 5e (decided 2026-09-01); doing before orchestration so Phase 6 is unblocked immediately after 5e
 - [x] RAG output format — structured JSON confirmed (required for Streamlit card rendering)
 - [x] UI library — Streamlit MVP confirmed; Chainlit/Reflex path documented
 - [x] Orchestrator — Makefile + GitHub Actions confirmed; Prefect deferred
-- [ ] Management corpus — separate RAG index or unified with diagnostic corpus?
+- [x] Management corpus — unified index with content_type metadata (clinical/management); no separate index, no routing layer at MVP (resolved 2026-09-01)
+- [ ] Clinician reviewer — name a reviewer + set a deadline for Phase 2 production gate; process blocker, not technical; all 10 cards remain draft

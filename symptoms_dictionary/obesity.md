@@ -1,9 +1,10 @@
 ---
 condition: Obesity
 icd11: 5B81
+icd10: E66
 category: metabolic
-corpus_version: "1.1"
-schema_version: "1.1"
+corpus_version: "1.2"
+schema_version: "1.2"
 review_status: draft
 reviewed_by: ""
 last_reviewed: ""

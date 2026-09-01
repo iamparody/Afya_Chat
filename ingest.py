@@ -117,6 +117,7 @@ def build_base_metadata(meta):
     return {
         "condition":      meta.get("condition"),
         "icd11":          meta.get("icd11"),
+        "icd10":          meta.get("icd10"),
         "category":       meta.get("category"),
         "corpus_version": meta.get("corpus_version"),
         "schema_version": meta.get("schema_version"),
