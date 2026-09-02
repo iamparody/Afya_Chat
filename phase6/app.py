@@ -254,6 +254,8 @@ def _do_approval(result: dict, clinician_diag: str, clinician_icd10: str | None)
     system_diag       = result.get("leading_candidate", "")
     system_icd11, system_icd10 = _get_icd(system_diag)
 
+    clinician_icd11, _ = _get_icd(clinician_diag)
+
     try:
         encounter_id, approved_at = db.write_encounter(
             session_id          = st.session_state.session_id,
@@ -264,6 +266,7 @@ def _do_approval(result: dict, clinician_diag: str, clinician_icd10: str | None)
             system_icd10        = system_icd10,
             clinician_diagnosis = clinician_diag,
             clinician_icd10     = clinician_icd10,
+            clinician_icd11     = clinician_icd11,
         )
     except Exception as e:
         logging.error("Approval write failed: %s", e)

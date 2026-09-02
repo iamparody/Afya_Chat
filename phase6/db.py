@@ -23,6 +23,20 @@ DB_PATH = Path(__file__).parent / "cds.db"
 
 VALID_CONFIDENCE = {"high", "moderate", "low"}
 
+# Corpus-controlled category lookup — keyed by lowercase condition name.
+_CATEGORY: dict[str, str] = {
+    "type 2 diabetes mellitus":           "endocrine / metabolic",
+    "essential hypertension":             "cardiovascular",
+    "obesity":                            "metabolic",
+    "malaria (unspecified)":              "infectious",
+    "pulmonary tuberculosis":             "infectious / respiratory",
+    "community-acquired pneumonia":       "respiratory / infectious",
+    "urinary tract infection":            "urogenital / infectious",
+    "iron deficiency anaemia":            "haematological",
+    "peptic ulcer disease":               "gastroenterological",
+    "acute gastroenteritis (infectious)": "gastroenterological / infectious",
+}
+
 
 def _connect() -> sqlite3.Connection:
     conn = sqlite3.connect(DB_PATH)
@@ -46,37 +60,45 @@ def init_db() -> None:
     with _connect() as conn:
         conn.execute("""
             CREATE TABLE IF NOT EXISTS encounters (
-                encounter_id         TEXT PRIMARY KEY,
-                session_id           TEXT NOT NULL,
-                analysed_at          TEXT NOT NULL,
-                presentation         TEXT NOT NULL,
+                encounter_id                 TEXT PRIMARY KEY,
+                session_id                   TEXT NOT NULL,
+                analysed_at                  TEXT NOT NULL,
+                presentation                 TEXT NOT NULL,
 
-                system_diagnosis     TEXT NOT NULL,
-                system_confidence    TEXT NOT NULL
-                                     CHECK(system_confidence IN ('high', 'moderate', 'low')),
-                system_icd10         TEXT,
-                system_icd11         TEXT,
+                system_diagnosis             TEXT NOT NULL,
+                system_confidence            TEXT NOT NULL
+                                             CHECK(system_confidence IN ('high', 'moderate', 'low')),
+                system_icd10                 TEXT,
+                system_icd11                 TEXT,
+                system_category              TEXT,
 
-                supporting_symptoms  TEXT,
-                arguing_against      TEXT,
-                red_flags            TEXT,
-                comorbidities        TEXT,
+                supporting_symptoms          TEXT,
+                arguing_against              TEXT,
+                red_flags                    TEXT,
+                comorbidities                TEXT,
 
-                system_output        TEXT NOT NULL,
+                system_output                TEXT NOT NULL,
 
-                clinician_diagnosis  TEXT NOT NULL,
-                clinician_icd10      TEXT,
+                clinician_diagnosis          TEXT NOT NULL,
+                clinician_icd10              TEXT,
+                clinician_icd11              TEXT,
 
-                approved_at          TEXT NOT NULL,
-                approved_by          TEXT
+                system_clinician_agreement   INTEGER NOT NULL DEFAULT 0
+                                             CHECK(system_clinician_agreement IN (0, 1)),
+
+                approved_at                  TEXT NOT NULL,
+                approved_by                  TEXT
             )
         """)
 
-        # Migration: add structured columns to any existing table from prior schema
-        _add_column_if_missing(conn, "encounters", "supporting_symptoms", "TEXT")
-        _add_column_if_missing(conn, "encounters", "arguing_against",     "TEXT")
-        _add_column_if_missing(conn, "encounters", "red_flags",           "TEXT")
-        _add_column_if_missing(conn, "encounters", "comorbidities",       "TEXT")
+        # Migration: add columns for installs from prior schema versions
+        _add_column_if_missing(conn, "encounters", "supporting_symptoms",        "TEXT")
+        _add_column_if_missing(conn, "encounters", "arguing_against",            "TEXT")
+        _add_column_if_missing(conn, "encounters", "red_flags",                  "TEXT")
+        _add_column_if_missing(conn, "encounters", "comorbidities",              "TEXT")
+        _add_column_if_missing(conn, "encounters", "system_category",            "TEXT")
+        _add_column_if_missing(conn, "encounters", "clinician_icd11",            "TEXT")
+        _add_column_if_missing(conn, "encounters", "system_clinician_agreement", "INTEGER NOT NULL DEFAULT 0")
 
 
 def _extract_structured(system_output: dict) -> dict:
@@ -108,6 +130,7 @@ def write_encounter(
     system_icd10: str | None,
     clinician_diagnosis: str,
     clinician_icd10: str | None,
+    clinician_icd11: str | None = None,
     approved_by: str | None = None,
 ) -> tuple[str, str]:
     """
@@ -128,47 +151,54 @@ def write_encounter(
             f"must be one of {VALID_CONFIDENCE}"
         )
 
-    structured   = _extract_structured(system_output)
-    encounter_id = str(uuid.uuid4())
-    approved_at  = datetime.now(timezone.utc).isoformat()
+    system_category = _CATEGORY.get(system_diag.lower().strip())
+    agreement       = 1 if system_diag.lower().strip() == clinician_diagnosis.lower().strip() else 0
+    structured      = _extract_structured(system_output)
+    encounter_id    = str(uuid.uuid4())
+    approved_at     = datetime.now(timezone.utc).isoformat()
 
     with _connect() as conn:
         conn.execute(
             """
             INSERT INTO encounters (
                 encounter_id, session_id, analysed_at, presentation,
-                system_diagnosis, system_confidence, system_icd10, system_icd11,
+                system_diagnosis, system_confidence, system_icd10, system_icd11, system_category,
                 supporting_symptoms, arguing_against, red_flags, comorbidities,
                 system_output,
-                clinician_diagnosis, clinician_icd10,
+                clinician_diagnosis, clinician_icd10, clinician_icd11,
+                system_clinician_agreement,
                 approved_at, approved_by
             ) VALUES (
                 :encounter_id, :session_id, :analysed_at, :presentation,
-                :system_diagnosis, :system_confidence, :system_icd10, :system_icd11,
+                :system_diagnosis, :system_confidence, :system_icd10, :system_icd11, :system_category,
                 :supporting_symptoms, :arguing_against, :red_flags, :comorbidities,
                 :system_output,
-                :clinician_diagnosis, :clinician_icd10,
+                :clinician_diagnosis, :clinician_icd10, :clinician_icd11,
+                :system_clinician_agreement,
                 :approved_at, :approved_by
             )
             """,
             {
-                "encounter_id":        encounter_id,
-                "session_id":          session_id,
-                "analysed_at":         analysed_at,
-                "presentation":        presentation,
-                "system_diagnosis":    system_diag,
-                "system_confidence":   system_conf,
-                "system_icd10":        system_icd10,
-                "system_icd11":        system_icd11,
-                "supporting_symptoms": json.dumps(structured["supporting_symptoms"], ensure_ascii=False),
-                "arguing_against":     json.dumps(structured["arguing_against"],     ensure_ascii=False),
-                "red_flags":           json.dumps(structured["red_flags"],           ensure_ascii=False),
-                "comorbidities":       json.dumps(structured["comorbidities"],       ensure_ascii=False),
-                "system_output":       json.dumps(system_output,                     ensure_ascii=False),
-                "clinician_diagnosis": clinician_diagnosis,
-                "clinician_icd10":     clinician_icd10,
-                "approved_at":         approved_at,
-                "approved_by":         approved_by,
+                "encounter_id":               encounter_id,
+                "session_id":                 session_id,
+                "analysed_at":                analysed_at,
+                "presentation":               presentation,
+                "system_diagnosis":           system_diag,
+                "system_confidence":          system_conf,
+                "system_icd10":               system_icd10,
+                "system_icd11":               system_icd11,
+                "system_category":            system_category,
+                "supporting_symptoms":        json.dumps(structured["supporting_symptoms"], ensure_ascii=False),
+                "arguing_against":            json.dumps(structured["arguing_against"],     ensure_ascii=False),
+                "red_flags":                  json.dumps(structured["red_flags"],           ensure_ascii=False),
+                "comorbidities":              json.dumps(structured["comorbidities"],       ensure_ascii=False),
+                "system_output":              json.dumps(system_output,                     ensure_ascii=False),
+                "clinician_diagnosis":        clinician_diagnosis,
+                "clinician_icd10":            clinician_icd10,
+                "clinician_icd11":            clinician_icd11,
+                "system_clinician_agreement": agreement,
+                "approved_at":                approved_at,
+                "approved_by":                approved_by,
             },
         )
 
