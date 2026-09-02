@@ -8,6 +8,7 @@ Adding a new provider: subclass LLMProvider, implement generate().
 """
 
 import os
+import time
 from abc import ABC, abstractmethod
 
 
@@ -30,18 +31,27 @@ class GeminiProvider(LLMProvider):
         self._schema = schema
 
     def generate(self, system_prompt: str, context: str) -> str:
+        from google.genai.errors import ServerError
         config = self._types.GenerateContentConfig(
             system_instruction=system_prompt,
             response_mime_type="application/json",
             response_schema=self._schema,
             temperature=0.0,
         )
-        response = self._client.models.generate_content(
-            model=self._model,
-            contents=context,
-            config=config,
-        )
-        return response.text
+        delays = [15, 30, 60, 120]
+        for attempt, delay in enumerate(delays, start=1):
+            try:
+                response = self._client.models.generate_content(
+                    model=self._model,
+                    contents=context,
+                    config=config,
+                )
+                return response.text
+            except ServerError as e:
+                if e.status_code != 503 or attempt == len(delays):
+                    raise
+                print(f"Gemini 503 — attempt {attempt}/{len(delays)}, retrying in {delay}s...", flush=True)
+                time.sleep(delay)
 
 
 class AnthropicProvider(LLMProvider):
