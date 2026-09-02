@@ -15,6 +15,9 @@ unknown_terms_report.md
 # Chroma local vector store
 chroma/db/
 
+# CDS approval database — local SQLite, not source-controlled
+phase6/cds.db
+
 # Python
 __pycache__/
 *.pyc
