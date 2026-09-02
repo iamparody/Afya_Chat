@@ -3,7 +3,7 @@ condition: Urinary tract infection
 icd11: GC08
 icd10: N39.0
 category: urogenital / infectious
-corpus_version: "1.2"
+corpus_version: "1.3"
 schema_version: "1.2"
 review_status: draft
 reviewed_by: ""
@@ -23,7 +23,7 @@ graph:
   associated_symptoms: [haematuria, cloudy urine, offensive-smelling urine, rigors, nausea, vomiting, confusion]
   risk_factors: [female sex, sexual intercourse, urinary catheter, urinary tract structural abnormality, urinary stones, diabetes mellitus, pregnancy, immunocompromise, HIV infection]
   differentials: [chlamydia urethritis, gonorrhoea urethritis, vaginitis, bladder stone, overactive bladder syndrome, prostatitis]
-  argues_against: [negative nitrite and negative leukocyte esterase on dipstick, sterile pyuria, external dysuria with vaginal discharge, normal urinalysis and negative culture]
+  argues_against: [negative nitrite and negative leukocyte esterase on dipstick, sterile pyuria, external dysuria with vaginal discharge, normal urinalysis and negative culture, male sex without catheter or structural abnormality]
   red_flags: [urosepsis, hypotension with UTI, altered consciousness with UTI, pyelonephritis in pregnancy, UTI in man under 50 without precipitating factor, macroscopic haematuria without infective symptoms]
   confirms: [positive urine dipstick nitrites and leukocyte esterase, pyuria on microscopy, MSU culture ≥10⁵ CFU/mL, costovertebral angle tenderness with fever]
 ---
@@ -44,7 +44,7 @@ A urinary tract infection (UTI) is a microbial invasion of any part of the urina
 
 **Important differential diagnoses:** Urethritis due to sexually transmitted infections — chlamydia (Chlamydia trachomatis) or gonorrhoea (Neisseria gonorrhoeae) — produces dysuria and urethral discharge or vaginal discharge; it should be considered in sexually active young adults, especially when dipstick is negative or does not explain symptoms. Vaginitis (bacterial vaginosis, candidiasis, trichomoniasis) causes external dysuria from vulval irritation and vaginal discharge; symptoms are worsened by urination over an inflamed vulva rather than internal burning. Bladder and urethral stones cause dysuria and haematuria without infective features; pain may be positional. Overactive bladder syndrome produces urgency and frequency without dysuria or infective markers. Prostatitis in men causes perineal and lower back pain alongside lower urinary tract symptoms; the prostate is tender on digital rectal examination.
 
-**Features that argue against this diagnosis:** Negative nitrite and negative leukocyte esterase on urine dipstick has a high negative predictive value for UTI in a symptomatic woman — both negative together makes bacterial UTI unlikely. Sterile pyuria — white cells present but no bacterial growth on culture — argues against a standard bacterial UTI and raises the possibility of urethritis from STI, renal TB, or interstitial nephritis. External dysuria described as burning over the vulval skin on contact with urine, accompanied by vaginal discharge or itch, is more consistent with vaginitis than cystitis; internal dysuria with urethral burning is the more specific symptom of cystitis. Normal urinalysis and negative culture in a symptomatic patient should prompt consideration of overactive bladder, vulvodynia, or pelvic floor dysfunction.
+**Features that argue against this diagnosis:** Negative nitrite and negative leukocyte esterase on urine dipstick has a high negative predictive value for UTI in a symptomatic woman — both negative together makes bacterial UTI unlikely. Sterile pyuria — white cells present but no bacterial growth on culture — argues against a standard bacterial UTI and raises the possibility of urethritis from STI, renal TB, or interstitial nephritis. External dysuria described as burning over the vulval skin on contact with urine, accompanied by vaginal discharge or itch, is more consistent with vaginitis than cystitis; internal dysuria with urethral burning is the more specific symptom of cystitis. Normal urinalysis and negative culture in a symptomatic patient should prompt consideration of overactive bladder, vulvodynia, or pelvic floor dysfunction. Male sex without a urinary catheter, recent urological procedure, or documented structural abnormality argues against uncomplicated lower UTI — UTI in a man under 50 without a precipitating factor is atypical and should prompt consideration of prostatitis, epididymo-orchitis, or urological investigation rather than simple cystitis.
 
 **Red flags:** Signs of urosepsis — fever with tachycardia, hypotension, or altered consciousness in the context of a UTI — represent a medical emergency requiring immediate parenteral antibiotics, fluid resuscitation, and intensive monitoring. Pyelonephritis in pregnancy carries a high risk of preterm labour and requires inpatient intravenous antibiotic treatment. UTI in a man under 50 without a clear precipitating factor (e.g. catheter) requires urological investigation to exclude structural pathology. Recurrent UTI in a woman — three or more episodes per year — warrants midstream urine culture confirmation, assessment for modifiable risk factors, and consideration of cystoscopy to exclude intravesical pathology. Macroscopic haematuria without infective symptoms requires cystoscopy to exclude bladder malignancy.
 

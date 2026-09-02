@@ -14,8 +14,10 @@ Symptom-driven diagnostic RAG system for East Africa / Kenya primary care. Given
 | 4 | Vector store — Chroma + Cohere embeddings | ✅ Done |
 | 5 | RAG pipeline — graph + vector → Gemini | ✅ Done (7/8 eval) |
 | 5e | Pipeline orchestration — Makefile + GitHub Actions | ✅ Done |
-| 6 | UI — Streamlit MVP | 🟡 In progress |
+| 6 | UI — Streamlit MVP | ✅ Done |
+| 6b | UI improvement + approval → database write | 🟡 In progress |
 | 7 | Corpus v2 — expand to 20+ conditions | 🔴 Planned |
+| ∞ | Longitudinal inference — patient history + second assessment | 🔴 Planned (Afya Chat 2.0) |
 
 **Eval baseline:** 7/8 cases auto-pass. Case 2b (TB leads for 3-day cough) is a confirmed model reasoning limit, not a retrieval problem.
 
