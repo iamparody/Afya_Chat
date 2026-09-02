@@ -26,8 +26,10 @@ load_dotenv(ROOT / ".env")
 
 from cds_theme import apply_theme, section_header, page_header, COLORS
 import rag
+import db
 
 apply_theme()
+db.init_db()
 
 
 # ── Constants ─────────────────────────────────────────────────────────────────
@@ -58,13 +60,16 @@ CONF_COLOR = {
 
 def _init_session_state():
     defaults = {
-        "session_id":     str(uuid.uuid4()),
-        "result":         None,       # dict — current validated RAG output
-        "analysed_at":    None,       # ISO str — timestamp of last analysis
-        "approval_state": None,       # None | "approved"
-        "clinician_diag": "",         # editable diagnosis (pre-filled from system)
-        "history":        [],         # list of session encounter summaries
-        "input_key":      0,          # increment to force text_area clear
+        "session_id":       str(uuid.uuid4()),
+        "result":           None,
+        "analysed_at":      None,
+        "presentation_text": "",
+        "approval_state":   None,   # None | "approved"
+        "approved_at":      None,
+        "encounter_id":     None,
+        "clinician_diag":   "",
+        "history":          [],
+        "input_key":        0,
     }
     for k, v in defaults.items():
         if k not in st.session_state:
@@ -72,18 +77,19 @@ def _init_session_state():
 
 
 def _clear_all():
-    """Reset input and result state for a new assessment."""
-    st.session_state.input_key    += 1
-    st.session_state.result        = None
-    st.session_state.analysed_at   = None
-    st.session_state.approval_state = None
-    st.session_state.clinician_diag = ""
+    st.session_state.input_key        += 1
+    st.session_state.result            = None
+    st.session_state.analysed_at       = None
+    st.session_state.presentation_text = ""
+    st.session_state.approval_state    = None
+    st.session_state.approved_at       = None
+    st.session_state.encounter_id      = None
+    st.session_state.clinician_diag    = ""
 
 
 # ── Validation ────────────────────────────────────────────────────────────────
 
 def _assert_confidence(result: dict):
-    """Enforce confidence_level values at application boundary before any storage."""
     for c in result.get("candidates", []):
         conf = c.get("confidence_level", "")
         if conf not in VALID_CONFIDENCE:
@@ -94,8 +100,8 @@ def _assert_confidence(result: dict):
 
 # ── ICD lookup ────────────────────────────────────────────────────────────────
 
-def _get_icd(name):
-    return _ICD.get(name.lower(), (None, None))
+def _get_icd(name: str) -> tuple:
+    return _ICD.get(name.lower().strip(), (None, None))
 
 
 # ── Rendering helpers ─────────────────────────────────────────────────────────
@@ -242,6 +248,132 @@ def _render_result(result):
             )
 
 
+# ── Approval ──────────────────────────────────────────────────────────────────
+
+def _do_approval(result: dict, clinician_diag: str, clinician_icd10: str | None):
+    system_diag       = result.get("leading_candidate", "")
+    system_icd11, system_icd10 = _get_icd(system_diag)
+
+    try:
+        encounter_id, approved_at = db.write_encounter(
+            session_id          = st.session_state.session_id,
+            analysed_at         = st.session_state.analysed_at,
+            presentation        = st.session_state.presentation_text,
+            system_output       = result,
+            system_icd11        = system_icd11,
+            system_icd10        = system_icd10,
+            clinician_diagnosis = clinician_diag,
+            clinician_icd10     = clinician_icd10,
+        )
+    except Exception as e:
+        logging.error("Approval write failed: %s", e)
+        st.error("Could not save the approval record — please try again.")
+        return
+
+    st.session_state.approval_state = "approved"
+    st.session_state.approved_at    = approved_at
+    st.session_state.encounter_id   = encounter_id
+    st.session_state.clinician_diag = clinician_diag
+
+    st.session_state.history.append({
+        "snippet":             st.session_state.presentation_text[:60]
+                               + ("…" if len(st.session_state.presentation_text) > 60 else ""),
+        "system_diagnosis":    system_diag,
+        "clinician_diagnosis": clinician_diag,
+        "approved_at":         approved_at,
+    })
+
+    st.rerun()
+
+
+def _render_approval(result: dict):
+    st.markdown(
+        '<div style="border-top:1px solid #EBF3FB;margin:32px 0 24px"></div>',
+        unsafe_allow_html=True,
+    )
+
+    if st.session_state.approval_state == "approved":
+        _render_approval_confirmed()
+        return
+
+    section_header("Approval")
+
+    # System assessment — read-only
+    system_diag = result.get("leading_candidate", "")
+    system_conf = next(
+        (c["confidence_level"] for c in result.get("candidates", [])
+         if c["diagnosis"] == system_diag),
+        "",
+    )
+    st.markdown(
+        f'<div style="display:flex;align-items:baseline;gap:16px;margin-bottom:20px">'
+        f'<div style="font-size:10px;font-weight:700;color:#9BAEC8;text-transform:uppercase;'
+        f'letter-spacing:1.5px;width:140px;flex-shrink:0">System assessment</div>'
+        f'<div style="font-size:13px;color:#6B8CAE">{system_diag}'
+        f'<span style="font-size:11px;margin-left:8px">· {system_conf}</span></div>'
+        f'</div>',
+        unsafe_allow_html=True,
+    )
+
+    # Editable diagnosis
+    st.markdown(
+        '<div style="font-size:10px;font-weight:700;color:#003467;text-transform:uppercase;'
+        'letter-spacing:1.5px;margin-bottom:6px">Approved diagnosis</div>',
+        unsafe_allow_html=True,
+    )
+    clinician_input = st.text_input(
+        "Approved diagnosis",
+        value=st.session_state.clinician_diag,
+        label_visibility="collapsed",
+    )
+
+    # ICD-10 preview — resolves live from input
+    _, icd10_preview = _get_icd(clinician_input)
+    if icd10_preview:
+        st.markdown(
+            f'<div style="font-size:11px;color:#9BAEC8;margin-top:4px;margin-bottom:20px">'
+            f'ICD-10 &nbsp; {icd10_preview}</div>',
+            unsafe_allow_html=True,
+        )
+    else:
+        st.markdown('<div style="margin-bottom:20px"></div>', unsafe_allow_html=True)
+
+    col_approve, _ = st.columns([2, 4])
+    with col_approve:
+        if st.button("Approve assessment", use_container_width=True, type="primary"):
+            if not clinician_input.strip():
+                st.warning("Enter a diagnosis before approving.")
+            else:
+                _, icd10_final = _get_icd(clinician_input)
+                _do_approval(result, clinician_input.strip(), icd10_final)
+
+
+def _render_approval_confirmed():
+    try:
+        dt       = datetime.fromisoformat(st.session_state.approved_at)
+        time_str = dt.strftime("%H:%M")
+    except Exception:
+        time_str = ""
+
+    clinician_diag = st.session_state.clinician_diag
+
+    st.markdown(
+        f'<div style="display:flex;align-items:center;gap:14px;padding:20px 0">'
+        f'<span style="color:{COLORS["success"]};font-size:18px;font-weight:700">✓</span>'
+        f'<div>'
+        f'<div style="font-size:14px;font-weight:700;color:#003467">{clinician_diag}</div>'
+        f'<div style="font-size:11px;color:#9BAEC8;margin-top:2px">'
+        f'Clinician approved · {time_str}</div>'
+        f'</div>'
+        f'</div>',
+        unsafe_allow_html=True,
+    )
+
+    if st.button("New assessment →"):
+        _clear_all()
+        st.rerun()
+
+
 # ── Sidebar ───────────────────────────────────────────────────────────────────
 
 _init_session_state()
@@ -333,12 +465,15 @@ if analyse:
             st.error("Service temporarily unavailable. Please try again in a moment.")
             st.stop()
 
-    st.session_state.result         = result
-    st.session_state.analysed_at    = datetime.now(timezone.utc).isoformat()
-    st.session_state.approval_state = None
-    st.session_state.clinician_diag = result.get("leading_candidate", "")
+    st.session_state.result           = result
+    st.session_state.analysed_at      = datetime.now(timezone.utc).isoformat()
+    st.session_state.presentation_text = presentation.strip()
+    st.session_state.approval_state   = None
+    st.session_state.approved_at      = None
+    st.session_state.encounter_id     = None
+    st.session_state.clinician_diag   = result.get("leading_candidate", "")
     st.rerun()
 
 if st.session_state.result is not None:
     _render_result(st.session_state.result)
-    # Approval workflow rendered here in step 3
+    _render_approval(st.session_state.result)
