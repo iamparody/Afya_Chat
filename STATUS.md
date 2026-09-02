@@ -6,6 +6,54 @@
 
 ---
 
+## Session Handoff — 2026-09-02 (Phase 6 complete + prompt fixes + CI hardening)
+
+> **For the agent picking up after a compact or new session — read this first.**
+
+### What this session accomplished
+
+**Phase 6 — Streamlit MVP: COMPLETE, TESTED, COMMITTED**
+- `phase6/cds_theme.py` — palette (COLORS), CSS (Montserrat), `apply_theme`, `section_header`, `page_header`, `info_card`, `dq_note`, `kpi_card` — extracted from LREB dashboard theme
+- `phase6/app.py` — full Streamlit MVP: red flags above candidate cards (safety-first), leading candidate expanded (navy border, ICD codes), differential in collapsed expanders, relevant context section
+- Tested against 8 real-world Kenya primary care cases — all correct leading diagnoses; red flags render correctly; ICD-11 + ICD-10 on leading candidate
+- Run: `streamlit run phase6/app.py` from `cds/` root
+
+**Prompt fixes (phase5/prompts.py):**
+- FOUR RULES → FIVE RULES heading (model was counting rules; mismatch caused instruction confusion)
+- Rule 4 extension — `missing_information` items must be demographically appropriate (no vaginal findings for male patients)
+- Rule 5 (new) — confirmed prior comorbidities ("known [condition]", "on [medication] for") go to `relevant_comorbidities_or_context`, not `candidates[]`; current presenting findings always stay in `candidates[]`
+
+**CI hardening:**
+- Gemini 503 retry moved to Python level (`providers.py`) — retries the single API call (15s/30s/60s/120s backoff) rather than restarting the full 8-case eval suite
+- CI bash loop increased to 5 attempts, exponential backoff — last-resort safety net only
+- Eval result post-fixes: **7/8** — all prompt regressions resolved; Case 2b remains confirmed ceiling
+
+**UTI corpus fix:**
+- Added `male sex without catheter or structural abnormality` to `graph.argues_against` in `uti.md`
+- Added corresponding prose to "Features that argue against this diagnosis" section
+- corpus_version: 1.2 → 1.3
+
+### Current state
+- Phase 6 Streamlit MVP: **complete and committed**
+- Eval: **7/8** (unchanged ceiling, Case 2b structural limit)
+- CI: green — 5-attempt retry, provider-level 503 handling
+- All 10 condition cards: draft (clinician review pending)
+
+### Pick up here
+**Phase 6 is complete as MVP.** Next work:
+1. **Phase 6b — UI improvement** (user-directed; discuss what "better" means before building)
+2. **Approval + database schema** — when clinician approves, write structured record (diagnosis, ICD-10, symptoms, age/sex, timestamp) to database; see Decisions Log for design principles
+3. **Phase 7 — Corpus v2** (8 new condition cards: asthma, COPD, heart failure, HIV, typhoid, sickle cell, PID, malaria-in-pregnancy)
+
+### Key files (current)
+- `phase6/app.py` — Streamlit UI entry point
+- `phase6/cds_theme.py` — design system
+- `phase5/prompts.py` — FIVE RULES, Rule 5 (comorbidities), Rule 4 extension (demographics)
+- `phase5/providers.py` — GeminiProvider with inline 503 retry
+- `.github/workflows/cds_pipeline.yml` — 5-attempt exponential backoff CI
+
+---
+
 ## Session Handoff — 2026-08-31 (Phase 5c + Case 2b prompt fix — both rejected; 7/8 is ceiling)
 
 > **For the agent picking up after a compact or new session — read this first.**
@@ -236,11 +284,16 @@ Markdown cards → ingest.py → chunks.jsonl → [Chroma vector store, Phase 4]
 > Gate: each step requires pytest green + eval ≥ 7/8 before proceeding to the next.
 > Current eval: **7/8** (Cohere dense-only, Cases 1–6 pass, Case 2b structural limit).
 
-### Phase 6 — UI ← **current phase**
+### Phase 6 — UI ✅
 - [x] ICD-10 codes added to all 10 condition card frontmatters — schema_version 1.2, ingest.py updated, index.md updated
-- [ ] Streamlit MVP — one presentation in, one structured report out; candidates as expandable cards with confidence colour-coding, red flags section, missing information list
-- [ ] Clinical documentation output — structured note with ICD-10/11, diagnosis, symptoms, red flags
-- [ ] Post-MVP: evaluate Chainlit if conversational follow-up ("what if patient also has X?") is required; Reflex for production web app deployment
+- [x] Streamlit MVP — red flags above cards (safety-first), leading candidate expanded (ICD-11 + ICD-10, navy border), differential in collapsed expanders, relevant context section
+- [x] Tested against 8 real-world Kenya primary care cases — all correct; red flags render correctly
+- [x] Prompt Rule 5 — confirmed prior comorbidities route to context, not differential
+- [x] Prompt Rule 4 extension — missing_information demographically appropriate
+- [x] Provider-level Gemini 503 retry — individual call retry, not full eval restart
+- [ ] Phase 6b — UI improvement (to be specified; run: `streamlit run phase6/app.py`)
+- [ ] Approval + database — clinician approves → write structured record (diagnosis, ICD-10, symptoms, age/sex, timestamp) to database; schema TBD
+- [ ] Post-MVP: evaluate Chainlit if conversational follow-up required; Reflex for production
   - UI path confirmed: **Streamlit MVP → Chainlit (if conversational) → Reflex (production)**
 
 ### Phase 7 — Corpus v2
