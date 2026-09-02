@@ -6,6 +6,40 @@
 
 ---
 
+## Session Handoff — 2026-09-02 (Phase 6b steps 2–3 + schema + analyst fields)
+
+> **For the agent picking up after a compact or new session — read this first.**
+
+### What this session accomplished
+
+**Phase 6b — Approval workflow: steps 2 and 3 complete**
+
+- **Step 2 — Session-state scaffolding:** `_init_session_state()`, `_assert_confidence()`, `_clear_all()`, clearable text area via `input_key` increment, Clear button beside Analyse (visible only when result exists), architecture panel removed from sidebar
+- **Step 3 — Approval workflow + SQLite:** `phase6/db.py` created — `init_db()`, `write_encounter()`, `_extract_structured()`, column migration via `_add_column_if_missing()`; approval section in app.py: system assessment (read-only) → editable clinician diagnosis → live ICD-10 preview → Approve button → post-approval confirmation + "New assessment →"
+- **DB schema lock:** encounters table with all fields; structured corpus-controlled arrays (`supporting_symptoms`, `arguing_against`, `red_flags`, `comorbidities`) stored as JSON from RAG output — not free text; `phase6/cds.db` gitignored
+- **Analyst fields:** three new columns added via migration — `system_category` (corpus-controlled disease category), `clinician_icd11` (ICD-11 for clinician diagnosis), `system_clinician_agreement` (1=agree, 0=override); all queryable without text cleaning; `json_each()` works on array fields
+- **UTI corpus fix in progress:** `graph.argues_against` simplified from `male sex without catheter or structural abnormality` → `male sex`; corpus_version 1.3 → 1.4; ingest + Neo4j reload still needed before testing
+
+### Current state
+- Phase 6b: steps 2–3 complete; step 4 (CSS) and step 5 (history sidebar) pending
+- UTI argues_against fix: corpus change committed, pipeline reload pending
+- DB: 2 test records (both UTI), all analyst fields backfilled
+- Eval: **7/8** (unchanged)
+
+### Pick up here
+1. **UTI corpus fix** — run `make ingest && python neo4j/neo4j_loader.py`, then test with male UTI case; confirm "male sex" appears in arguing_against
+2. **Step 4 — CSS cleanup** — strip dashboard aesthetic from `cds_theme.py` and `app.py`; colour only for clinical meaning
+3. **Step 5 — Session history sidebar** — approved encounters from `st.session_state.history`; patient snippet + diagnosis + agreement indicator + time
+4. **Phase 7** — 8 new condition cards after Phase 6b is complete
+
+### Key files (current)
+- `phase6/app.py` — UI entry point (steps 2+3 built)
+- `phase6/db.py` — SQLite persistence, encounters schema, `write_encounter()`
+- `phase6/cds_theme.py` — design system (CSS cleanup step 4 targets this)
+- `symptoms_dictionary/uti.md` — corpus_version 1.4, simplified argues_against
+
+---
+
 ## Session Handoff — 2026-09-02 (Phase 6 complete + prompt fixes + CI hardening)
 
 > **For the agent picking up after a compact or new session — read this first.**
@@ -291,10 +325,22 @@ Markdown cards → ingest.py → chunks.jsonl → [Chroma vector store, Phase 4]
 - [x] Prompt Rule 5 — confirmed prior comorbidities route to context, not differential
 - [x] Prompt Rule 4 extension — missing_information demographically appropriate
 - [x] Provider-level Gemini 503 retry — individual call retry, not full eval restart
-- [ ] Phase 6b — UI improvement (to be specified; run: `streamlit run phase6/app.py`)
-- [ ] Approval + database — clinician approves → write structured record (diagnosis, ICD-10, symptoms, age/sex, timestamp) to database; schema TBD
+- [x] Phase 6b — UI improvement — steps 2+3 complete (session state, approval, SQLite)
+- [x] Approval + database — encounters table locked; structured corpus-controlled fields; analyst-ready schema
 - [ ] Post-MVP: evaluate Chainlit if conversational follow-up required; Reflex for production
   - UI path confirmed: **Streamlit MVP → Chainlit (if conversational) → Reflex (production)**
+
+### Phase 6b — UI Improvement + Approval Database
+
+- [x] Step 2 — Session-state scaffolding (`_init_session_state`, `_clear_all`, `input_key` clear trick, `_assert_confidence`)
+- [x] Step 3 — Approval workflow (system read-only panel, editable diagnosis, live ICD-10 preview, Approve button, confirmation screen, "New assessment →")
+- [x] Step 3b — SQLite persistence (`phase6/db.py`: `init_db`, `write_encounter`, `_extract_structured`, column migration)
+- [x] Step 3c — Analyst schema fields (`system_category`, `clinician_icd11`, `system_clinician_agreement`) — migration applied, backfilled
+- [ ] UTI corpus fix — re-run `make ingest && python neo4j/neo4j_loader.py`; test male UTI case; confirm "male sex" in arguing_against
+- [ ] Step 4 — CSS cleanup — strip dashboard aesthetic from `cds_theme.py`; editorial minimal; colour = clinical meaning only
+- [ ] Step 5 — Session history sidebar — compact chronological list from `st.session_state.history`; snippet + diagnosis + ✓/△ agreement + time
+
+> Run: `streamlit run phase6/app.py` from `cds/` root
 
 ### Phase 7 — Corpus v2
 - [ ] Asthma
@@ -327,6 +373,9 @@ Markdown cards → ingest.py → chunks.jsonl → [Chroma vector store, Phase 4]
 | 2026-09-01 | Case 2b closed — 7/8 is the Phase 5 ceiling | Three retrieval approaches exhausted (PubMedBERT, BM25, prompt strengthening); model documents TB counter-evidence but overrides ranking rule; further prompt/CoT work not justified at MVP stage |
 | 2026-09-01 | Management corpus — unified index with content_type metadata | Separate index doubles infrastructure without benefit at MVP scale; metadata filter (content_type: clinical \| management) gives clean retrieval separation; no routing layer required in Streamlit MVP |
 | 2026-09-01 | ICD-10 codes — add to all 10 frontmatters now (before 5e) | Low-cost structured metadata; avoids carrying known incompleteness into Phase 6; unblocks UI build when Phase 5e is done |
+| 2026-09-02 | Corpus-controlled structured storage in encounters DB | supporting_symptoms, arguing_against, red_flags, comorbidities come from RAG output (knowledge base retrieval), not free-text parsing — clean, normalised, queryable via json_each() |
+| 2026-09-02 | Analyst fields: system_category, clinician_icd11, system_clinician_agreement | Primary slicing dimensions for accuracy analysis; all corpus-controlled or computed — no text cleaning needed; system_clinician_agreement = primary accuracy signal |
+| 2026-09-02 | UTI graph.argues_against simplified to "male sex" | Compound qualifier "male sex without catheter or structural abnormality" fails at LLM reasoning step — model can't confirm absence (Rule 1), so compound fails; prose and red flags carry the clinical nuance |
 
 ---
 

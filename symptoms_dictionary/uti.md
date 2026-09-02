@@ -3,7 +3,7 @@ condition: Urinary tract infection
 icd11: GC08
 icd10: N39.0
 category: urogenital / infectious
-corpus_version: "1.3"
+corpus_version: "1.4"
 schema_version: "1.2"
 review_status: draft
 reviewed_by: ""
@@ -23,7 +23,7 @@ graph:
   associated_symptoms: [haematuria, cloudy urine, offensive-smelling urine, rigors, nausea, vomiting, confusion]
   risk_factors: [female sex, sexual intercourse, urinary catheter, urinary tract structural abnormality, urinary stones, diabetes mellitus, pregnancy, immunocompromise, HIV infection]
   differentials: [chlamydia urethritis, gonorrhoea urethritis, vaginitis, bladder stone, overactive bladder syndrome, prostatitis]
-  argues_against: [negative nitrite and negative leukocyte esterase on dipstick, sterile pyuria, external dysuria with vaginal discharge, normal urinalysis and negative culture, male sex without catheter or structural abnormality]
+  argues_against: [negative nitrite and negative leukocyte esterase on dipstick, sterile pyuria, external dysuria with vaginal discharge, normal urinalysis and negative culture, male sex]
   red_flags: [urosepsis, hypotension with UTI, altered consciousness with UTI, pyelonephritis in pregnancy, UTI in man under 50 without precipitating factor, macroscopic haematuria without infective symptoms]
   confirms: [positive urine dipstick nitrites and leukocyte esterase, pyuria on microscopy, MSU culture ≥10⁵ CFU/mL, costovertebral angle tenderness with fever]
 ---
