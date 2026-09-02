@@ -94,6 +94,10 @@ html, body, [class*="css"] {
 [data-testid="stSidebar"] * { font-family: 'Montserrat', sans-serif !important; }
 [data-testid="stSidebarNav"] { display: none !important; }
 
+/* Hide sidebar collapse/expand toggle — not needed in a single-page clinical tool */
+[data-testid="stSidebarCollapseButton"] { display: none !important; }
+button[data-testid="stBaseButton-headerNoPadding"] { display: none !important; }
+
 /* Section header — quiet label, not dashboard title */
 .sh {
     font-size: 9px;
