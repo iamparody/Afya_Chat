@@ -336,7 +336,9 @@ Markdown cards → ingest.py → chunks.jsonl → [Chroma vector store, Phase 4]
 - [x] Step 3 — Approval workflow (system read-only panel, editable diagnosis, live ICD-10 preview, Approve button, confirmation screen, "New assessment →")
 - [x] Step 3b — SQLite persistence (`phase6/db.py`: `init_db`, `write_encounter`, `_extract_structured`, column migration)
 - [x] Step 3c — Analyst schema fields (`system_category`, `clinician_icd11`, `system_clinician_agreement`) — migration applied, backfilled
-- [ ] UTI corpus fix — re-run `make ingest && python neo4j/neo4j_loader.py`; test male UTI case; confirm "male sex" in arguing_against
+- [x] UTI corpus fix — `graph.argues_against` simplified to `male sex`; corpus_version 1.4; ingest + Neo4j reload done; note: arguing_against correctly empty when patient has documented structural abnormality (prostate enlargement) — clinical reasoning correct
+- [x] Prompt fix — Rule 4 demographic filter: explicit exclusion list for anatomically impossible findings per patient sex/age
+- [x] Prompt fix — Red flags scope: explicit rule that only leading candidate's red flags appear when all others are lower confidence; closes T2DM red flag bleed into UTI assessments
 - [ ] Step 4 — CSS cleanup — strip dashboard aesthetic from `cds_theme.py`; editorial minimal; colour = clinical meaning only
 - [ ] Step 5 — Session history sidebar — compact chronological list from `st.session_state.history`; snippet + diagnosis + ✓/△ agreement + time
 
