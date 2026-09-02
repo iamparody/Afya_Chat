@@ -43,15 +43,17 @@ jobs:
         env:
           COHERE_API_KEY: ${{ secrets.COHERE_API_KEY }}
 
-      - name: Eval (gate — retry up to 3x on Gemini 503)
+      - name: Eval (gate — retry up to 5x on Gemini 503, exponential backoff)
         run: |
-          for i in 1 2 3; do
+          delays=(60 120 180 240)
+          for i in 1 2 3 4 5; do
             make eval && break
-            if [ $i -lt 3 ]; then
-              echo "Attempt $i failed — retrying in 30s..."
-              sleep 30
+            if [ $i -lt 5 ]; then
+              wait=${delays[$((i-1))]}
+              echo "Attempt $i failed — retrying in ${wait}s..."
+              sleep $wait
             else
-              echo "All 3 attempts failed."
+              echo "All 5 attempts failed."
               exit 1
             fi
           done
