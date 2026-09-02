@@ -440,10 +440,6 @@ page_header(
 
 presentation = st.text_area(
     "Patient presentation",
-    placeholder=(
-        "e.g. 29M, 4 days fever, chills, headache. Productive cough started yesterday. "
-        "Weakness, not eating well. No known illness. Came from Kisumu 10 days ago."
-    ),
     height=100,
     label_visibility="collapsed",
     key=f"presentation_{st.session_state.input_key}",
