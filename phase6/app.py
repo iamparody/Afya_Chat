@@ -5,6 +5,8 @@ Run from cds/ root: streamlit run phase6/app.py
 
 import sys
 import logging
+import uuid
+from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).parent.parent
@@ -28,7 +30,9 @@ import rag
 apply_theme()
 
 
-# ── ICD lookup ────────────────────────────────────────────────────────────────
+# ── Constants ─────────────────────────────────────────────────────────────────
+
+VALID_CONFIDENCE = {"high", "moderate", "low"}
 
 _ICD = {
     "type 2 diabetes mellitus":           ("5A11", "E11"),
@@ -49,6 +53,46 @@ CONF_COLOR = {
     "low":      COLORS["muted"],
 }
 
+
+# ── Session state ─────────────────────────────────────────────────────────────
+
+def _init_session_state():
+    defaults = {
+        "session_id":     str(uuid.uuid4()),
+        "result":         None,       # dict — current validated RAG output
+        "analysed_at":    None,       # ISO str — timestamp of last analysis
+        "approval_state": None,       # None | "approved"
+        "clinician_diag": "",         # editable diagnosis (pre-filled from system)
+        "history":        [],         # list of session encounter summaries
+        "input_key":      0,          # increment to force text_area clear
+    }
+    for k, v in defaults.items():
+        if k not in st.session_state:
+            st.session_state[k] = v
+
+
+def _clear_all():
+    """Reset input and result state for a new assessment."""
+    st.session_state.input_key    += 1
+    st.session_state.result        = None
+    st.session_state.analysed_at   = None
+    st.session_state.approval_state = None
+    st.session_state.clinician_diag = ""
+
+
+# ── Validation ────────────────────────────────────────────────────────────────
+
+def _assert_confidence(result: dict):
+    """Enforce confidence_level values at application boundary before any storage."""
+    for c in result.get("candidates", []):
+        conf = c.get("confidence_level", "")
+        if conf not in VALID_CONFIDENCE:
+            raise ValueError(
+                f"Invalid confidence_level '{conf}' — must be one of {VALID_CONFIDENCE}"
+            )
+
+
+# ── ICD lookup ────────────────────────────────────────────────────────────────
 
 def _get_icd(name):
     return _ICD.get(name.lower(), (None, None))
@@ -172,10 +216,8 @@ def _render_result(result):
     leading      = next((c for c in candidates if c["diagnosis"] == leading_name), None)
     alternatives = [c for c in candidates if c["diagnosis"] != leading_name]
 
-    # 1 — Red flags (above candidate cards — safety first)
     _render_red_flags(red_flags)
 
-    # 2 — Leading candidate
     section_header("Assessment")
     if leading:
         icd11, icd10 = _get_icd(leading_name)
@@ -184,14 +226,12 @@ def _render_result(result):
             unsafe_allow_html=True,
         )
 
-    # 3 — Alternatives (collapsed)
     if alternatives:
         section_header("Differential", margin_top=16)
         for alt in alternatives:
             with st.expander(f"{alt['diagnosis']}  ·  {alt['confidence_level']}"):
                 st.markdown(_candidate_html(alt), unsafe_allow_html=True)
 
-    # 4 — Comorbidities / context
     if comorbidities:
         section_header("Relevant Context", margin_top=16)
         for item in comorbidities:
@@ -203,6 +243,8 @@ def _render_result(result):
 
 
 # ── Sidebar ───────────────────────────────────────────────────────────────────
+
+_init_session_state()
 
 with st.sidebar:
     st.markdown(
@@ -230,15 +272,7 @@ with st.sidebar:
         "</div>",
         unsafe_allow_html=True,
     )
-    st.divider()
-    st.markdown(
-        '<div style="font-size:10px;color:#9BAEC8;line-height:1.75">'
-        "Embedding · Cohere multilingual v3<br>"
-        "Graph · Neo4j AuraDB<br>"
-        "LLM · Gemini flash-lite"
-        "</div>",
-        unsafe_allow_html=True,
-    )
+    # Session history rendered here in step 5
 
 
 # ── GOVERNANCE BANNER ─────────────────────────────────────────────────────────
@@ -264,11 +298,17 @@ presentation = st.text_area(
     ),
     height=100,
     label_visibility="collapsed",
+    key=f"presentation_{st.session_state.input_key}",
 )
 
-col_btn, _ = st.columns([1, 5])
+col_btn, col_clear, _ = st.columns([1, 1, 4])
 with col_btn:
     analyse = st.button("Analyse", use_container_width=True)
+with col_clear:
+    if st.session_state.result is not None:
+        if st.button("Clear", use_container_width=True):
+            _clear_all()
+            st.rerun()
 
 st.markdown('<div style="margin-bottom:8px"></div>', unsafe_allow_html=True)
 
@@ -280,6 +320,7 @@ if analyse:
     with st.spinner("Analysing presentation..."):
         try:
             result = rag.run(presentation.strip())
+            _assert_confidence(result)
         except ValueError as e:
             logging.error("CDS validation error: %s", e)
             st.error(
@@ -292,4 +333,12 @@ if analyse:
             st.error("Service temporarily unavailable. Please try again in a moment.")
             st.stop()
 
-    _render_result(result)
+    st.session_state.result         = result
+    st.session_state.analysed_at    = datetime.now(timezone.utc).isoformat()
+    st.session_state.approval_state = None
+    st.session_state.clinician_diag = result.get("leading_candidate", "")
+    st.rerun()
+
+if st.session_state.result is not None:
+    _render_result(st.session_state.result)
+    # Approval workflow rendered here in step 3
