@@ -24,7 +24,7 @@ st.set_page_config(
 from dotenv import load_dotenv
 load_dotenv(ROOT / ".env")
 
-from cds_theme import apply_theme, section_header, page_header, COLORS
+from cds_theme import apply_theme, section_header, page_header, COLORS, ph
 import rag
 import db
 
@@ -53,6 +53,12 @@ CONF_COLOR = {
     "high":     COLORS["success"],
     "moderate": COLORS["warning"],
     "low":      COLORS["muted"],
+}
+
+CONF_LABEL = {
+    "high":     "High confidence",
+    "moderate": "Moderate confidence",
+    "low":      "Low confidence",
 }
 
 
@@ -106,18 +112,26 @@ def _get_icd(name: str) -> tuple:
 
 # ── Rendering helpers ─────────────────────────────────────────────────────────
 
-def _list_html(items, color="#003467"):
-    if not items:
-        return (
-            '<span style="font-size:12px;color:#9BAEC8;font-style:italic">'
-            "None documented</span>"
-        )
-    rows = "".join(
-        f'<li style="margin-bottom:5px;color:{color};font-size:12px;line-height:1.5">'
-        f"{item}</li>"
-        for item in items
+def _item_row(icon: str, icon_color: str, text: str, text_color: str = "#003467") -> str:
+    return (
+        f'<div style="display:flex;align-items:flex-start;gap:8px;padding:3px 0">'
+        f'{ph(icon, 13, icon_color)}'
+        f'<span style="font-size:12px;color:{text_color};line-height:1.5">{text}</span>'
+        f'</div>'
     )
-    return f'<ul style="margin:0;padding-left:16px">{rows}</ul>'
+
+
+def _item_list(items, icon: str, icon_color: str, text_color: str = "#003467") -> str:
+    if not items:
+        return '<span style="font-size:12px;color:#9BAEC8;font-style:italic">None documented</span>'
+    return "".join(_item_row(icon, icon_color, item, text_color) for item in items)
+
+
+def _col_header(text: str, color: str = "#9BAEC8") -> str:
+    return (
+        f'<div style="font-size:9px;font-weight:700;color:{color};text-transform:uppercase;'
+        f'letter-spacing:1.5px;margin-bottom:10px">{text}</div>'
+    )
 
 
 def _render_red_flags(red_flags):
@@ -126,15 +140,18 @@ def _render_red_flags(red_flags):
     section_header("Red Flags")
     for flag in red_flags:
         documented = flag.lower().startswith("documented")
-        border = COLORS["danger"] if documented else COLORS["warning"]
-        bg     = "#FFF1F3"      if documented else "#FFFBEB"
+        icon_color = COLORS["danger"] if documented else COLORS["warning"]
+        text_color = "#003467" if documented else "#6B8CAE"
+        border     = COLORS["danger"] if documented else COLORS["warning"]
         st.markdown(
-            f'<div style="background:{bg};border-left:4px solid {border};border-radius:4px;'
-            f'padding:10px 14px;margin-bottom:8px;font-size:13px;color:#003467;line-height:1.5">'
-            f"{flag}</div>",
+            f'<div style="display:flex;align-items:flex-start;gap:10px;'
+            f'border-left:2px solid {border};padding:10px 14px;margin-bottom:8px">'
+            f'{ph("warning", 15, icon_color)}'
+            f'<span style="font-size:12px;color:{text_color};line-height:1.6">{flag}</span>'
+            f'</div>',
             unsafe_allow_html=True,
         )
-    st.markdown('<div style="margin-bottom:4px"></div>', unsafe_allow_html=True)
+    st.markdown('<div style="margin-bottom:8px"></div>', unsafe_allow_html=True)
 
 
 def _candidate_html(candidate, is_leading=False, icd11=None, icd10=None):
@@ -145,67 +162,64 @@ def _candidate_html(candidate, is_leading=False, icd11=None, icd10=None):
     arguing    = candidate["arguing_against"]
     missing    = candidate["missing_information"]
 
-    conf_color   = CONF_COLOR.get(confidence, COLORS["muted"])
-    border_color = COLORS["dark"] if is_leading else COLORS["primary"]
-    bg           = "#F8FBFE"     if is_leading else "#FAFCFE"
+    conf_color = CONF_COLOR.get(confidence, COLORS["muted"])
+    conf_label = CONF_LABEL.get(confidence, confidence)
+
+    border_left = f"3px solid {COLORS['dark']}" if is_leading else f"2px solid #D6E4F0"
+    padding_left = "20px" if is_leading else "16px"
 
     leading_label = (
-        '<div style="font-size:9px;font-weight:700;color:#8BAAC5;text-transform:uppercase;'
-        'letter-spacing:2px;margin-bottom:12px">Leading candidate</div>'
+        f'<div style="font-size:9px;font-weight:700;color:#9BAEC8;text-transform:uppercase;'
+        f'letter-spacing:2px;margin-bottom:8px">'
+        f'{ph("arrow-right", 10, "#9BAEC8")} &nbsp;Leading candidate</div>'
     ) if is_leading else ""
 
-    arg_hdr_color = COLORS["danger"] if arguing else "#9BAEC8"
+    name_size   = "21px" if is_leading else "15px"
+    name_weight = "800"  if is_leading else "700"
 
     icd_html = ""
     if is_leading and (icd11 or icd10):
         parts = []
         if icd11:
-            parts.append(f'<b style="color:#003467">ICD-11</b> {icd11}')
+            parts.append(f'<span style="font-weight:600;color:#003467">ICD-11</span> {icd11}')
         if icd10:
-            parts.append(f'<b style="color:#003467">ICD-10</b> {icd10}')
+            parts.append(f'<span style="font-weight:600;color:#003467">ICD-10</span> {icd10}')
         icd_html = (
-            '<div style="border-top:1px solid #EBF3FB;margin-top:16px;padding-top:12px;'
-            'font-size:11px;color:#6B8CAE;display:flex;gap:24px">'
-            + " &nbsp;·&nbsp; ".join(parts)
+            '<div style="border-top:1px solid #F0F5FA;margin-top:16px;padding-top:12px;'
+            'font-size:11px;color:#9BAEC8">'
+            + " &nbsp;&middot;&nbsp; ".join(parts)
             + "</div>"
         )
 
-    conf_bg     = conf_color + "18"
-    conf_border = conf_color + "40"
+    arg_hdr_color = COLORS["danger"] if arguing else "#9BAEC8"
 
     return (
-        f'<div style="background:{bg};border:1px solid #D6E4F0;border-left:4px solid {border_color};'
-        f'border-radius:8px;padding:24px;margin-bottom:16px">'
+        f'<div style="border-left:{border_left};padding-left:{padding_left};'
+        f'margin-bottom:24px">'
         f'{leading_label}'
-        f'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">'
-        f'<div style="font-size:18px;font-weight:800;color:#003467">{diagnosis}</div>'
-        f'<span style="background:{conf_bg};color:{conf_color};border:1px solid {conf_border};'
-        f'font-size:10px;font-weight:700;letter-spacing:1px;padding:2px 8px;border-radius:4px;'
-        f'text-transform:uppercase">{confidence}</span>'
-        f'</div>'
-        f'<div style="display:flex;gap:24px;margin-bottom:16px">'
+        f'<div style="font-size:{name_size};font-weight:{name_weight};color:#003467;'
+        f'margin-bottom:4px;line-height:1.2">{diagnosis}</div>'
+        f'<div style="font-size:10px;font-weight:600;color:{conf_color};'
+        f'text-transform:uppercase;letter-spacing:1px;margin-bottom:20px">{conf_label}</div>'
+        f'<div style="display:flex;gap:32px;margin-bottom:20px">'
         f'<div style="flex:1;min-width:0">'
-        f'<div style="font-size:10px;font-weight:700;color:{COLORS["primary"]};'
-        f'text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px">Supporting evidence</div>'
-        f'{_list_html(supporting)}'
+        f'{_col_header("Supporting evidence")}'
+        f'{_item_list(supporting, "check", COLORS["success"])}'
         f'</div>'
         f'<div style="flex:1;min-width:0">'
-        f'<div style="font-size:10px;font-weight:700;color:{arg_hdr_color};'
-        f'text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px">Arguing against</div>'
-        f'{_list_html(arguing, color=COLORS["danger"] if arguing else "#9BAEC8")}'
+        f'{_col_header("Arguing against", arg_hdr_color)}'
+        f'{_item_list(arguing, "minus-circle", COLORS["danger"], COLORS["danger"])}'
         f'</div>'
         f'</div>'
-        f'<div style="border-top:1px solid #EBF3FB;margin:0 0 16px"></div>'
-        f'<div style="display:flex;gap:24px">'
+        f'<div style="border-top:1px solid #F0F5FA;margin:0 0 20px"></div>'
+        f'<div style="display:flex;gap:32px">'
         f'<div style="flex:1;min-width:0">'
-        f'<div style="font-size:10px;font-weight:700;color:#6B8CAE;text-transform:uppercase;'
-        f'letter-spacing:1.5px;margin-bottom:6px">Why considered</div>'
-        f'<div style="font-size:12px;color:#6B8CAE;line-height:1.6">{why}</div>'
+        f'{_col_header("Why considered")}'
+        f'<div style="font-size:12px;color:#6B8CAE;line-height:1.7">{why}</div>'
         f'</div>'
         f'<div style="flex:1;min-width:0">'
-        f'<div style="font-size:10px;font-weight:700;color:#6B8CAE;text-transform:uppercase;'
-        f'letter-spacing:1.5px;margin-bottom:6px">Missing information</div>'
-        f'{_list_html(missing, color="#6B8CAE")}'
+        f'{_col_header("Missing information")}'
+        f'{_item_list(missing, "info", "#9BAEC8", "#6B8CAE")}'
         f'</div>'
         f'</div>'
         f'{icd_html}'
@@ -362,11 +376,14 @@ def _render_approval_confirmed():
 
     st.markdown(
         f'<div style="display:flex;align-items:center;gap:14px;padding:20px 0">'
-        f'<span style="color:{COLORS["success"]};font-size:18px;font-weight:700">✓</span>'
+        f'{ph("check-circle", 22, COLORS["success"])}'
         f'<div>'
-        f'<div style="font-size:14px;font-weight:700;color:#003467">{clinician_diag}</div>'
-        f'<div style="font-size:11px;color:#9BAEC8;margin-top:2px">'
-        f'Clinician approved · {time_str}</div>'
+        f'<div style="font-size:15px;font-weight:700;color:#003467">{clinician_diag}</div>'
+        f'<div style="display:flex;align-items:center;gap:6px;font-size:11px;'
+        f'color:#9BAEC8;margin-top:3px">'
+        f'{ph("clock", 12, "#9BAEC8")}'
+        f'Clinician approved &middot; {time_str}'
+        f'</div>'
         f'</div>'
         f'</div>',
         unsafe_allow_html=True,
@@ -383,30 +400,26 @@ _init_session_state()
 
 with st.sidebar:
     st.markdown(
-        '<div style="font-size:20px;font-weight:800;color:#003467;margin-bottom:2px">CDS</div>'
-        '<div style="font-size:11px;color:#6B8CAE;margin-bottom:20px">'
-        "Clinical Decision Support</div>",
+        '<div style="font-size:16px;font-weight:800;color:#003467;letter-spacing:-0.3px">'
+        'CDS</div>'
+        '<div style="font-size:10px;color:#9BAEC8;margin-top:2px;margin-bottom:20px;'
+        'text-transform:uppercase;letter-spacing:1.5px">Clinical Decision Support</div>'
+        '<div style="border-top:1px solid #EBF3FB;margin-bottom:20px"></div>',
         unsafe_allow_html=True,
     )
     st.markdown(
-        '<div class="sb-label" style="margin-bottom:8px">About</div>'
-        '<div style="font-size:12px;color:#003467;line-height:1.75">'
-        "Enter a free-text patient presentation. The system retrieves candidate diagnoses "
-        "from the clinical knowledge base and returns a ranked differential with supporting "
-        "evidence, arguing-against features, and red flags."
-        "</div>",
+        '<div class="sb-label" style="margin-bottom:10px">Corpus</div>'
+        '<div style="font-size:12px;color:#003467;line-height:1.8">'
+        '10 conditions<br>'
+        '<span style="color:#9BAEC8">East Africa / Kenya primary care</span>'
+        '</div>'
+        f'<div style="font-size:11px;color:{COLORS["warning"]};font-weight:600;'
+        f'margin-top:8px">'
+        'Draft — not clinician-verified</div>',
         unsafe_allow_html=True,
     )
-    st.divider()
-    st.markdown(
-        '<div class="sb-label" style="margin-bottom:8px">Corpus</div>'
-        '<div style="font-size:12px;color:#003467;line-height:1.75">'
-        "10 conditions · East Africa / Kenya primary care<br>"
-        f'<span style="color:{COLORS["warning"]};font-weight:600">'
-        "All cards: draft — not clinician-verified</span>"
-        "</div>",
-        unsafe_allow_html=True,
-    )
+    st.markdown('<div style="border-top:1px solid #EBF3FB;margin:20px 0"></div>',
+                unsafe_allow_html=True)
     # Session history rendered here in step 5
 
 
