@@ -6,9 +6,86 @@
 
 ---
 
+## Pre-flight — Complete before authoring any new cards
+> These five items gate all corpus and follow-up work. Each is independently completable.
+> Environmental context layer (Phase 7a engineering) is ON HOLD — do not start until pre-flight is done and corpus is ≥15 conditions.
+
+### PF-1 — Graph term authoring rule (CLAUDE.md + fix existing 17 unknown terms)
+> Root cause: graph fields in existing cards use long clinical phrases that don't match the canonical vocabulary. Compounds the problem with every new card authored.
+
+- [ ] Document rule in CLAUDE.md: graph fields (`cardinal_symptoms`, `associated_symptoms`, `risk_factors`, `argues_against`, `red_flags`, `differentials`, `confirms`) must use short canonical terms — max ~4 words, no conditional phrases, no conjunctions
+- [ ] Document examples of wrong vs. right: `"age over 55 with new dyspepsia"` ✗ → `"new onset dyspepsia"` ✓; `"male sex without catheter or structural abnormality"` ✗ → `"male sex"` ✓
+- [ ] Fix all 17 unknown graph terms across existing 10 cards — re-run `python ingest.py` until zero unknown terms
+- [ ] Reload Neo4j after fix: `python neo4j/neo4j_loader.py`
+
+Unknown terms to fix (from last ingest run):
+- `acute_gastroenteritis.md`: `contaminated food or water`, `severe dehydration in child under five`, `bloody diarrhoea with fever in child under five`
+- `anaemia.md`: `new anaemia in man or post-menopausal woman without dietary cause`
+- `hypertension.md`: `new hypertension in pregnancy`
+- `obesity.md`: `severe obstructive sleep apnoea with cardiovascular consequences`
+- `peptic_ulcer_disease.md`: `age over 55 with new dyspepsia`, `sudden severe epigastric pain with peritonism`
+- `pneumonia.md`: `bilateral or multilobar infiltrates`, `fever with productive cough and consolidation signs`
+- `type_2_diabetes.md`: `vomiting with dehydration and altered mental status`
+- `uti.md`: `hypotension with UTI`, `altered consciousness with UTI`, `pyelonephritis in pregnancy`, `UTI in man under 50 without precipitating factor`, `macroscopic haematuria without infective symptoms`
+
+---
+
+### PF-2 — Card evaluation protocol
+> "Colleagues will test" is currently undefined. Without a shared checklist, evaluations are subjective and inconsistent.
+
+- [ ] Define and document the evaluation checklist (below) — agree with colleagues before first new card is tested
+
+**Card evaluation checklist (one pass per new card):**
+1. **Leading diagnosis** — does a representative presentation return the correct condition as leading candidate?
+2. **Differentials** — are the returned differentials clinically plausible? Any spurious vector matches (e.g. obesity for epigastric pain)?
+3. **Argues-against** — do argues-against items fire correctly when the counter-evidence is present in the presentation?
+4. **Red flags** — are the correct red flags surfaced? Are they scoped to the leading candidate only (not leaking from lower-confidence candidates)?
+5. **Missing information** — are the listed missing items clinically relevant discriminators, not generic history questions?
+6. **Regression** — re-run the full 8-case eval baseline after each new card batch; confirm 7/8 maintained
+
+- [ ] Share checklist with Colleague 1 (evaluation) and Colleague 2 (LLM testing) before first new card ingest
+
+---
+
+### PF-3 — Complication vs. differential decision
+> Iron deficiency anaemia appeared as a PUD differential — it is a complication (PUD causes anaemia through bleeding). The graph has no IS_COMPLICATION_OF concept. Decision needed before authoring cards that have clear complication relationships.
+
+- [ ] **Decision: accept as known limitation for now** — document it; the prompt already has Rule 5 (confirmed comorbidities go to `relevant_comorbidities_or_context`); complications that appear as differentials will be filtered out by clinical review; revisit at Phase 8 when the disambiguation loop can ask "is this a pre-existing complication?"
+- [ ] Add a note to `prompts.py` schema description for `candidates[]`: complications of a suspected diagnosis should not appear as independent candidates — they belong in `relevant_comorbidities_or_context` if already documented, or in `missing_information` if undocumented
+
+---
+
+### PF-4 — Disambiguation loop design spec (lock before building)
+> Agreed at high level. Gaps in spec will cause rework if code is written before these are decided.
+
+- [ ] **Ambiguity trigger**: no `high` confidence candidate AND ≥2 candidates share the same confidence tier (both `moderate`, or both `low`)
+- [ ] **Question selection logic**: extract `missing_information` items that appear in the top tied candidate(s) but differ between them — these are the discriminating questions; do NOT ask about missing_information items shared by all candidates (not discriminating)
+- [ ] **Max rounds**: 3 — after 3 rounds without a `high` confidence candidate, surface current best with explicit ambiguity note
+- [ ] **Answer format**: free text appended to presentation (keeps architecture simple; structured answers are Phase 9)
+- [ ] **Region/location**: do NOT add as a structured UI field — let it surface naturally as a clarifying question when region discriminates between tied candidates
+- [ ] **UI**: question cards displayed one at a time; "Skip" option on each (skipped questions noted as still missing); "Stop and get assessment" escape hatch at any round
+- [ ] Colleague review of this spec before implementation begins
+
+---
+
+### PF-5 — Regression test plan
+> Adding new conditions changes the vector space — existing test cases may behave differently. No plan currently exists for catching regressions.
+
+- [ ] After every batch of new cards (defined as every 2–3 cards), re-run `python phase5/evaluate.py`
+- [ ] Acceptable baseline: 7/8 (Case 2b is a known ceiling, not a regression)
+- [ ] If a previously passing case drops: investigate before ingesting the next card
+- [ ] Track eval results in this file after each run — format: `YYYY-MM-DD: X/8 after adding [card name(s)]`
+
+**Eval history:**
+- 2026-08-31: 7/8 baseline (dense-only Cohere, FIVE RULES prompt)
+- 2026-09-02: 7/8 (after UTI fix, Rule 4 demographic filter, red flags scope fix)
+
+---
+
 ## Phase 7 — Corpus Expansion + Environmental Context Layer
-> Modular. Each sub-phase is independently testable. Colleague sign-off gates each new condition card.
-> Schema version bumped to 2.0 when environmental_signals fields are added to ingest.py.
+> Environmental context engineering (7a code changes) ON HOLD until corpus ≥15 conditions.
+> Modular. Each condition card is independent. Colleagues test after each ingest.
+> Schema version 2.0 engineering deferred — cards can be authored now without environmental_signals block.
 
 ---
 
@@ -174,6 +251,8 @@
 
 - [ ] **PUD retest post ICD-11 fix** — run the PUD presentation case through the RAG; confirm `system_icd11` shows `DA62` (not DA60); confirm weight loss no longer appears in supporting_features
 - [ ] **Obesity as PUD differential (retrieval quality)** — obesity appearing as a differential for epigastric pain is vector overlap in Chroma, not a clinical match; investigate during Phase 7 once more conditions are added (may self-resolve when GERD/dyspepsia dilute the vector space); if still occurring at 15+ conditions, tune retrieval threshold
+- [ ] **Obesity card — secondary/hormonal causes missing (corpus quality)** — current card likely scoped to simple dietary/lifestyle obesity; missing: hypothyroidism, PCOS, Cushing's syndrome, pregnancy-related weight gain, medication-induced (corticosteroids, antipsychotics); these belong in "Important differential diagnoses" and "Features that argue against"; colleague flagged, clinician review will formally gate it; watch during testing
+- [ ] **Region as follow-up question (Phase 8 design note)** — do NOT add patient_location as a structured UI field; instead let the disambiguation loop surface it as a clarifying question when region is discriminating between tied candidates (e.g. Dengue vs Malaria); `missing_information` in RAG output already has the slot for this
 
 ---
 
