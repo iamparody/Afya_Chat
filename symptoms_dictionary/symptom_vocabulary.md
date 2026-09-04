@@ -150,6 +150,7 @@
 | overcrowding | |
 | poor sanitation | inadequate sanitation |
 | poor hand hygiene | |
+| contaminated food | contaminated food source |
 | contaminated water | unsafe water |
 | endemic area residence | living in endemic area |
 | travel to endemic area | |
@@ -232,7 +233,18 @@
 | haemorrhagic stroke | intracerebral haemorrhage, haemorrhagic CVA |
 | haemodynamic compromise | haemodynamic instability |
 | haemodynamic instability | cardiovascular instability |
+| hypotension | low blood pressure |
 | urosepsis | urological sepsis |
+| pyelonephritis | upper UTI, renal infection |
+| male UTI | UTI in men |
+| macroscopic haematuria | visible haematuria, frank haematuria |
+| severe dehydration | extreme dehydration |
+| gestational hypertension | hypertension in pregnancy |
+| obstructive sleep apnoea | OSA |
+| new onset dyspepsia | new dyspepsia |
+| peritonism | peritoneal irritation, peritoneal signs |
+| multilobar consolidation | bilateral or multilobar infiltrates |
+| unexplained anaemia | anaemia of unknown cause |
 | septic shock | |
 | high-output cardiac failure | high output heart failure |
 | miliary TB | disseminated TB |
@@ -290,6 +302,7 @@
 | positive mycobacterial culture | |
 | upper lobe infiltrates with cavitation on chest X-ray | classic TB pattern |
 | new pulmonary infiltrate on chest X-ray | CAP |
+| consolidation signs | signs of consolidation |
 | elevated WBC with neutrophilia | bacterial infection marker |
 | positive sputum culture | |
 | positive pneumococcal urinary antigen | |

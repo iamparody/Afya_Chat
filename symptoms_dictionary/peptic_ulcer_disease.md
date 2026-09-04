@@ -3,7 +3,7 @@ condition: Peptic ulcer disease
 icd11: DA62
 icd10: K27
 category: gastroenterological
-corpus_version: "1.3"
+corpus_version: "1.4"
 schema_version: "1.2"
 review_status: draft
 reviewed_by: ""
@@ -24,7 +24,7 @@ graph:
   risk_factors: [H. pylori infection, NSAID use, aspirin use, smoking, excessive alcohol, physiological stress, poor sanitation, Zollinger-Ellison syndrome]
   differentials: [gastro-oesophageal reflux disease, functional dyspepsia, gastric cancer, acute pancreatitis, biliary colic, mesenteric ischaemia]
   argues_against: [absence of epigastric pain, normal upper GI endoscopy during symptoms, predominant retrosternal burning worse lying flat, no H. pylori and no NSAID use]
-  red_flags: [age over 55 with new dyspepsia, unintentional weight loss, persistent vomiting, progressive dysphagia, haematemesis, melaena, palpable epigastric mass, sudden severe epigastric pain with peritonism, haemodynamic instability]
+  red_flags: [new onset dyspepsia, unintentional weight loss, persistent vomiting, progressive dysphagia, haematemesis, melaena, palpable epigastric mass, peritonism, haemodynamic instability]
   confirms: [ulcer on upper GI endoscopy, positive H. pylori CLO test, positive urea breath test, positive stool antigen test for H. pylori]
 ---
 

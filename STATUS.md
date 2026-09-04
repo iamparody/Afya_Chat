@@ -10,23 +10,14 @@
 > These five items gate all corpus and follow-up work. Each is independently completable.
 > Environmental context layer (Phase 7a engineering) is ON HOLD — do not start until pre-flight is done and corpus is ≥15 conditions.
 
-### PF-1 — Graph term authoring rule (CLAUDE.md + fix existing 17 unknown terms)
+### PF-1 — Graph term authoring rule (CLAUDE.md + fix existing 17 unknown terms) ✅ Done (2026-09-04)
 > Root cause: graph fields in existing cards use long clinical phrases that don't match the canonical vocabulary. Compounds the problem with every new card authored.
 
-- [ ] Document rule in CLAUDE.md: graph fields (`cardinal_symptoms`, `associated_symptoms`, `risk_factors`, `argues_against`, `red_flags`, `differentials`, `confirms`) must use short canonical terms — max ~4 words, no conditional phrases, no conjunctions
-- [ ] Document examples of wrong vs. right: `"age over 55 with new dyspepsia"` ✗ → `"new onset dyspepsia"` ✓; `"male sex without catheter or structural abnormality"` ✗ → `"male sex"` ✓
-- [ ] Fix all 17 unknown graph terms across existing 10 cards — re-run `python ingest.py` until zero unknown terms
-- [ ] Reload Neo4j after fix: `python neo4j/neo4j_loader.py`
-
-Unknown terms to fix (from last ingest run):
-- `acute_gastroenteritis.md`: `contaminated food or water`, `severe dehydration in child under five`, `bloody diarrhoea with fever in child under five`
-- `anaemia.md`: `new anaemia in man or post-menopausal woman without dietary cause`
-- `hypertension.md`: `new hypertension in pregnancy`
-- `obesity.md`: `severe obstructive sleep apnoea with cardiovascular consequences`
-- `peptic_ulcer_disease.md`: `age over 55 with new dyspepsia`, `sudden severe epigastric pain with peritonism`
-- `pneumonia.md`: `bilateral or multilobar infiltrates`, `fever with productive cough and consolidation signs`
-- `type_2_diabetes.md`: `vomiting with dehydration and altered mental status`
-- `uti.md`: `hypotension with UTI`, `altered consciousness with UTI`, `pyelonephritis in pregnancy`, `UTI in man under 50 without precipitating factor`, `macroscopic haematuria without infective symptoms`
+- [x] Document rule in CLAUDE.md: graph fields (`cardinal_symptoms`, `associated_symptoms`, `risk_factors`, `argues_against`, `red_flags`, `differentials`, `confirms`) must use short canonical terms — max ~4 words, no conditional phrases, no conjunctions
+- [x] Document examples of wrong vs. right: `"age over 55 with new dyspepsia"` ✗ → `"new onset dyspepsia"` ✓; `"male sex without catheter or structural abnormality"` ✗ → `"male sex"` ✓
+- [x] Fix all unknown graph terms across existing 10 cards — re-run `python ingest.py` → 0 unknown terms
+- [x] Add 13 new canonical terms to `symptom_vocabulary.md` (Risk Factors: `contaminated food`; Red Flags: `severe dehydration`, `unexplained anaemia`, `gestational hypertension`, `obstructive sleep apnoea`, `new onset dyspepsia`, `peritonism`, `multilobar consolidation`, `hypotension`, `pyelonephritis`, `male UTI`, `macroscopic haematuria`; Confirms: `consolidation signs`)
+- [x] Reload Neo4j: `python neo4j/neo4j_loader.py` → 10/10 loaded
 
 ---
 

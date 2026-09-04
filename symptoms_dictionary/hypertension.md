@@ -3,7 +3,7 @@ condition: Essential hypertension
 icd11: BA00
 icd10: I10
 category: cardiovascular
-corpus_version: "1.2"
+corpus_version: "1.3"
 schema_version: "1.2"
 review_status: draft
 reviewed_by: ""
@@ -24,7 +24,7 @@ graph:
   risk_factors: [advancing age, male sex, family history of hypertension, obesity, high sodium intake, physical inactivity, excessive alcohol, smoking, diabetes mellitus, chronic kidney disease, sub-Saharan Africa ethnicity]
   differentials: [white coat hypertension, primary hyperaldosteronism, phaeochromocytoma, renovascular hypertension, Cushing syndrome, aortic coarctation, pre-eclampsia]
   argues_against: [single elevated reading only, consistently normal ambulatory readings, elevated BP in acute pain or anxiety context]
-  red_flags: [BP ≥180/120 with end-organ damage, hypertensive encephalopathy, acute coronary syndrome, aortic dissection, acute pulmonary oedema, papilloedema, haemorrhagic stroke, new hypertension in pregnancy]
+  red_flags: [BP ≥180/120 with end-organ damage, hypertensive encephalopathy, acute coronary syndrome, aortic dissection, acute pulmonary oedema, papilloedema, haemorrhagic stroke, gestational hypertension]
   confirms: [BP ≥140/90 on two separate occasions, daytime ABPM ≥135/85, left ventricular hypertrophy on ECG, elevated urine albumin:creatinine ratio]
 ---
 
