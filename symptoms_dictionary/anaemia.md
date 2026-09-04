@@ -3,7 +3,7 @@ condition: Iron deficiency anaemia
 icd11: 3A00
 icd10: D50
 category: haematological
-corpus_version: "1.2"
+corpus_version: "1.3"
 schema_version: "1.2"
 review_status: draft
 reviewed_by: ""
@@ -24,7 +24,7 @@ graph:
   risk_factors: [chronic gastrointestinal blood loss, menorrhagia, inadequate dietary iron, pregnancy, lactation, adolescent growth, coeliac disease, hookworm infestation, post-gastrectomy, proton pump inhibitor use]
   differentials: [anaemia of chronic disease, malaria-related haemolytic anaemia, sickle cell disease, G6PD deficiency, vitamin B12 deficiency, folate deficiency, thalassaemia trait]
   argues_against: [normal or elevated MCV, normal or elevated serum ferritin, blood film with sickle cells or spherocytes or target cells, no identifiable blood loss or dietary deficiency in man or post-menopausal woman]
-  red_flags: [haemoglobin <7 g/dL, high-output cardiac failure, new anaemia in man or post-menopausal woman without dietary cause, anaemia in pregnancy below 7 g/dL]
+  red_flags: [haemoglobin <7 g/dL, high-output cardiac failure, unexplained anaemia, anaemia in pregnancy below 7 g/dL]
   confirms: [haemoglobin below WHO thresholds, low MCV <80 fL, low MCH <27 pg, serum ferritin <30 μg/L, transferrin saturation <16%, reticulocyte rise after oral iron]
 ---
 

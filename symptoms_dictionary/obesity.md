@@ -3,7 +3,7 @@ condition: Obesity
 icd11: 5B81
 icd10: E66
 category: metabolic
-corpus_version: "1.2"
+corpus_version: "1.3"
 schema_version: "1.2"
 review_status: draft
 reviewed_by: ""
@@ -24,7 +24,7 @@ graph:
   risk_factors: [ultra-processed food diet, sedentary lifestyle, genetic predisposition, corticosteroid use, antipsychotic use, antiepileptic use, insulin therapy, socioeconomic disadvantage, urbanisation]
   differentials: [hypothyroidism, Cushing syndrome, polycystic ovary syndrome, drug-induced weight gain, Prader-Willi syndrome]
   argues_against: [high BMI from muscle mass in athlete, weight gain from fluid accumulation, weight gain from cardiac oedema or nephrotic syndrome]
-  red_flags: [obesity hypoventilation syndrome, severe obstructive sleep apnoea with cardiovascular consequences, rapid unexplained weight gain]
+  red_flags: [obesity hypoventilation syndrome, obstructive sleep apnoea, rapid unexplained weight gain]
   confirms: [BMI ≥30 kg/m², waist circumference >102 cm in men, waist circumference >88 cm in women]
 ---
 

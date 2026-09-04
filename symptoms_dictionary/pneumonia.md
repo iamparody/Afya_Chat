@@ -3,7 +3,7 @@ condition: Community-acquired pneumonia
 icd11: CA40
 icd10: J18
 category: respiratory / infectious
-corpus_version: "1.2"
+corpus_version: "1.3"
 schema_version: "1.2"
 review_status: draft
 reviewed_by: ""
@@ -27,8 +27,8 @@ graph:
   risk_factors: [age under five, age over 65, HIV infection, diabetes mellitus, malignancy, corticosteroid use, smoking, COPD, asthma, malnutrition, overcrowding, indoor air pollution, aspiration risk]
   differentials: [pulmonary tuberculosis, pulmonary embolism, acute decompensated heart failure, bronchiectasis with exacerbation]
   argues_against: [absence of fever and productive cough and respiratory symptoms, normal chest X-ray, bilateral symmetric infiltrates without fever, normal oxygen saturation and no tachypnoea]
-  red_flags: [CURB-65 score ≥3, oxygen saturation <94%, bilateral or multilobar infiltrates, septic shock, age under 2 months, PCP with CD4 <200]
-  confirms: [new pulmonary infiltrate on chest X-ray, fever with productive cough and consolidation signs, elevated WBC with neutrophilia, oxygen saturation <94%, positive sputum culture, positive pneumococcal urinary antigen]
+  red_flags: [CURB-65 score ≥3, oxygen saturation <94%, multilobar consolidation, septic shock, age under 2 months, PCP with CD4 <200]
+  confirms: [new pulmonary infiltrate on chest X-ray, consolidation signs, elevated WBC with neutrophilia, oxygen saturation <94%, positive sputum culture, positive pneumococcal urinary antigen]
 ---
 
 # Community-acquired pneumonia

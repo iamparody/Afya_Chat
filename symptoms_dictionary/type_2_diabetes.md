@@ -3,7 +3,7 @@ condition: Type 2 diabetes mellitus
 icd11: 5A11
 icd10: E11
 category: endocrine / metabolic
-corpus_version: "1.2"
+corpus_version: "1.3"
 schema_version: "1.2"
 review_status: draft
 reviewed_by: ""
@@ -24,7 +24,7 @@ graph:
   risk_factors: [age over 45, overweight, obesity, physical inactivity, family history of type 2 diabetes, gestational diabetes history, impaired fasting glucose, East African ethnicity, South Asian ethnicity]
   differentials: [type 1 diabetes mellitus, MODY, diabetes insipidus, glucocorticoid-induced hyperglycaemia, Cushing syndrome, acromegaly, pancreatic disease]
   argues_against: [abrupt onset with ketoacidosis, BMI below 25 under age 35, normal fasting plasma glucose, normal HbA1c]
-  red_flags: [hyperosmolar hyperglycaemic state, diabetic ketoacidosis, foot ulceration with systemic features, rapidly deteriorating renal function, vomiting with dehydration and altered mental status]
+  red_flags: [hyperosmolar hyperglycaemic state, diabetic ketoacidosis, foot ulceration with systemic features, rapidly deteriorating renal function, altered mental status]
   confirms: [fasting plasma glucose ≥7.0 mmol/L, HbA1c ≥48 mmol/mol, OGTT two-hour glucose ≥11.1 mmol/L, random plasma glucose ≥11.1 mmol/L with symptoms]
 ---
 

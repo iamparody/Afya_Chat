@@ -3,7 +3,7 @@ condition: Acute gastroenteritis (infectious)
 icd11: 1A09
 icd10: A09
 category: gastroenterological / infectious
-corpus_version: "1.2"
+corpus_version: "1.3"
 schema_version: "1.2"
 review_status: draft
 reviewed_by: ""
@@ -24,10 +24,10 @@ sources:
 graph:
   cardinal_symptoms: [diarrhoea, nausea, vomiting, abdominal cramps]
   associated_symptoms: [fever, dehydration, bloody stool, mucoid stool, weight loss, borborygmi]
-  risk_factors: [contaminated food or water, poor hand hygiene, institutional contact, age under five, elderly, immunocompromise, antibiotic use, HIV infection, malnutrition]
+  risk_factors: [contaminated food, contaminated water, poor hand hygiene, institutional contact, age under five, elderly, immunocompromise, antibiotic use, HIV infection, malnutrition]
   differentials: [typhoid fever, malaria, appendicitis, inflammatory bowel disease, Clostridioides difficile infection]
   argues_against: [diarrhoea persisting beyond 14 days, no identifiable infectious exposure, right iliac fossa pain with anorexia without significant diarrhoea, recurrent episodic diarrhoea over months]
-  red_flags: [severe dehydration in child under five, cholera-like rice-water diarrhoea, bloody diarrhoea with fever in child under five, diarrhoea beyond 14 days, haemodynamic compromise, sunken fontanelle, absent urine output]
+  red_flags: [severe dehydration, cholera-like rice-water diarrhoea, bloody diarrhoea, diarrhoea beyond 14 days, haemodynamic compromise, sunken fontanelle, absent urine output]
   confirms: [≥3 loose or watery stools in 24 hours with acute onset, positive stool culture, positive rotavirus or norovirus antigen, faecal leucocytes on microscopy, clinical dehydration grading moderate to severe]
 ---
 
