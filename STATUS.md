@@ -6,6 +6,219 @@
 
 ---
 
+## Phase 7 — Corpus Expansion + Environmental Context Layer
+> Modular. Each sub-phase is independently testable. Colleague sign-off gates each new condition card.
+> Schema version bumped to 2.0 when environmental_signals fields are added to ingest.py.
+
+---
+
+### 7a — Schema update (do first — gates everything else)
+> Update governance docs, then ingest.py, then backfill existing cards.
+
+**CLAUDE.md** ✅ Done (2026-09-04)
+- Frontmatter schema reference added (all fields, controlled vocabularies)
+- Environmental context layer architecture documented
+- Controlled vocabularies locked: regions, signals, pathways, effect types, evidence types, exposures
+- Evolution path documented (Phase 7 → 8 → 9)
+
+**`ingest.py`**
+- [ ] Parse `endemic_regions` from frontmatter → carry in chunk metadata
+- [ ] Parse `environmental_signals` block → carry in chunk metadata (JSON)
+- [ ] Validate signal names, pathways, effect_type, evidence_type against controlled vocabulary — warn on unknown values
+- [ ] Increment expected `schema_version` to `"2.0"` in validation
+
+**`neo4j_loader.py`**
+- [ ] Store `endemic_regions` as list property on Condition nodes
+- [ ] Store `environmental_signals` as structured properties — signal names and regions at minimum
+
+**`phase7/context_engine.py`** ← new file
+- [ ] `get_context(encounter_date, onset_date, patient_location, patient_exposures) → str`
+- [ ] Static Kenya rainfall calendar lookup: long rains March–May, short rains October–November
+- [ ] ENSO flag: annual variable (`neutral` | `el_nino` | `la_nina`) — update from NOAA/KMD each year
+- [ ] Output: confidence-labelled natural language statement with explicit evidence source label
+- [ ] Unit testable: given (date, location, exposures) → expected statement
+
+**`phase5/rag.py`**
+- [ ] Accept `patient_location` and `patient_exposures` as optional parameters
+- [ ] Accept `encounter_date` (default: today) and `onset_date` (optional)
+- [ ] Call `context_engine.get_context()` and inject output into `build_context()` as a new section
+
+**`phase6/app.py`**
+- [ ] Add structured `patient_location` field (optional — dropdown: region vocabulary)
+- [ ] Add structured `patient_exposures` checkboxes (optional — exposure vocabulary)
+- [ ] Pass location + exposures + onset_date to `rag.py`
+
+---
+
+### 7b — Backfill existing 10 cards with new schema fields
+> Each card: add endemic_regions + environmental_signals → run ingest → confirm no validation warnings
+
+- [ ] **malaria.md** — `endemic_regions`: lake_basin, coast, highland_margins, arid_semi_arid; signals: post_long_rains (strong), post_short_rains (moderate), flooding (moderate, amplifier: mosquito_exposure_high)
+- [ ] **acute_gastroenteritis.md** — `endemic_regions`: nationwide; signals: flooding (moderate, requires: unsafe_water), water_scarcity (moderate, requires: unsafe_water)
+- [ ] **anaemia.md** — `endemic_regions`: nationwide (lake_basin, coast higher burden); signals: prolonged_drought (severity_modifier, asal)
+- [ ] **pneumonia.md** — `endemic_regions`: nationwide; signals: cold_dry_season (low, highland), dry_dusty_season (low, northern_kenya/arid_semi_arid)
+- [ ] **pulmonary_tb.md** — `endemic_regions`: nationwide; no environmental signals (socioeconomic driver, not climate)
+- [ ] **uti.md** — `endemic_regions`: nationwide; signals: heat_dehydration (low, severity_modifier)
+- [ ] **hypertension.md** — `endemic_regions`: nationwide; no environmental signals
+- [ ] **type_2_diabetes.md** — `endemic_regions`: nationwide; no environmental signals
+- [ ] **obesity.md** — `endemic_regions`: nationwide; no environmental signals
+- [ ] **peptic_ulcer_disease.md** — `endemic_regions`: nationwide; no environmental signals
+- [ ] Re-ingest all 10 after backfill: `python ingest.py` — confirm schema_version 2.0 on all cards
+- [ ] Reload Neo4j: `python neo4j/neo4j_loader.py`
+
+---
+
+### 7c — New condition cards (Tier 1 — priority order)
+> Workflow per card: author → colleague clinical review → incorporate feedback → bump corpus_version → ingest → Neo4j reload → RAG test case
+
+**Tier 1 — Environmental context critical (do first):**
+- [ ] **Dengue fever** — `coast`, `urban_informal`; signals: post_long_rains (vector_borne, coast); key Malaria/Chikungunya differential
+  - [ ] Card authored
+  - [ ] Colleague review
+  - [ ] Ingested + tested
+- [ ] **Cholera** — `lake_basin`, `coast`, `urban_informal`, `asal_riverine`; signals: flooding (waterborne, strong), water_scarcity (moderate); separate from AGE
+  - [ ] Card authored
+  - [ ] Colleague review
+  - [ ] Ingested + tested
+- [ ] **Rift Valley fever** — `arid_semi_arid`, `northern_kenya`, `lake_basin`; signals: flooding (zoonotic, requires: livestock_contact); amplified by: pastoralist_mobility
+  - [ ] Card authored
+  - [ ] Colleague review
+  - [ ] Ingested + tested
+- [ ] **Chikungunya** — `coast`, `urban_informal`; signals: post_long_rains (vector_borne, coast); co-encode with Dengue (shared Aedes ecology)
+  - [ ] Card authored
+  - [ ] Colleague review
+  - [ ] Ingested + tested
+
+**Tier 1 — Differential gap (PUD/respiratory):**
+- [ ] **GERD** — `nationwide`; no environmental signals; key PUD differential
+  - [ ] Card authored
+  - [ ] Colleague review
+  - [ ] Ingested + tested
+- [ ] **Functional dyspepsia** — `nationwide`; no environmental signals; key PUD/GERD differential
+  - [ ] Card authored
+  - [ ] Colleague review
+  - [ ] Ingested + tested
+- [ ] **Typhoid fever** — `nationwide`; signals: flooding (waterborne, moderate), water_scarcity (moderate); key Malaria/AGE differential
+  - [ ] Card authored
+  - [ ] Colleague review
+  - [ ] Ingested + tested
+- [ ] **Asthma** — `nationwide`; signals: cold_dry_season (low), dry_dusty_season (low); key Pneumonia/TB differential
+  - [ ] Card authored
+  - [ ] Colleague review
+  - [ ] Ingested + tested
+
+**Tier 2 — Next batch (after ≥15 conditions confirmed working):**
+- [ ] **COPD** — `nationwide`; signals: dry_dusty_season (low, occupational_dust)
+- [ ] **Heart failure** — `nationwide`; no environmental signals
+- [ ] **HIV/AIDS** — `nationwide`; no environmental signals (comorbidity context)
+- [ ] **Sickle cell disease** — `nationwide` (sub-Saharan African ancestry)
+- [ ] **PID** — `nationwide`; female-only
+- [ ] **Malaria in pregnancy** — `nationwide`; same signals as malaria + obstetric context
+- [ ] **Meningococcal meningitis** — `northern_kenya`, `arid_semi_arid`; signals: dry_dusty_season (low, regional); geographic/outbreak context required
+- [ ] **Leptospirosis** — `lake_basin`, `coastal_lowlands`, `urban_informal`; signals: flooding (zoonotic, requires: floodwater_contact)
+
+---
+
+### 7d — Context engine validation
+- [ ] Unit tests: 5 fixed (date, location, exposure) inputs → expected context statement strings
+- [ ] RAG integration test: Malaria case in lake_basin in June → context statement appears in LLM input
+- [ ] RAG integration test: same Malaria case in Nairobi January → no post_long_rains signal fires
+- [ ] RAG integration test: RVF case with livestock_contact in flooded ASAL county → zoonotic signal fires
+- [ ] RAG integration test: RVF case without livestock_contact → zoonotic signal does not fire (requires_exposure not met)
+- [ ] Eval suite: run 8-case baseline — confirm 7/8 maintained after context engine integration
+
+---
+
+## Phase 8 — Interactive Disambiguation (Follow-up Question Loop)
+> Build after Phase 7 has ≥15 conditions confirmed working and context engine validated.
+
+### Design gates (agree before building)
+- [ ] Ambiguity threshold defined: no high-confidence candidate AND top 2+ candidates share same confidence tier
+- [ ] Max rounds agreed (suggested: 3) before forcing a result regardless
+- [ ] Colleague review of question-generation logic
+
+### Implementation steps
+- [ ] Session state machine: `analysing → ambiguous → questioning → re-analysing → result`
+- [ ] Ambiguity detector: post-RAG confidence distribution check
+- [ ] Question generator: discriminating `missing_information` items — features in one candidate's missing_info absent in another's
+- [ ] Follow-up UI: question cards with answer input; answers append to presentation
+- [ ] Re-run RAG with enriched presentation; loop until high confidence or max rounds
+- [ ] "Stop and report" fallback: explicit ambiguity note if max rounds hit without resolution
+- [ ] Eval: 3–5 ambiguous test cases from Phase 7 corpus to validate loop
+
+---
+
+## Phase 9 — Live Environmental Data + Empirical Calibration
+> Build after Phase 8 is validated. Do not start until encounter data volume is sufficient for calibration.
+
+- [ ] Integrate CHIRPS or Kenya Met API as rainfall data source
+- [ ] Replace `seasonal_basis` calendar lookups with observed rainfall anomaly calculations
+- [ ] Compute: rainfall last 7/30/60 days, anomaly vs historical average, consecutive wet days
+- [ ] No schema changes required — context engine output interface is unchanged
+- [ ] Calibrate contextual prior weights from SQLite encounter data (system_clinician_agreement)
+
+---
+
+## Phase 6b — Remaining Steps
+> Steps 2–4 complete. Step 5 pending.
+
+- [x] Step 2 — Session state scaffolding (`_init_session_state`, Clear button, `input_key` increment)
+- [x] Step 3 — Approval workflow + SQLite (`db.py`, `write_encounter()`, clinician diagnosis input, ICD-10 preview)
+- [x] Step 4 — CSS cleanup + editorial minimal UI + Phosphor icons + sidebar cleanup
+- [ ] **Step 5 — Session history sidebar** — approved encounters from `st.session_state.history`; compact chronological list; patient snippet + system diagnosis + ✓/△ agreement indicator + time; flat, no login yet
+
+---
+
+## Outstanding RAG Quality Issues
+> Tracked separately from corpus expansion — these are retrieval/prompt quality items.
+
+- [ ] **PUD retest post ICD-11 fix** — run the PUD presentation case through the RAG; confirm `system_icd11` shows `DA62` (not DA60); confirm weight loss no longer appears in supporting_features
+- [ ] **Obesity as PUD differential (retrieval quality)** — obesity appearing as a differential for epigastric pain is vector overlap in Chroma, not a clinical match; investigate during Phase 7 once more conditions are added (may self-resolve when GERD/dyspepsia dilute the vector space); if still occurring at 15+ conditions, tune retrieval threshold
+
+---
+
+## Session Handoff — 2026-09-03 (Colleague RAG review — prompt fix + corpus flag)
+
+> **For the agent picking up after a compact or new session — read this first.**
+
+### What this session accomplished
+
+**Colleague clinical review of PUD RAG output — 4 issues identified and triaged:**
+
+**Issue 1 — Weight loss hallucination (FIXED):** The model listed "weight loss" in `supporting_features` for PUD despite the presentation explicitly stating "Denies... weight loss." Root cause: Rule 1 only covered the missing-is-not-negative direction; the inverse (denied = confirmed absent, must NOT appear in supporting_features) was not stated. Fix applied to `phase5/prompts.py`:
+- Rule 1 heading extended: "MISSING IS NOT NEGATIVE — AND DENIED IS NOT PRESENT"
+- Inverse constraint added: denied/negated findings are confirmed absent; listing them in supporting_features is a factual contradiction
+- `supporting_features` schema description updated: NEVER include explicitly denied findings
+
+**Issue 2 — ICD-11 code mismatch in PUD corpus card (PENDING VERIFICATION):** `symptoms_dictionary/peptic_ulcer_disease.md` has `icd11: DA60` (Gastric ulcer, ICD-11) but `icd10: K27` (Peptic ulcer, site unspecified). These don't match. Colleague says correct ICD-11 for K27 is DA61, but ICD-11 tree structure (DA60=Gastric, DA61=Duodenal) suggests DA62 may be the unspecified code. **Action needed:** verify correct ICD-11 code at icd.who.int, then update the card and re-run `python ingest.py`.
+
+**Issue 3 — Weak differentials (CORPUS LIMITATION, KNOWN):** GERD, functional dyspepsia, pancreatitis, gastric malignancy not in the corpus — none can appear as differentials. This is Phase 7 work. Obesity appearing as a differential for PUD is a retrieval quality issue (vector overlap on abdominal symptoms) — flagged for investigation during Phase 7.
+
+**Issue 4 — Overall assessment:** Leading diagnosis, supporting features (after fix), ICD-10, and missing_information are performing well. Differential breadth is a corpus-size problem, not a model problem.
+
+### Current state
+- Prompt fix (Rule 1 inverse — denied findings cannot appear in supporting_features): **committed**
+- PUD ICD-11 code: **fixed** — DA60 → DA62 (peptic ulcer, site unspecified), corpus_version 1.2 → 1.3
+- Phase 6b steps 2–4 (session state, approval workflow, UI/CSS): **complete and committed**
+- Phase 6b step 5 (session history sidebar): **pending**
+- Phase 7 schema (CLAUDE.md + STATUS.md): **documented 2026-09-04**
+- Eval: **7/8** (unchanged)
+
+### Pick up here
+1. **Phase 7a — `ingest.py`** — add `endemic_regions` + `environmental_signals` parsing; validate against controlled vocabulary; bump schema_version to 2.0
+2. **Phase 7a — `context_engine.py`** — new file in `phase7/`; static calendar + ENSO flag; unit testable
+3. **Phase 7b — Backfill** — add new frontmatter fields to all 10 existing cards; re-ingest; reload Neo4j
+4. **Phase 7c — Dengue card** — first new condition card; send to colleague before ingesting
+5. **Phase 6b Step 5** — session history sidebar (can be done in parallel with 7a)
+
+### Key files (current)
+- `phase5/prompts.py` — FIVE RULES; Rule 1 inverse (denied = absent); Rule 4 demographic filter; red flags scope
+- `symptoms_dictionary/peptic_ulcer_disease.md` — corpus_version 1.3, icd11: DA62
+- `symptoms_dictionary/uti.md` — corpus_version 1.4, simplified argues_against: male sex
+- `CLAUDE.md` — schema_version 2.0 spec, controlled vocabularies, environmental context architecture
+
+---
+
 ## Session Handoff — 2026-09-02 (Phase 6b steps 2–3 + schema + analyst fields)
 
 > **For the agent picking up after a compact or new session — read this first.**

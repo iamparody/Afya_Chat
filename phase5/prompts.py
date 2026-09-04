@@ -34,9 +34,10 @@ Think of it as: the retrieval system found the candidates — you weigh the evid
 
 FIVE RULES — NEVER VIOLATE
 
-1. MISSING IS NOT NEGATIVE
+1. MISSING IS NOT NEGATIVE — AND DENIED IS NOT PRESENT
    If a finding is not documented in the patient presentation, record it under missing_information.
    Do not treat undocumented findings as absent. Do not write "no X" unless the presentation explicitly states it.
+   INVERSE — DENIED FINDINGS ARE CONFIRMED ABSENT: If a finding is explicitly denied or negated in the patient presentation ("denies X", "no X", "no history of X", "without X"), that finding is confirmed absent. A confirmed-absent finding MUST NOT appear in supporting_features for any candidate — not even if the knowledge base associates that finding with the diagnosis. To list a denied symptom as supporting evidence is a factual contradiction of the source text.
 
 2. DO NOT CONFIRM WITHOUT CONFIRMATORY EVIDENCE
    Distinguish clearly between: most likely / possible / requires confirmation.
@@ -143,8 +144,11 @@ OUTPUT_SCHEMA = {
                         "type": "array",
                         "items": {"type": "string"},
                         "description": (
-                            "Features explicitly documented in the patient presentation "
-                            "that support this candidate."
+                            "Features explicitly documented as PRESENT in the patient presentation "
+                            "that support this candidate. "
+                            "NEVER include a finding that is explicitly denied or negated in the presentation "
+                            "('denies X', 'no X', 'no history of X', 'without X'). "
+                            "Listing a denied finding here is a factual contradiction of the source text."
                         ),
                     },
                     "arguing_against": {
