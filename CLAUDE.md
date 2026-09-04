@@ -365,6 +365,8 @@ See [[STATUS]] for granular task tracking.
 - Verify ICD-11 codes at icd.who.int — confirm icd11 and icd10 map to the same condition
 - Use only controlled vocabularies for `endemic_regions`, `environmental_signals`, `pathways`, `effect_type`, `evidence_type`, `exposure`
 - Send new condition cards to colleague for clinical review before ingesting
+- **Graph block terms must be short canonical forms** — max ~4 words, no conditional phrases, no conjunctions (`with`, `or`, `and`, `without`, age qualifiers appended). Clinical nuance belongs in prose sections, not graph fields. Examples: `new onset dyspepsia` ✓ / `age over 55 with new dyspepsia` ✗; `male UTI` ✓ / `UTI in man under 50 without precipitating factor` ✗; `severe dehydration` ✓ / `severe dehydration in child under five` ✗
+- Add new graph terms to `symptom_vocabulary.md` **before** using them in a card — prevents unknown-term warnings at ingest
 
 ### Don't
 - Do not rename section headers in condition cards (breaks the parser)
@@ -377,6 +379,7 @@ See [[STATUS]] for granular task tracking.
 - Do not encode more than 3 `environmental_signals` per card without strong evidence for each
 - Do not let the context engine (or the LLM) make a diagnosis based on season alone — context adjusts priors, clinical evidence decides
 - Do not use `effect_direction: up` as the only direction — signals can be neutral or down
+- Do not use compound graph block terms with conjunctions or conditional clauses — break into shortest canonical matchable units
 
 ### Orientation (when new to session)
 1. Read this file (`CLAUDE.md`) — especially Frontmatter Schema and Controlled Vocabularies
