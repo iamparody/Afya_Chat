@@ -24,7 +24,7 @@
 ### PF-2 — Card evaluation protocol
 > "Colleagues will test" is currently undefined. Without a shared checklist, evaluations are subjective and inconsistent.
 
-- [ ] Define and document the evaluation checklist (below) — agree with colleagues before first new card is tested
+- [x] Define and document the evaluation checklist (below) — documented in STATUS.md
 
 **Card evaluation checklist (one pass per new card):**
 1. **Leading diagnosis** — does a representative presentation return the correct condition as leading candidate?
@@ -34,38 +34,38 @@
 5. **Missing information** — are the listed missing items clinically relevant discriminators, not generic history questions?
 6. **Regression** — re-run the full 8-case eval baseline after each new card batch; confirm 7/8 maintained
 
-- [ ] Share checklist with Colleague 1 (evaluation) and Colleague 2 (LLM testing) before first new card ingest
+- [ ] **Pending human action** — share checklist with Colleague 1 (evaluation) and Colleague 2 (LLM testing) before first new card ingest
 
 ---
 
-### PF-3 — Complication vs. differential decision
+### PF-3 — Complication vs. differential decision ✅ Done (2026-09-04)
 > Iron deficiency anaemia appeared as a PUD differential — it is a complication (PUD causes anaemia through bleeding). The graph has no IS_COMPLICATION_OF concept. Decision needed before authoring cards that have clear complication relationships.
 
-- [ ] **Decision: accept as known limitation for now** — document it; the prompt already has Rule 5 (confirmed comorbidities go to `relevant_comorbidities_or_context`); complications that appear as differentials will be filtered out by clinical review; revisit at Phase 8 when the disambiguation loop can ask "is this a pre-existing complication?"
-- [ ] Add a note to `prompts.py` schema description for `candidates[]`: complications of a suspected diagnosis should not appear as independent candidates — they belong in `relevant_comorbidities_or_context` if already documented, or in `missing_information` if undocumented
+- [x] **Decision: accept as known limitation for now** — complications appearing as differentials filtered by clinical review; revisit at Phase 8 (disambiguation loop)
+- [x] Added note to `prompts.py` `candidates[]` schema description: complications of a suspected diagnosis must not appear as candidates — place in `relevant_comorbidities_or_context` or `missing_information`
 
 ---
 
 ### PF-4 — Disambiguation loop design spec (lock before building)
 > Agreed at high level. Gaps in spec will cause rework if code is written before these are decided.
 
-- [ ] **Ambiguity trigger**: no `high` confidence candidate AND ≥2 candidates share the same confidence tier (both `moderate`, or both `low`)
-- [ ] **Question selection logic**: extract `missing_information` items that appear in the top tied candidate(s) but differ between them — these are the discriminating questions; do NOT ask about missing_information items shared by all candidates (not discriminating)
-- [ ] **Max rounds**: 3 — after 3 rounds without a `high` confidence candidate, surface current best with explicit ambiguity note
-- [ ] **Answer format**: free text appended to presentation (keeps architecture simple; structured answers are Phase 9)
-- [ ] **Region/location**: do NOT add as a structured UI field — let it surface naturally as a clarifying question when region discriminates between tied candidates
-- [ ] **UI**: question cards displayed one at a time; "Skip" option on each (skipped questions noted as still missing); "Stop and get assessment" escape hatch at any round
-- [ ] Colleague review of this spec before implementation begins
+- [x] **Ambiguity trigger**: no `high` confidence candidate AND ≥2 candidates share the same confidence tier (both `moderate`, or both `low`)
+- [x] **Question selection logic**: extract `missing_information` items that appear in the top tied candidate(s) but differ between them — these are the discriminating questions; do NOT ask about missing_information items shared by all candidates (not discriminating)
+- [x] **Max rounds**: 3 — after 3 rounds without a `high` confidence candidate, surface current best with explicit ambiguity note
+- [x] **Answer format**: free text appended to presentation (keeps architecture simple; structured answers are Phase 9)
+- [x] **Region/location**: do NOT add as a structured UI field — let it surface naturally as a clarifying question when region discriminates between tied candidates
+- [x] **UI**: question cards displayed one at a time; "Skip" option on each (skipped questions noted as still missing); "Stop and get assessment" escape hatch at any round
+- [ ] **Pending human action** — colleague review of this spec before implementation begins
 
 ---
 
-### PF-5 — Regression test plan
+### PF-5 — Regression test plan ✅ Documented (2026-09-04)
 > Adding new conditions changes the vector space — existing test cases may behave differently. No plan currently exists for catching regressions.
 
-- [ ] After every batch of new cards (defined as every 2–3 cards), re-run `python phase5/evaluate.py`
-- [ ] Acceptable baseline: 7/8 (Case 2b is a known ceiling, not a regression)
-- [ ] If a previously passing case drops: investigate before ingesting the next card
-- [ ] Track eval results in this file after each run — format: `YYYY-MM-DD: X/8 after adding [card name(s)]`
+- [x] After every batch of new cards (defined as every 2–3 cards), re-run `python phase5/evaluate.py`
+- [x] Acceptable baseline: 7/8 (Case 2b is a known ceiling, not a regression)
+- [x] If a previously passing case drops: investigate before ingesting the next card
+- [x] Track eval results in this file after each run — format: `YYYY-MM-DD: X/8 after adding [card name(s)]`
 
 **Eval history:**
 - 2026-08-31: 7/8 baseline (dense-only Cohere, FIVE RULES prompt)

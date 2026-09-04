@@ -116,7 +116,13 @@ OUTPUT_SCHEMA = {
         },
         "candidates": {
             "type": "array",
-            "description": "All assessed candidates ordered by evidence-based ranking (strongest first).",
+            "description": (
+                "All assessed candidates ordered by evidence-based ranking (strongest first). "
+                "Known complications of a leading diagnosis (e.g. iron deficiency anaemia as a "
+                "complication of peptic ulcer bleeding) must NOT appear here as independent candidates — "
+                "place them in relevant_comorbidities_or_context if already documented, "
+                "or note the possibility in missing_information if undocumented."
+            ),
             "items": {
                 "type": "object",
                 "required": [
