@@ -1,6 +1,6 @@
 ---
 type: glossary
-corpus_version: "1.1"
+corpus_version: "1.2"
 purpose: shared definitions of clinical terms used across condition cards
 ---
 
@@ -11,6 +11,16 @@ Shared definitions for terms used consistently across condition cards. Maintaine
 ---
 
 **Anaemia** — Haemoglobin below WHO thresholds: <13 g/dL in men; <12 g/dL in non-pregnant women; <11 g/dL in pregnant women; <11.5 g/dL in children aged 5–11 years; <11 g/dL in children aged 6–59 months.
+
+**Barrett's oesophagus** — Metaplastic replacement of the normal squamous epithelium of the distal oesophagus with columnar intestinal-type epithelium, confirmed on biopsy. Develops as a complication of chronic gastro-oesophageal reflux disease. Carries a small but significant risk of progression to oesophageal adenocarcinoma (approximately 0.3% per year); the absolute risk is low but the condition requires endoscopic surveillance. Risk factors for progression include segment length, male sex, obesity, and smoking.
+
+**Globus sensation** — A persistent awareness of a lump, tightness, or foreign body in the throat, typically at the level of the cricoid cartilage, without true dysphagia (swallowing is not impaired). Causes include gastro-oesophageal reflux disease, upper oesophageal sphincter dysfunction, and anxiety. Distinguished from dysphagia (difficulty initiating swallowing or food sticking) — patients with globus can swallow normally despite the sensation.
+
+**Lower oesophageal sphincter (LOS)** — A zone of raised pressure at the gastro-oesophageal junction, formed by the intrinsic smooth muscle of the distal oesophagus and the crural diaphragm, that acts as the primary anti-reflux barrier. Transient LOS relaxations unrelated to swallowing are the dominant mechanism of reflux in GERD. Hiatus hernia mechanically disrupts the LOS. Certain drugs (calcium channel blockers, nitrates, anticholinergics, progesterone) reduce LOS pressure and can worsen reflux.
+
+**Odynophagia** — Pain on swallowing, felt as a sharp or burning discomfort in the chest during food or liquid passage. Distinguished from dysphagia (difficulty swallowing or food sticking without pain). Odynophagia indicates significant mucosal disease — severe oesophagitis, oesophageal ulceration, or infection (candida, CMV, HSV oesophagitis in immunocompromised patients). It is a red-flag symptom in the context of GERD and requires endoscopic evaluation.
+
+**Waterbrash** — A sudden, involuntary flooding of the mouth with clear or slightly cloudy tasteless saliva, often occurring without warning. Caused by a vagally-mediated reflex hypersalivation response to oesophageal acid exposure. Distinguished from regurgitation (which contains sour or bitter gastric fluid) and from nausea with hypersalivation (which precedes vomiting). When present alongside heartburn, waterbrash is highly specific for gastro-oesophageal reflux disease.
 
 **Costovertebral angle tenderness** — Pain elicited by firm percussion or palpation at the angle formed by the 12th rib and the paravertebral muscles of the lower back, bilaterally. Positive finding is unilateral and indicates ipsilateral renal parenchymal or pelvic inflammation (pyelonephritis, renal calculus).
 

@@ -158,10 +158,10 @@
   - [ ] Ingested + tested
 
 **Tier 1 — Differential gap (PUD/respiratory):**
-- [ ] **GERD** — `nationwide`; no environmental signals; key PUD differential
-  - [ ] Card authored
-  - [ ] Colleague review
-  - [ ] Ingested + tested
+- [x] **GERD** — `nationwide`; no environmental signals; key PUD differential ✅ (2026-09-06)
+  - [x] Card authored — `gerd.md`; 18 new vocabulary terms added; 0 ingest warnings
+  - [ ] Colleague review (pending — `review_status: draft`)
+  - [ ] RAG test case
 - [ ] **Functional dyspepsia** — `nationwide`; no environmental signals; key PUD/GERD differential
   - [ ] Card authored
   - [ ] Colleague review

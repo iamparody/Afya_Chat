@@ -52,6 +52,12 @@
 | intertrigo | skin fold rash |
 | heartburn | |
 | acid reflux | reflux |
+| acid regurgitation | reflux of acid, acid backflow |
+| belching | eructation, burping |
+| odynophagia | painful swallowing |
+| hoarseness | dysphonia, voice hoarseness |
+| globus sensation | globus pharyngeus, throat lump |
+| chronic cough | persistent cough, ongoing cough |
 | irregular menstruation | oligomenorrhoea |
 | irritability | |
 | jaundice | icterus |
@@ -199,6 +205,8 @@
 | sexual intercourse | recent sexual intercourse |
 | silicosis | |
 | Zollinger-Ellison syndrome | |
+| hiatus hernia | sliding hiatus hernia, para-oesophageal hernia |
+| caffeine use | excess caffeine, caffeine intake |
 | previous TB treatment | prior TB treatment |
 | household contact with smear-positive TB | TB contact |
 | socioeconomic disadvantage | low socioeconomic status |
@@ -303,6 +311,10 @@
 | upper lobe infiltrates with cavitation on chest X-ray | classic TB pattern |
 | new pulmonary infiltrate on chest X-ray | CAP |
 | consolidation signs | signs of consolidation |
+| oesophagitis on endoscopy | reflux oesophagitis, erosive oesophagitis |
+| Barrett's oesophagus on biopsy | Barrett's oesophagus, Barrett's metaplasia |
+| positive 24-hour pH monitoring | abnormal pH monitoring, oesophageal pH study |
+| symptomatic response to PPI trial | PPI trial response, empirical PPI response |
 | elevated WBC with neutrophilia | bacterial infection marker |
 | positive sputum culture | |
 | positive pneumococcal urinary antigen | |
