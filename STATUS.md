@@ -166,10 +166,10 @@
   - [x] Card authored — `functional_dyspepsia.md`; 4 new vocabulary terms; 0 ingest warnings
   - [ ] Colleague review (pending — `review_status: draft`)
   - [ ] RAG test case
-- [ ] **Typhoid fever** — `nationwide`; signals: flooding (waterborne, moderate), water_scarcity (moderate); key Malaria/AGE differential
-  - [ ] Card authored
-  - [ ] Colleague review
-  - [ ] Ingested + tested
+- [x] **Typhoid fever** — `nationwide`; signals: flooding (waterborne, moderate), water_scarcity (moderate); key Malaria/AGE differential ✅ (2026-09-06)
+  - [x] Card authored — `typhoid_fever.md`; 9 new vocabulary terms; 0 ingest warnings
+  - [ ] Colleague review (pending — `review_status: draft`)
+  - [ ] RAG test case
 - [ ] **Asthma** — `nationwide`; signals: cold_dry_season (low), dry_dusty_season (low); key Pneumonia/TB differential
   - [ ] Card authored
   - [ ] Colleague review

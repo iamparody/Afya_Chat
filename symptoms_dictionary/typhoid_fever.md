@@ -1,0 +1,54 @@
+---
+condition: Typhoid fever
+icd11: 1A07
+icd10: A01.0
+category: infectious
+corpus_version: "1.0"
+schema_version: "1.2"
+review_status: draft
+reviewed_by: ""
+last_reviewed: ""
+sources:
+  - organization: "WHO"
+    title: "Typhoid and Other Invasive Salmonellosis — WHO Technical Report"
+    year: "2018"
+  - organization: "WHO"
+    title: "Typhoid Vaccines: WHO Position Paper"
+    year: "2018"
+  - organization: "Kenya MOH"
+    title: "Kenya Clinical Guidelines"
+    year: "2022"
+  - organization: "Sanford Guide"
+    title: "Antimicrobial Therapy — Enteric Fever"
+    year: "2023"
+graph:
+  cardinal_symptoms: [fever, headache, malaise, anorexia, abdominal pain]
+  associated_symptoms: [constipation, diarrhoea, nausea, vomiting, relative bradycardia, rose spots, splenomegaly, hepatomegaly, abdominal distension, dry cough, myalgia]
+  risk_factors: [contaminated food, contaminated water, poor sanitation, poor hand hygiene, travel to endemic area, household contact with typhoid, age under five, immunocompromise]
+  differentials: [malaria, acute gastroenteritis, community-acquired pneumonia, brucellosis, viral hepatitis, dengue fever, bacterial sepsis]
+  argues_against: [acute onset under 3 days, prominent watery diarrhoea from day one, normal blood count with no leucopenia, positive malaria RDT]
+  red_flags: [intestinal perforation, haematemesis, altered consciousness, septic shock, severe anaemia, haemodynamic instability]
+  confirms: [positive blood culture, positive stool culture, positive Widal test]
+---
+
+# Typhoid fever
+
+Typhoid fever (enteric fever) is a systemic febrile illness caused by Salmonella enterica serovar Typhi, transmitted exclusively via the faecal-oral route through ingestion of contaminated food or water. It is characterised by a stepwise rising fever, constitutional symptoms, and abdominal findings — with potentially life-threatening complications in untreated or delayed cases. It remains endemic throughout East Africa, where poor sanitation and limited access to safe water sustain transmission.
+
+**Cardinal symptoms:** Fever is the defining feature — classically stepwise in progression, rising one degree Celsius each day over the first week, reaching 39–40°C or higher by the end of the first week and remaining sustained or remittent through weeks two and three. Headache is prominent and often severe, contributing to a toxic, ill appearance. Malaise and anorexia are universal. Abdominal pain — diffuse, dull, and poorly localised in the periumbilical and right iliac fossa regions — reflects terminal ileal involvement (Peyer's patches). The illness develops insidiously over one to two weeks, in contrast to the acute onset of malaria or viral gastroenteritis.
+
+**Associated symptoms and signs:** Constipation is more common than diarrhoea, particularly in the first week — this is a key distinguishing feature from gastroenteritis. Diarrhoea, if it occurs, tends to appear in the second or third week and may signal impending complications. Relative bradycardia — a pulse rate lower than expected for the degree of fever — is a classical but inconstant sign (Faget's sign); its presence should increase suspicion for typhoid, brucellosis, or viral hepatitis. Rose spots — faint pink macules 2–4 mm in diameter on the trunk and abdomen — are present in approximately 30% of patients and are easier to see on lighter skin; they are transient and easily missed. Splenomegaly is present in most patients by the second week; hepatomegaly is common. Abdominal distension and tenderness increase as the illness progresses. A dry, non-productive cough is present in up to 30% of patients and may mislead towards a respiratory diagnosis. Myalgia is common. In children, febrile convulsions may occur with the high sustained fever.
+
+**Diagnostic features:** Blood culture is the gold standard — sensitivity is highest in the first week (approximately 60–80%) and declines thereafter as the bacteraemia diminishes; at least 10 mL of blood should be cultured. Bone marrow culture has higher sensitivity (approximately 90%) and remains positive even after antibiotic initiation, but it is rarely available at primary care level. The Widal test — a tube agglutination test detecting antibodies to O and H antigens — is widely used in East African primary care due to low cost and availability, but it has significant limitations: cross-reactions with other enteric bacteria, false positives in endemic areas with background immunity, and false negatives in early infection. A single Widal titre is difficult to interpret; rising titres over 7–10 days are more informative than a single reading. Stool culture is positive in a minority of patients (20–30%) and later in the illness. Leucopenia (low white cell count) or a normal white cell count in the context of sustained fever is characteristic — the absence of leucocytosis helps distinguish typhoid from most bacterial infections. Thrombocytopenia is common.
+
+**Predisposing factors:** Contaminated food and water are the exclusive transmission routes — inadequately cooked foods, raw vegetables washed in contaminated water, street food, and shared water sources are the principal vehicles. Poor sanitation and poor hand hygiene, particularly around food preparation and following defaecation, sustain transmission. Household or close contact with a person who has had typhoid or is a chronic carrier. Travel to highly endemic areas (parts of South Asia, sub-Saharan Africa). Age under five and immunocompromise are associated with more severe disease. Absence of vaccination: typhoid Vi polysaccharide and Typbar-TCV conjugate vaccines are available and recommended for travellers and endemic areas.
+
+**Typical presentation:** A young adult or child in an urban or peri-urban area in Kenya presents after five to ten days of gradually worsening fever with headache, anorexia, and abdominal discomfort. The patient appears toxic and unwell. There is no dramatic acute onset, no rigors (though chills may occur), and no prominent diarrhoea. Splenomegaly is found on examination. White cell count is normal or low. A malaria RDT is negative. The presentation has not improved despite empirical antimalarials. This clinical picture — sustained fever, insidious onset, relative well-appearance in the early week shifting to toxic appearance by the second week, constipation more than diarrhoea, splenomegaly, and no leucocytosis — should prompt blood culture and empirical typhoid treatment when culture is not immediately available.
+
+**Important differential diagnoses:** Malaria is the most important differential in East Africa — it shares fever, headache, malaise, and abdominal symptoms, and both may present with splenomegaly; however, malaria has a more acute onset with rigors and cyclical fever, thrombocytopenia is more pronounced, and a positive malaria RDT or blood film confirms malaria. Crucially, malaria and typhoid can co-exist; a positive RDT does not exclude concurrent typhoid. Acute gastroenteritis shares abdominal pain and constitutional features but has a more acute onset (hours to days), prominent watery or bloody diarrhoea from the outset, and a shorter course. Community-acquired pneumonia shares fever, dry cough, and malaise but has localising chest signs, productive cough, and radiological consolidation. Brucellosis produces a similar insidious fever with sweats and arthralgias — occupational exposure to livestock is the key risk factor; brucella serology or culture differentiates. Dengue fever produces acute fever with retro-orbital headache, myalgia, and thrombocytopenia — but has a shorter course and platelet fall is more severe earlier. Viral hepatitis (hepatitis A or E) produces fever, jaundice, and hepatomegaly — transaminases are markedly elevated; jaundice is not a feature of typhoid in uncomplicated cases.
+
+**Features that argue against this diagnosis:** Acute onset with rigors over hours to one day and rapid defervescence with treatment argues against typhoid and towards malaria. Prominent watery diarrhoea from day one — before the first week is complete — is more consistent with infectious gastroenteritis or cholera than typhoid. Leucocytosis with neutrophilia argues against typhoid and towards most other bacterial infections. A positive malaria RDT makes malaria the more immediate priority, though co-infection must always be considered in endemic settings. Symptom duration of less than three days makes typhoid unlikely; the insidious stepwise onset is a core feature.
+
+**Red flags:** Intestinal perforation — the most feared complication, occurring in the third week — presents as sudden worsening of abdominal pain with peritonism, board-like rigidity, and haemodynamic compromise; it carries high mortality without emergency surgery. Intestinal haemorrhage produces haematemesis or fresh rectal bleeding and haemodynamic instability; requires blood transfusion and surgical evaluation. Altered consciousness or typhoid encephalopathy indicates severe systemic toxaemia. Septic shock with haemodynamic instability requires immediate parenteral antibiotics and resuscitation. Severe anaemia from haemolysis or bone marrow suppression. Hepatitis, myocarditis, and pneumonia are less common but recognised complications.
+
+**Diagnostic context:** In Kenya primary care, the diagnostic approach must balance the limitations of available tests with the clinical urgency. Blood culture should be sent before antibiotic initiation whenever possible — empirical treatment after a single blood culture set is the pragmatic standard in most settings. Where blood culture is unavailable, the Widal test with a titre threshold of ≥1:160 for O antigen (in a non-endemic population) or a fourfold rise over 7–10 days is the accepted surrogate; a single positive Widal in an endemic area must be interpreted with caution. Empirical treatment is warranted when clinical suspicion is high: sustained fever for ≥5 days, no leucocytosis, insidious onset, splenomegaly, and negative malaria testing. First-line treatment in Kenya follows MOH guidance — azithromycin for uncomplicated typhoid; fluoroquinolones where susceptibility is confirmed; ceftriaxone for severe disease or suspected MDR typhi. Chloramphenicol, ampicillin, and co-trimoxazole resistance is widespread in East Africa and these should not be used empirically. Typhoid carriers (positive stool culture beyond 12 months) are a reservoir and should be treated. Prevention through WASH (water, sanitation, hygiene) and vaccination is the cornerstone of population-level control.

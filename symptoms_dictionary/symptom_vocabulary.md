@@ -61,8 +61,13 @@
 | irregular menstruation | oligomenorrhoea |
 | irritability | |
 | jaundice | icterus |
+| relative bradycardia | pulse-temperature dissociation |
+| rose spots | rose-coloured spots, typhoid rash |
+| constipation | |
+| abdominal distension | distended abdomen |
 | haemoptysis | coughing blood |
 | pleuritic chest pain | |
+| dry cough | non-productive cough |
 | productive cough | productive cough with sputum |
 | purulent sputum | yellow sputum, green sputum, rust-coloured sputum |
 | productive cough ≥2 weeks | chronic cough |
@@ -80,6 +85,7 @@
 | glossitis | |
 | angular stomatitis | |
 | brittle nails | |
+| abdominal pain | stomach ache, belly pain |
 | epigastric pain | stomach pain, upper abdominal pain |
 | epigastric burning | |
 | epigastric gnawing | |
@@ -113,6 +119,7 @@
 | reduced oxygen saturation | low O2 saturation, low SpO2 |
 | costovertebral angle tenderness | renal angle tenderness |
 | splenomegaly | enlarged spleen |
+| hepatomegaly | enlarged liver |
 | cervical lymphadenopathy | neck lymph nodes |
 | dullness to percussion | |
 | bronchial breathing | |
@@ -160,6 +167,8 @@
 | poor hand hygiene | |
 | contaminated food | contaminated food source |
 | contaminated water | unsafe water |
+| travel to endemic area | travel history |
+| household contact with typhoid | typhoid contact |
 | endemic area residence | living in endemic area |
 | travel to endemic area | |
 | no bed net use | lack of insecticide-treated net |
@@ -246,6 +255,7 @@
 | haemodynamic compromise | haemodynamic instability |
 | haemodynamic instability | cardiovascular instability |
 | hypotension | low blood pressure |
+| intestinal perforation | bowel perforation, typhoid perforation |
 | urosepsis | urological sepsis |
 | pyelonephritis | upper UTI, renal infection |
 | male UTI | UTI in men |
@@ -337,6 +347,8 @@
 | positive stool antigen test for H. pylori | |
 | ≥3 loose or watery stools in 24 hours with acute onset | AGE diagnostic criterion |
 | positive stool culture | |
+| positive blood culture | blood culture positive |
+| positive Widal test | Widal serology positive |
 | positive rotavirus or norovirus antigen | |
 | faecal leucocytes on microscopy | invasive/bacterial cause |
 | clinical dehydration grading moderate to severe | WHO/IMCI dehydration assessment |
