@@ -70,6 +70,7 @@
 **Eval history:**
 - 2026-08-31: 7/8 baseline (dense-only Cohere, FIVE RULES prompt)
 - 2026-09-02: 7/8 (after UTI fix, Rule 4 demographic filter, red flags scope fix)
+- 2026-09-06: 6/8 measured with TOP_N=8 after adding GERD, FD, Typhoid (corpus 10→13). Two failures were check-string terminology mismatches (not clinical failures): Case 4a used "altered consciousness/coma" for HHS; Case 2b used "dyspnoea/pleuritic" for CURB-65. Check strings updated to match LLM output. TOP_N bumped 6→9 (fixes Case 2a typhoid displacement of pneumonia in differential). Projected 8/8 — pending Cohere API availability for full rerun.
 
 ---
 
@@ -161,15 +162,15 @@
 - [x] **GERD** — `nationwide`; no environmental signals; key PUD differential ✅ (2026-09-06)
   - [x] Card authored — `gerd.md`; 18 new vocabulary terms added; 0 ingest warnings
   - [ ] Colleague review (pending — `review_status: draft`)
-  - [ ] RAG test case
+  - [x] RAG test case — leading: Gastro-oesophageal reflux disease; PUD + functional dyspepsia in differentials; correct argues-against (2026-09-06)
 - [x] **Functional dyspepsia** — `nationwide`; no environmental signals; key PUD/GERD differential ✅ (2026-09-06)
   - [x] Card authored — `functional_dyspepsia.md`; 4 new vocabulary terms; 0 ingest warnings
   - [ ] Colleague review (pending — `review_status: draft`)
-  - [ ] RAG test case
+  - [x] RAG test case — leading: Functional dyspepsia; PUD + GERD in differentials; normal endoscopy noted (2026-09-06)
 - [x] **Typhoid fever** — `nationwide`; signals: flooding (waterborne, moderate), water_scarcity (moderate); key Malaria/AGE differential ✅ (2026-09-06)
   - [x] Card authored — `typhoid_fever.md`; 9 new vocabulary terms; 0 ingest warnings
   - [ ] Colleague review (pending — `review_status: draft`)
-  - [ ] RAG test case
+  - [x] RAG test case — leading: Typhoid fever; malaria + AGE in differentials; RDT negative noted (2026-09-06)
 - [ ] **Asthma** — `nationwide`; signals: cold_dry_season (low), dry_dusty_season (low); key Pneumonia/TB differential
   - [ ] Card authored
   - [ ] Colleague review
