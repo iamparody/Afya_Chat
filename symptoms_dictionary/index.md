@@ -14,5 +14,6 @@ Machine-friendly index. One row per condition. Fields: condition, ICD-11 code, c
 | Community-Acquired Pneumonia | CA40 | J18 | Respiratory | pneumonia.md |
 | Urinary Tract Infection | GC08 | N39.0 | Urogenital | uti.md |
 | Iron Deficiency Anaemia | 3A00 | D50 | Haematological | anaemia.md |
-| Peptic Ulcer Disease | DA60 | K27 | Gastroenterological | peptic_ulcer_disease.md |
+| Peptic Ulcer Disease | DA62 | K27 | Gastroenterological | peptic_ulcer_disease.md |
+| Gastro-oesophageal Reflux Disease | DA22 | K21 | Gastroenterological | gerd.md |
 | Acute Gastroenteritis (Infectious) | 1A09 | A09 | Gastroenterological / Infectious | acute_gastroenteritis.md |
