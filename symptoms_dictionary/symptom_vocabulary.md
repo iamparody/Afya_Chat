@@ -107,6 +107,12 @@
 | recurrent infections | frequent infections |
 | slow wound healing | impaired wound healing |
 | witnessed apnoeas | apnoeic episodes |
+| wheeze | wheezing, whistling breath |
+| chest tightness | chest constriction, chest pressure |
+| nocturnal symptoms | nocturnal waking, night-time symptoms |
+| retro-orbital headache | retro-orbital pain, pain behind eyes |
+| maculopapular rash | dengue rash, erythematous maculopapular rash |
+| severe myalgia | break-bone fever pain, intense muscle pain |
 
 ---
 
@@ -117,6 +123,9 @@
 | tachycardia | fast heart rate, rapid pulse |
 | tachypnoea | fast breathing, rapid breathing |
 | reduced oxygen saturation | low O2 saturation, low SpO2 |
+| thrombocytopenia | low platelets, platelet count below 100,000 |
+| leukopenia | low white cell count, leucopenia |
+| prolonged expiratory phase | prolonged expiration, obstructive expiratory pattern |
 | costovertebral angle tenderness | renal angle tenderness |
 | splenomegaly | enlarged spleen |
 | hepatomegaly | enlarged liver |
@@ -207,6 +216,9 @@
 | anxiety | anxiety disorder, generalised anxiety |
 | asthma | |
 | COPD | chronic obstructive pulmonary disease |
+| atopy | allergic sensitisation, atopic constitution, atopic predisposition |
+| family history of asthma | asthmatic family history |
+| occupational dust exposure | workplace dust exposure, occupational dust |
 | malignancy | cancer, malignant disease |
 | aspiration risk | aspiration risk factors |
 | indoor air pollution | biomass fuel smoke |
@@ -255,6 +267,10 @@
 | haemodynamic compromise | haemodynamic instability |
 | haemodynamic instability | cardiovascular instability |
 | hypotension | low blood pressure |
+| silent chest | absent wheeze in severe obstruction |
+| cyanosis | central cyanosis, blue discolouration |
+| plasma leakage | haemoconcentration, third-space fluid shift |
+| severe bleeding | haemorrhagic manifestations, spontaneous haemorrhage |
 | intestinal perforation | bowel perforation, typhoid perforation |
 | urosepsis | urological sepsis |
 | pyelonephritis | upper UTI, renal infection |
@@ -353,6 +369,12 @@
 | faecal leucocytes on microscopy | invasive/bacterial cause |
 | clinical dehydration grading moderate to severe | WHO/IMCI dehydration assessment |
 | oxygen saturation <94% | hypoxia threshold |
+| reversible airflow obstruction | FEV1 reversibility ≥12%, bronchodilator reversibility |
+| peak flow variability | PEFR variability >20%, diurnal peak flow variation |
+| positive bronchoprovocation test | methacholine challenge positive, exercise bronchoprovocation |
+| positive dengue NS1 antigen | dengue NS1 positive, NS1 test positive |
+| positive dengue IgM serology | dengue IgM positive, dengue serology positive |
+| positive tourniquet test | Rumpel-Leede test positive, capillary fragility positive |
 
 ---
 
@@ -361,6 +383,11 @@
 | Canonical Term | Do Not Use |
 |---|---|
 | normal HbA1c | HbA1c within normal limits |
+| normal spirometry during symptoms | normal lung function during episode |
+| no bronchodilator response | absent bronchodilator response, failed bronchodilator trial |
+| single acute episode | isolated acute episode |
+| normal platelet count | platelets within normal range |
+| gradual insidious onset | slow symptom onset over weeks |
 | normal fasting plasma glucose | fasting glucose normal |
 | normal chest X-ray | normal CXR |
 | normal upper GI endoscopy during symptoms | negative endoscopy |
