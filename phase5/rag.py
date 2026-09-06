@@ -29,7 +29,7 @@ from prompts import SYSTEM_PROMPT, OUTPUT_SCHEMA, build_context
 from providers import get_provider
 
 CHROMA_DIR       = ROOT / "chroma" / "db"
-TOP_N_CANDIDATES = 6
+TOP_N_CANDIDATES = 9
 TOP_N_PASSAGES   = 5  # per candidate — wider window to ensure red flag + diagnostic sections are included
 
 
@@ -130,8 +130,14 @@ def get_vector_candidates_hybrid(embedder, collection, presentation, n=TOP_N_CAN
 
 # ── Retrieval: filtered vector passages ───────────────────────────────────────
 
+RED_FLAG_SECTION = "Red flags"
+
 def get_filtered_passages(embedder, collection, presentation, conditions):
-    """Semantic search restricted to the graph's top candidates."""
+    """
+    Semantic search restricted to the graph's top candidates.
+    Always appends the Red flags section for each condition — it is never
+    semantically close to a routine presentation but is safety-critical.
+    """
     emb = embedder.embed_query(presentation)
 
     passages = []
@@ -142,12 +148,29 @@ def get_filtered_passages(embedder, collection, presentation, conditions):
             where={"condition": condition},
             include=["documents", "metadatas"],
         )
+        retrieved_sections = set()
         for doc, meta in zip(results["documents"][0], results["metadatas"][0]):
             passages.append({
                 "condition": meta["condition"],
                 "section":   meta["section"],
                 "text":      doc,
             })
+            retrieved_sections.add(meta["section"])
+
+        # Force-include the red flags section if not already in top N
+        if RED_FLAG_SECTION not in retrieved_sections:
+            rf_results = collection.query(
+                query_embeddings=[emb],
+                n_results=1,
+                where={"$and": [{"condition": {"$eq": condition}}, {"section": {"$eq": RED_FLAG_SECTION}}]},
+                include=["documents", "metadatas"],
+            )
+            if rf_results["documents"][0]:
+                passages.append({
+                    "condition": rf_results["metadatas"][0][0]["condition"],
+                    "section":   rf_results["metadatas"][0][0]["section"],
+                    "text":      rf_results["documents"][0][0],
+                })
 
     return passages
 

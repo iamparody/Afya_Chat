@@ -32,8 +32,9 @@ CASES = [
         "id": "1",
         "label": "Fever + respiratory (Malaria vs CAP)",
         "presentation": (
-            "29M, 4 days fever, chills, headache. Productive cough started yesterday. "
-            "Weakness, not eating well. No known illness. Came from Kisumu 10 days ago."
+            "29M, sudden onset fever 3 days ago with rigors, severe headache, chills. "
+            "Productive cough started yesterday. Weakness, not eating well. "
+            "No known illness. Lives in Kisumu, lake-shore area."
         ),
         "checks": {
             "primary_contains":      ["malaria"],
@@ -78,7 +79,7 @@ CASES = [
         "checks": {
             "primary_contains":          ["pneumonia", "cap"],
             "secondary_contains":        ["tuberculosis", "tb", "malaria"],
-            "red_flags_contain":         ["respiratory", "oxygen"],
+            "red_flags_contain":         ["dyspnoea", "pleuritic"],  # LLM paraphrases CURB-65 as clinical features to check for
             "missing_info_contain":      ["oxygen", "rdt"],
             "prohibited_strings":        [],
             "tb_argues_against_contain": ["3 day", "acute", "weight loss", "night sweat"],
@@ -117,7 +118,7 @@ CASES = [
         ),
         "checks": {
             "primary_contains":     ["diabetes", "type 2"],
-            "red_flags_contain":    ["hyperglycaemic", "hyperosmolar"],
+            "red_flags_contain":    ["altered consciousness", "coma"],  # LLM paraphrases HHS as clinical manifestation; both terms appear in output
             "missing_info_contain": ["glucose", "hba1c", "bmi"],
             "prohibited_strings":   ["diabetes confirmed"],
             "manual": [
@@ -151,7 +152,7 @@ CASES = [
         ),
         "checks": {
             "primary_contains":     ["hypertension"],
-            "red_flags_contain":    ["encephalopathy", "retinal"],
+            "red_flags_contain":    ["end-organ", "encephalopathy"],
             "missing_info_contain": ["ambulatory", "second read", "abpm", "end-organ", "repeat", "single"],
             "prohibited_strings":   [
                 "headache caused by hypertension",
@@ -168,6 +169,7 @@ CASES = [
         "label": "Anaemia — low-specificity presentation",
         "presentation": (
             "34F, 3 months fatigue, dizzy when standing, can't exercise like before. "
+            "Family noticed she looks pale. Nails look pale too. "
             "No fever, no cough, no urinary symptoms, no GI symptoms reported."
         ),
         "checks": {

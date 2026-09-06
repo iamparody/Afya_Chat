@@ -276,8 +276,9 @@ ENSO acts as an amplifier on existing seasonal signals — it does not directly 
 4. Send to colleague for clinical review **before** running ingest
 5. After colleague sign-off: add to `symptoms_dictionary/index.md`, define new terms in `glossary.md`, update [[STATUS]]
 6. Run `python ingest.py` — confirm no chunk validation errors and no unknown graph terms
-7. Run `python neo4j/neo4j_loader.py` — confirm condition loaded
-8. Test with a representative clinical case via the Streamlit app
+7. Run `python chroma/chroma_loader.py` — re-embed ALL chunks into the vector store (required after any card change; without this the RAG pipeline uses stale embeddings)
+8. Run `python neo4j/neo4j_loader.py` — confirm condition loaded
+9. Test with a representative clinical case via the Streamlit app
 
 ### Clinical Review Workflow
 
