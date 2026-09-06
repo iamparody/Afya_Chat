@@ -83,6 +83,8 @@
 | epigastric pain | stomach pain, upper abdominal pain |
 | epigastric burning | |
 | epigastric gnawing | |
+| postprandial fullness | early satiety after eating, meal-induced fullness |
+| early satiety | inability to finish a normal meal |
 | pain relieved by food | |
 | pain waking from sleep | nocturnal pain |
 | bloating | abdominal distension |
@@ -192,6 +194,8 @@
 | insulin therapy | insulin treatment |
 | H. pylori infection | Helicobacter pylori infection |
 | physiological stress | critical illness stress |
+| psychological stress | mental stress, psychosocial stress |
+| anxiety | anxiety disorder, generalised anxiety |
 | asthma | |
 | COPD | chronic obstructive pulmonary disease |
 | malignancy | cancer, malignant disease |

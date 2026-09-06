@@ -162,10 +162,10 @@
   - [x] Card authored — `gerd.md`; 18 new vocabulary terms added; 0 ingest warnings
   - [ ] Colleague review (pending — `review_status: draft`)
   - [ ] RAG test case
-- [ ] **Functional dyspepsia** — `nationwide`; no environmental signals; key PUD/GERD differential
-  - [ ] Card authored
-  - [ ] Colleague review
-  - [ ] Ingested + tested
+- [x] **Functional dyspepsia** — `nationwide`; no environmental signals; key PUD/GERD differential ✅ (2026-09-06)
+  - [x] Card authored — `functional_dyspepsia.md`; 4 new vocabulary terms; 0 ingest warnings
+  - [ ] Colleague review (pending — `review_status: draft`)
+  - [ ] RAG test case
 - [ ] **Typhoid fever** — `nationwide`; signals: flooding (waterborne, moderate), water_scarcity (moderate); key Malaria/AGE differential
   - [ ] Card authored
   - [ ] Colleague review
