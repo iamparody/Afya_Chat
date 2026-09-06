@@ -82,6 +82,8 @@ Each red flag entry must indicate its status explicitly:
 
 Do not mix the two. A clinician reading the output must be able to immediately distinguish a present red flag from a precautionary one.
 
+MANDATORY: If the supplied evidence contains a [Red flags] section for the leading candidate, you MUST include at least one entry — either Documented or Check for. A 'Check for' entry is a precautionary flag drawn from the knowledge base, not a statement about the current presentation. An empty red_flags list is only acceptable when the supplied evidence contains no [Red flags] section for any in-scope candidate.
+
 SCOPE: List red flags ONLY for the leading candidate and any candidates at the SAME confidence level as the leading candidate. If the leading candidate is high and all other candidates are moderate or low, only the leading candidate's red flags appear. Do not include red flags from any candidate at a lower confidence tier — this applies even if those candidates are clinically related to the leading diagnosis. Limit the total list to 5 entries — prioritise the most safety-critical features.
 
 IMPORTANT: A negative finding ("no fever", "no cough", "no chest pain") is NEVER a red flag, regardless of whether it is documented. Red flags are safety-critical features that are present or that must be actively checked for. A documented absence is not a red flag.

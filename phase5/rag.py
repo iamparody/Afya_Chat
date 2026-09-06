@@ -135,42 +135,45 @@ RED_FLAG_SECTION = "Red flags"
 def get_filtered_passages(embedder, collection, presentation, conditions):
     """
     Semantic search restricted to the graph's top candidates.
-    Always appends the Red flags section for each condition — it is never
-    semantically close to a routine presentation but is safety-critical.
+    Red flags section is always retrieved FIRST per condition — positional
+    primacy ensures the LLM sees it regardless of presentation similarity.
+    Top-N similarity passages follow.
     """
     emb = embedder.embed_query(presentation)
 
     passages = []
     for condition in conditions:
+        # Step 1: fetch Red flags section unconditionally — always first
+        rf_results = collection.query(
+            query_embeddings=[emb],
+            n_results=1,
+            where={"$and": [{"condition": {"$eq": condition}}, {"section": {"$eq": RED_FLAG_SECTION}}]},
+            include=["documents", "metadatas"],
+        )
+        rf_section_text = None
+        if rf_results["documents"][0]:
+            rf_section_text = rf_results["documents"][0][0]
+            passages.append({
+                "condition": rf_results["metadatas"][0][0]["condition"],
+                "section":   rf_results["metadatas"][0][0]["section"],
+                "text":      rf_section_text,
+            })
+
+        # Step 2: top-N similarity passages (skip Red flags if already added)
         results = collection.query(
             query_embeddings=[emb],
             n_results=TOP_N_PASSAGES,
             where={"condition": condition},
             include=["documents", "metadatas"],
         )
-        retrieved_sections = set()
         for doc, meta in zip(results["documents"][0], results["metadatas"][0]):
+            if meta["section"] == RED_FLAG_SECTION:
+                continue  # already prepended
             passages.append({
                 "condition": meta["condition"],
                 "section":   meta["section"],
                 "text":      doc,
             })
-            retrieved_sections.add(meta["section"])
-
-        # Force-include the red flags section if not already in top N
-        if RED_FLAG_SECTION not in retrieved_sections:
-            rf_results = collection.query(
-                query_embeddings=[emb],
-                n_results=1,
-                where={"$and": [{"condition": {"$eq": condition}}, {"section": {"$eq": RED_FLAG_SECTION}}]},
-                include=["documents", "metadatas"],
-            )
-            if rf_results["documents"][0]:
-                passages.append({
-                    "condition": rf_results["metadatas"][0][0]["condition"],
-                    "section":   rf_results["metadatas"][0][0]["section"],
-                    "text":      rf_results["documents"][0][0],
-                })
 
     return passages
 

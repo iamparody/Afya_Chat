@@ -118,7 +118,7 @@ CASES = [
         ),
         "checks": {
             "primary_contains":     ["diabetes", "type 2"],
-            "red_flags_contain":    ["altered consciousness", "coma"],  # LLM paraphrases HHS as clinical manifestation; both terms appear in output
+            "red_flags_contain":    ["hyperglycaemic", "hyperosmolar"],  # LLM quotes corpus text directly when Red flags section is force-retrieved first
             "missing_info_contain": ["glucose", "hba1c", "bmi"],
             "prohibited_strings":   ["diabetes confirmed"],
             "manual": [
