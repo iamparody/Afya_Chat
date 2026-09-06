@@ -70,7 +70,7 @@
 **Eval history:**
 - 2026-08-31: 7/8 baseline (dense-only Cohere, FIVE RULES prompt)
 - 2026-09-02: 7/8 (after UTI fix, Rule 4 demographic filter, red flags scope fix)
-- 2026-09-06: 6/8 measured with TOP_N=8 after adding GERD, FD, Typhoid (corpus 10→13). Two failures were check-string terminology mismatches (not clinical failures): Case 4a used "altered consciousness/coma" for HHS; Case 2b used "dyspnoea/pleuritic" for CURB-65. Check strings updated to match LLM output. TOP_N bumped 6→9 (fixes Case 2a typhoid displacement of pneumonia in differential). Projected 8/8 — pending Cohere API availability for full rerun.
+- 2026-09-06: 6/8 measured (Cohere, TOP_N=9) after adding GERD, FD, Typhoid. Investigated Case 4a red flags inconsistency (empty vs populated across runs): root cause = Red flags section retrieved at variable position in context (ANN non-determinism), plus missing mandatory language in prompt. Fix: Red flags section now force-retrieved FIRST per condition (positional primacy) + prompt mandates non-empty red flags when [Red flags] section is present. Check strings reverted to corpus terms ["hyperglycaemic","hyperosmolar"]. PubMedBERT health check 3/8 (expected — different embedding space, not baseline). Cohere baseline rerun pending API reset (October 1). Projected ≥7/8.
 
 ---
 
