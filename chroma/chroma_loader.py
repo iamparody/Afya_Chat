@@ -35,8 +35,8 @@ def load_chunks():
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--backend", default="google", choices=["google", "cohere", "pubmedbert"],
-        help="Embedding backend (default: google)",
+        "--backend", default="cohere", choices=["google", "cohere", "pubmedbert"],
+        help="Embedding backend (default: cohere)",
     )
     args = parser.parse_args()
 
