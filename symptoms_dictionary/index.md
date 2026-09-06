@@ -17,3 +17,5 @@ Machine-friendly index. One row per condition. Fields: condition, ICD-11 code, c
 | Peptic Ulcer Disease | DA62 | K27 | Gastroenterological | peptic_ulcer_disease.md |
 | Gastro-oesophageal Reflux Disease | DA22 | K21 | Gastroenterological | gerd.md |
 | Acute Gastroenteritis (Infectious) | 1A09 | A09 | Gastroenterological / Infectious | acute_gastroenteritis.md |
+| Typhoid Fever | 1A07 | A01.0 | Infectious | typhoid_fever.md |
+| Functional Dyspepsia | DA94 | K30 | Gastroenterological | functional_dyspepsia.md |
