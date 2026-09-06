@@ -462,7 +462,7 @@ if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--backend", default="cohere", choices=["cohere", "pubmedbert"],
+        "--backend", default="cohere", choices=["google", "cohere", "pubmedbert"],
         help="Embedding backend to use (default: cohere)",
     )
     parser.add_argument(
@@ -473,7 +473,11 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     embedder = None  # CohereEmbedder initialised inside rag.run() by default
-    if args.backend == "pubmedbert":
+    if args.backend == "google":
+        from embed_provider import GoogleEmbedder
+        embedder = GoogleEmbedder()
+        print(f"Using collection: {embedder.COLLECTION}\n")
+    elif args.backend == "pubmedbert":
         from embed_provider import PubMedBertEmbedder
         print("Loading PubMedBERT model...")
         embedder = PubMedBertEmbedder()
@@ -482,7 +486,7 @@ if __name__ == "__main__":
     if args.hybrid:
         print("Retrieval mode: BM25 + dense vector RRF\n")
     else:
-        print("Retrieval mode: dense-only (Cohere baseline)\n")
+        print(f"Retrieval mode: dense-only ({args.backend})\n")
 
     scored = run_all(args.cases or None, embedder=embedder, hybrid=args.hybrid)
 
