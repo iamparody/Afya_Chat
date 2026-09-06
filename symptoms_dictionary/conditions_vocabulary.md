@@ -43,6 +43,9 @@
 | malaria | |
 | community-acquired pneumonia | CAP, pneumonia |
 | pulmonary tuberculosis | TB, PTB |
+| asthma | bronchial asthma |
+| COPD | chronic obstructive pulmonary disease |
+| chikungunya | chikungunya fever |
 | non-tuberculous mycobacterial infection | NTM infection |
 | lung cancer | bronchogenic carcinoma |
 | bronchiectasis | |

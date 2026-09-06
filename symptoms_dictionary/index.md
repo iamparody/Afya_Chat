@@ -19,3 +19,5 @@ Machine-friendly index. One row per condition. Fields: condition, ICD-11 code, c
 | Acute Gastroenteritis (Infectious) | 1A09 | A09 | Gastroenterological / Infectious | acute_gastroenteritis.md |
 | Typhoid Fever | 1A07 | A01.0 | Infectious | typhoid_fever.md |
 | Functional Dyspepsia | DA94 | K30 | Gastroenterological | functional_dyspepsia.md |
+| Asthma | CA23 | J45 | Respiratory | asthma.md |
+| Dengue Fever | 1D2Z | A90 | Infectious | dengue_fever.md |

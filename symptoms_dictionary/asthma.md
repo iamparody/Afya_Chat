@@ -1,0 +1,51 @@
+---
+condition: Asthma
+icd11: CA23
+icd10: J45
+category: respiratory
+corpus_version: "1.0"
+schema_version: "1.2"
+review_status: draft
+reviewed_by: ""
+last_reviewed: ""
+sources:
+  - organization: "GINA"
+    title: "Global Strategy for Asthma Management and Prevention"
+    year: "2024"
+  - organization: "WHO"
+    title: "Asthma Fact Sheet"
+    year: "2023"
+  - organization: "Kenya MoH"
+    title: "Kenya National Clinical Guidelines for Management of Asthma"
+    year: "2022"
+graph:
+  cardinal_symptoms: [wheeze, dyspnoea, chest tightness]
+  associated_symptoms: [chronic cough, nocturnal symptoms, dyspnoea on exertion, prolonged expiratory phase]
+  risk_factors: [atopy, family history of asthma, smoking, obesity, indoor air pollution, occupational dust exposure]
+  differentials: [community-acquired pneumonia, pulmonary tuberculosis, COPD, gastro-oesophageal reflux disease, acute decompensated heart failure]
+  argues_against: [purulent sputum, single acute episode, normal spirometry during symptoms, no bronchodilator response]
+  red_flags: [silent chest, cyanosis, respiratory distress]
+  confirms: [reversible airflow obstruction, peak flow variability, positive bronchoprovocation test]
+---
+
+# Asthma
+
+Asthma is a chronic inflammatory disease of the airways characterised by variable and reversible airflow obstruction and bronchial hyperresponsiveness. It is common in East Africa and is substantially underdiagnosed in primary care settings, where many patients present only during acute exacerbations.
+
+**Cardinal symptoms:** Asthma presents with the clinical triad of wheeze, dyspnoea, and chest tightness. These symptoms are episodic — recurring and variable in severity — and are either spontaneously reversible or resolve with bronchodilator therapy. The episodic and variable nature of symptoms is the most important distinguishing feature; patients are commonly asymptomatic between episodes.
+
+**Associated symptoms and signs:** Chronic cough, often productive of clear mucoid sputum, frequently accompanies or may dominate the presentation (cough-variant asthma). Nocturnal symptoms — wheeze or cough waking the patient in the early hours of the morning — are characteristic and reflect circadian variation in airway tone. Dyspnoea on exertion commonly precedes rest dyspnoea. On examination during an episode, tachypnoea, use of accessory muscles, and a prolonged expiratory phase with audible wheeze are typically observed.
+
+**Diagnostic features:** Reversible airflow obstruction on spirometry — a ≥12% and ≥200 mL improvement in FEV1 after inhaled salbutamol 400 micrograms — is the gold standard when spirometry is available. Peak flow variability exceeding 20% over days to weeks confirms variable airflow obstruction and is the most accessible tool in primary care. A positive bronchoprovocation test (methacholine or exercise challenge) demonstrates airway hyperresponsiveness in patients with normal baseline spirometry. Clinical response to a salbutamol trial via spacer provides useful supporting evidence where spirometry is unavailable.
+
+**Predisposing factors:** Atopy — the predisposition to IgE-mediated allergic sensitisation — is the strongest risk factor; atopic individuals may have co-existing eczema, allergic rhinitis, or food allergy. A family history of asthma or atopy substantially increases risk. Smoking, both active and passive, impairs airway function and increases exacerbation frequency. Indoor air pollution from biomass fuel combustion (cooking on charcoal or firewood, prevalent in Kenyan households) is a major sensitiser and trigger. Occupational dust exposure in agricultural workers, grain handlers, cleaners, and construction workers is an important and often overlooked cause of adult-onset asthma. Obesity is increasingly recognised as a risk factor and severity modifier.
+
+**Typical presentation:** A young adult or child with episodic wheeze, breathlessness, and chest tightness — worsening at night or early morning, or triggered by cold air, dust, smoke, or exercise — is the archetypal presentation. Cold highland nights, widespread charcoal cooking, and agricultural dust are highly relevant triggers in the Kenya primary care context. Many patients can identify specific triggers. Co-existing eczema or perennial rhinitis strengthens atopic diagnosis. Occupational asthma should be considered when symptoms are consistently better on weekends or holidays. A proportion of patients present for the first time during a moderate or severe acute exacerbation without a prior formal diagnosis.
+
+**Important differential diagnoses:** Community-acquired pneumonia produces wheeze and dyspnoea with fever, purulent sputum, pleuritic chest pain, and localised crackles; consolidation on chest X-ray distinguishes it from asthma. Pulmonary tuberculosis in a high-burden setting presents with chronic progressive cough, weight loss, night sweats, and haemoptysis; symptoms are not episodic or reversible and constitutional features are prominent. COPD occurs in older patients with significant smoking or biomass fuel exposure; airflow obstruction is fixed rather than variable, and symptoms are progressive rather than episodic. Gastro-oesophageal reflux disease may cause chronic cough through microaspiration and vagal stimulation; GERD-associated cough typically lacks wheeze and chest tightness. Acute decompensated heart failure produces wheeze and dyspnoea ("cardiac asthma") in older patients; orthopnoea, bilateral leg oedema, elevated JVP, and bilateral basal crackles point to a cardiac cause.
+
+**Features that argue against this diagnosis:** Purulent sputum strongly suggests a bacterial lower respiratory tract infection rather than intrinsic asthma; asthma exacerbations may be infection-triggered but do not produce purulent sputum as a primary feature. A single, isolated acute episode of wheeze without prior episodic symptoms makes de novo asthma less likely and raises the possibility of infection, foreign body, or another focal cause. Normal spirometry demonstrating a normal FEV1/FVC ratio during a symptomatic episode is significant evidence against meaningful airflow obstruction; the diagnosis of asthma requires demonstration of variable airflow limitation at some point. Failure to respond to adequate inhaled salbutamol (correctly administered via spacer) challenges the diagnosis and prompts reconsideration of alternatives, including COPD with fixed obstruction.
+
+**Red flags (life-threatening asthma):** Silent chest — the absence of audible wheeze on auscultation despite obvious respiratory distress — indicates critical airflow obstruction with insufficient air movement to generate wheeze; this is a pre-arrest finding requiring immediate intervention. Cyanosis reflects severe hypoxaemia and demands urgent treatment. Respiratory distress manifest as inability to complete sentences in one breath, exhaustion of respiratory muscles, paradoxical thoracoabdominal movement, or altered level of consciousness signals impending respiratory failure requiring urgent escalation to a facility with oxygen and nebulised treatment or intravenous therapy.
+
+**Diagnostic context:** Peak flow measurement is the most practical first-line tool in Kenya primary care; serial measurements over 2–4 weeks demonstrating >20% diurnal variability support the diagnosis. A documented clinical and peak flow response to salbutamol 400 micrograms via spacer is appropriate where spirometry is unavailable. Spirometry at district or referral hospital level provides definitive diagnosis and severity classification. Chest X-ray is typically normal or shows hyperinflation and is most valuable for excluding pneumonia, pneumothorax, and foreign body aspiration. Full blood count may show eosinophilia in atopic asthma. In primary care, a clinical diagnosis of asthma in a patient with episodic wheeze, relevant triggers, and a positive response to bronchodilator is sufficient to initiate step-up therapy while awaiting confirmatory spirometry.
