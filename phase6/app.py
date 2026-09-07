@@ -424,9 +424,8 @@ def _render_disambiguation():
 
     st.markdown(
         '<div style="font-size:12px;color:#6B8CAE;line-height:1.7;margin-bottom:20px">'
-        'The assessment is uncertain between two or more candidates at the same confidence '
-        'tier. Answering these questions may help narrow the differential. '
-        'Leave any question blank to skip it.'
+        'The assessment is uncertain between two or more candidates. '
+        'Tap one answer per question — leave unanswered to skip (not assessed).'
         '</div>',
         unsafe_allow_html=True,
     )
@@ -434,13 +433,16 @@ def _render_disambiguation():
     answers = {}
     if questions:
         for i, question in enumerate(questions):
-            answer = st.text_input(
+            selection = st.radio(
                 question,
+                options=["Present", "Absent", "Unknown"],
+                index=None,
+                horizontal=True,
                 key=f"disam_q_{round_num}_{i}",
-                placeholder="Skip — leave blank",
             )
-            if answer.strip():
-                answers[question] = answer.strip()
+            if selection is not None:
+                answers[question] = selection
+            st.markdown('<div style="margin-bottom:4px"></div>', unsafe_allow_html=True)
     else:
         st.markdown(
             '<div style="font-size:12px;color:#9BAEC8;font-style:italic;margin-bottom:12px">'
