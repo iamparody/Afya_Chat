@@ -71,6 +71,7 @@
 - 2026-08-31: 7/8 baseline (dense-only Cohere, FIVE RULES prompt)
 - 2026-09-02: 7/8 (after UTI fix, Rule 4 demographic filter, red flags scope fix)
 - 2026-09-06: 6/8 measured (Cohere, TOP_N=9) after adding GERD, FD, Typhoid. Investigated Case 4a red flags inconsistency (empty vs populated across runs): root cause = Red flags section retrieved at variable position in context (ANN non-determinism), plus missing mandatory language in prompt. Fix: Red flags section now force-retrieved FIRST per condition (positional primacy) + prompt mandates non-empty red flags when [Red flags] section is present. Check strings reverted to corpus terms ["hyperglycaemic","hyperosmolar"]. PubMedBERT health check 3/8 (expected — different embedding space, not baseline). Cohere baseline rerun pending API reset (October 1). Projected ≥7/8.
+- 2026-09-07: 7/8 restored after Asthma + Dengue (15 conditions, 134 chunks). Three bugs fixed: (1) Chroma collection pollution from multiple runs — stable IDs (condition::section::j) prevent growth; (2) RED_FLAG_SECTION "Red flags" → "red_flags" — force-retrieve was silently failing; (3) n_results=n*3 too small for 134-chunk corpus — changed to min(500, count()). Added _enforce_arguing_against_ranking() post-hoc code-level swap. SIX RULES prompt (Rule 6 arguing-against). Case 2b known ceiling now addressed by code-level swap. 3 consecutive runs all 7/8.
 
 ---
 
