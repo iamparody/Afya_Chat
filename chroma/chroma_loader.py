@@ -67,24 +67,39 @@ def main():
     metadatas = []
     embeddings = []
 
-    for i, chunk in enumerate(chunks):
+    # Track per-(condition, section) chunk count for stable IDs independent of global order
+    section_counters: dict[tuple, int] = {}
+
+    for chunk in chunks:
         meta = chunk["metadata"]
-        ids.append(f"{meta['condition']}::{meta['section']}::{i}")
+        cond    = meta.get("condition", "")
+        section = meta.get("section", "")
+        key     = (cond, section)
+        j       = section_counters.get(key, 0)
+        section_counters[key] = j + 1
+
+        ids.append(f"{cond}::{section}::{j}")
         documents.append(chunk["text"])
         metadatas.append({
-            "condition":      meta.get("condition", ""),
-            "section":        meta.get("section", ""),
+            "condition":      cond,
+            "section":        section,
             "category":       meta.get("category", ""),
             "icd11":          meta.get("icd11", ""),
             "review_status":  meta.get("review_status", ""),
             "corpus_version": str(meta.get("corpus_version", "")),
         })
 
-        emb = embedder.embed_document(chunk["text"])
-        embeddings.append(emb)
+    print(f"  Staged {len(chunks)} chunks with stable IDs.")
 
-        if (i + 1) % 10 == 0 or (i + 1) == len(chunks):
-            print(f"  Embedded {i + 1} / {len(chunks)}")
+    if hasattr(embedder, "embed_documents_batch"):
+        print(f"Embedding {len(documents)} documents in batches...")
+        embeddings = embedder.embed_documents_batch(documents)
+        print(f"Done — {len(embeddings)} embeddings computed.")
+    else:
+        for i, doc in enumerate(documents):
+            embeddings.append(embedder.embed_document(doc))
+            if (i + 1) % 10 == 0 or (i + 1) == len(documents):
+                print(f"  Embedded {i + 1} / {len(documents)}")
 
     collection.upsert(
         ids=ids,

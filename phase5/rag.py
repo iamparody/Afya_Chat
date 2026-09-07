@@ -36,12 +36,18 @@ TOP_N_PASSAGES   = 5  # per candidate — wider window to ensure red flag + diag
 # ── Retrieval: vector candidate generation ────────────────────────────────────
 
 def get_vector_candidates(embedder, collection, presentation, n=TOP_N_CANDIDATES):
-    """Unrestricted semantic search → top N unique conditions."""
+    """Unrestricted semantic search → top N unique conditions.
+
+    Uses a large n_results pool to ensure n unique conditions are found even
+    when a small number of conditions dominate the top-k chunk rankings.
+    With 9 chunks per condition, worst-case requires (n-1)*9+1 results to
+    guarantee n unique conditions; 500 safely covers any realistic corpus size.
+    """
     emb = embedder.embed_query(presentation)
 
     results = collection.query(
         query_embeddings=[emb],
-        n_results=n * 3,
+        n_results=min(500, collection.count()),
         include=["metadatas"],
     )
 
@@ -130,7 +136,7 @@ def get_vector_candidates_hybrid(embedder, collection, presentation, n=TOP_N_CAN
 
 # ── Retrieval: filtered vector passages ───────────────────────────────────────
 
-RED_FLAG_SECTION = "Red flags"
+RED_FLAG_SECTION = "red_flags"  # must match section key from ingest.py
 
 def get_filtered_passages(embedder, collection, presentation, conditions):
     """
@@ -180,6 +186,44 @@ def get_filtered_passages(embedder, collection, presentation, conditions):
 
 # ── Validation ────────────────────────────────────────────────────────────────
 
+_CONF_ORDER = {"low": 0, "moderate": 1, "high": 2}
+
+
+def _enforce_arguing_against_ranking(data: dict) -> dict:
+    """
+    Deterministic post-hoc enforcement of SIX RULES Rule 6.
+
+    If the leading candidate has non-empty arguing_against[] AND there exists
+    another candidate with empty arguing_against[] at equal or higher confidence,
+    the leading candidate is swapped to the best candidate without arguing_against.
+
+    The LLM populates arguing_against[] only with matched evidence per Rule 3,
+    so non-empty arguing_against reliably indicates an argues-against match in
+    the patient presentation.
+    """
+    candidates = data.get("candidates", [])
+    if len(candidates) < 2:
+        return data
+
+    leading = candidates[0]
+    if not leading.get("arguing_against"):
+        return data  # No match — no swap needed
+
+    lead_conf = _CONF_ORDER.get(leading.get("confidence_level", "low"), 0)
+
+    # Find first candidate with empty arguing_against at >= leading confidence
+    for i, cand in enumerate(candidates[1:], 1):
+        if cand.get("arguing_against"):
+            continue
+        cand_conf = _CONF_ORDER.get(cand.get("confidence_level", "low"), 0)
+        if cand_conf >= lead_conf:
+            candidates[0], candidates[i] = candidates[i], candidates[0]
+            data["leading_candidate"] = candidates[0]["diagnosis"]
+            return data
+
+    return data
+
+
 def validate(raw_text: str) -> dict:
     """
     Parse and validate LLM response. Fail closed — no repair attempts.
@@ -200,6 +244,8 @@ def validate(raw_text: str) -> dict:
         raise ValueError(
             f"leading_candidate '{data['leading_candidate']}' not in candidates[]"
         )
+
+    _enforce_arguing_against_ranking(data)
 
     return data
 

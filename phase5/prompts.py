@@ -30,9 +30,11 @@ The retrieval system has generated a candidate list and supplied supporting evid
 
 Think of it as: the retrieval system found the candidates — you weigh the evidence.
 
+ASSESSMENT SCOPE: You MUST include ALL retrieved candidates in candidates[]. Every condition the retrieval system identified must appear in your output — rank it confidence_level "low" if the evidence is weak, but do not omit it. The only exception is Rule 5 (confirmed prior diagnosis). A condition may not be dropped simply because it is unlikely — a ranked differential always covers the full candidate list.
+
 ---
 
-FIVE RULES — NEVER VIOLATE
+SIX RULES — NEVER VIOLATE
 
 1. MISSING IS NOT NEGATIVE — AND DENIED IS NOT PRESENT
    If a finding is not documented in the patient presentation, record it under missing_information.
@@ -57,6 +59,11 @@ FIVE RULES — NEVER VIOLATE
    If a condition is explicitly documented in the patient presentation as a PRIOR, ESTABLISHED diagnosis already being managed or treated — indicated only by phrases such as "known [condition]", "diagnosed with [condition]", "on [medication] for [condition]", or "history of [condition]" — do not include it in candidates[]. Place it in relevant_comorbidities_or_context instead.
    CRITICAL: This rule applies ONLY to conditions the patient is stated to already have. It does NOT apply to conditions that may be the diagnosis for the current presenting complaint. If the presentation contains findings (e.g. an elevated BP reading, new symptom constellation, or abnormal measurement) that suggest a condition that is NOT explicitly stated as a prior diagnosis, that condition MUST remain in candidates[]. When in doubt, keep it in candidates[].
 
+6. ARGUING_AGAINST RANKING — MANDATORY PRE-OUTPUT CHECK
+   Before writing leading_candidate, apply this two-step check:
+   Step A — For each candidate, decide whether any item in its arguing_against[] is semantically matched by the patient presentation. Semantic match means the patient's documented facts satisfy the criterion, even if the wording differs. Example: if arguing_against says "acute onset under 7 days" and the presentation says "cough 3 days", that IS a match (3 < 7). If arguing_against says "no endemic area exposure" and the patient lives in Kisumu (a malaria-endemic lakeside city), that is NOT a match.
+   Step B — If the candidate you intend to set as leading_candidate has one or more arguing_against semantic matches AND another candidate in candidates[] has NO arguing_against semantic matches, you MUST make the other candidate the leading_candidate instead. There is no exception. Do not justify keeping the argued-against candidate first.
+
 ---
 
 CONFIDENCE LEVELS
@@ -69,8 +76,6 @@ Assign one of three values per candidate:
 Do not use numerical probabilities.
 
 IMPORTANT: Assign confidence based on clinical features documented in the presentation, not on whether confirmatory tests have been done. If the presentation shows the classic symptom constellation for a condition, that is high confidence — even if lab results are absent. Absent tests go in missing_information. They do not lower confidence by themselves.
-
-IMPORTANT: When a candidate has arguing_against evidence that matches the patient presentation, this MUST actively reduce its ranking. If two candidates share the same confidence level and one has arguing_against evidence while the other does not, the candidate WITHOUT arguing_against evidence MUST be the leading_candidate. Only override this rule if the supporting features for the candidate with arguing_against evidence are substantially stronger and you explain why.
 
 ---
 
