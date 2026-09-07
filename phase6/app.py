@@ -610,12 +610,13 @@ if _disam_active:
         st.session_state.analysed_at = datetime.now(timezone.utc).isoformat()
         st.session_state.clinician_diag = result.get("leading_candidate", "")
 
-        next_round = st.session_state.disam_round + 1
-        if is_ambiguous(result) and next_round <= MAX_ROUNDS:
+        next_round   = st.session_state.disam_round + 1
+        new_questions = get_discriminating_questions(result) if is_ambiguous(result) else []
+        if new_questions and next_round <= MAX_ROUNDS:
             st.session_state.disam_round     = next_round
-            st.session_state.disam_questions = get_discriminating_questions(result)
+            st.session_state.disam_questions = new_questions
         else:
-            st.session_state.disam_round = 0
+            st.session_state.disam_round = 0   # no questions or limit reached → exit
 
         st.rerun()
 

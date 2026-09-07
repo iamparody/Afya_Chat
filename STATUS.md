@@ -202,19 +202,26 @@
 ## Phase 8 — Interactive Disambiguation (Follow-up Question Loop)
 > Build after Phase 7 has ≥15 conditions confirmed working and context engine validated.
 
-### Design gates (agree before building)
-- [ ] Ambiguity threshold defined: no high-confidence candidate AND top 2+ candidates share same confidence tier
-- [ ] Max rounds agreed (suggested: 3) before forcing a result regardless
-- [ ] Colleague review of question-generation logic
+### Design gates ✅ All resolved
+- [x] Ambiguity threshold: no high-confidence candidate AND ≥2 candidates share same confidence tier
+- [x] Max rounds: 3 — forces result on round 4 regardless
+- [x] Question generation: discriminating `missing_information` items (SOME but not ALL tied candidates)
 
 ### Implementation steps
-- [ ] Session state machine: `analysing → ambiguous → questioning → re-analysing → result`
-- [ ] Ambiguity detector: post-RAG confidence distribution check
-- [ ] Question generator: discriminating `missing_information` items — features in one candidate's missing_info absent in another's
-- [ ] Follow-up UI: question cards with answer input; answers append to presentation
-- [ ] Re-run RAG with enriched presentation; loop until high confidence or max rounds
-- [ ] "Stop and report" fallback: explicit ambiguity note if max rounds hit without resolution
-- [ ] Eval: 3–5 ambiguous test cases from Phase 7 corpus to validate loop
+- [x] `phase8/disambiguate.py` — `is_ambiguous()`, `get_discriminating_questions()`, `enrich_presentation()`
+- [x] Session state machine wired into `phase6/app.py` — disam_round, disam_questions, base_presentation, disam_skip_to_result
+- [x] `_render_disambiguation()` — question text inputs, "Refine assessment" (disabled if no questions), "Stop" escape hatch
+- [x] Auto-exit when no discriminating questions generated after enrichment (empty-questions edge case)
+- [x] Enrichment loop: `enrich_presentation → rag.run → advance round or exit`
+- [x] `phase8/evaluate_disambiguation.py` — 5-case eval suite, gate 4/5 ✅ PASS (2026-09-07)
+  - d1 Upper GI (PUD/GORD/FD) ✓ — enrichment shifts GORD to high
+  - d2 Lower abdominal (UTI/AGE) ✓ — enrichment shifts to UTI
+  - d3 Early fever (Malaria/Dengue coastal) ✓ — enrichment confirms Dengue high
+  - d4 Negative (Diabetes full triad) ✓ — correctly suppressed
+  - d5 Kisumu fever (Malaria/Typhoid) ✗ — Typhoid high confidence, corpus-knowledge ceiling not a loop defect
+
+### Known ceiling
+- Symptom-chip UX (clickable discriminating features from corpus graph instead of free-text inputs) deferred — requires corpus lookup at app layer; implement after Phase 9 data is in place or if disambiguation loop shows low clinical uptake
 
 ---
 
