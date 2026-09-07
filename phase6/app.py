@@ -12,6 +12,7 @@ from pathlib import Path
 ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "phase5"))
+sys.path.insert(0, str(ROOT / "phase8"))
 
 import streamlit as st
 
@@ -27,6 +28,7 @@ load_dotenv(ROOT / ".env")
 from cds_theme import apply_theme, section_header, page_header, COLORS, ph
 import rag
 import db
+from disambiguate import MAX_ROUNDS, is_ambiguous, get_discriminating_questions, enrich_presentation
 
 apply_theme()
 db.init_db()
@@ -37,16 +39,21 @@ db.init_db()
 VALID_CONFIDENCE = {"high", "moderate", "low"}
 
 _ICD = {
-    "type 2 diabetes mellitus":           ("5A11", "E11"),
-    "essential hypertension":             ("BA00", "I10"),
-    "obesity":                            ("5B81", "E66"),
-    "malaria (unspecified)":              ("1F40", "B54"),
-    "pulmonary tuberculosis":             ("1B10", "A15"),
-    "community-acquired pneumonia":       ("CA40", "J18"),
-    "urinary tract infection":            ("GC08", "N39.0"),
-    "iron deficiency anaemia":            ("3A00", "D50"),
-    "peptic ulcer disease":               ("DA60", "K27"),
-    "acute gastroenteritis (infectious)": ("1A09", "A09"),
+    "type 2 diabetes mellitus":           ("5A11",  "E11"),
+    "essential hypertension":             ("BA00",  "I10"),
+    "obesity":                            ("5B81",  "E66"),
+    "malaria (unspecified)":              ("1F40",  "B54"),
+    "pulmonary tuberculosis":             ("1B10",  "A15"),
+    "community-acquired pneumonia":       ("CA40",  "J18"),
+    "urinary tract infection":            ("GC08",  "N39.0"),
+    "iron deficiency anaemia":            ("3A00",  "D50"),
+    "peptic ulcer disease":               ("DA60",  "K27"),
+    "acute gastroenteritis (infectious)": ("1A09",  "A09"),
+    "typhoid fever":                      ("1A07",  "A01.0"),
+    "functional dyspepsia":               ("DA82",  "K30"),
+    "gastro-oesophageal reflux disease":  ("DA22",  "K21"),
+    "asthma":                             ("CA23",  "J45"),
+    "dengue fever":                       ("1D2Z",  "A90"),
 }
 
 CONF_COLOR = {
@@ -66,16 +73,21 @@ CONF_LABEL = {
 
 def _init_session_state():
     defaults = {
-        "session_id":       str(uuid.uuid4()),
-        "result":           None,
-        "analysed_at":      None,
-        "presentation_text": "",
-        "approval_state":   None,   # None | "approved"
-        "approved_at":      None,
-        "encounter_id":     None,
-        "clinician_diag":   "",
-        "history":          [],
-        "input_key":        0,
+        "session_id":         str(uuid.uuid4()),
+        "result":             None,
+        "analysed_at":        None,
+        "presentation_text":  "",
+        "approval_state":     None,   # None | "approved"
+        "approved_at":        None,
+        "encounter_id":       None,
+        "clinician_diag":     "",
+        "history":            [],
+        "input_key":          0,
+        # Phase 8 — disambiguation
+        "disam_round":          0,     # 0 = not active, 1-MAX_ROUNDS = in progress
+        "disam_questions":      [],    # discriminating questions for current round
+        "disam_skip_to_result": False, # user clicked "Stop" escape hatch
+        "base_presentation":    "",    # original presentation before enrichment
     }
     for k, v in defaults.items():
         if k not in st.session_state:
@@ -83,14 +95,18 @@ def _init_session_state():
 
 
 def _clear_all():
-    st.session_state.input_key        += 1
-    st.session_state.result            = None
-    st.session_state.analysed_at       = None
-    st.session_state.presentation_text = ""
-    st.session_state.approval_state    = None
-    st.session_state.approved_at       = None
-    st.session_state.encounter_id      = None
-    st.session_state.clinician_diag    = ""
+    st.session_state.input_key          += 1
+    st.session_state.result              = None
+    st.session_state.analysed_at         = None
+    st.session_state.presentation_text   = ""
+    st.session_state.approval_state      = None
+    st.session_state.approved_at         = None
+    st.session_state.encounter_id        = None
+    st.session_state.clinician_diag      = ""
+    st.session_state.disam_round          = 0
+    st.session_state.disam_questions      = []
+    st.session_state.disam_skip_to_result = False
+    st.session_state.base_presentation    = ""
 
 
 # ── Validation ────────────────────────────────────────────────────────────────
@@ -394,6 +410,63 @@ def _render_approval_confirmed():
         st.rerun()
 
 
+# ── Disambiguation ────────────────────────────────────────────────────────────
+
+def _render_disambiguation():
+    """
+    Render the Phase 8 disambiguation round.
+    Returns (refine_clicked, stop_clicked, answers_dict).
+    """
+    round_num = st.session_state.disam_round
+    questions = st.session_state.disam_questions
+
+    section_header(f"Clarifying Questions — Round {round_num} of {MAX_ROUNDS}")
+
+    st.markdown(
+        '<div style="font-size:12px;color:#6B8CAE;line-height:1.7;margin-bottom:20px">'
+        'The assessment is uncertain between two or more candidates at the same confidence '
+        'tier. Answering these questions may help narrow the differential. '
+        'Leave any question blank to skip it.'
+        '</div>',
+        unsafe_allow_html=True,
+    )
+
+    answers = {}
+    if questions:
+        for i, question in enumerate(questions):
+            answer = st.text_input(
+                question,
+                key=f"disam_q_{round_num}_{i}",
+                placeholder="Skip — leave blank",
+            )
+            if answer.strip():
+                answers[question] = answer.strip()
+    else:
+        st.markdown(
+            '<div style="font-size:12px;color:#9BAEC8;font-style:italic;margin-bottom:12px">'
+            'No discriminating questions could be generated — the missing information is '
+            'the same for all tied candidates. You may proceed with the current assessment.'
+            '</div>',
+            unsafe_allow_html=True,
+        )
+
+    col_refine, col_stop, _ = st.columns([2, 2, 4])
+    with col_refine:
+        refine_clicked = st.button(
+            "Refine assessment",
+            use_container_width=True,
+            type="primary",
+            disabled=not questions,
+        )
+    with col_stop:
+        stop_clicked = st.button(
+            "Stop — use current assessment",
+            use_container_width=True,
+        )
+
+    return refine_clicked, stop_clicked, answers
+
+
 # ── Sidebar ───────────────────────────────────────────────────────────────────
 
 _init_session_state()
@@ -410,7 +483,7 @@ with st.sidebar:
     st.markdown(
         '<div class="sb-label" style="margin-bottom:10px">Corpus</div>'
         '<div style="font-size:12px;color:#003467;line-height:1.8">'
-        '10 conditions<br>'
+        '15 conditions<br>'
         '<span style="color:#9BAEC8">East Africa / Kenya primary care</span>'
         '</div>'
         f'<div style="font-size:11px;color:{COLORS["warning"]};font-weight:600;'
@@ -477,15 +550,75 @@ if analyse:
             st.error("Service temporarily unavailable. Please try again in a moment.")
             st.stop()
 
-    st.session_state.result           = result
-    st.session_state.analysed_at      = datetime.now(timezone.utc).isoformat()
-    st.session_state.presentation_text = presentation.strip()
-    st.session_state.approval_state   = None
-    st.session_state.approved_at      = None
-    st.session_state.encounter_id     = None
-    st.session_state.clinician_diag   = result.get("leading_candidate", "")
+    st.session_state.result             = result
+    st.session_state.analysed_at        = datetime.now(timezone.utc).isoformat()
+    st.session_state.presentation_text  = presentation.strip()
+    st.session_state.approval_state     = None
+    st.session_state.approved_at        = None
+    st.session_state.encounter_id       = None
+    st.session_state.clinician_diag     = result.get("leading_candidate", "")
+    st.session_state.disam_skip_to_result = False
+
+    if is_ambiguous(result):
+        st.session_state.disam_round       = 1
+        st.session_state.disam_questions   = get_discriminating_questions(result)
+        st.session_state.base_presentation = presentation.strip()
+    else:
+        st.session_state.disam_round     = 0
+        st.session_state.disam_questions = []
+
     st.rerun()
 
-if st.session_state.result is not None:
+
+# ── Phase 8 disambiguation loop ───────────────────────────────────────────────
+
+_disam_active = (
+    st.session_state.disam_round > 0
+    and not st.session_state.disam_skip_to_result
+    and st.session_state.result is not None
+)
+
+if _disam_active:
+    refine_clicked, stop_clicked, answers = _render_disambiguation()
+
+    if stop_clicked:
+        st.session_state.disam_round          = 0
+        st.session_state.disam_skip_to_result = True
+        st.rerun()
+
+    if refine_clicked:
+        enriched = enrich_presentation(st.session_state.base_presentation, answers)
+        st.session_state.presentation_text = enriched
+
+        with st.spinner("Refining assessment..."):
+            try:
+                result = rag.run(enriched)
+                _assert_confidence(result)
+            except ValueError as e:
+                logging.error("CDS disambiguation validation error: %s", e)
+                st.error(
+                    "Refinement could not be completed — unexpected model response. "
+                    "Please try again."
+                )
+                st.stop()
+            except Exception as e:
+                logging.error("CDS disambiguation error: %s", e)
+                st.error("Service temporarily unavailable. Please try again in a moment.")
+                st.stop()
+
+        st.session_state.result      = result
+        st.session_state.analysed_at = datetime.now(timezone.utc).isoformat()
+        st.session_state.clinician_diag = result.get("leading_candidate", "")
+
+        next_round = st.session_state.disam_round + 1
+        if is_ambiguous(result) and next_round <= MAX_ROUNDS:
+            st.session_state.disam_round     = next_round
+            st.session_state.disam_questions = get_discriminating_questions(result)
+        else:
+            st.session_state.disam_round = 0
+
+        st.rerun()
+
+elif st.session_state.result is not None:
     _render_result(st.session_state.result)
     _render_approval(st.session_state.result)

@@ -33,7 +33,7 @@ def is_ambiguous(result: dict) -> bool:
     leading_confidence = None
     for c in candidates:
         if c["diagnosis"] == leading:
-            leading_confidence = c.get("confidence")
+            leading_confidence = c.get("confidence_level")
             break
 
     if leading_confidence == "high":
@@ -41,7 +41,7 @@ def is_ambiguous(result: dict) -> bool:
 
     tier_count = sum(
         1 for c in candidates
-        if c.get("confidence") == leading_confidence
+        if c.get("confidence_level") == leading_confidence
     )
 
     return tier_count >= 2
@@ -70,12 +70,12 @@ def get_discriminating_questions(result: dict) -> list:
     leading_confidence = None
     for c in candidates:
         if c["diagnosis"] == leading:
-            leading_confidence = c.get("confidence")
+            leading_confidence = c.get("confidence_level")
             break
 
     tied = [
         c for c in candidates
-        if c.get("confidence") == leading_confidence
+        if c.get("confidence_level") == leading_confidence
     ]
 
     if len(tied) < 2:
