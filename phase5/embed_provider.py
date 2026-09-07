@@ -62,6 +62,19 @@ class CohereEmbedder:
             input_type="search_document",
         ).embeddings[0]
 
+    def embed_documents_batch(self, texts: list, batch_size: int = 96) -> list:
+        """Batch embed for indexing — ceil(N/96) API calls instead of N."""
+        all_embeddings = []
+        for start in range(0, len(texts), batch_size):
+            batch = texts[start:start + batch_size]
+            result = self._co.embed(
+                texts=batch,
+                model=self._MODEL,
+                input_type="search_document",
+            )
+            all_embeddings.extend(result.embeddings)
+        return all_embeddings
+
 
 class PubMedBertEmbedder:
     COLLECTION = "cds_conditions_pubmedbert"
