@@ -25,7 +25,7 @@ st.set_page_config(
 from dotenv import load_dotenv
 load_dotenv(ROOT / ".env")
 
-from cds_theme import apply_theme, section_header, page_header, COLORS, ph
+from cds_theme import apply_theme, page_header, COLORS, ph
 import rag
 import db
 from disambiguate import MAX_ROUNDS, is_ambiguous, get_discriminating_questions, enrich_presentation
@@ -56,38 +56,25 @@ _ICD = {
     "dengue fever":                       ("1D2Z",  "A90"),
 }
 
-CONF_COLOR = {
-    "high":     COLORS["success"],
-    "moderate": COLORS["warning"],
-    "low":      COLORS["muted"],
-}
-
-CONF_LABEL = {
-    "high":     "High confidence",
-    "moderate": "Moderate confidence",
-    "low":      "Low confidence",
-}
-
 
 # ── Session state ─────────────────────────────────────────────────────────────
 
 def _init_session_state():
     defaults = {
-        "session_id":         str(uuid.uuid4()),
-        "result":             None,
-        "analysed_at":        None,
-        "presentation_text":  "",
-        "approval_state":     None,   # None | "approved"
-        "approved_at":        None,
-        "encounter_id":       None,
-        "clinician_diag":     "",
-        "history":            [],
-        "input_key":          0,
-        # Phase 8 — disambiguation
-        "disam_round":          0,     # 0 = not active, 1-MAX_ROUNDS = in progress
-        "disam_questions":      [],    # discriminating questions for current round
-        "disam_skip_to_result": False, # user clicked "Stop" escape hatch
-        "base_presentation":    "",    # original presentation before enrichment
+        "session_id":           str(uuid.uuid4()),
+        "result":               None,
+        "analysed_at":          None,
+        "presentation_text":    "",
+        "approval_state":       None,
+        "approved_at":          None,
+        "encounter_id":         None,
+        "clinician_diag":       "",
+        "history":              [],
+        "input_key":            0,
+        "disam_round":          0,
+        "disam_questions":      [],
+        "disam_skip_to_result": False,
+        "base_presentation":    "",
     }
     for k, v in defaults.items():
         if k not in st.session_state:
@@ -126,165 +113,308 @@ def _get_icd(name: str) -> tuple:
     return _ICD.get(name.lower().strip(), (None, None))
 
 
-# ── Rendering helpers ─────────────────────────────────────────────────────────
+# ── HTML primitives ───────────────────────────────────────────────────────────
 
-def _item_row(icon: str, icon_color: str, text: str, text_color: str = "#003467") -> str:
-    return (
-        f'<div style="display:flex;align-items:flex-start;gap:8px;padding:3px 0">'
-        f'{ph(icon, 13, icon_color)}'
-        f'<span style="font-size:12px;color:{text_color};line-height:1.5">{text}</span>'
-        f'</div>'
-    )
+def _badge(confidence: str, small: bool = False) -> str:
+    cls  = {"high": "high", "moderate": "moderate", "low": "low"}.get(confidence, "low")
+    text = {"high": "High confidence", "moderate": "Moderate confidence", "low": "Low confidence"}.get(confidence, confidence.capitalize())
+    sm   = " sm" if small else ""
+    return f'<span class="cds-badge {cls}{sm}">{text if not small else cls.capitalize()}</span>'
 
 
-def _item_list(items, icon: str, icon_color: str, text_color: str = "#003467") -> str:
+def _feature_list(items: list, kind: str) -> str:
     if not items:
-        return '<span style="font-size:12px;color:#9BAEC8;font-style:italic">None documented</span>'
-    return "".join(_item_row(icon, icon_color, item, text_color) for item in items)
+        return '<span class="cds-feat-none">None documented</span>'
+    rows = ""
+    for item in items:
+        rows += (
+            f'<div class="cds-feat">'
+            f'<span class="cds-dot {kind}"></span>'
+            f'<span>{item}</span>'
+            f'</div>'
+        )
+    return rows
 
 
-def _col_header(text: str, color: str = "#9BAEC8") -> str:
+def _missing_chips(items: list) -> str:
+    if not items:
+        return ""
+    chips = "".join(f'<span class="cds-chip">{m}</span>' for m in items)
     return (
-        f'<div style="font-size:9px;font-weight:700;color:{color};text-transform:uppercase;'
-        f'letter-spacing:1.5px;margin-bottom:10px">{text}</div>'
+        f'<div class="cds-missing-label">Missing information</div>'
+        f'<div class="cds-chips">{chips}</div>'
     )
 
 
-def _render_red_flags(red_flags):
-    if not red_flags:
+# ── Display renderers ─────────────────────────────────────────────────────────
+
+def _render_draft_banner():
+    st.markdown(
+        f'<div class="cds-draft-banner">'
+        f'{ph("warning", 13, "#B45309")}'
+        f'Development / Clinical Review &nbsp;·&nbsp; '
+        f'Corpus not clinician-verified &nbsp;·&nbsp; Not for clinical use'
+        f'</div>',
+        unsafe_allow_html=True,
+    )
+
+
+def _render_presentation_collapsed(text: str):
+    short = text[:140] + ("…" if len(text) > 140 else "")
+    st.markdown(
+        f'<div class="cds-pres">'
+        f'<span class="cds-pres-label">Presentation</span>'
+        f'<span class="cds-pres-text">{short}</span>'
+        f'</div>',
+        unsafe_allow_html=True,
+    )
+
+
+def _render_red_flags(result: dict):
+    flags = result.get("red_flags", [])
+    if not flags:
         return
-    section_header("Red Flags")
-    for flag in red_flags:
+    items_html = ""
+    for flag in flags:
         documented = flag.lower().startswith("documented")
-        icon_color = COLORS["danger"] if documented else COLORS["warning"]
-        text_color = "#003467" if documented else "#6B8CAE"
-        border     = COLORS["danger"] if documented else COLORS["warning"]
-        st.markdown(
-            f'<div style="display:flex;align-items:flex-start;gap:10px;'
-            f'border-left:2px solid {border};padding:10px 14px;margin-bottom:8px">'
-            f'{ph("warning", 15, icon_color)}'
-            f'<span style="font-size:12px;color:{text_color};line-height:1.6">{flag}</span>'
-            f'</div>',
-            unsafe_allow_html=True,
+        cls        = "cds-rf-item doc" if documented else "cds-rf-item"
+        icon_color = COLORS["urgent"] if documented else "#F87171"
+        items_html += (
+            f'<div class="{cls}">'
+            f'{ph("warning", 14, icon_color)}'
+            f'<span>{flag}</span>'
+            f'</div>'
         )
-    st.markdown('<div style="margin-bottom:8px"></div>', unsafe_allow_html=True)
+    st.markdown(
+        f'<div class="cds-rf">'
+        f'<div class="cds-sec urgent">'
+        f'{ph("warning", 10, COLORS["urgent"])} &nbsp;Red Flags'
+        f'</div>'
+        f'{items_html}'
+        f'</div>',
+        unsafe_allow_html=True,
+    )
 
 
-def _candidate_html(candidate, is_leading=False, icd11=None, icd10=None):
-    diagnosis  = candidate["diagnosis"]
-    confidence = candidate["confidence_level"]
-    why        = candidate["why_considered"]
-    supporting = candidate["supporting_features"]
-    arguing    = candidate["arguing_against"]
-    missing    = candidate["missing_information"]
+def _render_leading_candidate(result: dict):
+    leading_name = result.get("leading_candidate", "")
+    candidates   = result.get("candidates", [])
+    leading      = next((c for c in candidates if c["diagnosis"] == leading_name), None)
+    if not leading:
+        return
 
-    conf_color = CONF_COLOR.get(confidence, COLORS["muted"])
-    conf_label = CONF_LABEL.get(confidence, confidence)
-
-    border_left = f"3px solid {COLORS['dark']}" if is_leading else f"2px solid #D6E4F0"
-    padding_left = "20px" if is_leading else "16px"
-
-    leading_label = (
-        f'<div style="font-size:9px;font-weight:700;color:#9BAEC8;text-transform:uppercase;'
-        f'letter-spacing:2px;margin-bottom:8px">'
-        f'{ph("arrow-right", 10, "#9BAEC8")} &nbsp;Leading candidate</div>'
-    ) if is_leading else ""
-
-    name_size   = "21px" if is_leading else "15px"
-    name_weight = "800"  if is_leading else "700"
+    confidence = leading.get("confidence_level", "")
+    supporting = leading.get("supporting_features", [])
+    arguing    = leading.get("arguing_against", [])
+    missing    = leading.get("missing_information", [])
+    why        = leading.get("why_considered", "")
+    icd11, icd10 = _get_icd(leading_name)
 
     icd_html = ""
-    if is_leading and (icd11 or icd10):
+    if icd11 or icd10:
         parts = []
-        if icd11:
-            parts.append(f'<span style="font-weight:600;color:#003467">ICD-11</span> {icd11}')
-        if icd10:
-            parts.append(f'<span style="font-weight:600;color:#003467">ICD-10</span> {icd10}')
-        icd_html = (
-            '<div style="border-top:1px solid #F0F5FA;margin-top:16px;padding-top:12px;'
-            'font-size:11px;color:#9BAEC8">'
-            + " &nbsp;&middot;&nbsp; ".join(parts)
-            + "</div>"
-        )
+        if icd11: parts.append(f'<b>ICD-11</b> {icd11}')
+        if icd10: parts.append(f'<b>ICD-10</b> {icd10}')
+        icd_html = f'<div class="cds-lc-icd">{" &nbsp;·&nbsp; ".join(parts)}</div>'
 
-    arg_hdr_color = COLORS["danger"] if arguing else "#9BAEC8"
+    why_html     = f'<div class="cds-why">{why}</div>' if why else ""
+    missing_html = _missing_chips(missing)
 
-    return (
-        f'<div style="border-left:{border_left};padding-left:{padding_left};'
-        f'margin-bottom:24px">'
-        f'{leading_label}'
-        f'<div style="font-size:{name_size};font-weight:{name_weight};color:#003467;'
-        f'margin-bottom:4px;line-height:1.2">{diagnosis}</div>'
-        f'<div style="font-size:10px;font-weight:600;color:{conf_color};'
-        f'text-transform:uppercase;letter-spacing:1px;margin-bottom:20px">{conf_label}</div>'
-        f'<div style="display:flex;gap:32px;margin-bottom:20px">'
-        f'<div style="flex:1;min-width:0">'
-        f'{_col_header("Supporting evidence")}'
-        f'{_item_list(supporting, "check", COLORS["success"])}'
-        f'</div>'
-        f'<div style="flex:1;min-width:0">'
-        f'{_col_header("Arguing against", arg_hdr_color)}'
-        f'{_item_list(arguing, "minus-circle", COLORS["danger"], COLORS["danger"])}'
-        f'</div>'
-        f'</div>'
-        f'<div style="border-top:1px solid #F0F5FA;margin:0 0 20px"></div>'
-        f'<div style="display:flex;gap:32px">'
-        f'<div style="flex:1;min-width:0">'
-        f'{_col_header("Why considered")}'
-        f'<div style="font-size:12px;color:#6B8CAE;line-height:1.7">{why}</div>'
-        f'</div>'
-        f'<div style="flex:1;min-width:0">'
-        f'{_col_header("Missing information")}'
-        f'{_item_list(missing, "info", "#9BAEC8", "#6B8CAE")}'
-        f'</div>'
-        f'</div>'
-        f'{icd_html}'
-        f'</div>'
+    st.markdown(
+        f'<div class="cds-sec" style="margin-bottom:10px">Assessment</div>'
+        f'<div class="cds-lc">'
+        f'  <div class="cds-lc-header">'
+        f'    <div class="cds-lc-name">{leading_name}</div>'
+        f'    {_badge(confidence)}'
+        f'  </div>'
+        f'  {icd_html}'
+        f'  <div class="cds-ev">'
+        f'    <div>'
+        f'      <div class="cds-col-label">Supporting evidence</div>'
+        f'      {_feature_list(supporting, "sp")}'
+        f'    </div>'
+        f'    <div>'
+        f'      <div class="cds-col-label ag">Arguing against</div>'
+        f'      {_feature_list(arguing, "ag")}'
+        f'    </div>'
+        f'  </div>'
+        f'  {missing_html}'
+        f'  {why_html}'
+        f'</div>',
+        unsafe_allow_html=True,
     )
 
 
-def _render_result(result):
-    leading_name  = result.get("leading_candidate", "")
-    candidates    = result.get("candidates", [])
-    red_flags     = result.get("red_flags", [])
-    comorbidities = result.get("relevant_comorbidities_or_context", [])
+def _diff_detail(candidate: dict) -> str:
+    supporting = candidate.get("supporting_features", [])
+    arguing    = candidate.get("arguing_against", [])
+    missing    = candidate.get("missing_information", [])
+    why        = candidate.get("why_considered", "")
 
-    leading      = next((c for c in candidates if c["diagnosis"] == leading_name), None)
-    alternatives = [c for c in candidates if c["diagnosis"] != leading_name]
+    missing_html = ""
+    if missing:
+        chips = "".join(f'<span class="cds-chip">{m}</span>' for m in missing)
+        missing_html = (
+            f'<div style="margin-top:14px">'
+            f'<div class="cds-col-label" style="margin-bottom:8px">Missing information</div>'
+            f'<div class="cds-chips">{chips}</div>'
+            f'</div>'
+        )
+    why_html = f'<div class="cds-diff-why">{why}</div>' if why else ""
 
-    _render_red_flags(red_flags)
+    return (
+        f'<div class="cds-diff-grid">'
+        f'  <div>'
+        f'    <div class="cds-col-label">Supporting</div>'
+        f'    {_feature_list(supporting, "sp")}'
+        f'  </div>'
+        f'  <div>'
+        f'    <div class="cds-col-label ag">Arguing against</div>'
+        f'    {_feature_list(arguing, "ag")}'
+        f'  </div>'
+        f'</div>'
+        f'{missing_html}'
+        f'{why_html}'
+    )
 
-    section_header("Assessment")
-    if leading:
-        icd11, icd10 = _get_icd(leading_name)
+
+def _render_differential(result: dict):
+    leading_name = result.get("leading_candidate", "")
+    alternatives = [
+        c for c in result.get("candidates", [])
+        if c["diagnosis"] != leading_name
+        and c.get("supporting_features")
+        and c.get("confidence_level") in ("high", "moderate")
+    ]
+    if not alternatives:
+        return
+
+    rows = ""
+    for i, cand in enumerate(alternatives, 2):
+        diag = cand["diagnosis"]
+        conf = cand.get("confidence_level", "low")
+        why  = cand.get("why_considered", "")
+        hint = (why[:72] + "…") if len(why) > 72 else why
+        rows += (
+            f'<details class="cds-diff-item">'
+            f'  <summary class="cds-diff-sum">'
+            f'    <span class="cds-diff-rank">#{i}</span>'
+            f'    <span class="cds-diff-name">{diag}</span>'
+            f'    {_badge(conf, small=True)}'
+            f'    <span class="cds-diff-hint">{hint}</span>'
+            f'    <span class="cds-diff-chev">›</span>'
+            f'  </summary>'
+            f'  <div class="cds-diff-detail">{_diff_detail(cand)}</div>'
+            f'</details>'
+        )
+
+    st.markdown(
+        f'<div class="cds-sec" style="margin-top:8px;margin-bottom:10px">Differential</div>'
+        f'<div class="cds-diff">{rows}</div>',
+        unsafe_allow_html=True,
+    )
+
+
+def _render_relevant_context(result: dict):
+    items = result.get("relevant_comorbidities_or_context", [])
+    if not items:
+        return
+    rows = "".join(f'<div class="cds-ctx-item">{item}</div>' for item in items)
+    st.markdown(
+        f'<div class="cds-sec" style="margin-top:8px;margin-bottom:10px">Clinical Context</div>'
+        f'{rows}'
+        f'<div style="margin-bottom:16px"></div>',
+        unsafe_allow_html=True,
+    )
+
+
+# ── Disambiguation ────────────────────────────────────────────────────────────
+
+def _render_disambiguation():
+    round_num = st.session_state.disam_round
+    questions = st.session_state.disam_questions
+    result    = st.session_state.result
+
+    # Build uncertainty context card
+    candidates   = result.get("candidates", []) if result else []
+    leading_name = result.get("leading_candidate", "") if result else ""
+    leading_conf = next(
+        (c.get("confidence_level") for c in candidates if c["diagnosis"] == leading_name),
+        ""
+    )
+    tied = [
+        c["diagnosis"] for c in candidates
+        if c.get("confidence_level") == leading_conf and c["diagnosis"] != leading_name
+    ]
+    tied_str  = " and ".join(tied[:2]) if tied else "other candidates"
+    q_count   = len(questions)
+    count_str = f"{q_count} question{'s' if q_count != 1 else ''}" if q_count else "clarifying questions"
+
+    st.markdown(
+        f'<div class="cds-unc">'
+        f'  <div class="cds-unc-title">Assessment uncertain</div>'
+        f'  <div class="cds-unc-body">'
+        f'    <strong>{leading_name}</strong> and <strong>{tied_str}</strong> '
+        f'    remain plausible at the same confidence tier. '
+        f'    <span class="cds-unc-count">{count_str}</span> could help distinguish them.'
+        f'  </div>'
+        f'  <div class="cds-unc-round">Round {round_num} of {MAX_ROUNDS}</div>'
+        f'</div>',
+        unsafe_allow_html=True,
+    )
+
+    # Questions
+    answers = {}
+    if questions:
         st.markdown(
-            _candidate_html(leading, is_leading=True, icd11=icd11, icd10=icd10),
+            '<div class="cds-disam-intro">'
+            'Tap one answer per question — leave unanswered to skip (not assessed).'
+            '</div>',
+            unsafe_allow_html=True,
+        )
+        for i, question in enumerate(questions):
+            selection = st.radio(
+                question,
+                options=["Present", "Absent", "Unknown"],
+                index=None,
+                horizontal=True,
+                key=f"disam_q_{round_num}_{i}",
+            )
+            if selection is not None:
+                answers[question] = selection
+            st.markdown('<div style="margin-bottom:4px"></div>', unsafe_allow_html=True)
+    else:
+        st.markdown(
+            '<div class="cds-disam-empty">'
+            'No discriminating questions could be generated — '
+            'proceed with the current assessment.'
+            '</div>',
             unsafe_allow_html=True,
         )
 
-    if alternatives:
-        section_header("Differential", margin_top=16)
-        for alt in alternatives:
-            with st.expander(f"{alt['diagnosis']}  ·  {alt['confidence_level']}"):
-                st.markdown(_candidate_html(alt), unsafe_allow_html=True)
+    col_refine, col_stop, _ = st.columns([2, 2, 4])
+    with col_refine:
+        refine_clicked = st.button(
+            "Refine assessment",
+            use_container_width=True,
+            type="primary",
+            disabled=not questions,
+        )
+    with col_stop:
+        stop_clicked = st.button(
+            "Stop — use current assessment",
+            use_container_width=True,
+        )
 
-    if comorbidities:
-        section_header("Relevant Context", margin_top=16)
-        for item in comorbidities:
-            st.markdown(
-                f'<div style="font-size:12px;color:#003467;padding:8px 0;'
-                f'border-bottom:1px solid #EBF3FB;line-height:1.5">{item}</div>',
-                unsafe_allow_html=True,
-            )
+    return refine_clicked, stop_clicked, answers
 
 
 # ── Approval ──────────────────────────────────────────────────────────────────
 
 def _do_approval(result: dict, clinician_diag: str, clinician_icd10: str | None):
-    system_diag       = result.get("leading_candidate", "")
+    system_diag            = result.get("leading_candidate", "")
     system_icd11, system_icd10 = _get_icd(system_diag)
-
-    clinician_icd11, _ = _get_icd(clinician_diag)
+    clinician_icd11, _     = _get_icd(clinician_diag)
 
     try:
         encounter_id, approved_at = db.write_encounter(
@@ -315,61 +445,49 @@ def _do_approval(result: dict, clinician_diag: str, clinician_icd10: str | None)
         "clinician_diagnosis": clinician_diag,
         "approved_at":         approved_at,
     })
-
     st.rerun()
 
 
 def _render_approval(result: dict):
-    st.markdown(
-        '<div style="border-top:1px solid #EBF3FB;margin:32px 0 24px"></div>',
-        unsafe_allow_html=True,
-    )
+    st.markdown('<div class="cds-approval">', unsafe_allow_html=True)
 
     if st.session_state.approval_state == "approved":
         _render_approval_confirmed()
+        st.markdown('</div>', unsafe_allow_html=True)
         return
 
-    section_header("Approval")
-
-    # System assessment — read-only
     system_diag = result.get("leading_candidate", "")
     system_conf = next(
         (c["confidence_level"] for c in result.get("candidates", [])
          if c["diagnosis"] == system_diag),
         "",
     )
+
     st.markdown(
-        f'<div style="display:flex;align-items:baseline;gap:16px;margin-bottom:20px">'
-        f'<div style="font-size:10px;font-weight:700;color:#9BAEC8;text-transform:uppercase;'
-        f'letter-spacing:1.5px;width:140px;flex-shrink:0">System assessment</div>'
-        f'<div style="font-size:13px;color:#6B8CAE">{system_diag}'
-        f'<span style="font-size:11px;margin-left:8px">· {system_conf}</span></div>'
-        f'</div>',
+        f'<div class="cds-sec" style="margin-bottom:14px">Clinical Decision</div>'
+        f'<div class="cds-approval-sys">'
+        f'  <span class="cds-approval-sys-label">System assessment</span>'
+        f'  <span class="cds-approval-sys-diag">{system_diag}</span>'
+        f'  <span class="cds-approval-sys-conf">· {system_conf}</span>'
+        f'</div>'
+        f'<div class="cds-field-label">Approved diagnosis</div>',
         unsafe_allow_html=True,
     )
 
-    # Editable diagnosis
-    st.markdown(
-        '<div style="font-size:10px;font-weight:700;color:#003467;text-transform:uppercase;'
-        'letter-spacing:1.5px;margin-bottom:6px">Approved diagnosis</div>',
-        unsafe_allow_html=True,
-    )
     clinician_input = st.text_input(
         "Approved diagnosis",
         value=st.session_state.clinician_diag,
         label_visibility="collapsed",
     )
 
-    # ICD-10 preview — resolves live from input
     _, icd10_preview = _get_icd(clinician_input)
     if icd10_preview:
         st.markdown(
-            f'<div style="font-size:11px;color:#9BAEC8;margin-top:4px;margin-bottom:20px">'
-            f'ICD-10 &nbsp; {icd10_preview}</div>',
+            f'<div class="cds-icd-hint">ICD-10 &nbsp; {icd10_preview}</div>',
             unsafe_allow_html=True,
         )
     else:
-        st.markdown('<div style="margin-bottom:20px"></div>', unsafe_allow_html=True)
+        st.markdown('<div style="margin-bottom:16px"></div>', unsafe_allow_html=True)
 
     col_approve, _ = st.columns([2, 4])
     with col_approve:
@@ -379,6 +497,8 @@ def _render_approval(result: dict):
             else:
                 _, icd10_final = _get_icd(clinician_input)
                 _do_approval(result, clinician_input.strip(), icd10_final)
+
+    st.markdown('</div>', unsafe_allow_html=True)
 
 
 def _render_approval_confirmed():
@@ -391,16 +511,15 @@ def _render_approval_confirmed():
     clinician_diag = st.session_state.clinician_diag
 
     st.markdown(
-        f'<div style="display:flex;align-items:center;gap:14px;padding:20px 0">'
-        f'{ph("check-circle", 22, COLORS["success"])}'
-        f'<div>'
-        f'<div style="font-size:15px;font-weight:700;color:#003467">{clinician_diag}</div>'
-        f'<div style="display:flex;align-items:center;gap:6px;font-size:11px;'
-        f'color:#9BAEC8;margin-top:3px">'
-        f'{ph("clock", 12, "#9BAEC8")}'
-        f'Clinician approved &middot; {time_str}'
-        f'</div>'
-        f'</div>'
+        f'<div class="cds-confirmed">'
+        f'{ph("check-circle", 22, COLORS["support"])}'
+        f'  <div>'
+        f'    <div class="cds-confirmed-name">{clinician_diag}</div>'
+        f'    <div class="cds-confirmed-meta">'
+        f'      {ph("clock", 12, COLORS["muted"])}'
+        f'      Clinician approved &middot; {time_str}'
+        f'    </div>'
+        f'  </div>'
         f'</div>',
         unsafe_allow_html=True,
     )
@@ -408,65 +527,6 @@ def _render_approval_confirmed():
     if st.button("New assessment →"):
         _clear_all()
         st.rerun()
-
-
-# ── Disambiguation ────────────────────────────────────────────────────────────
-
-def _render_disambiguation():
-    """
-    Render the Phase 8 disambiguation round.
-    Returns (refine_clicked, stop_clicked, answers_dict).
-    """
-    round_num = st.session_state.disam_round
-    questions = st.session_state.disam_questions
-
-    section_header(f"Clarifying Questions — Round {round_num} of {MAX_ROUNDS}")
-
-    st.markdown(
-        '<div style="font-size:12px;color:#6B8CAE;line-height:1.7;margin-bottom:20px">'
-        'The assessment is uncertain between two or more candidates. '
-        'Tap one answer per question — leave unanswered to skip (not assessed).'
-        '</div>',
-        unsafe_allow_html=True,
-    )
-
-    answers = {}
-    if questions:
-        for i, question in enumerate(questions):
-            selection = st.radio(
-                question,
-                options=["Present", "Absent", "Unknown"],
-                index=None,
-                horizontal=True,
-                key=f"disam_q_{round_num}_{i}",
-            )
-            if selection is not None:
-                answers[question] = selection
-            st.markdown('<div style="margin-bottom:4px"></div>', unsafe_allow_html=True)
-    else:
-        st.markdown(
-            '<div style="font-size:12px;color:#9BAEC8;font-style:italic;margin-bottom:12px">'
-            'No discriminating questions could be generated — the missing information is '
-            'the same for all tied candidates. You may proceed with the current assessment.'
-            '</div>',
-            unsafe_allow_html=True,
-        )
-
-    col_refine, col_stop, _ = st.columns([2, 2, 4])
-    with col_refine:
-        refine_clicked = st.button(
-            "Refine assessment",
-            use_container_width=True,
-            type="primary",
-            disabled=not questions,
-        )
-    with col_stop:
-        stop_clicked = st.button(
-            "Stop — use current assessment",
-            use_container_width=True,
-        )
-
-    return refine_clicked, stop_clicked, answers
 
 
 # ── Sidebar ───────────────────────────────────────────────────────────────────
@@ -488,55 +548,58 @@ with st.sidebar:
         '15 conditions<br>'
         '<span style="color:#9BAEC8">East Africa / Kenya primary care</span>'
         '</div>'
-        f'<div style="font-size:11px;color:{COLORS["warning"]};font-weight:600;'
+        f'<div style="font-size:11px;color:{COLORS["moderate"]};font-weight:600;'
         f'margin-top:8px">'
         'Draft — not clinician-verified</div>',
         unsafe_allow_html=True,
     )
     st.markdown('<div style="border-top:1px solid #EBF3FB;margin:20px 0"></div>',
                 unsafe_allow_html=True)
-    # Session history rendered here in step 5
-
-
-# ── GOVERNANCE BANNER ─────────────────────────────────────────────────────────
-# Uncomment when tool goes to clinical review or testing.
-# st.warning(
-#     "All condition cards are draft and have not been clinician-verified. "
-#     "This tool is a clinical reasoning aid, not a substitute for clinical judgment."
-# )
 
 
 # ── Main ──────────────────────────────────────────────────────────────────────
+
+_render_draft_banner()
 
 page_header(
     "Clinical Decision Support",
     subtitle="Symptom-driven differential assessment · East Africa / Kenya primary care",
 )
 
-presentation = st.text_area(
-    "Patient presentation",
-    height=100,
-    label_visibility="collapsed",
-    key=f"presentation_{st.session_state.input_key}",
-)
+# Input — shows full textarea when empty, collapses to caption after analysis
+if st.session_state.result is not None:
+    _render_presentation_collapsed(st.session_state.presentation_text)
+    presentation = ""
+else:
+    presentation = st.text_area(
+        "Patient presentation",
+        height=100,
+        label_visibility="collapsed",
+        placeholder="Enter patient presentation in clinical shorthand…",
+        key=f"presentation_{st.session_state.input_key}",
+    )
 
 col_btn, col_clear, _ = st.columns([1, 1, 4])
 with col_btn:
-    analyse = st.button("Analyse", use_container_width=True)
+    analyse = st.button(
+        "Analyse",
+        use_container_width=True,
+        disabled=(st.session_state.result is not None),
+    )
 with col_clear:
     if st.session_state.result is not None:
         if st.button("Clear", use_container_width=True):
             _clear_all()
             st.rerun()
 
-st.markdown('<div style="margin-bottom:8px"></div>', unsafe_allow_html=True)
+st.markdown('<div style="margin-bottom:16px"></div>', unsafe_allow_html=True)
 
 if analyse:
     if not presentation.strip():
         st.warning("Enter a patient presentation before analysing.")
         st.stop()
 
-    with st.spinner("Analysing presentation..."):
+    with st.spinner("Analysing presentation…"):
         try:
             result = rag.run(presentation.strip())
             _assert_confidence(result)
@@ -552,13 +615,13 @@ if analyse:
             st.error("Service temporarily unavailable. Please try again in a moment.")
             st.stop()
 
-    st.session_state.result             = result
-    st.session_state.analysed_at        = datetime.now(timezone.utc).isoformat()
-    st.session_state.presentation_text  = presentation.strip()
-    st.session_state.approval_state     = None
-    st.session_state.approved_at        = None
-    st.session_state.encounter_id       = None
-    st.session_state.clinician_diag     = result.get("leading_candidate", "")
+    st.session_state.result              = result
+    st.session_state.analysed_at         = datetime.now(timezone.utc).isoformat()
+    st.session_state.presentation_text   = presentation.strip()
+    st.session_state.approval_state      = None
+    st.session_state.approved_at         = None
+    st.session_state.encounter_id        = None
+    st.session_state.clinician_diag      = result.get("leading_candidate", "")
     st.session_state.disam_skip_to_result = False
 
     if is_ambiguous(result):
@@ -572,7 +635,7 @@ if analyse:
     st.rerun()
 
 
-# ── Phase 8 disambiguation loop ───────────────────────────────────────────────
+# ── Results ───────────────────────────────────────────────────────────────────
 
 _disam_active = (
     st.session_state.disam_round > 0
@@ -581,6 +644,9 @@ _disam_active = (
 )
 
 if _disam_active:
+    result = st.session_state.result
+    _render_red_flags(result)
+    _render_leading_candidate(result)
     refine_clicked, stop_clicked, answers = _render_disambiguation()
 
     if stop_clicked:
@@ -592,7 +658,7 @@ if _disam_active:
         enriched = enrich_presentation(st.session_state.base_presentation, answers)
         st.session_state.presentation_text = enriched
 
-        with st.spinner("Refining assessment..."):
+        with st.spinner("Refining assessment…"):
             try:
                 result = rag.run(enriched)
                 _assert_confidence(result)
@@ -608,20 +674,24 @@ if _disam_active:
                 st.error("Service temporarily unavailable. Please try again in a moment.")
                 st.stop()
 
-        st.session_state.result      = result
-        st.session_state.analysed_at = datetime.now(timezone.utc).isoformat()
+        st.session_state.result         = result
+        st.session_state.analysed_at    = datetime.now(timezone.utc).isoformat()
         st.session_state.clinician_diag = result.get("leading_candidate", "")
 
-        next_round   = st.session_state.disam_round + 1
+        next_round    = st.session_state.disam_round + 1
         new_questions = get_discriminating_questions(result) if is_ambiguous(result) else []
         if new_questions and next_round <= MAX_ROUNDS:
             st.session_state.disam_round     = next_round
             st.session_state.disam_questions = new_questions
         else:
-            st.session_state.disam_round = 0   # no questions or limit reached → exit
+            st.session_state.disam_round = 0
 
         st.rerun()
 
 elif st.session_state.result is not None:
-    _render_result(st.session_state.result)
-    _render_approval(st.session_state.result)
+    result = st.session_state.result
+    _render_red_flags(result)
+    _render_leading_candidate(result)
+    _render_differential(result)
+    _render_relevant_context(result)
+    _render_approval(result)
