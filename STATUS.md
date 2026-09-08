@@ -237,12 +237,17 @@
 ---
 
 ## Phase 6b — Remaining Steps
-> Steps 2–4 complete. Step 5 pending.
+> Steps 2–6 complete. Step 7 pending.
 
 - [x] Step 2 — Session state scaffolding (`_init_session_state`, Clear button, `input_key` increment)
 - [x] Step 3 — Approval workflow + SQLite (`db.py`, `write_encounter()`, clinician diagnosis input, ICD-10 preview)
 - [x] Step 4 — CSS cleanup + editorial minimal UI + Phosphor icons + sidebar cleanup
-- [ ] **Step 5 — Session history sidebar** — approved encounters from `st.session_state.history`; compact chronological list; patient snippet + system diagnosis + ✓/△ agreement indicator + time; flat, no login yet
+- [x] **Step 6 — Full HTML/CSS presentation layer rewrite (2026-09-08)**
+  - `phase6/cds_theme.py`: complete rewrite — CSS design tokens (`--c-*`), 30+ `.cds-*` component classes, inline Phosphor SVG icons, `--max-w: 860px` content constraint
+  - `phase6/app.py`: all renderer functions replaced — `_render_draft_banner`, `_render_presentation_collapsed`, `_badge`, `_feature_list`, `_render_leading_candidate`, `_render_red_flags`, `_render_differential` (`<details>/<summary>` rows), `_render_relevant_context`, `_render_disambiguation` (radio chips), `_render_approval`, `_render_approval_confirmed`
+  - Settled layout hierarchy: draft banner → collapsed presentation → red flags → leading candidate → uncertainty/disambiguation → differential → clinical context → approval
+  - High confidence uses blue (`#1D6FA4`) not green — draft data must not imply validated certainty
+- [ ] **Step 7 — Session history sidebar** — approved encounters from `st.session_state.history`; compact chronological list; patient snippet + system diagnosis + ✓/△ agreement indicator + time; flat, no login yet
 
 ---
 
