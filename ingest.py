@@ -65,6 +65,39 @@ VOCAB_CONTROLLED_KEYS = {
     "confirms",
 }
 
+# ─── Environmental vocabulary (Phase 7) ────────────────────────────────────
+VALID_SIGNALS = {
+    "post_long_rains", "post_short_rains", "flooding", "water_scarcity",
+    "prolonged_drought", "dry_dusty_season", "cold_dry_season", "heat_dehydration",
+}
+VALID_PATHWAYS = {
+    "vector_borne", "waterborne", "zoonotic",
+    "respiratory_mucosal", "nutritional_vulnerability", "airborne",
+}
+VALID_EFFECT_TYPES    = {"transmission_opportunity", "severity_modifier"}
+VALID_EFFECT_DIRS     = {"up", "neutral", "down"}
+VALID_STRENGTH        = {"low", "moderate", "strong"}
+VALID_CONFIDENCE      = {"low", "moderate", "high"}
+VALID_EVIDENCE_TYPES  = {
+    "observed_outbreaks", "surveillance_data",
+    "regional_epidemiological_evidence", "expert_estimate",
+}
+VALID_SEASONAL_BASIS  = {
+    "typical_long_rains", "typical_short_rains",
+    "dry_season", "perennial", "outbreak_associated",
+}
+VALID_ENDEMIC_REGIONS = {
+    "nationwide", "coast", "lake_basin", "highland", "highland_margins",
+    "arid_semi_arid", "northern_kenya", "urban_informal",
+}
+VALID_EXPOSURES = {
+    "floodwater_contact", "livestock_contact", "occupational_dust",
+    "unsafe_water", "mosquito_exposure_high", "pastoralist_mobility",
+    "fishing_lakeshore",
+}
+
+EXPECTED_SCHEMA_VERSION = "2.0"
+
 # Canonical section names in display order.
 SECTIONS = [
     "Cardinal symptoms",
@@ -115,16 +148,19 @@ def build_base_metadata(meta):
         return None if v == "" else v
 
     return {
-        "condition":      meta.get("condition"),
-        "icd11":          meta.get("icd11"),
-        "icd10":          meta.get("icd10"),
-        "category":       meta.get("category"),
-        "corpus_version": meta.get("corpus_version"),
-        "schema_version": meta.get("schema_version"),
-        "review_status":  meta.get("review_status"),
-        "reviewed_by":    blank_to_none(meta.get("reviewed_by", "")),
-        "last_reviewed":  blank_to_none(meta.get("last_reviewed", "")),
-        "sources":        meta.get("sources", []),
+        "condition":             meta.get("condition"),
+        "icd11":                 meta.get("icd11"),
+        "icd10":                 meta.get("icd10"),
+        "category":              meta.get("category"),
+        "corpus_version":        meta.get("corpus_version"),
+        "schema_version":        meta.get("schema_version"),
+        "review_status":         meta.get("review_status"),
+        "reviewed_by":           blank_to_none(meta.get("reviewed_by", "")),
+        "last_reviewed":         blank_to_none(meta.get("last_reviewed", "")),
+        "sources":               meta.get("sources", []),
+        # Phase 7 — environmental context fields
+        "endemic_regions":       meta.get("endemic_regions", []),
+        "environmental_signals": meta.get("environmental_signals", []),
     }
 
 
@@ -195,8 +231,121 @@ def validate(records):
             issues.append(f"WARN suspiciously short chunk ({len(text)} chars): {cond} / {sec}")
         if r["metadata"].get("review_status") not in ("draft", "clinician_reviewed", "clinician_verified"):
             issues.append(f"WARN unexpected review_status: {cond}")
+        sv = r["metadata"].get("schema_version")
+        if sv != EXPECTED_SCHEMA_VERSION:
+            issues.append(
+                f"WARN schema_version '{sv}' on '{cond}' — expected '{EXPECTED_SCHEMA_VERSION}'; "
+                f"run backfill (Phase 7b)"
+            )
 
-    return issues
+    # Deduplicate schema_version warnings (one per condition, not per chunk)
+    seen_sv_warn = set()
+    deduped = []
+    for w in issues:
+        if "schema_version" in w:
+            key = w.split("'")[3] if "'" in w else w
+            if key in seen_sv_warn:
+                continue
+            seen_sv_warn.add(key)
+        deduped.append(w)
+    return deduped
+
+
+def validate_environmental(meta, condition):
+    """
+    Validate environmental_signals block and endemic_regions against controlled vocabularies.
+    Returns a list of warning strings. Empty list = clean.
+    """
+    warnings = []
+
+    # endemic_regions
+    for region in meta.get("endemic_regions", []):
+        if region not in VALID_ENDEMIC_REGIONS:
+            warnings.append(
+                f"WARN unknown endemic_region '{region}' in '{condition}' "
+                f"— valid: {sorted(VALID_ENDEMIC_REGIONS)}"
+            )
+
+    # environmental_signals
+    signals = meta.get("environmental_signals", [])
+    if len(signals) > 3:
+        warnings.append(
+            f"WARN '{condition}' has {len(signals)} environmental_signals — "
+            f"maximum 3; review evidence strength"
+        )
+
+    for sig in signals:
+        name = sig.get("signal", "")
+        if name not in VALID_SIGNALS:
+            warnings.append(
+                f"WARN unknown signal '{name}' in '{condition}' "
+                f"— valid: {sorted(VALID_SIGNALS)}"
+            )
+
+        for pathway in sig.get("pathways", []):
+            if pathway not in VALID_PATHWAYS:
+                warnings.append(
+                    f"WARN unknown pathway '{pathway}' in '{condition}' signal '{name}'"
+                )
+
+        if sig.get("effect_type") and sig["effect_type"] not in VALID_EFFECT_TYPES:
+            warnings.append(
+                f"WARN unknown effect_type '{sig['effect_type']}' "
+                f"in '{condition}' signal '{name}'"
+            )
+
+        if sig.get("effect_direction") and sig["effect_direction"] not in VALID_EFFECT_DIRS:
+            warnings.append(
+                f"WARN unknown effect_direction '{sig['effect_direction']}' "
+                f"in '{condition}' signal '{name}'"
+            )
+
+        if sig.get("strength") and sig["strength"] not in VALID_STRENGTH:
+            warnings.append(
+                f"WARN unknown strength '{sig['strength']}' "
+                f"in '{condition}' signal '{name}'"
+            )
+
+        if sig.get("confidence") and sig["confidence"] not in VALID_CONFIDENCE:
+            warnings.append(
+                f"WARN unknown confidence '{sig['confidence']}' "
+                f"in '{condition}' signal '{name}'"
+            )
+
+        if sig.get("evidence_type") and sig["evidence_type"] not in VALID_EVIDENCE_TYPES:
+            warnings.append(
+                f"WARN unknown evidence_type '{sig['evidence_type']}' "
+                f"in '{condition}' signal '{name}'"
+            )
+
+        if sig.get("seasonal_basis") and sig["seasonal_basis"] not in VALID_SEASONAL_BASIS:
+            warnings.append(
+                f"WARN unknown seasonal_basis '{sig['seasonal_basis']}' "
+                f"in '{condition}' signal '{name}'"
+            )
+
+        applicability = sig.get("applicability", {})
+        for exposure in applicability.get("requires_exposure", []):
+            if exposure not in VALID_EXPOSURES:
+                warnings.append(
+                    f"WARN unknown exposure '{exposure}' in requires_exposure "
+                    f"— '{condition}' signal '{name}'"
+                )
+        for exposure in applicability.get("amplifiers", []):
+            if exposure not in VALID_EXPOSURES:
+                warnings.append(
+                    f"WARN unknown exposure '{exposure}' in amplifiers "
+                    f"— '{condition}' signal '{name}'"
+                )
+
+        for region in sig.get("regions", []):
+            if region not in VALID_ENDEMIC_REGIONS:
+                warnings.append(
+                    f"WARN unknown region '{region}' in signal regions "
+                    f"— '{condition}' signal '{name}'"
+                )
+
+    return warnings
 
 
 # ─── Graph extraction pipeline ─────────────────────────────────────────────
@@ -315,16 +464,19 @@ def build_graph_record(meta, normalized_graph):
         return None if v == "" else v
 
     return {
-        "condition":      meta.get("condition"),
-        "icd11":          meta.get("icd11"),
-        "category":       meta.get("category"),
-        "corpus_version": meta.get("corpus_version"),
-        "schema_version": meta.get("schema_version"),
-        "review_status":  meta.get("review_status"),
-        "reviewed_by":    blank_to_none(meta.get("reviewed_by", "")),
-        "last_reviewed":  blank_to_none(meta.get("last_reviewed", "")),
-        "sources":        meta.get("sources", []),
-        "graph":          normalized_graph,
+        "condition":             meta.get("condition"),
+        "icd11":                 meta.get("icd11"),
+        "category":              meta.get("category"),
+        "corpus_version":        meta.get("corpus_version"),
+        "schema_version":        meta.get("schema_version"),
+        "review_status":         meta.get("review_status"),
+        "reviewed_by":           blank_to_none(meta.get("reviewed_by", "")),
+        "last_reviewed":         blank_to_none(meta.get("last_reviewed", "")),
+        "sources":               meta.get("sources", []),
+        # Phase 7 — environmental context fields
+        "endemic_regions":       meta.get("endemic_regions", []),
+        "environmental_signals": meta.get("environmental_signals", []),
+        "graph":                 normalized_graph,
     }
 
 
@@ -336,17 +488,18 @@ def process_graph_file(path, vocabularies):
     text = path.read_text(encoding="utf-8")
     meta, _ = parse_frontmatter(text)
 
+    condition = meta.get("condition", path.stem)
+    env_warnings = validate_environmental(meta, condition)
+
     raw_graph = extract_graph(meta)
     if not raw_graph:
-        condition = meta.get("condition", path.stem)
         return None, {"canonicalized": 0, "already_canonical": 0, "unknown": 0}, [
             f"WARN no graph: block found in '{condition}'"
-        ]
+        ] + env_warnings
 
-    condition = meta.get("condition", path.stem)
     normalized, stats, warnings = normalize_graph(raw_graph, vocabularies, condition)
     record = build_graph_record(meta, normalized)
-    return record, stats, warnings
+    return record, stats, warnings + env_warnings
 
 
 # ─── Main ──────────────────────────────────────────────────────────────────
@@ -463,6 +616,16 @@ def main():
 
     print(f"Output:  {GRAPH_OUTPUT_JSONL.name}")
     print(f"Inspect: {GRAPH_OUTPUT_INSPECT.name}")
+
+    # ── Environmental signals summary ────────────────────────────────────────
+    print("\n-- Environmental signals summary -------------------------")
+    for r in all_graph_records:
+        regions = r.get("endemic_regions", [])
+        signals = r.get("environmental_signals", [])
+        signal_names = [s.get("signal", "?") for s in signals]
+        print(f"  {r['condition']:45s}  "
+              f"regions={len(regions)}  signals={len(signals)}"
+              + (f"  [{', '.join(signal_names)}]" if signal_names else ""))
 
 
 if __name__ == "__main__":
