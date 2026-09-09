@@ -14,6 +14,7 @@ This file orchestrates only.
 import json
 import os
 import sys
+from datetime import datetime
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -22,8 +23,11 @@ import jsonschema
 from neo4j import GraphDatabase
 
 ROOT = Path(__file__).parent.parent
+sys.path.insert(0, str(ROOT))   # ensures phase7 package is importable from any calling context
 load_dotenv(ROOT / ".env")
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
+from phase7.context_engine import ContextResult, get_environmental_evidence
 
 from prompts import SYSTEM_PROMPT, OUTPUT_SCHEMA, build_context
 from providers import get_provider
@@ -252,15 +256,28 @@ def validate(raw_text: str) -> dict:
 
 # ── Main pipeline ─────────────────────────────────────────────────────────────
 
-def run(presentation: str, embedder=None, hybrid=False) -> dict:
+def run(
+    presentation: str,
+    embedder=None,
+    hybrid: bool = False,
+    patient_location: str | None = None,
+    patient_exposures: list | None = None,
+    encounter_date: datetime | None = None,
+    onset_date: datetime | None = None,
+) -> dict:
     """
     Full RAG pipeline for a patient presentation.
     Returns validated dict or raises ValueError on failure.
 
-    embedder: optional embed_provider.CohereEmbedder or PubMedBertEmbedder.
-              Defaults to CohereEmbedder when not supplied.
-    hybrid:   if True, uses BM25 + dense vector RRF for candidate selection.
-              if False (default), uses dense-only — preserves the Cohere 7/8 baseline.
+    embedder          : optional embed_provider.CohereEmbedder or PubMedBertEmbedder.
+                        Defaults to CohereEmbedder when not supplied.
+    hybrid            : if True, uses BM25 + dense vector RRF for candidate selection.
+                        if False (default), uses dense-only — preserves the Cohere 7/8 baseline.
+    patient_location  : endemic_region vocabulary value (optional); passed to context engine.
+    patient_exposures : list of exposure vocabulary values (optional).
+    encounter_date    : datetime of the encounter; defaults to now(). Used as seasonal reference
+                        when onset_date is not provided.
+    onset_date        : symptom onset datetime (optional); used as seasonal reference if provided.
     """
     if embedder is None:
         from embed_provider import CohereEmbedder
@@ -303,8 +320,19 @@ def run(presentation: str, embedder=None, hybrid=False) -> dict:
         top_conditions = [c["condition"] for c in candidates]
         passages = get_filtered_passages(embedder, col, presentation, top_conditions)
 
+        # Step 3b — Environmental context (optional; no-op when no location/signals match)
+        _enc = encounter_date or datetime.now()
+        _env = get_environmental_evidence(
+            candidates=top_conditions,
+            encounter_date=_enc,
+            patient_location=patient_location,
+            patient_exposures=patient_exposures or [],
+            onset_date=onset_date,
+        )
+        env_evidence = _env.evidence if isinstance(_env, ContextResult) else []
+
         # Step 4 — Build context and call LLM
-        context = build_context(presentation, candidates, passages)
+        context = build_context(presentation, candidates, passages, env_evidence=env_evidence)
         if hasattr(provider, "set_schema"):
             provider.set_schema(OUTPUT_SCHEMA)
         raw     = provider.generate(SYSTEM_PROMPT, context)
