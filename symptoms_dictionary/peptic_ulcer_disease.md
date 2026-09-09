@@ -4,7 +4,7 @@ icd11: DA62
 icd10: K27
 category: gastroenterological
 corpus_version: "1.4"
-schema_version: "2.0"
+schema_version: "2.1"
 review_status: draft
 reviewed_by: ""
 last_reviewed: ""

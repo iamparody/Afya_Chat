@@ -106,17 +106,24 @@ Patient presentation → RAG differential → Candidate-level gate
 
 ### 7a — Schema + ingestion (gates everything else)
 
-**CLAUDE.md** ✅ Done (2026-09-04)
+**CLAUDE.md** ✅ Done (2026-09-04, updated 2026-09-09)
 
 **`ingest.py`** ✅ Done (2026-09-09)
 - [x] Parse `endemic_regions` from frontmatter → carry in chunk metadata
 - [x] Parse `environmental_signals` block → carry in chunk metadata (JSON)
-- [x] Validate signal names, pathways, effect_type, evidence_type against controlled vocabulary — warn on unknown values
-- [x] Increment expected `schema_version` to `"2.0"` in validation
+- [x] Validate signal names, pathways, effect_type, evidence_type, causal_distance against controlled vocabulary — warn on unknown or missing values
+- [x] Increment expected `schema_version` to `"2.1"` in validation
 
 **`neo4j_loader.py`** ✅ Done (2026-09-09)
 - [x] Store `endemic_regions` as list property on Condition nodes
 - [x] Store `environmental_signals` as structured properties — signal names and regions at minimum
+
+**`causal_distance` field** ✅ Done (2026-09-09)
+- Added `causal_distance: direct | indirect` to CLAUDE.md Controlled Vocabularies and frontmatter schema (schema_version 2.0 → 2.1)
+- Colleague review: anaemia/prolonged_drought is indirect (drought → nutritional_vulnerability → iron deficiency); wording must reflect causal chain, not flatten to weather statement
+- Backfilled all 7 signal cards: 6 direct (malaria ×3, AGE flooding, typhoid flooding, dengue), 6 indirect (AGE water_scarcity, typhoid water_scarcity, pneumonia ×2, anaemia, UTI)
+- `phase7/context_engine.py`: minimal `EnvironmentalEvidence` dataclass with `causal_distance` field
+- `phase7/tests/test_causal_distance.py`: 4/4 tests pass (direct + indirect schema validation + dataclass construction)
 
 ---
 
@@ -257,6 +264,14 @@ COPD, Heart failure, HIV/AIDS, Sickle cell, PID, Malaria in pregnancy, Meningoco
   - Settled layout hierarchy: draft banner → collapsed presentation → red flags → leading candidate → uncertainty/disambiguation → differential → clinical context → approval
   - High confidence uses blue (`#1D6FA4`) not green — draft data must not imply validated certainty
 - [ ] **Step 7 — Session history sidebar** — approved encounters from `st.session_state.history`; compact chronological list; patient snippet + system diagnosis + ✓/△ agreement indicator + time; flat, no login yet
+
+---
+
+## Outstanding Corpus Quality Issues
+> Clinical content verification required before any card moves to `clinician_verified`.
+
+- [ ] **anaemia.md — WHO Hb threshold update:** card cites WHO 2011 haemoglobin cutoff document; WHO published revised guidance in 2024. Reconcile thresholds before clinical validation. Ref: WHO 2024 haemoglobin cutoffs publication.
+- [ ] **anaemia.md — ferritin language:** `serum ferritin <30 μg/L` as uncomplicated threshold is too broad. WHO 2020 guidance explicitly changes ferritin interpretation in inflammation/infection, including higher deficiency thresholds. Card wording must distinguish uncomplicated from inflammatory states before ingestion. Ref: WHO 2020 ferritin guideline.
 
 ---
 

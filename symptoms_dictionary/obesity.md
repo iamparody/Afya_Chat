@@ -4,7 +4,7 @@ icd11: 5B81
 icd10: E66
 category: metabolic
 corpus_version: "1.3"
-schema_version: "2.0"
+schema_version: "2.1"
 review_status: draft
 reviewed_by: ""
 last_reviewed: ""

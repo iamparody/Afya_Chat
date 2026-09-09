@@ -4,7 +4,7 @@ icd11: 1D2Z
 icd10: A90
 category: infectious
 corpus_version: "1.0"
-schema_version: "2.0"
+schema_version: "2.1"
 review_status: draft
 reviewed_by: ""
 last_reviewed: ""
@@ -31,6 +31,7 @@ environmental_signals:
       max: 8
     strength: moderate
     confidence: moderate
+    causal_distance: direct
     evidence_type: regional_epidemiological_evidence
     regions:
       - coast

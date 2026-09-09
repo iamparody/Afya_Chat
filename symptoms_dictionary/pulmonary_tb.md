@@ -4,7 +4,7 @@ icd11: 1B10
 icd10: A15
 category: infectious / respiratory
 corpus_version: "1.2"
-schema_version: "2.0"
+schema_version: "2.1"
 review_status: draft
 reviewed_by: ""
 last_reviewed: ""

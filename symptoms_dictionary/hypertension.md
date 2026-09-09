@@ -4,7 +4,7 @@ icd11: BA00
 icd10: I10
 category: cardiovascular
 corpus_version: "1.3"
-schema_version: "2.0"
+schema_version: "2.1"
 review_status: draft
 reviewed_by: ""
 last_reviewed: ""

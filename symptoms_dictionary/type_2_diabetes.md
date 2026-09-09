@@ -4,7 +4,7 @@ icd11: 5A11
 icd10: E11
 category: endocrine / metabolic
 corpus_version: "1.3"
-schema_version: "2.0"
+schema_version: "2.1"
 review_status: draft
 reviewed_by: ""
 last_reviewed: ""

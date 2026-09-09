@@ -4,7 +4,7 @@ icd11: DA94
 icd10: K30
 category: gastroenterological
 corpus_version: "1.0"
-schema_version: "2.0"
+schema_version: "2.1"
 review_status: draft
 reviewed_by: ""
 last_reviewed: ""
