@@ -170,14 +170,25 @@ Patient presentation → RAG differential → Candidate-level gate
 - [x] `_build_explanation()` — source-labelled, causal_distance-aware, hedged or substantive per gate result
 - [x] Helper functions for testing: `_inject_signal_data()`, `_reset_signal_cache()`
 
-**Tests:** `phase7/tests/test_context_engine.py` — 7/7 pass (2026-09-09)
-- Malaria + lake_basin + June: post_long_rains fires (direct, strong/high)
-- Malaria + highland + January: NO_RELEVANT_CONTEXT (region + seasonal mismatch)
-- Hypertension: NO_RELEVANT_CONTEXT (no signals)
-- AGE + April + unsafe_water: flooding fires (nationwide signal, exposure met)
-- AGE + April + no exposure: flooding suppressed (requires_exposure gate)
-- CHIRPSProvider fallback: source_label = "static_calendar"
-- Pneumonia cold_dry_season low/low: suppressed
+**`ContextResult` dataclass (colleague design review)**
+- [x] Return type: `ContextResult | str` — not `list | str`
+- [x] `ContextResult.evidence` — signals that passed all 4 gates; inject into Gemini
+- [x] `ContextResult.suppressed` — signals that matched gates 1-3 but failed strength/confidence gate; audit trail preserved, do NOT inject
+- [x] `NO_RELEVANT_CONTEXT` returned only when nothing reaches gate 4 (no signals declared, or all fail region/exposure/seasonal)
+- [x] `EnvironmentalEvidence.suppression_reason` — non-empty on suppressed signals; e.g. "strength:low/confidence:low below emission threshold"
+- [x] Rationale: "matched but suppressed" != "no signal declared" — Phase 8/9 calibration needs the distinction
+
+**Tests:** `phase7/tests/test_context_engine.py` — 10/10 pass (2026-09-09)
+1. Asthma: NO_RELEVANT_CONTEXT (no signals)
+2. AGE + April + unsafe_water: flooding fires
+3. AGE + April + no exposure: NO_RELEVANT_CONTEXT (gate 2, before gate 4)
+4. CAP low/low: ContextResult.suppressed not NO_RELEVANT_CONTEXT -- audit trail
+5. IDA + drought: indirect, lag {4,16} in temporal_window, hedged explanation
+6. onset_date overrides encounter_date -- baseline NO_RELEVANT_CONTEXT without it
+7. Region mismatch: NO_RELEVANT_CONTEXT (gate 1)
+8. nationwide region: passes for all patient_location values
+9. CHIRPSProvider fallback: source_label = static_calendar in Phase 7
+10. Multiple candidates: both signals preserved in result.evidence
 
 ---
 

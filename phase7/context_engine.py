@@ -1,16 +1,25 @@
 """
-Phase 7 — Environmental Context Engine.
+Phase 7 -- Environmental Context Engine.
 
 Produces EnvironmentalEvidence objects from condition card signals and
 encounter context (location, date, exposures). Injected into the RAG
-prompt as a labelled, source-attributed statement — never as a bare
+prompt as a labelled, source-attributed statement -- never as a bare
 weather observation.
 
 Architecture:
-  get_environmental_evidence(candidates, ...) -> list[EnvironmentalEvidence] | NO_RELEVANT_CONTEXT
-      |- candidate has no environmental_signals -> skip (no_relevant_context)
+  get_environmental_evidence(candidates, ...) -> ContextResult | NO_RELEVANT_CONTEXT
+      |- candidate has no environmental_signals -> skip
       +- signals present -> CHIRPSProvider (primary) or StaticCalendarProvider (fallback)
               -> EnvironmentalEvidence per qualifying candidate-signal pair
+              -> ContextResult.evidence (passed gate) or .suppressed (low/low gated)
+
+Return semantics:
+  NO_RELEVANT_CONTEXT (str) -- no candidates had environmental_signals declared,
+                               OR all signals failed region/exposure/seasonal gates
+                               before reaching the strength/confidence gate
+  ContextResult              -- at least one signal reached gate 4;
+                               .evidence = inject into Gemini;
+                               .suppressed = matched but strength/confidence filtered
 
 Phases:
   7c -- StaticCalendarProvider + CHIRPSProvider stub + get_environmental_evidence()
@@ -26,21 +35,22 @@ from pathlib import Path
 from typing import Optional
 
 # Sentinel returned when no candidates have declared environmental_signals,
-# or when all signals are suppressed by the strength/confidence gate.
-# First-class result -- not an edge case.
+# OR when all signals fail region/exposure/seasonal gates before reaching
+# the strength/confidence gate.  Distinguishable from ContextResult with
+# empty .evidence (= signals matched but suppressed).
 NO_RELEVANT_CONTEXT = "no_relevant_context"
 
 # ---------------------------------------------------------------------------
 # Static Kenya seasonal calendar
 # ---------------------------------------------------------------------------
-# Month numbers (1=January) when each signal's effects are clinically observable.
-# These ranges already incorporate the typical lag between the environmental
-# event and peak clinical presentation (e.g. post_long_rains is "4-8 weeks
-# after May end" = June-August). Lag per card is preserved in temporal_window
-# for explanation text; it does not gate signal activation here.
+# Month numbers (1=January) when each signal's effects are clinically
+# observable.  The ranges incorporate typical lag between the environmental
+# event and peak clinical presentation (e.g. post_long_rains = 4-8 w after
+# May end = June-August).  Per-card lag is preserved in temporal_window for
+# explanation text; it does not gate signal activation here.
 _SIGNAL_ACTIVE_MONTHS: dict[str, set[int]] = {
-    "post_long_rains":   {6, 7, 8},           # June-August (4-8 w after May end)
-    "post_short_rains":  {12, 1, 2},          # December-February (4-8 w after November end)
+    "post_long_rains":   {6, 7, 8},           # June-August  (4-8 w after May end)
+    "post_short_rains":  {12, 1, 2},          # December-February (4-8 w after November)
     "flooding":          {3, 4, 5, 10, 11},   # March-May, October-November (rain seasons)
     "water_scarcity":    {1, 2, 6, 7, 8, 9},  # January-February + June-September dry seasons
     "prolonged_drought": {6, 7, 8, 9, 10},    # JJAS dry season + transitions
@@ -49,8 +59,7 @@ _SIGNAL_ACTIVE_MONTHS: dict[str, set[int]] = {
     "heat_dehydration":  {1, 2, 3, 9, 10},    # January-March + September-October
 }
 
-# Strength/confidence combinations that are always suppressed.
-# Locked rule from Phase 7c colleague review.
+# Strength/confidence combinations always suppressed -- locked from Phase 7c.
 _SUPPRESS_COMBOS: set[tuple[str, str]] = {("low", "low")}
 
 
@@ -65,26 +74,60 @@ class EnvironmentalEvidence:
 
     Fields preserved verbatim from the condition card schema so the context
     engine can generate appropriately hedged, source-attributed language.
-    The engine must NOT flatten these into a generic weather statement --
     causal_distance, effect_type, strength, and confidence jointly determine
-    the wording and clinical weight.
+    the wording and clinical weight -- do not flatten these into a single score.
 
-    Clinical evidence always dominates. EnvironmentalEvidence adjusts priors;
+    Clinical evidence always dominates.  EnvironmentalEvidence adjusts priors;
     it does not select diagnoses.
+
+    suppression_reason is non-empty only for signals in ContextResult.suppressed.
     """
     signal: str
-    causal_distance: str          # "direct" | "indirect"
-    effect_type: str              # "transmission_opportunity" | "severity_modifier"
-    effect_direction: str         # "up" | "neutral" | "down"
-    strength: str                 # "low" | "moderate" | "strong"
-    confidence: str               # "low" | "moderate" | "high"
+    causal_distance: str                     # "direct" | "indirect"
+    effect_type: str                         # "transmission_opportunity" | "severity_modifier"
+    effect_direction: str                    # "up" | "neutral" | "down"
+    strength: str                            # "low" | "moderate" | "strong"
+    confidence: str                          # "low" | "moderate" | "high"
     source: str = "static_calendar"          # "chirps" | "static_calendar"
     spatial_basis: str = ""                  # endemic_region matched
     temporal_window: dict = field(default_factory=dict)  # {"min": int, "max": int} weeks
     data_age: float = 0.0                    # hours since data was fetched
     data_status: str = "fresh"              # "fresh" | "stale"
     explanation: str = ""                    # human-readable, source-labelled statement
-    condition: str = ""                      # condition name this evidence belongs to
+    condition: str = ""                      # condition this evidence belongs to
+    suppression_reason: str = ""             # non-empty when in ContextResult.suppressed
+
+
+# ---------------------------------------------------------------------------
+# ContextResult
+# ---------------------------------------------------------------------------
+
+@dataclass
+class ContextResult:
+    """
+    Return value from get_environmental_evidence() when at least one signal
+    reached the strength/confidence gate.
+
+    evidence   : signals that passed all 4 gates -- inject into Gemini
+    suppressed : signals that matched region/exposure/seasonal but were
+                 filtered by the strength/confidence gate.  Do NOT inject
+                 into Gemini, but preserve for audit and Phase 8/9 calibration.
+
+    Caller pattern:
+        result = get_environmental_evidence(...)
+        if result is NO_RELEVANT_CONTEXT:
+            pass  # no environmental context at all
+        elif result.has_evidence:
+            inject(result.evidence)  # substantive or hedged evidence
+        else:
+            log_suppressed(result.suppressed)  # matched but gated -- audit only
+    """
+    evidence: list[EnvironmentalEvidence]
+    suppressed: list[EnvironmentalEvidence]
+
+    @property
+    def has_evidence(self) -> bool:
+        return bool(self.evidence)
 
 
 # ---------------------------------------------------------------------------
@@ -95,18 +138,18 @@ class StaticCalendarProvider:
     """
     Kenya rainfall calendar -- deterministic lookup by month.
 
-    ENSO_PHASE is an annual modifier; update each year from NOAA/KMD.
-    The ENSO phase is carried for future use in explanation text; it does
-    not currently gate signal activation (scope: Phase 9 calibration).
+    ENSO_PHASE is an annual modifier carried for future use in explanation
+    text.  It does not currently gate signal activation (scope: Phase 9).
+    Update ENSO_PHASE each year from NOAA / Kenya Meteorological Department.
 
-    Does not require network access or authentication.
+    No network access or authentication required.
     """
 
     # Updated annually from NOAA / Kenya Meteorological Department
     ENSO_PHASE: str = "neutral"  # "neutral" | "el_nino" | "la_nina"
 
     def is_signal_active(self, signal_name: str, reference_date: datetime) -> bool:
-        """True if the signal's environmental condition is active during reference_date's month."""
+        """True if signal's environmental condition is active during reference_date's month."""
         active_months = _SIGNAL_ACTIVE_MONTHS.get(signal_name, set())
         return reference_date.month in active_months
 
@@ -119,10 +162,10 @@ class CHIRPSProvider:
     """
     Phase 9 stub -- CHIRPS observed-rainfall provider.
 
-    Currently falls back to StaticCalendarProvider on every call.
+    Falls back to StaticCalendarProvider on every call in Phase 7.
     Phase 9 replaces is_signal_active() with a live API fetch;
     the method signature and source-label contract remain unchanged
-    so rag.py and the test suite need no modification.
+    so rag.py and the test suite require no modification.
     """
 
     def __init__(self, static: Optional[StaticCalendarProvider] = None) -> None:
@@ -138,8 +181,8 @@ class CHIRPSProvider:
         Returns (is_active, source_label).
 
         Phase 7: always falls back to static calendar; source = "static_calendar".
-        Phase 9: query CHIRPS API using (region -> bounding box -> grid cell),
-                 compute rainfall last 7/30/60 days, flag if in signal's lag window.
+        Phase 9: query CHIRPS API with (region -> bounding box -> grid cell),
+                 compute rainfall last 7/30/60 days, flag if in signal's lag window;
                  source = "chirps" when observed data is used.
         """
         return self._static.is_signal_active(signal_name, reference_date), self._static.source_label()
@@ -185,10 +228,10 @@ def _inject_signal_data(data: dict[str, list[dict]]) -> None:
 def _passes_gate(strength: str, confidence: str, causal_distance: str) -> tuple[bool, str]:
     """
     Apply locked strength/confidence suppression rule.
-    Returns (passes, hedging_level) where hedging_level is "substantive" | "hedged" | "".
+    Returns (passes, hedging_level): hedging_level is "substantive" | "hedged" | "".
 
     Rules (locked from Phase 7c colleague review):
-      low/low  -> always suppress (indirect + low/low is the same rule)
+      low/low  -> always suppress (covers indirect+low/low -- same rule)
       strong or high -> substantive
       anything else  -> hedged
     """
@@ -255,34 +298,46 @@ def get_environmental_evidence(
     patient_location: Optional[str] = None,
     patient_exposures: Optional[list[str]] = None,
     onset_date: Optional[datetime] = None,
-) -> list[EnvironmentalEvidence] | str:
+) -> ContextResult | str:
     """
     Evaluate environmental context for RAG candidates.
 
-    Returns a list of EnvironmentalEvidence objects (one per qualifying
-    candidate-signal pair), or NO_RELEVANT_CONTEXT if no evidence applies.
+    Returns ContextResult or NO_RELEVANT_CONTEXT (str).
+
+    NO_RELEVANT_CONTEXT is returned when:
+      - no candidates have environmental_signals declared on their card, OR
+      - all signals fail region/exposure/seasonal gates before reaching
+        the strength/confidence gate
+
+    ContextResult is returned when at least one signal passes gates 1-3:
+      .evidence   = signals that also pass gate 4 (inject into Gemini)
+      .suppressed = signals that failed gate 4 (audit trail; do NOT inject)
 
     Parameters
     ----------
-    candidates        : condition names from RAG output (e.g. rag.run() leading + differentials)
+    candidates        : condition names from RAG output
     encounter_date    : datetime of the clinical encounter
-    patient_location  : endemic_region vocabulary value (optional; no region gating if absent)
-    patient_exposures : list of exposure vocabulary values (optional)
-    onset_date        : symptom onset datetime; used as seasonal reference if provided
+    patient_location  : endemic_region vocabulary value; if None, region gate is skipped
+    patient_exposures : list of exposure vocabulary values
+    onset_date        : symptom onset datetime; used as seasonal reference if provided,
+                        otherwise encounter_date is used
 
-    Gates applied in order:
+    Gate sequence (applied per signal):
       1. Region: if signal.regions is non-empty, patient_location must be in it
                  (signals with "nationwide" pass for any patient_location)
-      2. Exposure: if signal.requires_exposure is non-empty, patient must have >= 1
-      3. Seasonal: signal must be active during reference_date (onset_date ?? encounter_date)
-      4. Strength/confidence: low/low always suppressed; see _passes_gate()
+      2. Exposure: if requires_exposure is non-empty, patient must have >= 1
+      3. Seasonal: signal must be active during reference_date
+      4. Strength/confidence: low/low always suppressed (see _passes_gate)
     """
     patient_exposures = patient_exposures or []
     reference_date = onset_date if onset_date is not None else encounter_date
 
     env_signals = _load_environmental_signals()
     provider = CHIRPSProvider()
-    results: list[EnvironmentalEvidence] = []
+
+    passed: list[EnvironmentalEvidence] = []
+    suppressed: list[EnvironmentalEvidence] = []
+    any_reached_gate_4 = False
 
     for condition in candidates:
         signals = env_signals.get(condition, [])
@@ -310,21 +365,27 @@ def get_environmental_evidence(
             if not is_active:
                 continue
 
-            # ── 4. Strength/confidence gate ───────────────────────────────────
+            # Gates 1-3 passed -- signal is a real contextual match.
+            # Now gate 4 determines inject vs suppress (not absent vs present).
+            any_reached_gate_4 = True
+
             strength = sig.get("strength", "low")
             confidence = sig.get("confidence", "low")
             causal_distance = sig.get("causal_distance", "indirect")
             passes, hedging = _passes_gate(strength, confidence, causal_distance)
-            if not passes:
-                continue
 
-            # ── Build EnvironmentalEvidence ───────────────────────────────────
+            # ── Resolve spatial_basis ─────────────────────────────────────────
             if patient_location:
                 spatial_basis = patient_location
             elif "nationwide" in signal_regions:
                 spatial_basis = "nationwide"
             else:
                 spatial_basis = ", ".join(signal_regions) if signal_regions else "unspecified"
+
+            # ── 4. Strength/confidence gate ───────────────────────────────────
+            suppression_reason = ""
+            if not passes:
+                suppression_reason = f"strength:{strength}/confidence:{confidence} below emission threshold"
 
             explanation = _build_explanation(
                 condition=condition,
@@ -340,7 +401,7 @@ def get_environmental_evidence(
                 spatial_basis=spatial_basis,
             )
 
-            results.append(EnvironmentalEvidence(
+            ev = EnvironmentalEvidence(
                 signal=signal_name,
                 causal_distance=causal_distance,
                 effect_type=sig.get("effect_type", ""),
@@ -354,8 +415,14 @@ def get_environmental_evidence(
                 data_status="fresh",
                 explanation=explanation,
                 condition=condition,
-            ))
+                suppression_reason=suppression_reason,
+            )
 
-    if not results:
+            if passes:
+                passed.append(ev)
+            else:
+                suppressed.append(ev)
+
+    if not any_reached_gate_4:
         return NO_RELEVANT_CONTEXT
-    return results
+    return ContextResult(evidence=passed, suppressed=suppressed)
