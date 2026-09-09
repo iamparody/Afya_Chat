@@ -4,7 +4,7 @@ icd11: 1D2Z
 icd10: A90
 category: infectious
 corpus_version: "1.0"
-schema_version: "1.2"
+schema_version: "2.0"
 review_status: draft
 reviewed_by: ""
 last_reviewed: ""
@@ -18,6 +18,27 @@ sources:
   - organization: "Kenya MoH / KEMRI"
     title: "Integrated Vector Management Strategy Kenya"
     year: "2023"
+endemic_regions:
+  - coast
+environmental_signals:
+  - signal: post_long_rains
+    pathways:
+      - vector_borne
+    effect_type: transmission_opportunity
+    effect_direction: up
+    lag_weeks:
+      min: 4
+      max: 8
+    strength: moderate
+    confidence: moderate
+    evidence_type: regional_epidemiological_evidence
+    regions:
+      - coast
+    seasonal_basis: typical_long_rains
+    applicability:
+      requires_exposure: []
+      amplifiers:
+        - mosquito_exposure_high
 graph:
   cardinal_symptoms: [fever, severe myalgia, headache]
   associated_symptoms: [retro-orbital headache, arthralgia, nausea, vomiting, anorexia, maculopapular rash, thrombocytopenia, leukopenia]

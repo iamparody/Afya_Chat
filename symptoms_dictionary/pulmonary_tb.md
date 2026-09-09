@@ -4,7 +4,7 @@ icd11: 1B10
 icd10: A15
 category: infectious / respiratory
 corpus_version: "1.2"
-schema_version: "1.2"
+schema_version: "2.0"
 review_status: draft
 reviewed_by: ""
 last_reviewed: ""
@@ -18,6 +18,9 @@ sources:
   - organization: "Kenya NLTP"
     title: "Kenya National Leprosy and TB Programme Treatment Guidelines"
     year: ""
+endemic_regions:
+  - nationwide
+environmental_signals: []
 graph:
   cardinal_symptoms: [productive cough ≥2 weeks, night sweats, weight loss, fatigue, low-grade afternoon fever]
   associated_symptoms: [haemoptysis, pleuritic chest pain, dyspnoea, cervical lymphadenopathy]

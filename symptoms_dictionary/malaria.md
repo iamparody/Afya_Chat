@@ -4,7 +4,7 @@ icd11: 1F40
 icd10: B54
 category: infectious
 corpus_version: "1.2"
-schema_version: "1.2"
+schema_version: "2.0"
 review_status: draft
 reviewed_by: ""
 last_reviewed: ""
@@ -18,6 +18,72 @@ sources:
   - organization: "KEMRI/MoH Kenya"
     title: "Kenya Malaria Treatment Guidelines"
     year: ""
+endemic_regions:
+  - lake_basin
+  - coast
+  - highland_margins
+  - arid_semi_arid
+  - northern_kenya
+environmental_signals:
+  - signal: post_long_rains
+    pathways:
+      - vector_borne
+    effect_type: transmission_opportunity
+    effect_direction: up
+    lag_weeks:
+      min: 4
+      max: 8
+    strength: strong
+    confidence: high
+    evidence_type: observed_outbreaks
+    regions:
+      - lake_basin
+      - coast
+      - highland_margins
+    seasonal_basis: typical_long_rains
+    applicability:
+      requires_exposure: []
+      amplifiers:
+        - mosquito_exposure_high
+  - signal: post_short_rains
+    pathways:
+      - vector_borne
+    effect_type: transmission_opportunity
+    effect_direction: up
+    lag_weeks:
+      min: 4
+      max: 8
+    strength: moderate
+    confidence: moderate
+    evidence_type: surveillance_data
+    regions:
+      - lake_basin
+      - coast
+    seasonal_basis: typical_short_rains
+    applicability:
+      requires_exposure: []
+      amplifiers:
+        - mosquito_exposure_high
+  - signal: flooding
+    pathways:
+      - vector_borne
+    effect_type: transmission_opportunity
+    effect_direction: up
+    lag_weeks:
+      min: 2
+      max: 6
+    strength: moderate
+    confidence: moderate
+    evidence_type: observed_outbreaks
+    regions:
+      - lake_basin
+      - coast
+      - highland_margins
+    seasonal_basis: outbreak_associated
+    applicability:
+      requires_exposure:
+        - mosquito_exposure_high
+      amplifiers: []
 graph:
   cardinal_symptoms: [fever, chills, rigors, headache, malaise]
   associated_symptoms: [myalgia, arthralgia, nausea, vomiting, anorexia, diaphoresis, splenomegaly, anaemia, jaundice, pallor, irritability]

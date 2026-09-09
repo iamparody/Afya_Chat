@@ -4,7 +4,7 @@ icd11: DA22
 icd10: K21
 category: gastroenterological
 corpus_version: "1.0"
-schema_version: "1.2"
+schema_version: "2.0"
 review_status: draft
 reviewed_by: ""
 last_reviewed: ""
@@ -18,6 +18,9 @@ sources:
   - organization: "Kenya MOH"
     title: "Kenya Clinical Guidelines"
     year: "2022"
+endemic_regions:
+  - nationwide
+environmental_signals: []
 graph:
   cardinal_symptoms: [heartburn, acid regurgitation, waterbrash]
   associated_symptoms: [nausea, epigastric pain, bloating, belching, odynophagia, hoarseness, globus sensation, chronic cough, chest pain]

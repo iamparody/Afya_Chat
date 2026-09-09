@@ -4,7 +4,7 @@ icd11: 1A07
 icd10: A01.0
 category: infectious
 corpus_version: "1.0"
-schema_version: "1.2"
+schema_version: "2.0"
 review_status: draft
 reviewed_by: ""
 last_reviewed: ""
@@ -21,6 +21,47 @@ sources:
   - organization: "Sanford Guide"
     title: "Antimicrobial Therapy — Enteric Fever"
     year: "2023"
+endemic_regions:
+  - nationwide
+environmental_signals:
+  - signal: flooding
+    pathways:
+      - waterborne
+    effect_type: transmission_opportunity
+    effect_direction: up
+    lag_weeks:
+      min: 1
+      max: 3
+    strength: moderate
+    confidence: moderate
+    evidence_type: observed_outbreaks
+    regions:
+      - nationwide
+    seasonal_basis: outbreak_associated
+    applicability:
+      requires_exposure:
+        - unsafe_water
+      amplifiers:
+        - floodwater_contact
+  - signal: water_scarcity
+    pathways:
+      - waterborne
+    effect_type: transmission_opportunity
+    effect_direction: up
+    lag_weeks:
+      min: 0
+      max: 4
+    strength: moderate
+    confidence: moderate
+    evidence_type: expert_estimate
+    regions:
+      - arid_semi_arid
+      - urban_informal
+    seasonal_basis: dry_season
+    applicability:
+      requires_exposure:
+        - unsafe_water
+      amplifiers: []
 graph:
   cardinal_symptoms: [fever, headache, malaise, anorexia, abdominal pain]
   associated_symptoms: [constipation, diarrhoea, nausea, vomiting, relative bradycardia, rose spots, splenomegaly, hepatomegaly, abdominal distension, dry cough, myalgia]
