@@ -70,19 +70,26 @@ def run_schema(session):
 # ── Loaders ───────────────────────────────────────────────────────────────────
 
 def merge_condition(tx, record):
+    signal_names = [
+        s.get("signal") for s in record.get("environmental_signals", []) if s.get("signal")
+    ]
     tx.run(
         """
         MERGE (c:Condition {name: $name})
-        SET c.icd11          = $icd11,
-            c.category       = $category,
-            c.corpus_version = $corpus_version,
-            c.review_status  = $review_status
+        SET c.icd11                      = $icd11,
+            c.category                   = $category,
+            c.corpus_version             = $corpus_version,
+            c.review_status              = $review_status,
+            c.endemic_regions            = $endemic_regions,
+            c.environmental_signal_names = $environmental_signal_names
         """,
         name=record["condition"],
         icd11=record.get("icd11"),
         category=record.get("category"),
         corpus_version=str(record.get("corpus_version", "")),
         review_status=record.get("review_status"),
+        endemic_regions=record.get("endemic_regions", []),
+        environmental_signal_names=signal_names,
     )
 
 

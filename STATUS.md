@@ -76,20 +76,37 @@
 ---
 
 ## Phase 7 — Corpus Expansion + Environmental Context Layer
-> Environmental context engineering (7a code changes) ON HOLD until corpus ≥15 conditions.
-> Modular. Each condition card is independent. Colleagues test after each ingest.
-> Schema version 2.0 engineering deferred — cards can be authored now without environmental_signals block.
+
+**Locked architecture (2026-09-09):**
+```
+Patient presentation → RAG differential → Candidate-level gate
+    ├── No environmental_signals on card → no_relevant_context (first-class result)
+    └── Signals present → Context providers
+            ├── CHIRPSProvider (primary, observed rainfall)
+            └── StaticCalendarProvider (fallback)
+                    ↓
+            EnvironmentalEvidence { signal, source, spatial_basis,
+              temporal_window, signal_confidence, data_age,
+              data_status, explanation }
+                    ↓
+                  Gemini
+```
+
+**Locked principles:**
+- Post-RAG gating — engine runs only for candidates with declared `environmental_signals`
+- `no_relevant_context` is a valid first-class result, not an edge case
+- Freshness (data_age/data_status) is separate from signal_confidence
+- CHIRPS primary, static calendar fallback — both with explicit source label in evidence
+- Lag-aware temporal matching using onset_date when available; falls back to encounter_date
+- Location approximation in Phase 7: `patient_location → endemic_region → CHIRPS bounding box`
+- Card-level `strength`/`confidence` fields gate signal emission — no separate global threshold
+- Outbreak detection is out of scope (separate surveillance layer, not part of diagnosis reasoning)
 
 ---
 
-### 7a — Schema update (do first — gates everything else)
-> Update governance docs, then ingest.py, then backfill existing cards.
+### 7a — Schema + ingestion (gates everything else)
 
 **CLAUDE.md** ✅ Done (2026-09-04)
-- Frontmatter schema reference added (all fields, controlled vocabularies)
-- Environmental context layer architecture documented
-- Controlled vocabularies locked: regions, signals, pathways, effect types, evidence types, exposures
-- Evolution path documented (Phase 7 → 8 → 9)
 
 **`ingest.py`**
 - [ ] Parse `endemic_regions` from frontmatter → carry in chunk metadata
@@ -101,101 +118,93 @@
 - [ ] Store `endemic_regions` as list property on Condition nodes
 - [ ] Store `environmental_signals` as structured properties — signal names and regions at minimum
 
-**`phase7/context_engine.py`** ← new file
-- [ ] `get_context(encounter_date, onset_date, patient_location, patient_exposures) → str`
-- [ ] Static Kenya rainfall calendar lookup: long rains March–May, short rains October–November
-- [ ] ENSO flag: annual variable (`neutral` | `el_nino` | `la_nina`) — update from NOAA/KMD each year
-- [ ] Output: confidence-labelled natural language statement with explicit evidence source label
-- [ ] Unit testable: given (date, location, exposures) → expected statement
-
-**`phase5/rag.py`**
-- [ ] Accept `patient_location` and `patient_exposures` as optional parameters
-- [ ] Accept `encounter_date` (default: today) and `onset_date` (optional)
-- [ ] Call `context_engine.get_context()` and inject output into `build_context()` as a new section
-
-**`phase6/app.py`**
-- [ ] Add structured `patient_location` field (optional — dropdown: region vocabulary)
-- [ ] Add structured `patient_exposures` checkboxes (optional — exposure vocabulary)
-- [ ] Pass location + exposures + onset_date to `rag.py`
-
 ---
 
-### 7b — Backfill existing 10 cards with new schema fields
-> Each card: add endemic_regions + environmental_signals → run ingest → confirm no validation warnings
+### 7b — Backfill existing cards with schema 2.0 fields
+> Run after ingest.py is updated. Each card: add endemic_regions + environmental_signals → ingest → confirm 0 warnings.
 
-- [ ] **malaria.md** — `endemic_regions`: lake_basin, coast, highland_margins, arid_semi_arid; signals: post_long_rains (strong), post_short_rains (moderate), flooding (moderate, amplifier: mosquito_exposure_high)
-- [ ] **acute_gastroenteritis.md** — `endemic_regions`: nationwide; signals: flooding (moderate, requires: unsafe_water), water_scarcity (moderate, requires: unsafe_water)
-- [ ] **anaemia.md** — `endemic_regions`: nationwide (lake_basin, coast higher burden); signals: prolonged_drought (severity_modifier, asal)
-- [ ] **pneumonia.md** — `endemic_regions`: nationwide; signals: cold_dry_season (low, highland), dry_dusty_season (low, northern_kenya/arid_semi_arid)
-- [ ] **pulmonary_tb.md** — `endemic_regions`: nationwide; no environmental signals (socioeconomic driver, not climate)
-- [ ] **uti.md** — `endemic_regions`: nationwide; signals: heat_dehydration (low, severity_modifier)
-- [ ] **hypertension.md** — `endemic_regions`: nationwide; no environmental signals
-- [ ] **type_2_diabetes.md** — `endemic_regions`: nationwide; no environmental signals
-- [ ] **obesity.md** — `endemic_regions`: nationwide; no environmental signals
-- [ ] **peptic_ulcer_disease.md** — `endemic_regions`: nationwide; no environmental signals
-- [ ] Re-ingest all 10 after backfill: `python ingest.py` — confirm schema_version 2.0 on all cards
+- [ ] **malaria.md** — signals: post_long_rains (strong), post_short_rains (moderate), flooding (moderate, requires: mosquito_exposure_high)
+- [ ] **acute_gastroenteritis.md** — signals: flooding (moderate, requires: unsafe_water), water_scarcity (moderate, requires: unsafe_water)
+- [ ] **typhoid_fever.md** — signals: flooding (waterborne, moderate), water_scarcity (moderate)
+- [ ] **dengue.md** — signals: post_long_rains (vector_borne, coast)
+- [ ] **pneumonia.md** — signals: cold_dry_season (low, highland), dry_dusty_season (low, northern_kenya)
+- [ ] **anaemia.md** — signals: prolonged_drought (severity_modifier, asal)
+- [ ] **uti.md** — signals: heat_dehydration (low, severity_modifier)
+- [ ] **pulmonary_tb.md** — no environmental signals (socioeconomic driver)
+- [ ] **hypertension.md / type_2_diabetes.md / obesity.md / peptic_ulcer_disease.md / gerd.md / functional_dyspepsia.md / asthma.md** — no environmental signals; endemic_regions: nationwide
+- [ ] Re-ingest all after backfill: `python ingest.py` — 0 warnings, schema_version 2.0 on all cards
 - [ ] Reload Neo4j: `python neo4j/neo4j_loader.py`
 
 ---
 
-### 7c — New condition cards (Tier 1 — priority order)
-> Workflow per card: author → colleague clinical review → incorporate feedback → bump corpus_version → ingest → Neo4j reload → RAG test case
+### 7c — Context engine (`phase7/context_engine.py`)
 
-**Tier 1 — Environmental context critical (do first):**
-- [ ] **Dengue fever** — `coast`, `urban_informal`; signals: post_long_rains (vector_borne, coast); key Malaria/Chikungunya differential
-  - [ ] Card authored
-  - [ ] Colleague review
-  - [ ] Ingested + tested
-- [ ] **Cholera** — `lake_basin`, `coast`, `urban_informal`, `asal_riverine`; signals: flooding (waterborne, strong), water_scarcity (moderate); separate from AGE
-  - [ ] Card authored
-  - [ ] Colleague review
-  - [ ] Ingested + tested
-- [ ] **Rift Valley fever** — `arid_semi_arid`, `northern_kenya`, `lake_basin`; signals: flooding (zoonotic, requires: livestock_contact); amplified by: pastoralist_mobility
-  - [ ] Card authored
-  - [ ] Colleague review
-  - [ ] Ingested + tested
-- [ ] **Chikungunya** — `coast`, `urban_informal`; signals: post_long_rains (vector_borne, coast); co-encode with Dengue (shared Aedes ecology)
-  - [ ] Card authored
-  - [ ] Colleague review
-  - [ ] Ingested + tested
+**`EnvironmentalEvidence` dataclass**
+- [ ] Fields: `signal`, `source` (chirps|static_calendar), `spatial_basis` (endemic_region), `temporal_window` (lag min/max weeks), `signal_confidence` (low|moderate|strong), `data_age` (hours), `data_status` (fresh|stale), `explanation` (str)
+- [ ] `no_relevant_context` sentinel result — returned when no candidates have environmental signals
 
-**Tier 1 — Differential gap (PUD/respiratory):**
-- [x] **GERD** — `nationwide`; no environmental signals; key PUD differential ✅ (2026-09-06)
-  - [x] Card authored — `gerd.md`; 18 new vocabulary terms added; 0 ingest warnings
-  - [ ] Colleague review (pending — `review_status: draft`)
-  - [x] RAG test case — leading: Gastro-oesophageal reflux disease; PUD + functional dyspepsia in differentials; correct argues-against (2026-09-06)
-- [x] **Functional dyspepsia** — `nationwide`; no environmental signals; key PUD/GERD differential ✅ (2026-09-06)
-  - [x] Card authored — `functional_dyspepsia.md`; 4 new vocabulary terms; 0 ingest warnings
-  - [ ] Colleague review (pending — `review_status: draft`)
-  - [x] RAG test case — leading: Functional dyspepsia; PUD + GERD in differentials; normal endoscopy noted (2026-09-06)
-- [x] **Typhoid fever** — `nationwide`; signals: flooding (waterborne, moderate), water_scarcity (moderate); key Malaria/AGE differential ✅ (2026-09-06)
-  - [x] Card authored — `typhoid_fever.md`; 9 new vocabulary terms; 0 ingest warnings
-  - [ ] Colleague review (pending — `review_status: draft`)
-  - [x] RAG test case — leading: Typhoid fever; malaria + AGE in differentials; RDT negative noted (2026-09-06)
-- [ ] **Asthma** — `nationwide`; signals: cold_dry_season (low), dry_dusty_season (low); key Pneumonia/TB differential
-  - [ ] Card authored
-  - [ ] Colleague review
-  - [ ] Ingested + tested
+**`StaticCalendarProvider`**
+- [ ] Kenya rainfall calendar: long rains March–May, short rains October–November, cold dry June–August, dry/dusty November–March
+- [ ] ENSO flag: annual variable (`neutral` | `el_nino` | `la_nina`) — update from NOAA/KMD each year
+- [ ] Lag-aware: use onset_date if provided, else encounter_date; apply lag_weeks from card signal
 
-**Tier 2 — Next batch (after ≥15 conditions confirmed working):**
-- [ ] **COPD** — `nationwide`; signals: dry_dusty_season (low, occupational_dust)
-- [ ] **Heart failure** — `nationwide`; no environmental signals
-- [ ] **HIV/AIDS** — `nationwide`; no environmental signals (comorbidity context)
-- [ ] **Sickle cell disease** — `nationwide` (sub-Saharan African ancestry)
-- [ ] **PID** — `nationwide`; female-only
-- [ ] **Malaria in pregnancy** — `nationwide`; same signals as malaria + obstetric context
-- [ ] **Meningococcal meningitis** — `northern_kenya`, `arid_semi_arid`; signals: dry_dusty_season (low, regional); geographic/outbreak context required
-- [ ] **Leptospirosis** — `lake_basin`, `coastal_lowlands`, `urban_informal`; signals: flooding (zoonotic, requires: floodwater_contact)
+**`CHIRPSProvider`**
+- [ ] Fetch observed rainfall at encounter time from CHIRPS API (no auth required)
+- [ ] Map `patient_location → endemic_region → bounding box → CHIRPS grid extraction`
+- [ ] Compute: rainfall last 7/30/60 days; flag if within lag window for signal
+- [ ] Cache response for session duration (hours); stamp data_age + data_status on evidence
+- [ ] Falls back to StaticCalendarProvider on API failure — source label reflects fallback
+
+**`get_environmental_evidence(candidates, encounter_date, onset_date, patient_location, patient_exposures) → list[EnvironmentalEvidence] | no_relevant_context`**
+- [ ] Candidate-level gate: skip conditions with no `environmental_signals` on card
+- [ ] For each qualifying candidate: evaluate signal against provider output, exposure requirements, region match, card strength/confidence
+- [ ] Suppress signal if card `strength: low` and CHIRPS data shows no anomaly
+- [ ] Return list of EnvironmentalEvidence objects (one per qualifying candidate-signal pair), or `no_relevant_context`
 
 ---
 
-### 7d — Context engine validation
-- [ ] Unit tests: 5 fixed (date, location, exposure) inputs → expected context statement strings
-- [ ] RAG integration test: Malaria case in lake_basin in June → context statement appears in LLM input
-- [ ] RAG integration test: same Malaria case in Nairobi January → no post_long_rains signal fires
-- [ ] RAG integration test: RVF case with livestock_contact in flooded ASAL county → zoonotic signal fires
-- [ ] RAG integration test: RVF case without livestock_contact → zoonotic signal does not fire (requires_exposure not met)
-- [ ] Eval suite: run 8-case baseline — confirm 7/8 maintained after context engine integration
+### 7d — RAG + app integration
+
+**`phase5/rag.py`**
+- [ ] Accept `patient_location`, `patient_exposures`, `encounter_date`, `onset_date` as optional parameters
+- [ ] After candidate retrieval: call `get_environmental_evidence()` with candidates + encounter context
+- [ ] If `no_relevant_context`: inject nothing — no environmental section in prompt
+- [ ] If evidence returned: inject as labelled section in `build_context()` with source + freshness explicit
+
+**`phase6/app.py`**
+- [ ] Add `patient_location` dropdown (optional — endemic_region vocabulary)
+- [ ] Add `patient_exposures` checkboxes (optional — exposure vocabulary)
+- [ ] Pass location + exposures + onset_date to `rag.py`
+
+---
+
+### 7e — Validation
+
+- [ ] Unit tests: 5 fixed (date, location, exposure) inputs → expected EnvironmentalEvidence or no_relevant_context
+- [ ] Unit test: CHIRPS fallback to static calendar on API failure — source label shows `static_calendar`
+- [ ] RAG integration test: Malaria in lake_basin in May → evidence block appears in LLM input
+- [ ] RAG integration test: Malaria in Nairobi in January → no_relevant_context (no region/season match)
+- [ ] RAG integration test: Hypertension case → no_relevant_context (no environmental_signals on card)
+- [ ] RAG integration test: AGE + flooding signal + unsafe_water exposure → evidence fires; without exposure → suppressed
+- [ ] Eval suite: run `make eval` — confirm 7/8 maintained after context engine integration
+
+---
+
+### 7f — New condition cards (Tier 1 — pending clinician review)
+> Workflow: author → colleague clinical review → ingest → Neo4j reload → RAG test
+
+- [ ] **Cholera** — signals: flooding (waterborne, strong), water_scarcity (moderate)
+- [ ] **Rift Valley fever** — signals: flooding (zoonotic, requires: livestock_contact)
+- [ ] **Chikungunya** — signals: post_long_rains (vector_borne, coast)
+
+**Already authored (awaiting review):**
+- [x] GERD — authored, RAG tested ✅
+- [x] Functional dyspepsia — authored, RAG tested ✅
+- [x] Typhoid fever — authored, RAG tested ✅
+- [ ] Asthma — signals: cold_dry_season (low), dry_dusty_season (low)
+
+**Tier 2 (after ≥18 conditions):**
+COPD, Heart failure, HIV/AIDS, Sickle cell, PID, Malaria in pregnancy, Meningococcal meningitis, Leptospirosis
 
 ---
 
