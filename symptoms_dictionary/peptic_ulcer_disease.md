@@ -4,7 +4,7 @@ icd11: DA62
 icd10: K27
 category: gastroenterological
 corpus_version: "1.4"
-schema_version: "1.2"
+schema_version: "2.0"
 review_status: draft
 reviewed_by: ""
 last_reviewed: ""
@@ -18,6 +18,9 @@ sources:
   - organization: "WHO"
     title: "H. pylori Fact Sheet"
     year: ""
+endemic_regions:
+  - nationwide
+environmental_signals: []
 graph:
   cardinal_symptoms: [epigastric pain, epigastric burning, epigastric gnawing, pain relieved by food, pain waking from sleep]
   associated_symptoms: [nausea, bloating, heartburn, waterbrash, vomiting, weight loss, haematemesis, melaena, epigastric tenderness]

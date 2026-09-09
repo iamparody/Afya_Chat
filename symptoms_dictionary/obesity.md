@@ -4,7 +4,7 @@ icd11: 5B81
 icd10: E66
 category: metabolic
 corpus_version: "1.3"
-schema_version: "1.2"
+schema_version: "2.0"
 review_status: draft
 reviewed_by: ""
 last_reviewed: ""
@@ -18,6 +18,9 @@ sources:
   - organization: "Obesity Medicine Association"
     title: "Clinical Practice Guidelines"
     year: "2023"
+endemic_regions:
+  - nationwide
+environmental_signals: []
 graph:
   cardinal_symptoms: [dyspnoea on exertion, reduced exercise tolerance]
   associated_symptoms: [snoring, witnessed apnoeas, excessive daytime sleepiness, joint pain, intertrigo, acanthosis nigricans, heartburn, acid reflux, irregular menstruation]

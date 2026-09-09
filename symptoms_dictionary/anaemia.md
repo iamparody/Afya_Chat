@@ -4,7 +4,7 @@ icd11: 3A00
 icd10: D50
 category: haematological
 corpus_version: "1.3"
-schema_version: "1.2"
+schema_version: "2.0"
 review_status: draft
 reviewed_by: ""
 last_reviewed: ""
@@ -18,6 +18,27 @@ sources:
   - organization: "WHO"
     title: "Guideline on Use of Ferritin for Nutritional Anaemia Assessment"
     year: "2020"
+endemic_regions:
+  - nationwide
+environmental_signals:
+  - signal: prolonged_drought
+    pathways:
+      - nutritional_vulnerability
+    effect_type: severity_modifier
+    effect_direction: up
+    lag_weeks:
+      min: 4
+      max: 16
+    strength: moderate
+    confidence: moderate
+    evidence_type: regional_epidemiological_evidence
+    regions:
+      - arid_semi_arid
+      - northern_kenya
+    seasonal_basis: dry_season
+    applicability:
+      requires_exposure: []
+      amplifiers: []
 graph:
   cardinal_symptoms: [fatigue, weakness, pallor, dyspnoea on exertion]
   associated_symptoms: [tachycardia, palpitations, lightheadedness, pica, koilonychia, glossitis, angular stomatitis, brittle nails, systolic flow murmur]

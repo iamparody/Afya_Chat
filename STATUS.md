@@ -108,32 +108,32 @@ Patient presentation → RAG differential → Candidate-level gate
 
 **CLAUDE.md** ✅ Done (2026-09-04)
 
-**`ingest.py`**
-- [ ] Parse `endemic_regions` from frontmatter → carry in chunk metadata
-- [ ] Parse `environmental_signals` block → carry in chunk metadata (JSON)
-- [ ] Validate signal names, pathways, effect_type, evidence_type against controlled vocabulary — warn on unknown values
-- [ ] Increment expected `schema_version` to `"2.0"` in validation
+**`ingest.py`** ✅ Done (2026-09-09)
+- [x] Parse `endemic_regions` from frontmatter → carry in chunk metadata
+- [x] Parse `environmental_signals` block → carry in chunk metadata (JSON)
+- [x] Validate signal names, pathways, effect_type, evidence_type against controlled vocabulary — warn on unknown values
+- [x] Increment expected `schema_version` to `"2.0"` in validation
 
-**`neo4j_loader.py`**
-- [ ] Store `endemic_regions` as list property on Condition nodes
-- [ ] Store `environmental_signals` as structured properties — signal names and regions at minimum
+**`neo4j_loader.py`** ✅ Done (2026-09-09)
+- [x] Store `endemic_regions` as list property on Condition nodes
+- [x] Store `environmental_signals` as structured properties — signal names and regions at minimum
 
 ---
 
 ### 7b — Backfill existing cards with schema 2.0 fields
 > Run after ingest.py is updated. Each card: add endemic_regions + environmental_signals → ingest → confirm 0 warnings.
 
-- [ ] **malaria.md** — signals: post_long_rains (strong), post_short_rains (moderate), flooding (moderate, requires: mosquito_exposure_high)
-- [ ] **acute_gastroenteritis.md** — signals: flooding (moderate, requires: unsafe_water), water_scarcity (moderate, requires: unsafe_water)
-- [ ] **typhoid_fever.md** — signals: flooding (waterborne, moderate), water_scarcity (moderate)
-- [ ] **dengue.md** — signals: post_long_rains (vector_borne, coast)
-- [ ] **pneumonia.md** — signals: cold_dry_season (low, highland), dry_dusty_season (low, northern_kenya)
-- [ ] **anaemia.md** — signals: prolonged_drought (severity_modifier, asal)
-- [ ] **uti.md** — signals: heat_dehydration (low, severity_modifier)
-- [ ] **pulmonary_tb.md** — no environmental signals (socioeconomic driver)
-- [ ] **hypertension.md / type_2_diabetes.md / obesity.md / peptic_ulcer_disease.md / gerd.md / functional_dyspepsia.md / asthma.md** — no environmental signals; endemic_regions: nationwide
-- [ ] Re-ingest all after backfill: `python ingest.py` — 0 warnings, schema_version 2.0 on all cards
-- [ ] Reload Neo4j: `python neo4j/neo4j_loader.py`
+- [x] **malaria.md** — signals: post_long_rains (strong), post_short_rains (moderate), flooding (moderate, requires: mosquito_exposure_high)
+- [x] **acute_gastroenteritis.md** — signals: flooding (moderate, requires: unsafe_water), water_scarcity (moderate, requires: unsafe_water)
+- [x] **typhoid_fever.md** — signals: flooding (waterborne, moderate), water_scarcity (moderate)
+- [x] **dengue_fever.md** — signals: post_long_rains (vector_borne, coast)
+- [x] **pneumonia.md** — signals: cold_dry_season (low, highland), dry_dusty_season (low, northern_kenya)
+- [x] **anaemia.md** — signals: prolonged_drought (severity_modifier, asal)
+- [x] **uti.md** — signals: heat_dehydration (low, severity_modifier)
+- [x] **pulmonary_tb.md** — no environmental signals (socioeconomic driver)
+- [x] **hypertension.md / type_2_diabetes.md / obesity.md / peptic_ulcer_disease.md / gerd.md / functional_dyspepsia.md / asthma.md** — no environmental signals; endemic_regions: nationwide
+- [x] Re-ingest all after backfill: `python ingest.py` — 0 warnings, schema_version 2.0 on all cards (2026-09-09)
+- [x] Reload Neo4j: `python neo4j/neo4j_loader.py`
 
 ---
 

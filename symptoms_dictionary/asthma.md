@@ -4,7 +4,7 @@ icd11: CA23
 icd10: J45
 category: respiratory
 corpus_version: "1.0"
-schema_version: "1.2"
+schema_version: "2.0"
 review_status: draft
 reviewed_by: ""
 last_reviewed: ""
@@ -18,6 +18,9 @@ sources:
   - organization: "Kenya MoH"
     title: "Kenya National Clinical Guidelines for Management of Asthma"
     year: "2022"
+endemic_regions:
+  - nationwide
+environmental_signals: []
 graph:
   cardinal_symptoms: [wheeze, dyspnoea, chest tightness]
   associated_symptoms: [chronic cough, nocturnal symptoms, dyspnoea on exertion, prolonged expiratory phase]

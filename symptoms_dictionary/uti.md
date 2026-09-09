@@ -4,7 +4,7 @@ icd11: GC08
 icd10: N39.0
 category: urogenital / infectious
 corpus_version: "1.6"
-schema_version: "1.2"
+schema_version: "2.0"
 review_status: draft
 reviewed_by: ""
 last_reviewed: ""
@@ -18,6 +18,27 @@ sources:
   - organization: "Kenya MOH"
     title: "Kenya Clinical Guidelines"
     year: "2022"
+endemic_regions:
+  - nationwide
+environmental_signals:
+  - signal: heat_dehydration
+    pathways: []
+    effect_type: severity_modifier
+    effect_direction: up
+    lag_weeks:
+      min: 0
+      max: 2
+    strength: low
+    confidence: low
+    evidence_type: expert_estimate
+    regions:
+      - arid_semi_arid
+      - northern_kenya
+      - coast
+    seasonal_basis: dry_season
+    applicability:
+      requires_exposure: []
+      amplifiers: []
 graph:
   cardinal_symptoms: [dysuria, urinary frequency, urinary urgency, suprapubic discomfort, loin pain, costovertebral angle tenderness, fever]
   associated_symptoms: [haematuria, cloudy urine, offensive-smelling urine, rigors, nausea, vomiting, confusion]

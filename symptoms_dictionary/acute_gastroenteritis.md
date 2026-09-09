@@ -4,7 +4,7 @@ icd11: 1A09
 icd10: A09
 category: gastroenterological / infectious
 corpus_version: "1.3"
-schema_version: "1.2"
+schema_version: "2.0"
 review_status: draft
 reviewed_by: ""
 last_reviewed: ""
@@ -21,6 +21,48 @@ sources:
   - organization: "WHO"
     title: "Cholera Technical Guidelines"
     year: "2022"
+endemic_regions:
+  - nationwide
+environmental_signals:
+  - signal: flooding
+    pathways:
+      - waterborne
+    effect_type: transmission_opportunity
+    effect_direction: up
+    lag_weeks:
+      min: 0
+      max: 2
+    strength: moderate
+    confidence: moderate
+    evidence_type: observed_outbreaks
+    regions:
+      - nationwide
+    seasonal_basis: outbreak_associated
+    applicability:
+      requires_exposure:
+        - unsafe_water
+      amplifiers:
+        - floodwater_contact
+  - signal: water_scarcity
+    pathways:
+      - waterborne
+    effect_type: transmission_opportunity
+    effect_direction: up
+    lag_weeks:
+      min: 0
+      max: 4
+    strength: moderate
+    confidence: moderate
+    evidence_type: expert_estimate
+    regions:
+      - arid_semi_arid
+      - northern_kenya
+      - urban_informal
+    seasonal_basis: dry_season
+    applicability:
+      requires_exposure:
+        - unsafe_water
+      amplifiers: []
 graph:
   cardinal_symptoms: [diarrhoea, nausea, vomiting, abdominal cramps]
   associated_symptoms: [fever, dehydration, bloody stool, mucoid stool, weight loss, borborygmi]

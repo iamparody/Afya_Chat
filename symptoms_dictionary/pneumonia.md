@@ -4,7 +4,7 @@ icd11: CA40
 icd10: J18
 category: respiratory / infectious
 corpus_version: "1.3"
-schema_version: "1.2"
+schema_version: "2.0"
 review_status: draft
 reviewed_by: ""
 last_reviewed: ""
@@ -21,6 +21,45 @@ sources:
   - organization: "IDSA/ATS"
     title: "Community-Acquired Pneumonia Guidelines"
     year: "2019"
+endemic_regions:
+  - nationwide
+environmental_signals:
+  - signal: cold_dry_season
+    pathways:
+      - airborne
+      - respiratory_mucosal
+    effect_type: transmission_opportunity
+    effect_direction: up
+    lag_weeks:
+      min: 0
+      max: 4
+    strength: low
+    confidence: low
+    evidence_type: expert_estimate
+    regions:
+      - highland
+    seasonal_basis: dry_season
+    applicability:
+      requires_exposure: []
+      amplifiers: []
+  - signal: dry_dusty_season
+    pathways:
+      - respiratory_mucosal
+    effect_type: severity_modifier
+    effect_direction: up
+    lag_weeks:
+      min: 0
+      max: 4
+    strength: low
+    confidence: low
+    evidence_type: expert_estimate
+    regions:
+      - northern_kenya
+      - arid_semi_arid
+    seasonal_basis: dry_season
+    applicability:
+      requires_exposure: []
+      amplifiers: []
 graph:
   cardinal_symptoms: [productive cough, purulent sputum, fever, rigors, pleuritic chest pain, dyspnoea]
   associated_symptoms: [fatigue, myalgia, anorexia, tachycardia, tachypnoea, reduced oxygen saturation, confusion, dullness to percussion, bronchial breathing, crackles]

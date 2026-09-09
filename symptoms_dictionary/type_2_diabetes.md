@@ -4,7 +4,7 @@ icd11: 5A11
 icd10: E11
 category: endocrine / metabolic
 corpus_version: "1.3"
-schema_version: "1.2"
+schema_version: "2.0"
 review_status: draft
 reviewed_by: ""
 last_reviewed: ""
@@ -18,6 +18,9 @@ sources:
   - organization: "International Diabetes Federation"
     title: "Diabetes Atlas, 10th Edition"
     year: "2021"
+endemic_regions:
+  - nationwide
+environmental_signals: []
 graph:
   cardinal_symptoms: [polyuria, polydipsia, fatigue]
   associated_symptoms: [blurred vision, recurrent infections, slow wound healing, peripheral neuropathy, tingling feet, numbness feet, acanthosis nigricans]

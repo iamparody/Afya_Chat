@@ -4,7 +4,7 @@ icd11: DA94
 icd10: K30
 category: gastroenterological
 corpus_version: "1.0"
-schema_version: "1.2"
+schema_version: "2.0"
 review_status: draft
 reviewed_by: ""
 last_reviewed: ""
@@ -18,6 +18,9 @@ sources:
   - organization: "American College of Gastroenterology"
     title: "ACG and CAG Clinical Guidelines for Dyspepsia"
     year: "2017"
+endemic_regions:
+  - nationwide
+environmental_signals: []
 graph:
   cardinal_symptoms: [epigastric pain, postprandial fullness, early satiety, epigastric burning]
   associated_symptoms: [nausea, bloating, belching, vomiting, heartburn, weight loss]

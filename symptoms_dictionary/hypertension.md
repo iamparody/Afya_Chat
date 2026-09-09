@@ -4,7 +4,7 @@ icd11: BA00
 icd10: I10
 category: cardiovascular
 corpus_version: "1.3"
-schema_version: "1.2"
+schema_version: "2.0"
 review_status: draft
 reviewed_by: ""
 last_reviewed: ""
@@ -18,6 +18,9 @@ sources:
   - organization: "WHO/ISH"
     title: "Hypertension Guidelines"
     year: "2021"
+endemic_regions:
+  - nationwide
+environmental_signals: []
 graph:
   cardinal_symptoms: [occipital headache on waking]
   associated_symptoms: [visual disturbance, palpitations, chest pain, epistaxis, dyspnoea, fundoscopic changes, left ventricular heave]
