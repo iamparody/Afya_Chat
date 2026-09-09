@@ -4,7 +4,7 @@ icd11: CA23
 icd10: J45
 category: respiratory
 corpus_version: "1.0"
-schema_version: "2.0"
+schema_version: "2.1"
 review_status: draft
 reviewed_by: ""
 last_reviewed: ""

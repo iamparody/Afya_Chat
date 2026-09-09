@@ -4,7 +4,7 @@ icd11: GC08
 icd10: N39.0
 category: urogenital / infectious
 corpus_version: "1.6"
-schema_version: "2.0"
+schema_version: "2.1"
 review_status: draft
 reviewed_by: ""
 last_reviewed: ""
@@ -30,6 +30,7 @@ environmental_signals:
       max: 2
     strength: low
     confidence: low
+    causal_distance: indirect
     evidence_type: expert_estimate
     regions:
       - arid_semi_arid

@@ -95,8 +95,9 @@ VALID_EXPOSURES = {
     "unsafe_water", "mosquito_exposure_high", "pastoralist_mobility",
     "fishing_lakeshore",
 }
+VALID_CAUSAL_DISTANCE = {"direct", "indirect"}
 
-EXPECTED_SCHEMA_VERSION = "2.0"
+EXPECTED_SCHEMA_VERSION = "2.1"
 
 # Canonical section names in display order.
 SECTIONS = [
@@ -310,6 +311,18 @@ def validate_environmental(meta, condition):
             warnings.append(
                 f"WARN unknown confidence '{sig['confidence']}' "
                 f"in '{condition}' signal '{name}'"
+            )
+
+        causal_distance = sig.get("causal_distance")
+        if causal_distance is None:
+            warnings.append(
+                f"WARN missing causal_distance in '{condition}' signal '{name}' "
+                f"— required: direct | indirect"
+            )
+        elif causal_distance not in VALID_CAUSAL_DISTANCE:
+            warnings.append(
+                f"WARN unknown causal_distance '{causal_distance}' "
+                f"in '{condition}' signal '{name}' — valid: {sorted(VALID_CAUSAL_DISTANCE)}"
             )
 
         if sig.get("evidence_type") and sig["evidence_type"] not in VALID_EVIDENCE_TYPES:

@@ -4,7 +4,7 @@ icd11: 1F40
 icd10: B54
 category: infectious
 corpus_version: "1.2"
-schema_version: "2.0"
+schema_version: "2.1"
 review_status: draft
 reviewed_by: ""
 last_reviewed: ""
@@ -35,6 +35,7 @@ environmental_signals:
       max: 8
     strength: strong
     confidence: high
+    causal_distance: direct
     evidence_type: observed_outbreaks
     regions:
       - lake_basin
@@ -55,6 +56,7 @@ environmental_signals:
       max: 8
     strength: moderate
     confidence: moderate
+    causal_distance: direct
     evidence_type: surveillance_data
     regions:
       - lake_basin
@@ -74,6 +76,7 @@ environmental_signals:
       max: 6
     strength: moderate
     confidence: moderate
+    causal_distance: direct
     evidence_type: observed_outbreaks
     regions:
       - lake_basin

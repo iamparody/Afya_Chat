@@ -4,7 +4,7 @@ icd11: 3A00
 icd10: D50
 category: haematological
 corpus_version: "1.3"
-schema_version: "2.0"
+schema_version: "2.1"
 review_status: draft
 reviewed_by: ""
 last_reviewed: ""
@@ -31,6 +31,7 @@ environmental_signals:
       max: 16
     strength: moderate
     confidence: moderate
+    causal_distance: indirect
     evidence_type: regional_epidemiological_evidence
     regions:
       - arid_semi_arid

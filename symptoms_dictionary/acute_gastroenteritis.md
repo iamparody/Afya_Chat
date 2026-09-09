@@ -4,7 +4,7 @@ icd11: 1A09
 icd10: A09
 category: gastroenterological / infectious
 corpus_version: "1.3"
-schema_version: "2.0"
+schema_version: "2.1"
 review_status: draft
 reviewed_by: ""
 last_reviewed: ""
@@ -34,6 +34,7 @@ environmental_signals:
       max: 2
     strength: moderate
     confidence: moderate
+    causal_distance: direct
     evidence_type: observed_outbreaks
     regions:
       - nationwide
@@ -53,6 +54,7 @@ environmental_signals:
       max: 4
     strength: moderate
     confidence: moderate
+    causal_distance: indirect
     evidence_type: expert_estimate
     regions:
       - arid_semi_arid

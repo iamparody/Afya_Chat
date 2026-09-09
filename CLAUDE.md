@@ -189,6 +189,7 @@ environmental_signals:
       max: <int>
     strength: moderate          # low | moderate | strong
     confidence: moderate        # low | moderate | high
+    causal_distance: direct     # direct | indirect — see Causal Distance Vocabulary below
     evidence_type: expert_estimate  # see Evidence Type Vocabulary below
     regions:                    # subset of endemic_regions — where signal applies
       - <region>
@@ -238,6 +239,10 @@ These are the only valid values for vocabulary-controlled fields. Do not use fre
 ### Effect Type Vocabulary
 `transmission_opportunity` — environmental condition increases disease acquisition risk
 `severity_modifier` — environmental condition worsens disease severity or complications (does not increase incidence)
+
+### Causal Distance Vocabulary
+`direct` — signal operates via ≤2 causal steps with established epidemiological evidence (e.g. rainfall → mosquito breeding → malaria transmission)
+`indirect` — signal operates via ≥3 steps or through a behavioral/physiological intermediate (e.g. drought → food scarcity → nutritional vulnerability → iron deficiency). Indirect signals require more hedged language in the context engine explanation and should never override strong clinical evidence.
 
 ### Evidence Type Vocabulary
 `observed_outbreaks` | `surveillance_data` | `regional_epidemiological_evidence` | `expert_estimate`
