@@ -211,7 +211,7 @@ OUTPUT_SCHEMA = {
 
 # ── Context template ──────────────────────────────────────────────────────────
 
-def build_context(presentation, candidates, prose_passages):
+def build_context(presentation, candidates, prose_passages, env_evidence=None):
     """
     Assemble the per-query context block sent to the LLM.
 
@@ -227,6 +227,10 @@ def build_context(presentation, candidates, prose_passages):
         "section": str,
         "text": str,
     }
+
+    env_evidence: list of EnvironmentalEvidence objects from context_engine, or None.
+        When non-empty, an environmental context section is appended. Each item
+        carries a source-labelled explanation string. Clinical evidence takes precedence.
     """
     lines = []
 
@@ -274,6 +278,19 @@ def build_context(presentation, candidates, prose_passages):
             lines.append(f"### {current_condition}")
         lines.append(f"[{p['section']}]")
         lines.append(p["text"].strip())
+        lines.append("")
+
+    if env_evidence:
+        lines.append("## Environmental context")
+        lines.append(
+            "Seasonal and environmental prior evidence based on the encounter location and date. "
+            "This adjusts the relative prior probability of specific candidates only — "
+            "it is not clinical evidence. Patient-documented findings above take precedence. "
+            "Do not use this section alone to confirm or exclude any diagnosis."
+        )
+        lines.append("")
+        for ev in env_evidence:
+            lines.append(f"• {ev.explanation}")
         lines.append("")
 
     return "\n".join(lines)

@@ -38,6 +38,17 @@ db.init_db()
 
 VALID_CONFIDENCE = {"high", "moderate", "low"}
 
+_ENDEMIC_REGIONS = [
+    "coast", "lake_basin", "highland", "highland_margins",
+    "arid_semi_arid", "northern_kenya", "urban_informal",
+]
+
+_EXPOSURES = [
+    "floodwater_contact", "livestock_contact", "occupational_dust",
+    "unsafe_water", "mosquito_exposure_high", "pastoralist_mobility",
+    "fishing_lakeshore",
+]
+
 _ICD = {
     "type 2 diabetes mellitus":           ("5A11",  "E11"),
     "essential hypertension":             ("BA00",  "I10"),
@@ -75,6 +86,8 @@ def _init_session_state():
         "disam_questions":      [],
         "disam_skip_to_result": False,
         "base_presentation":    "",
+        "patient_location":     None,
+        "patient_exposures":    [],
     }
     for k, v in defaults.items():
         if k not in st.session_state:
@@ -94,6 +107,8 @@ def _clear_all():
     st.session_state.disam_questions      = []
     st.session_state.disam_skip_to_result = False
     st.session_state.base_presentation    = ""
+    st.session_state.patient_location     = None
+    st.session_state.patient_exposures    = []
 
 
 # ── Validation ────────────────────────────────────────────────────────────────
@@ -579,6 +594,24 @@ else:
         key=f"presentation_{st.session_state.input_key}",
     )
 
+    with st.expander("Patient context (optional)"):
+        loc = st.selectbox(
+            "Patient location",
+            options=["Not specified"] + _ENDEMIC_REGIONS,
+            index=0,
+            key=f"location_{st.session_state.input_key}",
+            help="Select the patient's geographic region to activate seasonal environmental context.",
+        )
+        exp = st.multiselect(
+            "Documented exposures",
+            options=_EXPOSURES,
+            default=[],
+            key=f"exposures_{st.session_state.input_key}",
+            help="Select any exposures explicitly documented in the patient history.",
+        )
+        st.session_state.patient_location  = loc if loc != "Not specified" else None
+        st.session_state.patient_exposures = exp
+
 col_btn, col_clear, _ = st.columns([1, 1, 4])
 with col_btn:
     analyse = st.button(
@@ -601,7 +634,12 @@ if analyse:
 
     with st.spinner("Analysing presentation…"):
         try:
-            result = rag.run(presentation.strip())
+            result = rag.run(
+                presentation.strip(),
+                patient_location=st.session_state.patient_location,
+                patient_exposures=st.session_state.patient_exposures,
+                encounter_date=datetime.now(),
+            )
             _assert_confidence(result)
         except ValueError as e:
             logging.error("CDS validation error: %s", e)
@@ -660,7 +698,12 @@ if _disam_active:
 
         with st.spinner("Refining assessment…"):
             try:
-                result = rag.run(enriched)
+                result = rag.run(
+                    enriched,
+                    patient_location=st.session_state.patient_location,
+                    patient_exposures=st.session_state.patient_exposures,
+                    encounter_date=datetime.now(),
+                )
                 _assert_confidence(result)
             except ValueError as e:
                 logging.error("CDS disambiguation validation error: %s", e)

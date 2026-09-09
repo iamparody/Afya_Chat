@@ -192,18 +192,27 @@ Patient presentation → RAG differential → Candidate-level gate
 
 ---
 
-### 7d — RAG + app integration
+### 7d — RAG + app integration ✅ Done (2026-09-09)
 
 **`phase5/rag.py`**
-- [ ] Accept `patient_location`, `patient_exposures`, `encounter_date`, `onset_date` as optional parameters
-- [ ] After candidate retrieval: call `get_environmental_evidence()` with candidates + encounter context
-- [ ] If `no_relevant_context`: inject nothing — no environmental section in prompt
-- [ ] If evidence returned: inject as labelled section in `build_context()` with source + freshness explicit
+- [x] `run()` accepts `patient_location`, `patient_exposures`, `encounter_date`, `onset_date` as optional params (all default None; backward-compatible)
+- [x] Step 3b added after filtered passages: calls `get_environmental_evidence(top_conditions, enc_date, location, exposures, onset_date)`
+- [x] `env_evidence = result.evidence if isinstance(result, ContextResult) else []` — no injection when NO_RELEVANT_CONTEXT or all suppressed
+- [x] `build_context()` called with `env_evidence=env_evidence`
+- [x] `sys.path.insert(0, str(ROOT))` added — ensures `phase7` importable from any calling context (evaluate.py, rag.py standalone)
+
+**`phase5/prompts.py`**
+- [x] `build_context()` accepts optional `env_evidence=None`
+- [x] When non-empty, appends `## Environmental context` section after clinical evidence — source-labelled, framed as prior adjustment not clinical evidence, explicitly states clinical findings take precedence
 
 **`phase6/app.py`**
-- [ ] Add `patient_location` dropdown (optional — endemic_region vocabulary)
-- [ ] Add `patient_exposures` checkboxes (optional — exposure vocabulary)
-- [ ] Pass location + exposures + onset_date to `rag.py`
+- [x] `_ENDEMIC_REGIONS` and `_EXPOSURES` constants from controlled vocabulary
+- [x] `patient_location` and `patient_exposures` added to session state defaults and `_clear_all()`
+- [x] `st.expander("Patient context (optional)")` below presentation textarea: `st.selectbox` for location, `st.multiselect` for exposures; keyed to `input_key` so they reset on Clear
+- [x] Both `rag.run()` calls (initial analysis + disambiguation refinement) pass `patient_location`, `patient_exposures`, `encounter_date=datetime.now()`
+- [x] `onset_date` not exposed as UI field in Phase 7 (free-text presentation carries onset; structured onset_date deferred to Phase 9)
+
+**Eval note:** 7/8 baseline not re-verifiable without API keys in this session. Eval must be run manually before Phase 7e is closed. No system prompt changes — env context injected as a labelled section in build_context() only, framed as prior evidence.
 
 ---
 
