@@ -144,29 +144,40 @@ Patient presentation → RAG differential → Candidate-level gate
 
 ---
 
-### 7c — Context engine (`phase7/context_engine.py`)
+### 7c — Context engine (`phase7/context_engine.py`) ✅ Done (2026-09-09)
 
 **`EnvironmentalEvidence` dataclass**
-- [ ] Fields: `signal`, `source` (chirps|static_calendar), `spatial_basis` (endemic_region), `temporal_window` (lag min/max weeks), `signal_confidence` (low|moderate|strong), `data_age` (hours), `data_status` (fresh|stale), `explanation` (str)
-- [ ] `no_relevant_context` sentinel result — returned when no candidates have environmental signals
+- [x] Fields: `signal`, `causal_distance`, `effect_type`, `effect_direction`, `strength`, `confidence`, `source` (chirps|static_calendar), `spatial_basis` (endemic_region), `temporal_window` (lag min/max weeks), `data_age` (hours), `data_status` (fresh|stale), `explanation` (str), `condition` (str)
+- [x] `no_relevant_context` sentinel result — returned when no candidates have signals OR all signals suppressed
 
 **`StaticCalendarProvider`**
-- [ ] Kenya rainfall calendar: long rains March–May, short rains October–November, cold dry June–August, dry/dusty November–March
-- [ ] ENSO flag: annual variable (`neutral` | `el_nino` | `la_nina`) — update from NOAA/KMD each year
-- [ ] Lag-aware: use onset_date if provided, else encounter_date; apply lag_weeks from card signal
+- [x] Kenya rainfall calendar: `_SIGNAL_ACTIVE_MONTHS` — 8 signals mapped to active month sets (June-August for post_long_rains, December-February for post_short_rains, etc.)
+- [x] ENSO flag: `StaticCalendarProvider.ENSO_PHASE = "neutral"` — update annually from NOAA/KMD
+- [x] Onset-date aware: `get_environmental_evidence()` uses onset_date as reference if provided, else encounter_date
 
 **`CHIRPSProvider`**
-- [ ] Fetch observed rainfall at encounter time from CHIRPS API (no auth required)
-- [ ] Map `patient_location → endemic_region → bounding box → CHIRPS grid extraction`
-- [ ] Compute: rainfall last 7/30/60 days; flag if within lag window for signal
-- [ ] Cache response for session duration (hours); stamp data_age + data_status on evidence
-- [ ] Falls back to StaticCalendarProvider on API failure — source label reflects fallback
+- [x] Phase 9 stub — always falls back to StaticCalendarProvider; source label = "static_calendar"
+- [x] Interface stable: `is_signal_active(signal_name, reference_date, region) -> (bool, str)` — Phase 9 fills in the body without changing rag.py or tests
 
-**`get_environmental_evidence(candidates, encounter_date, onset_date, patient_location, patient_exposures) → list[EnvironmentalEvidence] | no_relevant_context`**
-- [ ] Candidate-level gate: skip conditions with no `environmental_signals` on card
-- [ ] For each qualifying candidate: evaluate signal against provider output, exposure requirements, region match, card strength/confidence
-- [ ] Suppress signal if card `strength: low` and CHIRPS data shows no anomaly
-- [ ] Return list of EnvironmentalEvidence objects (one per qualifying candidate-signal pair), or `no_relevant_context`
+**`get_environmental_evidence(candidates, encounter_date, patient_location, patient_exposures, onset_date) → list[EnvironmentalEvidence] | NO_RELEVANT_CONTEXT`**
+- [x] Candidate-level gate: skip conditions with no `environmental_signals` on card
+- [x] 4 sequential gates per signal: (1) region match — "nationwide" passes for any location; (2) exposure requirements; (3) seasonal activation via CHIRPSProvider; (4) strength/confidence
+- [x] **Strength/confidence gate (locked rule from colleague review):**
+  - `strength: low` + `confidence: low` → always suppress (covers indirect + low/low)
+  - `strength: moderate` + `confidence: moderate` → pass with hedged explanation
+  - `strength: strong` or `confidence: high` → pass as substantive evidence
+- [x] `_passes_gate()` returns `(passes: bool, hedging_level: str)` — hedging_level feeds `_build_explanation()`
+- [x] `_build_explanation()` — source-labelled, causal_distance-aware, hedged or substantive per gate result
+- [x] Helper functions for testing: `_inject_signal_data()`, `_reset_signal_cache()`
+
+**Tests:** `phase7/tests/test_context_engine.py` — 7/7 pass (2026-09-09)
+- Malaria + lake_basin + June: post_long_rains fires (direct, strong/high)
+- Malaria + highland + January: NO_RELEVANT_CONTEXT (region + seasonal mismatch)
+- Hypertension: NO_RELEVANT_CONTEXT (no signals)
+- AGE + April + unsafe_water: flooding fires (nationwide signal, exposure met)
+- AGE + April + no exposure: flooding suppressed (requires_exposure gate)
+- CHIRPSProvider fallback: source_label = "static_calendar"
+- Pneumonia cold_dry_season low/low: suppressed
 
 ---
 
@@ -272,6 +283,7 @@ COPD, Heart failure, HIV/AIDS, Sickle cell, PID, Malaria in pregnancy, Meningoco
 
 - [ ] **anaemia.md — WHO Hb threshold update:** card cites WHO 2011 haemoglobin cutoff document; WHO published revised guidance in 2024. Reconcile thresholds before clinical validation. Ref: WHO 2024 haemoglobin cutoffs publication.
 - [ ] **anaemia.md — ferritin language:** `serum ferritin <30 μg/L` as uncomplicated threshold is too broad. WHO 2020 guidance explicitly changes ferritin interpretation in inflammation/infection, including higher deficiency thresholds. Card wording must distinguish uncomplicated from inflammatory states before ingestion. Ref: WHO 2020 ferritin guideline.
+- [ ] **type_2_diabetes.md — ethnicity risk factor:** `East African ethnicity` in `risk_factors` is too broad a population category for individual diagnostic reasoning. Replace with specific, evidence-based risk factors (e.g. higher T2DM prevalence in urban East African populations, dietary pattern associations) before clinical validation. Colleague flagged risk of becoming an inappropriate diagnostic shortcut.
 
 ---
 
