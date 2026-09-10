@@ -8,3 +8,4 @@ anthropic
 pytest
 rank-bm25
 streamlit
+requests

@@ -726,6 +726,8 @@ if analyse:
                 patient_location=_loc.ecological_region if _loc else None,
                 patient_exposures=st.session_state.patient_exposures,
                 encounter_date=datetime.now(),
+                patient_latitude=_loc.latitude if _loc else None,
+                patient_longitude=_loc.longitude if _loc else None,
             )
             _assert_confidence(result)
         except ValueError as e:
@@ -791,6 +793,8 @@ if _disam_active:
                     patient_location=_loc.ecological_region if _loc else None,
                     patient_exposures=st.session_state.patient_exposures,
                     encounter_date=datetime.now(),
+                    patient_latitude=_loc.latitude if _loc else None,
+                    patient_longitude=_loc.longitude if _loc else None,
                 )
                 _assert_confidence(result)
             except ValueError as e:
