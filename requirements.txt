@@ -9,3 +9,4 @@ pytest
 rank-bm25
 streamlit
 requests
+rasterio
