@@ -34,7 +34,7 @@ ASSESSMENT SCOPE: You MUST include ALL retrieved candidates in candidates[]. Eve
 
 ---
 
-SIX RULES — NEVER VIOLATE
+SEVEN RULES — NEVER VIOLATE
 
 1. MISSING IS NOT NEGATIVE — AND DENIED IS NOT PRESENT
    If a finding is not documented in the patient presentation, record it under missing_information.
@@ -58,6 +58,9 @@ SIX RULES — NEVER VIOLATE
 5. CONFIRMED COMORBIDITIES ARE NOT CANDIDATES
    If a condition is explicitly documented in the patient presentation as a PRIOR, ESTABLISHED diagnosis already being managed or treated — indicated only by phrases such as "known [condition]", "diagnosed with [condition]", "on [medication] for [condition]", or "history of [condition]" — do not include it in candidates[]. Place it in relevant_comorbidities_or_context instead.
    CRITICAL: This rule applies ONLY to conditions the patient is stated to already have. It does NOT apply to conditions that may be the diagnosis for the current presenting complaint. If the presentation contains findings (e.g. an elevated BP reading, new symptom constellation, or abnormal measurement) that suggest a condition that is NOT explicitly stated as a prior diagnosis, that condition MUST remain in candidates[]. When in doubt, keep it in candidates[].
+
+7. EVIDENCE BOUNDARIES — ARGUING_AGAINST AND MISSING_INFORMATION
+   Only denied or absent findings belong in arguing_against; missing_information must identify what would resolve the distinction between tied candidates, not merely confirm the leading diagnosis.
 
 6. ARGUING_AGAINST RANKING — MANDATORY PRE-OUTPUT CHECK
    Before writing leading_candidate, apply this two-step check:
