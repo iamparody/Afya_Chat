@@ -78,28 +78,31 @@
 
 ## Phase 7 — Corpus Expansion + Environmental Context Layer
 
-**Locked architecture (2026-09-09):**
+**Locked architecture (updated 2026-09-10):**
 ```
 Patient presentation → RAG differential → Candidate-level gate
     ├── No environmental_signals on card → no_relevant_context (first-class result)
-    └── Signals present → Context providers
-            ├── CHIRPSProvider (primary, observed rainfall)
-            └── StaticCalendarProvider (fallback)
+    └── Signals present → StaticCalendarProvider (signal gating, Phase 7 + Phase 9 MVP)
                     ↓
-            EnvironmentalEvidence { signal, source, spatial_basis,
-              temporal_window, signal_confidence, data_age,
-              data_status, explanation }
+            EnvironmentalEvidence { signal, causal_distance, effect_type,
+              effect_direction, strength, confidence, source, spatial_basis,
+              temporal_window, data_age, data_status, explanation, condition }
                     ↓
                   Gemini
+
+Independently (Phase 9 MVP):
+    OpenMeteoProvider → RainfallFeatures (7/30/60d mm) → ContextResult.rainfall
+    (audit trail only — does not gate signal activation until thresholds are calibrated)
 ```
 
 **Locked principles:**
 - Post-RAG gating — engine runs only for candidates with declared `environmental_signals`
 - `no_relevant_context` is a valid first-class result, not an edge case
 - Freshness (data_age/data_status) is separate from signal_confidence
-- CHIRPS primary, static calendar fallback — both with explicit source label in evidence
+- `StaticCalendarProvider` gates all signals in Phase 7 and Phase 9 MVP — CHIRPSProvider stub always falls back to it; source label = `static_calendar`
+- `OpenMeteoProvider` provides ERA5-Land rainfall features attached to `ContextResult.rainfall` as audit trail; does NOT activate signals until thresholds are defined
 - Lag-aware temporal matching using onset_date when available; falls back to encounter_date
-- Location approximation in Phase 7: `patient_location → endemic_region → CHIRPS bounding box`
+- Location approximation in Phase 7: `patient_location → endemic_region → static calendar window`
 - Card-level `strength`/`confidence` fields gate signal emission — no separate global threshold
 - Outbreak detection is out of scope (separate surveillance layer, not part of diagnosis reasoning)
 
@@ -316,13 +319,29 @@ COPD, Heart failure, HIV/AIDS, Sickle cell, PID, Malaria in pregnancy, Meningoco
 ---
 
 ## Phase 9 — Live Environmental Data + Empirical Calibration
-> Build after Phase 8 is validated. Do not start until encounter data volume is sufficient for calibration.
 
-- [ ] Integrate CHIRPS or Kenya Met API as rainfall data source
-- [ ] Replace `seasonal_basis` calendar lookups with observed rainfall anomaly calculations
-- [ ] Compute: rainfall last 7/30/60 days, anomaly vs historical average, consecutive wet days
-- [ ] No schema changes required — context engine output interface is unchanged
-- [ ] Calibrate contextual prior weights from SQLite encounter data (system_clinician_agreement)
+### Phase 9 MVP ✅ Done (2026-09-10)
+
+**Commits:**
+- `37f8e43` — `OpenMeteoProvider` (ERA5-Land via Open-Meteo Historical API); `RainfallFeatures` frozen dataclass; `RainfallProvider` protocol; wired into `get_environmental_evidence()` → `ContextResult.rainfall`
+- Source validation: `phase9/validate_rainfall.py` — Open-Meteo/ERA5-Land vs NASA POWER/MERRA-2, 5 sites × 3 reference dates
+- CHIRPS adjudication: `phase9/compare_chirps.py` + `phase9/chirps_fetcher.py` — UCSB GeoTIFF via rasterio; 180 files over 3 windows; Kisumu and Mombasa discrepancies adjudicated
+- Findings: `phase9/validation_findings.md` — source decision table, raw comparison, CHIRPS pin
+
+**Source decision (2026-09-10):**
+
+| Ecology | ERA5-Land acceptability | Basis |
+|---------|------------------------|-------|
+| lake_basin (Kisumu) | Acceptable | CHIRPS confirms ERA5-Land within 1.15–1.45x; MERRA-2 was over-estimating ~4–5x |
+| highland (Nairobi) | Acceptable | ERA5-Land and MERRA-2 agree within 1.5x across all three dates |
+| arid_semi_arid | Acceptable | Both sources agree on low/near-zero in dry periods |
+| coast (Mombasa) | **Acceptable in wet season; biased in dry season** | ERA5-Land over-estimates ~6.7x in Jan–Feb; CHIRPS and MERRA-2 agree on lower value |
+
+**What remains — in order:**
+- [ ] Establish multi-year historical ERA5-Land baseline per ecology (≥5 years) — prerequisite for thresholds
+- [ ] Define signal activation thresholds per signal per ecology (coast Jan–Feb requires CHIRPS, not ERA5-Land)
+- [ ] Replace `StaticCalendarProvider` signal gating with observed-rainfall thresholds per signal
+- [ ] For coast ecology Jan–Feb: decide CHIRPS direct (ClimateSERV) or ERA5-Land bias correction
 
 ---
 
@@ -337,7 +356,7 @@ COPD, Heart failure, HIV/AIDS, Sickle cell, PID, Malaria in pregnancy, Meningoco
   - `phase6/app.py`: all renderer functions replaced — `_render_draft_banner`, `_render_presentation_collapsed`, `_badge`, `_feature_list`, `_render_leading_candidate`, `_render_red_flags`, `_render_differential` (`<details>/<summary>` rows), `_render_relevant_context`, `_render_disambiguation` (radio chips), `_render_approval`, `_render_approval_confirmed`
   - Settled layout hierarchy: draft banner → collapsed presentation → red flags → leading candidate → uncertainty/disambiguation → differential → clinical context → approval
   - High confidence uses blue (`#1D6FA4`) not green — draft data must not imply validated certainty
-- [ ] **Step 7 — Session history sidebar** — approved encounters from `st.session_state.history`; compact chronological list; patient snippet + system diagnosis + ✓/△ agreement indicator + time; flat, no login yet
+- [x] **Step 7 — Session history sidebar** ✅ Done (6962ba5) — approved encounters from `st.session_state.history`; compact chronological list; patient snippet + system diagnosis + ✓/△ agreement indicator + time; KNBS location normalization (162 PLACE_ALIASES, 13 CROSS_COUNTY_PLACES)
 
 ---
 
@@ -357,276 +376,6 @@ COPD, Heart failure, HIV/AIDS, Sickle cell, PID, Malaria in pregnancy, Meningoco
 - [ ] **Obesity as PUD differential (retrieval quality)** — obesity appearing as a differential for epigastric pain is vector overlap in Chroma, not a clinical match; investigate during Phase 7 once more conditions are added (may self-resolve when GERD/dyspepsia dilute the vector space); if still occurring at 15+ conditions, tune retrieval threshold
 - [ ] **Obesity card — secondary/hormonal causes missing (corpus quality)** — current card likely scoped to simple dietary/lifestyle obesity; missing: hypothyroidism, PCOS, Cushing's syndrome, pregnancy-related weight gain, medication-induced (corticosteroids, antipsychotics); these belong in "Important differential diagnoses" and "Features that argue against"; colleague flagged, clinician review will formally gate it; watch during testing
 - [ ] **Region as follow-up question (Phase 8 design note)** — do NOT add patient_location as a structured UI field; instead let the disambiguation loop surface it as a clarifying question when region is discriminating between tied candidates (e.g. Dengue vs Malaria); `missing_information` in RAG output already has the slot for this
-
----
-
-## Session Handoff — 2026-09-03 (Colleague RAG review — prompt fix + corpus flag)
-
-> **For the agent picking up after a compact or new session — read this first.**
-
-### What this session accomplished
-
-**Colleague clinical review of PUD RAG output — 4 issues identified and triaged:**
-
-**Issue 1 — Weight loss hallucination (FIXED):** The model listed "weight loss" in `supporting_features` for PUD despite the presentation explicitly stating "Denies... weight loss." Root cause: Rule 1 only covered the missing-is-not-negative direction; the inverse (denied = confirmed absent, must NOT appear in supporting_features) was not stated. Fix applied to `phase5/prompts.py`:
-- Rule 1 heading extended: "MISSING IS NOT NEGATIVE — AND DENIED IS NOT PRESENT"
-- Inverse constraint added: denied/negated findings are confirmed absent; listing them in supporting_features is a factual contradiction
-- `supporting_features` schema description updated: NEVER include explicitly denied findings
-
-**Issue 2 — ICD-11 code mismatch in PUD corpus card (PENDING VERIFICATION):** `symptoms_dictionary/peptic_ulcer_disease.md` has `icd11: DA60` (Gastric ulcer, ICD-11) but `icd10: K27` (Peptic ulcer, site unspecified). These don't match. Colleague says correct ICD-11 for K27 is DA61, but ICD-11 tree structure (DA60=Gastric, DA61=Duodenal) suggests DA62 may be the unspecified code. **Action needed:** verify correct ICD-11 code at icd.who.int, then update the card and re-run `python ingest.py`.
-
-**Issue 3 — Weak differentials (CORPUS LIMITATION, KNOWN):** GERD, functional dyspepsia, pancreatitis, gastric malignancy not in the corpus — none can appear as differentials. This is Phase 7 work. Obesity appearing as a differential for PUD is a retrieval quality issue (vector overlap on abdominal symptoms) — flagged for investigation during Phase 7.
-
-**Issue 4 — Overall assessment:** Leading diagnosis, supporting features (after fix), ICD-10, and missing_information are performing well. Differential breadth is a corpus-size problem, not a model problem.
-
-### Current state
-- Prompt fix (Rule 1 inverse — denied findings cannot appear in supporting_features): **committed**
-- PUD ICD-11 code: **fixed** — DA60 → DA62 (peptic ulcer, site unspecified), corpus_version 1.2 → 1.3
-- Phase 6b steps 2–4 (session state, approval workflow, UI/CSS): **complete and committed**
-- Phase 6b step 5 (session history sidebar): **pending**
-- Phase 7 schema (CLAUDE.md + STATUS.md): **documented 2026-09-04**
-- Eval: **7/8** (unchanged)
-
-### Pick up here
-1. **Phase 7a — `ingest.py`** — add `endemic_regions` + `environmental_signals` parsing; validate against controlled vocabulary; bump schema_version to 2.0
-2. **Phase 7a — `context_engine.py`** — new file in `phase7/`; static calendar + ENSO flag; unit testable
-3. **Phase 7b — Backfill** — add new frontmatter fields to all 10 existing cards; re-ingest; reload Neo4j
-4. **Phase 7c — Dengue card** — first new condition card; send to colleague before ingesting
-5. **Phase 6b Step 5** — session history sidebar (can be done in parallel with 7a)
-
-### Key files (current)
-- `phase5/prompts.py` — FIVE RULES; Rule 1 inverse (denied = absent); Rule 4 demographic filter; red flags scope
-- `symptoms_dictionary/peptic_ulcer_disease.md` — corpus_version 1.3, icd11: DA62
-- `symptoms_dictionary/uti.md` — corpus_version 1.4, simplified argues_against: male sex
-- `CLAUDE.md` — schema_version 2.0 spec, controlled vocabularies, environmental context architecture
-
----
-
-## Session Handoff — 2026-09-02 (Phase 6b steps 2–3 + schema + analyst fields)
-
-> **For the agent picking up after a compact or new session — read this first.**
-
-### What this session accomplished
-
-**Phase 6b — Approval workflow: steps 2 and 3 complete**
-
-- **Step 2 — Session-state scaffolding:** `_init_session_state()`, `_assert_confidence()`, `_clear_all()`, clearable text area via `input_key` increment, Clear button beside Analyse (visible only when result exists), architecture panel removed from sidebar
-- **Step 3 — Approval workflow + SQLite:** `phase6/db.py` created — `init_db()`, `write_encounter()`, `_extract_structured()`, column migration via `_add_column_if_missing()`; approval section in app.py: system assessment (read-only) → editable clinician diagnosis → live ICD-10 preview → Approve button → post-approval confirmation + "New assessment →"
-- **DB schema lock:** encounters table with all fields; structured corpus-controlled arrays (`supporting_symptoms`, `arguing_against`, `red_flags`, `comorbidities`) stored as JSON from RAG output — not free text; `phase6/cds.db` gitignored
-- **Analyst fields:** three new columns added via migration — `system_category` (corpus-controlled disease category), `clinician_icd11` (ICD-11 for clinician diagnosis), `system_clinician_agreement` (1=agree, 0=override); all queryable without text cleaning; `json_each()` works on array fields
-- **UTI corpus fix in progress:** `graph.argues_against` simplified from `male sex without catheter or structural abnormality` → `male sex`; corpus_version 1.3 → 1.4; ingest + Neo4j reload still needed before testing
-
-### Current state
-- Phase 6b: steps 2–3 complete; step 4 (CSS) and step 5 (history sidebar) pending
-- UTI argues_against fix: corpus change committed, pipeline reload pending
-- DB: 2 test records (both UTI), all analyst fields backfilled
-- Eval: **7/8** (unchanged)
-
-### Pick up here
-1. **UTI corpus fix** — run `make ingest && python neo4j/neo4j_loader.py`, then test with male UTI case; confirm "male sex" appears in arguing_against
-2. **Step 4 — CSS cleanup** — strip dashboard aesthetic from `cds_theme.py` and `app.py`; colour only for clinical meaning
-3. **Step 5 — Session history sidebar** — approved encounters from `st.session_state.history`; patient snippet + diagnosis + agreement indicator + time
-4. **Phase 7** — 8 new condition cards after Phase 6b is complete
-
-### Key files (current)
-- `phase6/app.py` — UI entry point (steps 2+3 built)
-- `phase6/db.py` — SQLite persistence, encounters schema, `write_encounter()`
-- `phase6/cds_theme.py` — design system (CSS cleanup step 4 targets this)
-- `symptoms_dictionary/uti.md` — corpus_version 1.4, simplified argues_against
-
----
-
-## Session Handoff — 2026-09-02 (Phase 6 complete + prompt fixes + CI hardening)
-
-> **For the agent picking up after a compact or new session — read this first.**
-
-### What this session accomplished
-
-**Phase 6 — Streamlit MVP: COMPLETE, TESTED, COMMITTED**
-- `phase6/cds_theme.py` — palette (COLORS), CSS (Montserrat), `apply_theme`, `section_header`, `page_header`, `info_card`, `dq_note`, `kpi_card` — extracted from LREB dashboard theme
-- `phase6/app.py` — full Streamlit MVP: red flags above candidate cards (safety-first), leading candidate expanded (navy border, ICD codes), differential in collapsed expanders, relevant context section
-- Tested against 8 real-world Kenya primary care cases — all correct leading diagnoses; red flags render correctly; ICD-11 + ICD-10 on leading candidate
-- Run: `streamlit run phase6/app.py` from `cds/` root
-
-**Prompt fixes (phase5/prompts.py):**
-- FOUR RULES → FIVE RULES heading (model was counting rules; mismatch caused instruction confusion)
-- Rule 4 extension — `missing_information` items must be demographically appropriate (no vaginal findings for male patients)
-- Rule 5 (new) — confirmed prior comorbidities ("known [condition]", "on [medication] for") go to `relevant_comorbidities_or_context`, not `candidates[]`; current presenting findings always stay in `candidates[]`
-
-**CI hardening:**
-- Gemini 503 retry moved to Python level (`providers.py`) — retries the single API call (15s/30s/60s/120s backoff) rather than restarting the full 8-case eval suite
-- CI bash loop increased to 5 attempts, exponential backoff — last-resort safety net only
-- Eval result post-fixes: **7/8** — all prompt regressions resolved; Case 2b remains confirmed ceiling
-
-**UTI corpus fix:**
-- Added `male sex without catheter or structural abnormality` to `graph.argues_against` in `uti.md`
-- Added corresponding prose to "Features that argue against this diagnosis" section
-- corpus_version: 1.2 → 1.3
-
-### Current state
-- Phase 6 Streamlit MVP: **complete and committed**
-- Eval: **7/8** (unchanged ceiling, Case 2b structural limit)
-- CI: green — 5-attempt retry, provider-level 503 handling
-- All 10 condition cards: draft (clinician review pending)
-
-### Pick up here
-**Phase 6 is complete as MVP.** Next work:
-1. **Phase 6b — UI improvement** (user-directed; discuss what "better" means before building)
-2. **Approval + database schema** — when clinician approves, write structured record (diagnosis, ICD-10, symptoms, age/sex, timestamp) to database; see Decisions Log for design principles
-3. **Phase 7 — Corpus v2** (8 new condition cards: asthma, COPD, heart failure, HIV, typhoid, sickle cell, PID, malaria-in-pregnancy)
-
-### Key files (current)
-- `phase6/app.py` — Streamlit UI entry point
-- `phase6/cds_theme.py` — design system
-- `phase5/prompts.py` — FIVE RULES, Rule 5 (comorbidities), Rule 4 extension (demographics)
-- `phase5/providers.py` — GeminiProvider with inline 503 retry
-- `.github/workflows/cds_pipeline.yml` — 5-attempt exponential backoff CI
-
----
-
-## Session Handoff — 2026-08-31 (Phase 5c + Case 2b prompt fix — both rejected; 7/8 is ceiling)
-
-> **For the agent picking up after a compact or new session — read this first.**
-
-### What this session accomplished
-
-**5c — BM25 hybrid retrieval: BUILT, EVALUATED, REJECTED**
-- Built `phase5/bm25_index.py` — lazy BM25 index over chunks.jsonl (`rank_bm25`, pure Python, 89 chunks)
-- Added `get_vector_candidates_hybrid()` to `rag.py` — dense + BM25 → RRF (k=60) → top 6 conditions
-- Added `--hybrid` flag to `evaluate.py`; `hybrid=False` default preserves Cohere dense-only baseline
-- Evaluation result: hybrid 7/8 BUT introduced 4a→4b T2DM confidence regression (no longer drops)
-- Dense-only: 7/8, both paired comparisons pass. Hybrid: 7/8, 4a→4b paired check fails.
-- Confirmed: Case 2b is NOT a retrieval problem. BM25 changes nothing for it.
-- Decision: dense-only stays as default. BM25 infrastructure preserved; `--hybrid` available for future experiments.
-
-**Case 2b prompt fix: ATTEMPTED, REGRESSED, REVERTED**
-- Failure mode: Gemini correctly populates TB `arguing_against` but ignores the ranking rule
-- Fix attempted: replaced hard "MUST" instruction with softer comparative net-evidence instruction
-- Result: 6/8 — TB `arguing_against` field went EMPTY + Case 4a hyperosmolar red flag lost
-- Finding: the original "MUST" instruction is load-bearing for arguing_against population in all cases; softening it removes the documentation constraint, not just the ranking constraint
-- Reverted to original instruction. No net change to `prompts.py` (git sees zero diff).
-- **7/8 is the prompt ceiling for Case 2b.** Gemini documents the counter-evidence but treats the leading_candidate selection as its own judgment.
-
-### Current state
-- Cohere dense-only: **7/8** (baseline, unchanged)
-- BM25 hybrid: 7/8 but with regression — rejected, `hybrid=False` default
-- Case 2b: TB still leads for 3-day cough — confirmed model reasoning problem, not retrieval
-- All changes committed and pushed (origin up to date)
-
-### Pick up here
-**Phase 5c is complete (rejected).** Case 2b prompt fix is exhausted at this approach.
-
-**Next decision:** Phase 5e Prefect orchestration, or accept 7/8 as MVP and proceed to Phase 6 (UI)?
-
-If 7/8 is acceptable as the RAG MVP ceiling:
-- Phase 6 requires ICD-10 codes in all 10 condition card frontmatters (currently ICD-11 only)
-- Clinician review (Phase 2) is the production gate — all 10 cards remain `draft`
-
-If attempting Case 2b further:
-- Post-generation structural check: if `leading_candidate.arguing_against` is non-empty AND another candidate has empty `arguing_against`, swap the leading_candidate — deterministic, not LLM-dependent
-- Risk: could produce clinically wrong output if TB has overwhelmingly stronger support despite counter-evidence
-- Requires new validation step in `rag.py` after `validate()`
-
-### Key files (current)
-- `phase5/rag.py` — `run(presentation, embedder=None, hybrid=False)`: dense-only default, hybrid available
-- `phase5/bm25_index.py` — BM25 lazy index builder (chunks.jsonl)
-- `phase5/evaluate.py` — `--backend` + `--hybrid` flags; `python phase5/evaluate.py` = Cohere dense baseline
-- `phase5/prompts.py` — unchanged from Phase 5 MVP; original MUST-based arguing_against rule restored
-- `requirements.txt` — added `rank-bm25`
-
-### Known architectural limitations (confirmed through experimentation)
-- Case 2b: 7/8 is the prompt ceiling — Gemini documents TB counter-evidence but overrides the ranking rule
-- BM25 hybrid: introduces 4a→4b paired confidence regression; dense-only is strictly better for this corpus
-- PubMedBERT: failure in filtered passages step (against section not retrieved); dense-only stays
-- Red flag stochasticity: ANN non-determinism means red flag content varies; Cases 1, 2a, 3, 6 red flag checks are manual
-
----
-
-## Session Handoff — 2026-08-27 (Phase 5 complete)
-
-> **For the agent picking up after a compact or new session — read this first.**
-
-### What this session accomplished
-- Wrote `phase5/evaluate.py` — full 8-case evaluation harness with auto-checks and paired confidence comparisons
-- Iterated prompts, context template, and retrieval parameters to maximise evaluation score
-- Key fixes: removed sort-by-matched-count (trust vector order), increased TOP_N_CANDIDATES to 6, removed match count from context headers, added argues_against tie-breaking and negative-finding red flag prohibition to SYSTEM_PROMPT, temperature=0 for determinism
-- Phase 5 evaluation result: **7/8 cases auto-passed** (Cases 1, 2a, 3, 4a, 4b, 5, 6); both paired comparisons pass (2a/2b: high→moderate, 4a/4b: high→moderate)
-- Single remaining failure: Case 2b (TB leads instead of CAP) — documented architectural limitation; vector always ranks TB first for cough presentations
-- Phase 5 is **complete** as an MVP — commit made at this checkpoint
-
-### Pick up here
-**Phase 5 is complete.** Phase 6 (UI) is next, but requires ICD-10 codes added to frontmatter first.
-
-**Immediate next decision: ICD-10 codes — add to frontmatter now or defer to Phase 6?**
-
-See Open Questions in this file for the two deferred architectural decisions before Phase 6.
-
-### Key files to read on pickup
-1. `CLAUDE.md` — governance
-2. `STATUS.md` — this file
-3. `phase5/rag.py` — orchestrator (5 steps: vector → graph → filtered vector → build_context → Gemini → validate)
-4. `phase5/prompts.py` — locked system prompt + OUTPUT_SCHEMA + build_context()
-5. `phase5/providers.py` — GeminiProvider (gemini-flash-lite-latest primary), AnthropicProvider fallback
-6. `phase5/evaluate.py` — 8-case evaluation harness; run with `python phase5/evaluate.py`
-7. `chroma/evaluation_contract.md` — original pass/fail criteria
-
-### Architecture (current)
-```
-Patient presentation
-    → Cohere embed → Chroma vector search (unrestricted, top 6 candidates)
-    → Neo4j graph → symptom profiles + argues_against per candidate
-    → Cohere embed → Chroma vector search (filtered to candidates, top 5 passages each)
-    → build_context() → Gemini gemini-flash-lite-latest (temperature=0, JSON schema enforced)
-    → jsonschema validate → validated dict
-```
-
-### Known architectural limitations (documented, not blocking)
-- Case 2b: semantic vector always ranks TB first for cough presentations; argues_against tie-breaking not reliably applied by LLM when TB has strong support
-- Red flag stochasticity: ANN non-determinism means red flag content varies across runs even at temperature=0; Cases 1, 2a, 3, 6 red flag checks moved to manual
-- Malaria red flags appear in non-malaria fever cases due to semantic similarity in retrieval
-
-### Active credentials (.env — gitignored)
-- NEO4J_URI: neo4j+ssc://b3f927fc.databases.neo4j.io (AuraDB, afyachat instance)
-- COHERE_API_KEY: set
-- GEMINI_API_KEY: set (gemini-flash-lite-latest)
-
----
-
-## Session Handoff — 2026-08-26
-
-> **For the agent picking up after a compact or new session — read this first.**
-
-### What this session accomplished
-- Bootstrapped the entire project governance: created `CLAUDE.md`, `STATUS.md` (this file)
-- Added `graph:` blocks to all 10 condition cards (7 relationship keys per card: cardinal_symptoms, associated_symptoms, risk_factors, differentials, argues_against, red_flags, confirms)
-- Created `symptom_vocabulary.md` (464 terms, synonyms + canonicals) and `conditions_vocabulary.md` (114 condition names) as the controlled vocabulary layer
-- Extended `ingest.py` with a full graph extraction pipeline alongside the existing prose chunking pipeline — two independent output paths: `chunks.jsonl` (RAG) and `graph_entities.jsonl` (Neo4j)
-- Built `report_unknowns.py` — deduplication + classification tool for vocabulary gap analysis
-- Vocabulary coverage: 380/401 terms canonical, 37 compound terms flagged for v2 (expected), 4 simple unknowns remaining
-- Initialized git repo, added remote: https://github.com/iamparody/Afya_Chat.git
-
-### Pick up here
-**Phase 2 is complete.** The graph extraction + normalization pipeline is working and producing clean output.
-
-**Immediate next task (Phase 3 — Neo4j Load):**
-1. Resolve the 4 remaining simple unknowns in `unknown_terms_report.md` (takes ~10 min)
-2. Choose Neo4j hosting — AuraDB free tier (fastest to start) vs local Docker
-3. Define Neo4j node/relationship schema (`neo4j/migrations/001_initial_schema.cypher`)
-4. Write the Cypher MERGE loader that reads `graph_entities.jsonl`
-5. Load all 10 conditions and run test Cypher queries
-
-### Key files to read on pickup
-1. `CLAUDE.md` — project governance, architecture, rules
-2. `STATUS.md` — this file, phase tracker
-3. `graph_entities.jsonl` — the graph-ready output (10 records, one per condition)
-4. `unknown_terms_report.md` — 4 remaining simple unknowns to resolve
-5. `ingest.py` — understand `normalize_graph()` before modifying any vocabulary
-
-### Architecture reminder
-```
-Markdown cards → ingest.py → chunks.jsonl → [Chroma vector store, Phase 4]
-                           → graph_entities.jsonl → [Neo4j loader, Phase 3 NOW]
-```
 
 ---
 
@@ -708,7 +457,7 @@ Markdown cards → ingest.py → chunks.jsonl → [Chroma vector store, Phase 4]
 - [x] Structured response format — `OUTPUT_SCHEMA` + jsonschema validation, fail-closed
 - [x] Evaluation harness — `phase5/evaluate.py`; 7/8 auto-pass, both paired comparisons pass
 
-### Phase 5e — Retrieval + Pipeline Hardening ← **current phase**
+### Phase 5e — Retrieval + Pipeline Hardening ✅
 - [x] **5a** pytest suite — `phase5/tests/`: card validation, ingest output, Neo4j edges, Chroma count, RAG schema; 54/54 including integration pass (AuraDB + Gemini confirmed)
 - [x] **5b** PubMedBERT embedding experiment — A/B infrastructure built; result 6/8 < gate; **rejected**. Cohere stays. Root cause: filtered passages miss `against` section in PubMedBERT biomedical space; forced-inject caused context interference across other cases.
 - [x] **5c** BM25 hybrid retrieval — `rank_bm25` index + RRF (k=60) in `get_vector_candidates_hybrid()`; `--hybrid` flag in evaluate.py; result: hybrid 7/8 but introduces 4a→4b regression; **rejected**. Dense-only confirmed superior for 89-chunk corpus. Case 2b confirmed as model reasoning problem, not retrieval.
@@ -742,7 +491,7 @@ Markdown cards → ingest.py → chunks.jsonl → [Chroma vector store, Phase 4]
 - [x] Prompt fix — Red flags scope: explicit rule that only leading candidate's red flags appear when all others are lower confidence; closes T2DM red flag bleed into UTI assessments
 - [x] **Step 4 — CSS cleanup** — editorial minimal; Phosphor icons; sidebar cleanup
 - [x] **Step 6 — Full HTML/CSS presentation layer rewrite (2026-09-08)** — design tokens, 30+ component classes, settled layout hierarchy (draft banner → presentation → red flags → leading → disambiguation → differential → context → approval)
-- [ ] **Step 7 — Session history sidebar** — approved encounters from `st.session_state.history`; compact chronological list; snippet + diagnosis + ✓/△ agreement + time
+- [x] **Step 7 — Session history sidebar** ✅ Done (6962ba5) — KNBS location normalization (162 PLACE_ALIASES, 13 CROSS_COUNTY_PLACES, cross-county disambiguation); session history; compact chronological list; snippet + diagnosis + ✓/△ agreement + time
 
 > Run: `streamlit run phase6/app.py` from `cds/` root
 
@@ -757,6 +506,17 @@ See Phase 8 section above.
 
 ### Phase 8b — Reasoning Evaluation Harness ✅ Done (2026-09-10)
 See Phase 8b section above.
+
+### Phase 9 — Live Rainfall Provider 🟡 Partial
+
+- [x] `phase7/rainfall_providers.py` — `RainfallProvider` protocol, `OpenMeteoProvider` (ERA5-Land via Open-Meteo Historical API), `RainfallFeatures` frozen dataclass
+- [x] Wired into `get_environmental_evidence()` → `ContextResult.rainfall` (audit trail; does not gate signals)
+- [x] Source validation: `phase9/validate_rainfall.py` — 5 sites × 3 reference dates vs NASA POWER/MERRA-2
+- [x] CHIRPS adjudication: `phase9/compare_chirps.py` + `phase9/chirps_fetcher.py` — 180 files, Kisumu + Mombasa discrepancies resolved; source decision = ERA5-Land accepted (coast Jan–Feb bias documented)
+- [x] Findings: `phase9/validation_findings.md` — auditable table + source decision per ecology
+- [ ] Historical ERA5-Land baseline per ecology (≥5 years) — prerequisite for threshold calibration
+- [ ] Signal activation thresholds per ecology (coast Jan–Feb: CHIRPS; others: ERA5-Land)
+- [ ] Replace `StaticCalendarProvider` signal gating with observed-rainfall thresholds
 
 ---
 
@@ -782,6 +542,8 @@ See Phase 8b section above.
 | 2026-09-02 | Corpus-controlled structured storage in encounters DB | supporting_symptoms, arguing_against, red_flags, comorbidities come from RAG output (knowledge base retrieval), not free-text parsing — clean, normalised, queryable via json_each() |
 | 2026-09-02 | Analyst fields: system_category, clinician_icd11, system_clinician_agreement | Primary slicing dimensions for accuracy analysis; all corpus-controlled or computed — no text cleaning needed; system_clinician_agreement = primary accuracy signal |
 | 2026-09-02 | UTI graph.argues_against simplified to "male sex" | Compound qualifier "male sex without catheter or structural abnormality" fails at LLM reasoning step — model can't confirm absence (Rule 1), so compound fails; prose and red flags carry the clinical nuance |
+| 2026-09-10 | Open-Meteo/ERA5-Land accepted as Phase 9 live rainfall source | CHIRPS adjudication confirms ERA5-Land within 1.15–1.45x at Kisumu (lake_basin); MERRA-2 was over-estimating. Sole exception: Mombasa coast Jan–Feb dry season (~6.7x over-estimate); CHIRPS must be used for coast dry-season threshold calibration. No architecture changes required. |
+| 2026-09-10 | OpenMeteoProvider feeds audit trail only (does not gate signals) | Thresholds are not yet calibrated; activating rainfall gating without a characterised baseline would introduce uncalibrated priors. StaticCalendarProvider remains the gating mechanism until thresholds are derived from ≥5-year historical baseline. |
 
 ---
 
@@ -789,9 +551,10 @@ See Phase 8b section above.
 
 - [x] Neo4j hosting → AuraDB free tier (resolved)
 - [x] Embedding model → Cohere `embed-multilingual-v3.0` (resolved)
-- [x] ICD-10 codes — add now before Phase 5e (decided 2026-09-01); doing before orchestration so Phase 6 is unblocked immediately after 5e
-- [x] RAG output format — structured JSON confirmed (required for Streamlit card rendering)
-- [x] UI library — Streamlit MVP confirmed; Chainlit/Reflex path documented
-- [x] Orchestrator — Makefile + GitHub Actions confirmed; Prefect deferred
-- [x] Management corpus — unified index with content_type metadata (clinical/management); no separate index, no routing layer at MVP (resolved 2026-09-01)
-- [ ] Clinician reviewer — name a reviewer + set a deadline for Phase 2 production gate; process blocker, not technical; all 10 cards remain draft
+- [x] RAG output format → structured JSON confirmed
+- [x] UI library → Streamlit MVP confirmed; Chainlit/Reflex path documented
+- [x] Orchestrator → Makefile + GitHub Actions confirmed; Prefect deferred
+- [x] Phase 9 source — Open-Meteo/ERA5-Land accepted; CHIRPS required for coast Jan–Feb calibration only (resolved 2026-09-10)
+- [ ] Clinician reviewer — name a reviewer + set a deadline for Phase 2 production gate; process blocker, not technical; all 15 cards remain draft
+- [ ] Phase 9 historical baseline — which site/date range, how many years, storage format for ERA5-Land historical pull
+- [ ] Coast dry-season — CHIRPS directly (ClimateSERV) or ERA5-Land bias correction for coast Jan–Feb threshold calibration
