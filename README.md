@@ -8,51 +8,48 @@ Symptom-driven diagnostic RAG system for East Africa / Kenya primary care. Given
 
 | Phase | Description | Status |
 |-------|-------------|--------|
-| 1 | Corpus — 10 condition cards authored | ✅ Done |
-| 2 | Graph extraction + vocabulary normalization | ✅ Done |
-| 3 | Neo4j load — 10 conditions in AuraDB | ✅ Done |
-| 4 | Vector store — Chroma + Cohere embeddings | ✅ Done |
-| 5 | RAG pipeline — graph + vector → Gemini | ✅ Done (7/8 eval) |
-| 5e | Pipeline orchestration — Makefile + GitHub Actions | ✅ Done |
-| 6 | UI — Streamlit MVP | ✅ Done |
-| 6b | UI improvement + approval → database write | 🟡 In progress |
-| 7 | Corpus v2 — expand to 20+ conditions | 🔴 Planned |
-| ∞ | Longitudinal inference — patient history + second assessment | 🔴 Planned (Afya Chat 2.0) |
+| 1 | Corpus — 15 condition cards authored | ✅ Done (all draft) |
+| 2 | Clinician review — all 15 cards | 🔴 Not started — production gate |
+| 3 | Ingestion pipeline → Chroma vector store | ✅ Done |
+| 4 | Neo4j knowledge graph — 15 conditions | ✅ Done |
+| 5 | RAG pipeline — Gemini + SEVEN RULES prompt | ✅ Done (8/8 eval) |
+| 6 | Streamlit MVP + approval workflow + SQLite | ✅ Done |
+| 6b | UI improvement (Step 7 — session history sidebar pending) | 🟡 In progress |
+| 7 | Environmental context layer — static calendar + ENSO | ✅ Done |
+| 8 | Interactive disambiguation loop — follow-up question generation | ✅ Done (CI-gated 4/5) |
+| 8b | Reasoning evaluation harness — 10-dim rubric + CI | ✅ Done (87/96, 90%) |
+| 9 | Live environmental feeds — CHIRPS / Kenya Met API | 🔴 Planned |
 
-**Eval baseline:** 7/8 cases auto-pass. Case 2b (TB leads for 3-day cough) is a confirmed model reasoning limit, not a retrieval problem.
+**Eval baseline:** 8/8 RAG cases. 87/96 (90%) reasoning evaluation. 4/5 disambiguation gate.
 
-**Production gate:** All 10 cards remain `draft`. Clinician review required before production ingestion.
+**Production gate:** All 15 cards remain `draft`. Clinician review required before production ingestion.
 
 ---
 
 ## Stack
 
 ```
-symptoms_dictionary/*.md      ← condition cards (source of truth)
+symptoms_dictionary/*.md (15 condition cards, schema 2.1)
         │
         ▼
-    ingest.py                 ← dual-output ingestion pipeline
+    ingest.py  ← section-level chunking + environmental signal validation
         │
-        ├──► chunks.jsonl     ── prose chunks (section-level)
-        │         │
-        │         ▼
-        │    chroma/chroma_loader.py  ── Cohere embed → Chroma vector store
-        │
-        └──► graph_entities.jsonl ── normalized graph declarations
-                  │
-                  ▼
-             neo4j/neo4j_loader.py  ── Cypher MERGE → Neo4j AuraDB
+        ├──► chunks.jsonl ──► chroma/chroma_loader.py ── Cohere embed → Chroma
+        └──► graph_entities.jsonl ──► neo4j/neo4j_loader.py ── Cypher MERGE → Neo4j AuraDB
 
 Patient presentation
     → Cohere embed → Chroma (top 6 candidate conditions)
     → Neo4j (symptom profiles + argues_against per candidate)
     → Cohere embed → Chroma (top 5 prose passages per candidate)
-    → Gemini gemini-flash-lite (temperature=0, JSON schema enforced)
+    → Environmental context engine (static calendar + ENSO flag → labelled prior evidence)
+    → Gemini (SEVEN RULES, temperature=0, JSON schema enforced)
     → jsonschema validate → structured differential assessment
+    → Disambiguation loop (tied candidates → discriminating questions → enriched re-run)
+    → Streamlit UI (approval workflow → SQLite encounters)
 ```
 
 **Embedding:** Cohere `embed-multilingual-v3.0`
-**LLM:** Gemini `gemini-flash-lite-latest` (Anthropic Claude fallback)
+**LLM:** Gemini `gemini-2.0-flash` (temperature=0)
 **Graph:** Neo4j AuraDB free tier
 
 ---
@@ -61,34 +58,39 @@ Patient presentation
 
 ```
 cds/
-├── Makefile                          pipeline entry point
-├── ingest.py                         dual-output ingestion pipeline
-├── report_unknowns.py                vocabulary gap analysis
+├── Makefile                          pipeline entry point (6 targets)
+├── ingest.py                         dual-output ingestion pipeline (schema 2.1)
 ├── requirements.txt
 ├── symptoms_dictionary/
 │   ├── index.md                      condition index (ICD-11 + ICD-10 + filenames)
-│   ├── glossary.md                   shared clinical term definitions (24 terms)
+│   ├── glossary.md                   shared clinical term definitions
 │   ├── symptom_vocabulary.md         canonical symptom/sign/risk term list
 │   ├── conditions_vocabulary.md      canonical condition names (for differentials)
-│   └── *.md                          10 condition cards
+│   └── *.md                          15 condition cards
 ├── neo4j/
 │   ├── migrations/001_initial_schema.cypher
-│   ├── neo4j_loader.py               loads graph_entities.jsonl → AuraDB
-│   └── run_queries.py                dev verification queries
+│   └── neo4j_loader.py               loads graph_entities.jsonl → AuraDB
 ├── chroma/
-│   ├── chroma_loader.py              embeds chunks.jsonl → Chroma
-│   ├── retrieval_baseline.md         baseline retrieval results (8 cases)
-│   └── evaluation_contract.md        pass/fail criteria for all 8 eval cases
+│   └── chroma_loader.py              embeds chunks.jsonl → Chroma
 ├── phase5/
-│   ├── rag.py                        RAG orchestrator (5-step pipeline)
-│   ├── prompts.py                    system prompt + OUTPUT_SCHEMA + build_context()
-│   ├── providers.py                  GeminiProvider + AnthropicProvider
-│   ├── evaluate.py                   8-case evaluation harness
-│   ├── embed_provider.py             CohereEmbedder + PubMedBertEmbedder
-│   ├── bm25_index.py                 BM25 sparse index (--hybrid flag, not default)
-│   └── tests/                        pytest suite (100 tests)
+│   ├── rag.py                        RAG orchestrator + environmental context injection
+│   ├── prompts.py                    SEVEN RULES system prompt + OUTPUT_SCHEMA + build_context()
+│   ├── providers.py                  GeminiProvider (retry) + AnthropicProvider fallback
+│   └── evaluate.py                   8-case RAG evaluation harness (gate ≥7/8)
+├── phase6/
+│   ├── app.py                        Streamlit MVP — presentation → RAG → approval → SQLite
+│   ├── db.py                         SQLite encounters persistence + analyst schema
+│   └── cds_theme.py                  CSS design tokens + Phosphor icon helpers
+├── phase7/
+│   ├── context_engine.py             environmental context engine (static calendar + ENSO)
+│   └── tests/                        context engine + prompt injection tests (22 pass)
+├── phase8/
+│   ├── disambiguate.py               is_ambiguous(), get_discriminating_questions(), enrich_presentation()
+│   ├── evaluate_disambiguation.py    5-case disambiguation eval (gate ≥4/5)
+│   ├── rubric.py                     10-dim reasoning rubric (deterministic + LLM judge)
+│   └── evaluate_reasoning.py         reasoning eval harness (gate 90% deterministic, judge as artifact)
 └── .github/workflows/
-    └── cds_pipeline.yml              CI — triggers on card/pipeline changes
+    └── cds_pipeline.yml              CI — ingest → Neo4j → embed → RAG eval → disam eval → reasoning eval
 ```
 
 ---
@@ -96,23 +98,23 @@ cds/
 ## Running the pipeline
 
 ```bash
-# Full pipeline — ingest → load Neo4j → embed → evaluate (gate: ≥ 7/8)
+# Full pipeline — ingest → Neo4j → embed → RAG eval → disam eval → reasoning eval
 make pipeline
 
 # Individual stages
-make ingest        # parse cards → chunks.jsonl + graph_entities.jsonl
-make load-neo4j    # load graph_entities.jsonl → Neo4j AuraDB
-make embed         # embed chunks.jsonl → Chroma vector store
-make eval          # run 8-case evaluation harness
+make ingest           # parse cards → chunks.jsonl + graph_entities.jsonl
+make load-neo4j       # load graph_entities.jsonl → Neo4j AuraDB
+make embed            # embed chunks.jsonl → Chroma vector store
+make eval             # 8-case RAG evaluation harness (gate ≥7/8)
+make eval-disam       # 5-case disambiguation eval (gate ≥4/5)
+make eval-reasoning   # 10-dim reasoning eval, deterministic gate 90% (judge output as CI artifact)
 
 # Single query
 python phase5/rag.py "45F, 3 weeks cough, night sweats, weight loss"
 
-# Evaluation — specific cases
-python phase5/evaluate.py 2a 2b
-
-# Vocabulary gap check (after adding new cards)
-python report_unknowns.py
+# Reasoning evaluation — specific cases, or with LLM judge
+python phase8/evaluate_reasoning.py d1 d3
+python phase8/evaluate_reasoning.py --no-judge   # deterministic dims only
 ```
 
 Credentials are loaded from `.env` (local) or environment variables (CI). See `.env.example` if present.
@@ -123,7 +125,7 @@ Credentials are loaded from `.env` (local) or environment variables (CI). See `.
 
 Each card is a `.md` file with YAML frontmatter and 9 fixed prose sections.
 
-**Frontmatter (schema v1.2):**
+**Frontmatter (schema v2.1):**
 ```yaml
 condition:       canonical condition name
 icd11:           WHO ICD-11 code
@@ -192,7 +194,7 @@ Confidence levels: `high` / `moderate` / `low`. No numerical probabilities.
 
 ---
 
-## Conditions (10 cards, corpus v1.2)
+## Conditions (15 cards, all draft)
 
 | Condition | ICD-11 | ICD-10 |
 |-----------|--------|--------|
@@ -204,8 +206,13 @@ Confidence levels: `high` / `moderate` / `low`. No numerical probabilities.
 | Community-Acquired Pneumonia | CA40 | J18 |
 | Urinary Tract Infection | GC08 | N39.0 |
 | Iron Deficiency Anaemia | 3A00 | D50 |
-| Peptic Ulcer Disease | DA60 | K27 |
+| Peptic Ulcer Disease | DA62 | K27 |
 | Acute Gastroenteritis (Infectious) | 1A09 | A09 |
+| Typhoid Fever | 1A07 | A01.0 |
+| Functional Dyspepsia | DA94 | K30 |
+| Gastro-oesophageal Reflux Disease | DA22 | K21 |
+| Asthma | CA23 | J45 |
+| Dengue Fever | 1D2Z | A90 |
 
 ---
 

@@ -285,6 +285,36 @@ COPD, Heart failure, HIV/AIDS, Sickle cell, PID, Malaria in pregnancy, Meningoco
 
 ---
 
+## Phase 8b — Reasoning Evaluation Harness ✅ Done (2026-09-10)
+
+**Commits:**
+- `7d30a0a` — initial harness (rubric.py + evaluate_reasoning.py), dry-run 48/50
+- `7e4d238` — frozen 9-dim baseline 78/86 (90%); N/A logic + rubric semantics fixes
+- `eca05af` — Rule 7 added to prompts.py (SIX → SEVEN RULES)
+- `bee6358` — confidence_consistency scorer (10th dim); 10-dim baseline 87/96 (90%)
+- `a247974` — CI integration: deterministic gate 90%, full judge run as artifact
+
+**Frozen baselines (never collapse):**
+- Deterministic: 48/50 (96%) — `--no-judge`, 5 dims × 5 cases
+- Judge 10-dim: 87/96 (90%) — 5 cases, 2 N/A — commit `bee6358`
+
+**10-dim rubric:**
+- Deterministic: leading_diagnosis, differential_relevance, confidence_range, red_flags, confidence_consistency
+- LLM judge: supporting_features, arguing_against_accuracy, missing_information_relevance, question_quality
+- Special: diagnostic_shift (requires initial + enriched result)
+
+**CI gate:** `make eval-reasoning` → `--no-judge --gate 90` (hard gate); full judge run non-blocking artifact per SHA.
+
+**Evidence-boundary intervention sequence:**
+- Baseline arguing_against 5/10, missing_information 7/10
+- Rule 7 (minimal): missing_information → 10/10; arguing_against → 4/10
+- Rule 7b (explicit prohibition list): arguing_against → 3/10; reverted
+- confidence_consistency: 10/10 — no intervention needed
+
+**Deferred:** arguing_against positive-construction wording — next prompt experiment when eval set expands.
+
+---
+
 ## Phase 9 — Live Environmental Data + Empirical Calibration
 > Build after Phase 8 is validated. Do not start until encounter data volume is sufficient for calibration.
 
@@ -612,12 +642,17 @@ Markdown cards → ingest.py → chunks.jsonl → [Chroma vector store, Phase 4]
 | [[pneumonia]] | CA40 | Respiratory/Infectious | 🟡 draft | — | — |
 | [[uti]] | GC08 | Urogenital/Infectious | 🟡 draft | — | — |
 | [[anaemia]] | 3A00 | Haematological | 🟡 draft | — | — |
-| [[peptic_ulcer_disease]] | DA60 | Gastroenterological | 🟡 draft | — | — |
+| [[peptic_ulcer_disease]] | DA62 | Gastroenterological | 🟡 draft | — | — |
 | [[acute_gastroenteritis]] | 1A09 | Gastroenterological/Infectious | 🟡 draft | — | — |
+| [[typhoid_fever]] | 1A07 | Infectious | 🟡 draft | — | — |
+| [[functional_dyspepsia]] | DA94 | Gastroenterological | 🟡 draft | — | — |
+| [[gerd]] | DA22 | Gastroenterological | 🟡 draft | — | — |
+| [[asthma]] | CA23 | Respiratory | 🟡 draft | — | — |
+| [[dengue_fever]] | 1D2Z | Infectious | 🟡 draft | — | — |
 
 **Legend:** 🟡 draft · 🔵 under_review · ✅ clinician_verified
 
-**Production gate:** 0 / 10 cards verified. Dev work proceeds freely on draft cards.
+**Production gate:** 0 / 15 cards verified. Dev work proceeds freely on draft cards.
 
 ---
 
@@ -705,20 +740,23 @@ Markdown cards → ingest.py → chunks.jsonl → [Chroma vector store, Phase 4]
 - [x] UTI corpus fix — `graph.argues_against` simplified to `male sex`; corpus_version 1.4; ingest + Neo4j reload done; note: arguing_against correctly empty when patient has documented structural abnormality (prostate enlargement) — clinical reasoning correct
 - [x] Prompt fix — Rule 4 demographic filter: explicit exclusion list for anatomically impossible findings per patient sex/age
 - [x] Prompt fix — Red flags scope: explicit rule that only leading candidate's red flags appear when all others are lower confidence; closes T2DM red flag bleed into UTI assessments
-- [ ] Step 4 — CSS cleanup — strip dashboard aesthetic from `cds_theme.py`; editorial minimal; colour = clinical meaning only
-- [ ] Step 5 — Session history sidebar — compact chronological list from `st.session_state.history`; snippet + diagnosis + ✓/△ agreement + time
+- [x] **Step 4 — CSS cleanup** — editorial minimal; Phosphor icons; sidebar cleanup
+- [x] **Step 6 — Full HTML/CSS presentation layer rewrite (2026-09-08)** — design tokens, 30+ component classes, settled layout hierarchy (draft banner → presentation → red flags → leading → disambiguation → differential → context → approval)
+- [ ] **Step 7 — Session history sidebar** — approved encounters from `st.session_state.history`; compact chronological list; snippet + diagnosis + ✓/△ agreement + time
 
 > Run: `streamlit run phase6/app.py` from `cds/` root
 
-### Phase 7 — Corpus v2
-- [ ] Asthma
-- [ ] COPD
-- [ ] Heart failure
-- [ ] HIV/AIDS
-- [ ] Typhoid fever
-- [ ] Sickle cell disease
-- [ ] STIs (gonorrhoea, syphilis, chlamydia)
-- [ ] Pregnancy-related conditions (pre-eclampsia, ectopic pregnancy, PPH)
+### Phase 7 — Environmental Context Layer ✅ Done (2026-09-09)
+See full detail in Phase 7 section above (steps 7a–7e complete).
+- [x] Schema 2.1, context engine, ContextResult audit trail
+- [x] rag.py + prompts.py + app.py wired; 22 tests pass; eval 8/8
+- [ ] **7f** — 3 new condition cards (Cholera, Rift Valley fever, Chikungunya) — blocked on clinician review
+
+### Phase 8 — Interactive Disambiguation Loop ✅ Done (2026-09-07)
+See Phase 8 section above.
+
+### Phase 8b — Reasoning Evaluation Harness ✅ Done (2026-09-10)
+See Phase 8b section above.
 
 ---
 
