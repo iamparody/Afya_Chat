@@ -96,13 +96,16 @@ def count_overlap(presentation_lower, terms):
 # ── Retrieval: filtered vector passages ───────────────────────────────────────
 
 RED_FLAG_SECTION = "red_flags"  # must match section key from ingest.py
+AGAINST_SECTION  = "against"    # "Features that argue against this diagnosis" — must match section key from ingest.py
+
+FORCED_SECTIONS = (RED_FLAG_SECTION, AGAINST_SECTION)
 
 def get_filtered_passages(embedder, collection, presentation, conditions, query_embedding=None):
     """
     Semantic search restricted to the graph's top candidates.
-    Red flags section is always retrieved FIRST per condition — positional
-    primacy ensures the LLM sees it regardless of presentation similarity.
-    Top-N similarity passages follow.
+    Red flags and argues-against sections are always retrieved FIRST per
+    condition — positional primacy ensures the LLM sees both regardless of
+    presentation similarity. Top-N similarity passages follow.
 
     query_embedding: optional precomputed embedding of `presentation` — see
     get_vector_candidates(). Computed here if not supplied.
@@ -111,23 +114,22 @@ def get_filtered_passages(embedder, collection, presentation, conditions, query_
 
     passages = []
     for condition in conditions:
-        # Step 1: fetch Red flags section unconditionally — always first
-        rf_results = collection.query(
-            query_embeddings=[emb],
-            n_results=1,
-            where={"$and": [{"condition": {"$eq": condition}}, {"section": {"$eq": RED_FLAG_SECTION}}]},
-            include=["documents", "metadatas"],
-        )
-        rf_section_text = None
-        if rf_results["documents"][0]:
-            rf_section_text = rf_results["documents"][0][0]
-            passages.append({
-                "condition": rf_results["metadatas"][0][0]["condition"],
-                "section":   rf_results["metadatas"][0][0]["section"],
-                "text":      rf_section_text,
-            })
+        # Step 1: fetch forced sections (red flags, argues-against) unconditionally — always first
+        for section in FORCED_SECTIONS:
+            forced_results = collection.query(
+                query_embeddings=[emb],
+                n_results=1,
+                where={"$and": [{"condition": {"$eq": condition}}, {"section": {"$eq": section}}]},
+                include=["documents", "metadatas"],
+            )
+            if forced_results["documents"][0]:
+                passages.append({
+                    "condition": forced_results["metadatas"][0][0]["condition"],
+                    "section":   forced_results["metadatas"][0][0]["section"],
+                    "text":      forced_results["documents"][0][0],
+                })
 
-        # Step 2: top-N similarity passages (skip Red flags if already added)
+        # Step 2: top-N similarity passages (skip forced sections if already added)
         results = collection.query(
             query_embeddings=[emb],
             n_results=TOP_N_PASSAGES,
@@ -135,7 +137,7 @@ def get_filtered_passages(embedder, collection, presentation, conditions, query_
             include=["documents", "metadatas"],
         )
         for doc, meta in zip(results["documents"][0], results["metadatas"][0]):
-            if meta["section"] == RED_FLAG_SECTION:
+            if meta["section"] in FORCED_SECTIONS:
                 continue  # already prepended
             passages.append({
                 "condition": meta["condition"],
