@@ -305,11 +305,88 @@ def score_red_flags(result, expected, provider=None):
     return {"score": 0, "justification": "Red flags listed but none match required items."}
 
 
+def score_confidence_consistency(result, expected, provider=None):
+    """
+    Post-hoc deterministic check: does the stated confidence agree with the
+    model's own evidence?
+
+    PRIMARY violations (score 0):
+    - Lead is HIGH while is_ambiguous() fires (unresolved tied candidate exists)
+    - Lead is HIGH with non-empty arguing_against (contradictory evidence present)
+
+    SECONDARY violation (score 1):
+    - A non-lead candidate is HIGH with non-empty arguing_against
+
+    Consistent (score 2): none of the above.
+    """
+    from disambiguate import is_ambiguous
+
+    candidates = result.get("candidates", [])
+    if not candidates:
+        return {"score": None, "justification": "N/A — no candidates in result."}
+
+    lead_name = result.get("leading_candidate", "")
+    lead      = _get_leading_candidate(result)
+    lead_conf = lead.get("confidence_level", "")
+    lead_aa   = lead.get("arguing_against", [])
+    ambiguous = is_ambiguous(result)
+
+    violations = []
+
+    # Primary: HIGH despite unresolved tie
+    if lead_conf == "high" and ambiguous:
+        tied = [
+            c["diagnosis"] for c in candidates
+            if c.get("confidence_level") == "high" and c.get("diagnosis") != lead_name
+        ]
+        violations.append(
+            f"HIGH confidence despite unresolved tie with: "
+            f"{', '.join(tied) or 'another candidate'}"
+        )
+
+    # Primary: HIGH despite arguing-against evidence on the lead
+    if lead_conf == "high" and lead_aa:
+        violations.append(
+            f"HIGH confidence for lead despite {len(lead_aa)} arguing-against item(s): "
+            f"{'; '.join(lead_aa[:2])}{'...' if len(lead_aa) > 2 else ''}"
+        )
+
+    # Secondary: non-lead HIGH candidate with arguing-against evidence
+    secondary = [
+        c["diagnosis"] for c in candidates
+        if c.get("diagnosis") != lead_name
+        and c.get("confidence_level") == "high"
+        and c.get("arguing_against")
+    ]
+    if secondary:
+        violations.append(
+            f"Non-lead candidate(s) HIGH with arguing-against evidence: {', '.join(secondary)}"
+        )
+
+    if not violations:
+        return {
+            "score": 2,
+            "justification": (
+                f"Consistent. Lead '{lead_name}' is {lead_conf}; "
+                f"arguing_against empty for lead; "
+                f"ambiguity={'detected' if ambiguous else 'not detected'}."
+            ),
+        }
+
+    primary = [v for v in violations if "unresolved tie" in v or "arguing-against item(s)" in v]
+    score = 0 if primary else 1
+    return {
+        "score": score,
+        "justification": f"{len(violations)} violation(s): " + " | ".join(violations),
+    }
+
+
 deterministic_scorers = {
-    "leading_diagnosis":      score_leading_diagnosis,
-    "differential_relevance": score_differential_relevance,
-    "confidence_range":       score_confidence_range,
-    "red_flags":              score_red_flags,
+    "leading_diagnosis":        score_leading_diagnosis,
+    "differential_relevance":   score_differential_relevance,
+    "confidence_range":         score_confidence_range,
+    "red_flags":                score_red_flags,
+    "confidence_consistency":   score_confidence_consistency,
 }
 
 
