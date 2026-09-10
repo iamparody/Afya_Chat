@@ -12,6 +12,9 @@ Neo4j-*.txt
 # Generated reports
 unknown_terms_report.md
 
+# CHIRPS validation cache — downloaded GeoTIFF files, not source-controlled
+phase9/chirps_cache/
+
 # Chroma local vector store
 chroma/db/
 
