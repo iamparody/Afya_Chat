@@ -25,7 +25,9 @@ standard — not the judge.
 """
 
 import argparse
+import concurrent.futures
 import sys
+import time
 from pathlib import Path
 
 ROOT = Path(__file__).parent.parent
@@ -38,6 +40,57 @@ load_dotenv(ROOT / ".env")
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 import rag
+
+# ── Eval-specific RAG call policy ─────────────────────────────────────────────
+# Separate from providers.py production retry policy — do not merge.
+_EVAL_CALL_TIMEOUT  = 60                # seconds per individual RAG call attempt
+_EVAL_RETRY_DELAYS  = [5, 10, 20]      # seconds between retry attempts
+
+
+def _timed_rag_run(presentation):
+    """Run rag.run() with a hard per-call timeout. Raises TimeoutError if exceeded."""
+    with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+        future = executor.submit(rag.run, presentation)
+        try:
+            return future.result(timeout=_EVAL_CALL_TIMEOUT)
+        except concurrent.futures.TimeoutError:
+            raise TimeoutError(
+                f"RAG call exceeded {_EVAL_CALL_TIMEOUT}s — "
+                "thread may linger until provider gives up internally"
+            )
+
+
+def eval_rag_run(presentation):
+    """
+    Eval-specific wrapper around rag.run().
+
+    Applies a per-call timeout and short retry delays. A failed call is an
+    eval error — raises RuntimeError after all retries are exhausted.
+    The caller decides whether to skip the case or abort the run.
+    """
+    last_exc = None
+    n = len(_EVAL_RETRY_DELAYS)
+    for attempt, delay in enumerate(_EVAL_RETRY_DELAYS, start=1):
+        try:
+            return _timed_rag_run(presentation)
+        except Exception as e:
+            last_exc = e
+            if attempt < n:
+                print(
+                    f"  Eval RAG attempt {attempt}/{n} failed "
+                    f"({type(e).__name__}: {e}) — retrying in {delay}s...",
+                    flush=True,
+                )
+                time.sleep(delay)
+            else:
+                print(
+                    f"  Eval RAG attempt {attempt}/{n} failed "
+                    f"({type(e).__name__}: {e}) — all retries exhausted.",
+                    flush=True,
+                )
+    raise RuntimeError(
+        f"RAG call failed after {n} attempts. Last error: {last_exc}"
+    ) from last_exc
 from disambiguate import is_ambiguous, get_discriminating_questions, enrich_presentation
 from evaluate_disambiguation import CASES
 from rubric import EXPECTED, deterministic_scorers, judge_scorers
@@ -45,7 +98,8 @@ from rubric import EXPECTED, deterministic_scorers, judge_scorers
 PASS_SYM  = "✓"   # ✓
 PART_SYM  = "△"   # △
 FAIL_SYM  = "✗"   # ✗
-SKIP_SYM  = "○"   # ○
+SKIP_SYM  = "○"   # ○  skipped (--no-judge)
+NA_SYM    = "—"   # —  not applicable (ambiguity did not fire)
 
 # Ordered dimension list — drives scoring and reporting
 DIMENSIONS = [
@@ -61,8 +115,7 @@ DIMENSIONS = [
 ]
 
 MAX_DIM_SCORE = 2
-MAX_PER_CASE  = MAX_DIM_SCORE * len(DIMENSIONS)   # 18
-MAX_TOTAL     = MAX_PER_CASE  * len(CASES)         # 90
+# MAX_PER_CASE and MAX_TOTAL are now dynamic — N/A dims are excluded from the denominator.
 
 
 # ── Special scorer ────────────────────────────────────────────────────────────
@@ -74,14 +127,22 @@ def score_diagnostic_shift(initial, enriched, expected):
 
     Separate from other scorers because it requires both initial and enriched
     results rather than a single result dict.
+
+    Returns score=None when is_ambiguous() legitimately did not fire — the
+    dimension is N/A and must not be counted in the denominator.
     """
     if expected.get("is_negative_case"):
         return {"score": 2, "justification": "Negative case: no diagnostic shift expected or applicable."}
 
     if enriched is None:
+        if not is_ambiguous(initial):
+            return {
+                "score": None,
+                "justification": "N/A — ambiguity did not fire; diagnostic shift not applicable.",
+            }
         return {
             "score": 0,
-            "justification": "No enriched result available (ambiguity did not fire or pipeline error).",
+            "justification": "No enriched result available (pipeline error).",
         }
 
     new_lead  = enriched.get("leading_candidate", "").lower()
@@ -144,28 +205,37 @@ def score_case(initial, enriched, expected, provider, use_judge):
 # ── Reporter ──────────────────────────────────────────────────────────────────
 
 def _sym(score):
-    if score < 0:  return SKIP_SYM
-    if score == 2: return PASS_SYM
-    if score == 1: return PART_SYM
+    if score is None: return NA_SYM
+    if score < 0:     return SKIP_SYM
+    if score == 2:    return PASS_SYM
+    if score == 1:    return PART_SYM
     return FAIL_SYM
 
 
 def print_case_report(case_id, label, dim_scores, initial, questions):
-    scored_dims = [v for v in dim_scores.values() if v["score"] >= 0]
+    # Exclude skipped (score=-1) and N/A (score=None) from denominator
+    scored_dims = [v for v in dim_scores.values() if v.get("score") is not None and v["score"] >= 0]
+    na_dims     = [k for k, v in dim_scores.items() if v.get("score") is None]
     total = sum(v["score"] for v in scored_dims)
     max_p = len(scored_dims) * MAX_DIM_SCORE
+    na_str = f"  ({len(na_dims)} N/A: {', '.join(na_dims)})" if na_dims else ""
 
     print(f"\n{'=' * 62}")
     print(f"Case {case_id}: {label}")
-    print(f"Lead: {initial.get('leading_candidate', '?')}  |  Score: {total}/{max_p}")
+    print(f"Lead: {initial.get('leading_candidate', '?')}  |  Score: {total}/{max_p}{na_str}")
     print(f"Questions: {questions if questions else '— none —'}")
     print(f"{'=' * 62}")
 
     for dim, _ in DIMENSIONS:
         r = dim_scores.get(dim, {"score": -1, "justification": "—"})
-        s = r["score"]
+        s = r.get("score", -1)
         label_str = dim.replace("_", " ")
-        score_str = f"{s}/2" if s >= 0 else "—"
+        if s is None:
+            score_str = "N/A"
+        elif s >= 0:
+            score_str = f"{s}/2"
+        else:
+            score_str = "—"
         print(f"  {_sym(s)}  {label_str:<35} {score_str}")
         if r.get("justification") and r["justification"] not in ("—", ""):
             print(f"       {r['justification']}")
@@ -185,9 +255,10 @@ def run_all(case_ids=None, use_judge=True):
         from providers import get_provider
         provider = get_provider()
 
-    grand_total = 0
-    grand_max   = 0
-    all_results = []
+    grand_total     = 0
+    grand_max       = 0
+    all_results     = []
+    pipeline_errors = []
 
     for case in cases_to_run:
         cid      = case["id"]
@@ -199,9 +270,10 @@ def run_all(case_ids=None, use_judge=True):
         print(f"\nRunning {cid}: {case['label']} ...", flush=True)
 
         try:
-            initial = rag.run(case["presentation"])
+            initial = eval_rag_run(case["presentation"])
         except Exception as e:
             print(f"  {FAIL_SYM} PIPELINE ERROR (initial) — {e}")
+            pipeline_errors.append(f"{cid}:initial")
             continue
 
         enriched  = None
@@ -213,9 +285,10 @@ def run_all(case_ids=None, use_judge=True):
             if is_ambiguous(initial) and case.get("enrichment"):
                 try:
                     ep = enrich_presentation(case["presentation"], case["enrichment"])
-                    enriched = rag.run(ep)
+                    enriched = eval_rag_run(ep)
                 except Exception as e:
                     print(f"  {SKIP_SYM} PIPELINE ERROR (enriched) — {e}")
+                    pipeline_errors.append(f"{cid}:enriched")
 
         dim_scores = score_case(initial, enriched, expected, provider, use_judge)
 
@@ -228,8 +301,14 @@ def run_all(case_ids=None, use_judge=True):
 
     # ── Summary ───────────────────────────────────────────────────────────────
     pct = (100 * grand_total // grand_max) if grand_max else 0
+    total_na = sum(
+        1 for r in all_results
+        for dim, _ in DIMENSIONS
+        if dim in r["scores"] and r["scores"][dim].get("score") is None
+    )
+    na_note = f"  ({total_na} N/A across all cases)" if total_na else ""
     print(f"\n{'=' * 62}")
-    print(f"BASELINE: {grand_total}/{grand_max} ({pct}%)")
+    print(f"BASELINE: {grand_total}/{grand_max} ({pct}%){na_note}")
     print(f"{'=' * 62}")
     print()
     print("Per-dimension summary:")
@@ -237,12 +316,24 @@ def run_all(case_ids=None, use_judge=True):
         dim_scores_all = [
             r["scores"][dim]["score"]
             for r in all_results
-            if dim in r["scores"] and r["scores"][dim]["score"] >= 0
+            if dim in r["scores"]
+            and r["scores"][dim].get("score") is not None
+            and r["scores"][dim]["score"] >= 0
         ]
+        na_count = sum(
+            1 for r in all_results
+            if dim in r["scores"] and r["scores"][dim].get("score") is None
+        )
         if dim_scores_all:
             total_dim = sum(dim_scores_all)
             max_dim   = len(dim_scores_all) * MAX_DIM_SCORE
-            print(f"  {dim.replace('_', ' '):<35} {total_dim}/{max_dim}")
+            na_str    = f"  ({na_count} N/A)" if na_count else ""
+            print(f"  {dim.replace('_', ' '):<35} {total_dim}/{max_dim}{na_str}")
+
+    if pipeline_errors:
+        print()
+        print(f"PIPELINE ERRORS ({len(pipeline_errors)}): {', '.join(pipeline_errors)}")
+        print("These calls failed after all eval retries — results for affected cases are incomplete.")
 
     if use_judge:
         print()
