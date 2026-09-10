@@ -29,6 +29,7 @@ from cds_theme import apply_theme, page_header, COLORS, ph
 import rag
 import db
 from disambiguate import MAX_ROUNDS, is_ambiguous, get_discriminating_questions, enrich_presentation
+from phase7.kenya_locations import normalize_county, DISPLAY_LOCATIONS
 
 apply_theme()
 db.init_db()
@@ -38,16 +39,16 @@ db.init_db()
 
 VALID_CONFIDENCE = {"high", "moderate", "low"}
 
-_ENDEMIC_REGIONS = [
-    "coast", "lake_basin", "highland", "highland_margins",
-    "arid_semi_arid", "northern_kenya", "urban_informal",
-]
-
-_EXPOSURES = [
-    "floodwater_contact", "livestock_contact", "occupational_dust",
-    "unsafe_water", "mosquito_exposure_high", "pastoralist_mobility",
-    "fishing_lakeshore",
-]
+_EXPOSURE_LABELS: dict[str, str] = {
+    "Floodwater contact":             "floodwater_contact",
+    "Livestock contact":              "livestock_contact",
+    "Occupational dust exposure":     "occupational_dust",
+    "Unsafe water source":            "unsafe_water",
+    "High mosquito exposure":         "mosquito_exposure_high",
+    "Pastoralist / mobile community": "pastoralist_mobility",
+    "Fishing / lakeshore activity":   "fishing_lakeshore",
+}
+_EXPOSURE_OPTIONS = list(_EXPOSURE_LABELS.keys())
 
 _ICD = {
     "type 2 diabetes mellitus":           ("5A11",  "E11"),
@@ -86,7 +87,7 @@ def _init_session_state():
         "disam_questions":      [],
         "disam_skip_to_result": False,
         "base_presentation":    "",
-        "patient_location":     None,
+        "location_norm":        None,
         "patient_exposures":    [],
     }
     for k, v in defaults.items():
@@ -107,7 +108,7 @@ def _clear_all():
     st.session_state.disam_questions      = []
     st.session_state.disam_skip_to_result = False
     st.session_state.base_presentation    = ""
-    st.session_state.patient_location     = None
+    st.session_state.location_norm        = None
     st.session_state.patient_exposures    = []
 
 
@@ -546,6 +547,55 @@ def _render_approval_confirmed():
 
 # ── Sidebar ───────────────────────────────────────────────────────────────────
 
+def _render_history_sidebar():
+    history = st.session_state.get("history", [])
+
+    if not history:
+        st.markdown(
+            '<div class="cds-hist-section">'
+            '<div class="sb-label" style="margin-bottom:10px">This session</div>'
+            '<div style="font-size:11px;color:#9BAEC8;font-style:italic">'
+            'No approved assessments this session.</div>'
+            '</div>',
+            unsafe_allow_html=True,
+        )
+        return
+
+    entries_html = ""
+    for entry in history:
+        try:
+            dt = datetime.fromisoformat(entry["approved_at"])
+            time_str = dt.strftime("%H:%M")
+        except Exception:
+            time_str = ""
+
+        agreed = (
+            entry["system_diagnosis"].lower().strip()
+            == entry["clinician_diagnosis"].lower().strip()
+        )
+        indicator = "✓" if agreed else "△"
+        ind_color = COLORS["support"] if agreed else COLORS["moderate"]
+
+        entries_html += (
+            f'<div class="cds-hist-entry">'
+            f'  <div class="cds-hist-meta">'
+            f'    <span class="cds-hist-time">{time_str}</span>'
+            f'    <span class="cds-hist-ind" style="color:{ind_color}">{indicator}</span>'
+            f'  </div>'
+            f'  <div class="cds-hist-diag">{entry["system_diagnosis"]}</div>'
+            f'  <div class="cds-hist-snip">{entry["snippet"]}</div>'
+            f'</div>'
+        )
+
+    st.markdown(
+        f'<div class="cds-hist-section">'
+        f'<div class="sb-label" style="margin-bottom:12px">This session</div>'
+        f'{entries_html}'
+        f'</div>',
+        unsafe_allow_html=True,
+    )
+
+
 _init_session_state()
 
 with st.sidebar:
@@ -571,6 +621,8 @@ with st.sidebar:
     st.markdown('<div style="border-top:1px solid #EBF3FB;margin:20px 0"></div>',
                 unsafe_allow_html=True)
 
+    _render_history_sidebar()
+
 
 # ── Main ──────────────────────────────────────────────────────────────────────
 
@@ -595,22 +647,56 @@ else:
     )
 
     with st.expander("Patient context (optional)"):
-        loc = st.selectbox(
+        st.markdown(
+            '<div class="cds-field-label" style="margin-bottom:6px">Where</div>',
+            unsafe_allow_html=True,
+        )
+        loc_choice = st.selectbox(
             "Patient location",
-            options=["Not specified"] + _ENDEMIC_REGIONS,
+            options=["Not specified"] + DISPLAY_LOCATIONS + ["Other location…"],
             index=0,
             key=f"location_{st.session_state.input_key}",
-            help="Select the patient's geographic region to activate seasonal environmental context.",
+            label_visibility="collapsed",
+            help="Select a Kenyan county or town to activate seasonal environmental context.",
         )
-        exp = st.multiselect(
+        if loc_choice == "Not specified":
+            st.session_state.location_norm = None
+        elif loc_choice == "Other location…":
+            other_text = st.text_input(
+                "Specify location",
+                placeholder="Town, facility, or area name…",
+                key=f"other_location_{st.session_state.input_key}",
+                label_visibility="collapsed",
+            )
+            # Explicitly set to None when field is blank — never inherits a prior selection
+            st.session_state.location_norm = (
+                normalize_county(other_text.strip()) if other_text.strip() else None
+            )
+        else:
+            _norm = normalize_county(loc_choice)
+            if _norm.resolution_status == "cross_county_ambiguous":
+                chosen_county = st.selectbox(
+                    f"{loc_choice} straddles a county boundary. Select county:",
+                    options=list(_norm.candidate_counties),
+                    key=f"county_disamb_{st.session_state.input_key}_{loc_choice}",
+                )
+                st.session_state.location_norm = normalize_county(chosen_county)
+            else:
+                st.session_state.location_norm = _norm
+
+        st.markdown(
+            '<div class="cds-field-label" style="margin-top:14px;margin-bottom:6px">Exposures</div>',
+            unsafe_allow_html=True,
+        )
+        exp_labels = st.multiselect(
             "Documented exposures",
-            options=_EXPOSURES,
+            options=_EXPOSURE_OPTIONS,
             default=[],
             key=f"exposures_{st.session_state.input_key}",
+            label_visibility="collapsed",
             help="Select any exposures explicitly documented in the patient history.",
         )
-        st.session_state.patient_location  = loc if loc != "Not specified" else None
-        st.session_state.patient_exposures = exp
+        st.session_state.patient_exposures = [_EXPOSURE_LABELS[lbl] for lbl in exp_labels]
 
 col_btn, col_clear, _ = st.columns([1, 1, 4])
 with col_btn:
@@ -634,9 +720,10 @@ if analyse:
 
     with st.spinner("Analysing presentation…"):
         try:
+            _loc = st.session_state.location_norm
             result = rag.run(
                 presentation.strip(),
-                patient_location=st.session_state.patient_location,
+                patient_location=_loc.ecological_region if _loc else None,
                 patient_exposures=st.session_state.patient_exposures,
                 encounter_date=datetime.now(),
             )
@@ -698,9 +785,10 @@ if _disam_active:
 
         with st.spinner("Refining assessment…"):
             try:
+                _loc = st.session_state.location_norm
                 result = rag.run(
                     enriched,
-                    patient_location=st.session_state.patient_location,
+                    patient_location=_loc.ecological_region if _loc else None,
                     patient_exposures=st.session_state.patient_exposures,
                     encounter_date=datetime.now(),
                 )

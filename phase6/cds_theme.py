@@ -608,6 +608,50 @@ div[data-testid="stRadio"] [data-testid="stMarkdownContainer"] p {
     box-shadow: none !important;
 }
 
+/* ── Session history (sidebar) ────────────────────────────────────────────── */
+.cds-hist-section {
+    border-top: 1px solid var(--c-border);
+    margin-top: 20px;
+    padding-top: 20px;
+}
+.cds-hist-entry {
+    padding: 9px 0;
+    border-bottom: 1px solid var(--c-border);
+}
+.cds-hist-entry:last-child { border-bottom: none; }
+.cds-hist-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 3px;
+}
+.cds-hist-time {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--c-text-3);
+    letter-spacing: 0.4px;
+    font-variant-numeric: tabular-nums;
+}
+.cds-hist-ind {
+    font-size: 11px;
+    font-weight: 700;
+}
+.cds-hist-diag {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--c-primary);
+    line-height: 1.3;
+    margin-bottom: 2px;
+}
+.cds-hist-snip {
+    font-size: 10px;
+    color: var(--c-text-3);
+    line-height: 1.4;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 /* ── Scrollbar ────────────────────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-thumb { background: var(--c-border-2); border-radius: 10px; }
