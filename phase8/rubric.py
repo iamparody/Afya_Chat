@@ -329,6 +329,11 @@ Rules:
 - Do not penalise the model for including additional correct information beyond what is listed.
 - Penalise 0 for: listing a denied finding as supporting evidence; manufacturing arguing-against items not in the presentation; confusing "not documented" with "absent".
 
+Arguing-against semantics: arguing_against items should represent denied or absent findings from
+the patient's presentation (e.g. "No rash" → rash argues against dengue). Epidemiological priors
+or demographic patterns (e.g. "male sex argues against UTI") are clinically relevant but are NOT
+denied findings — score these as 1 (partial), not 0 or 2.
+
 Return JSON only: {"score": <0, 1, or 2>, "justification": "<one sentence citing specific evidence>"}"""
 
 
@@ -393,13 +398,13 @@ def judge_arguing_against_accuracy(result, expected, provider=None):
 
 Patient presentation: {presentation}
 
-Expected arguing-against keywords (features from the presentation that should appear in arguing_against lists): {expected_kw}
+Expected arguing-against keywords (denied or absent findings from the presentation that should appear in arguing_against lists): {expected_kw}
 Leading candidate ({lead_name}) arguing_against: {json.dumps(actual_lead_aa, ensure_ascii=False)}
 All candidates arguing_against: {json.dumps(all_aa, ensure_ascii=False)}
 
-Score 2 if: arguing-against items reflect documented features in the presentation; expected keywords appear where clinically appropriate; no manufactured items.
-Score 1 if: mostly correct but missing some expected items, or minor over-inclusion of non-documented features.
-Score 0 if: items are manufactured (feature not in presentation), or a documented-absent finding is incorrectly listed as arguing-against."""
+Score 2 if: arguing-against items reflect denied or absent findings from the patient presentation; expected keywords appear where clinically appropriate; no manufactured items.
+Score 1 if: mostly correct but missing some expected items; OR the model uses epidemiological priors / demographic patterns instead of denied findings (e.g. 'male sex argues against UTI' — clinically relevant but not a denied finding from this presentation).
+Score 0 if: items are manufactured (a finding not mentioned or denied in the presentation is claimed as evidence), or a finding present in the presentation is listed as arguing-against it."""
 
     return _call_judge(prompt, provider)
 
@@ -409,26 +414,29 @@ def judge_missing_information_relevance(result, expected, provider=None):
         return {"score": 0, "justification": "No provider; failing closed."}
 
     lead_name = result.get("leading_candidate", "?")
-    lead = _get_leading_candidate(result)
-    actual = lead.get("missing_information", [])
+    # Assess discriminatory usefulness across ALL candidates — the union drives question quality
+    all_missing = {
+        c.get("diagnosis", "?"): c.get("missing_information", [])
+        for c in result.get("candidates", [])
+    }
     relevant_kw = expected.get("relevant_missing_information", [])
 
-    prompt = f"""Score the missing information relevance for the leading candidate.
+    prompt = f"""Score the missing information relevance across all candidates.
 
-Expected clinically relevant keywords (discriminating items): {relevant_kw}
+Expected clinically relevant keywords (items that help discriminate between the candidates): {relevant_kw}
 Leading candidate: {lead_name}
-Model missing information list: {json.dumps(actual, ensure_ascii=False)}
+Model missing information per candidate: {json.dumps(all_missing, ensure_ascii=False)}
 
-Score 2 if most relevant discriminating items are present and the list avoids generic non-discriminating questions.
-Score 1 if some relevant items are present but key discriminators are missing, or generic items dominate.
-Score 0 if relevant discriminating items are absent or items are clinically inappropriate for this presentation."""
+Score 2 if: relevant discriminating items appear across the candidates' missing information lists; the model identifies what would help confirm or distinguish between the leading and differential diagnoses.
+Score 1 if: some relevant items appear but key discriminators are missing, or only generic non-discriminating questions dominate.
+Score 0 if: relevant discriminating items are absent across all candidates, or items are clinically inappropriate for this presentation."""
 
     return _call_judge(prompt, provider)
 
 
 def judge_question_quality(result, expected, provider=None):
     """Extracts discriminating questions from result internally; scores their clinical usefulness."""
-    from disambiguate import get_discriminating_questions
+    from disambiguate import get_discriminating_questions, is_ambiguous
 
     if provider is None:
         return {"score": 0, "justification": "No provider; failing closed."}
@@ -443,7 +451,9 @@ def judge_question_quality(result, expected, provider=None):
     acceptable_kw = expected.get("acceptable_discriminating_q", [])
 
     if not questions:
-        return {"score": 0, "justification": "Ambiguous case: no discriminating questions generated."}
+        if not is_ambiguous(result):
+            return {"score": None, "justification": "N/A — ambiguity did not fire; question quality not applicable."}
+        return {"score": 0, "justification": "Ambiguity detected but no discriminating questions generated."}
 
     prompt = f"""Score the discriminating question quality for this case.
 
