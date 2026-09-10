@@ -1,18 +1,20 @@
 """
 Phase 8 reasoning evaluation harness.
 
-Scores 9 dimensions per case using the rubric in rubric.py.
+Scores 10 dimensions per case using the rubric in rubric.py.
 
 Dimensions:
     Deterministic (rubric.deterministic_scorers):
-        leading_diagnosis, differential_relevance, confidence_range, red_flags
+        leading_diagnosis, differential_relevance, confidence_range, red_flags,
+        confidence_consistency
     LLM judge (rubric.judge_scorers):
         supporting_features, arguing_against_accuracy,
         missing_information_relevance, question_quality
     Special (requires initial + enriched):
         diagnostic_shift
 
-Max score: 18 per case (9 dims x 2), 90 total (5 cases).
+Max score: 20 per case (10 dims x 2), 100 total (5 cases).
+N/A dims are excluded from the denominator.
 
 Usage:
     python phase8/evaluate_reasoning.py              # all 5 cases
@@ -107,6 +109,7 @@ DIMENSIONS = [
     ("differential_relevance",        "deterministic"),
     ("confidence_range",              "deterministic"),
     ("red_flags",                     "deterministic"),
+    ("confidence_consistency",        "deterministic"),
     ("supporting_features",           "judge"),
     ("arguing_against_accuracy",      "judge"),
     ("missing_information_relevance", "judge"),
