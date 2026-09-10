@@ -14,15 +14,17 @@ Symptom-driven diagnostic RAG system for East Africa / Kenya primary care. Given
 | 4 | Neo4j knowledge graph — 15 conditions | ✅ Done |
 | 5 | RAG pipeline — Gemini + SEVEN RULES prompt | ✅ Done (8/8 eval) |
 | 6 | Streamlit MVP + approval workflow + SQLite | ✅ Done |
-| 6b | UI improvement (Step 7 — session history sidebar pending) | 🟡 In progress |
-| 7 | Environmental context layer — static calendar + ENSO | ✅ Done |
+| 6b | UI — session history sidebar + KNBS location normalization | ✅ Done |
+| 7 | Environmental context layer — static calendar + ENSO + exposure gating | ✅ Done |
 | 8 | Interactive disambiguation loop — follow-up question generation | ✅ Done (CI-gated 4/5) |
 | 8b | Reasoning evaluation harness — 10-dim rubric + CI | ✅ Done (87/96, 90%) |
-| 9 | Live environmental feeds — CHIRPS / Kenya Met API | 🔴 Planned |
+| 9 | Live rainfall — Open-Meteo provider + source validation | 🟡 Partial |
 
-**Eval baseline:** 8/8 RAG cases. 87/96 (90%) reasoning evaluation. 4/5 disambiguation gate.
+**Eval baselines:** 8/8 RAG cases · 87/96 (90%) reasoning · 4/5 disambiguation.
 
 **Production gate:** All 15 cards remain `draft`. Clinician review required before production ingestion.
+
+**Phase 9 status:** `OpenMeteoProvider` built and wired (ERA5-Land via Open-Meteo Historical API). Source validation complete — CHIRPS adjudication confirms ERA5-Land is acceptable for all ecologies except Mombasa/coast dry-season. Rainfall features are attached to `ContextResult.rainfall` as an audit trail only; `StaticCalendarProvider` still gates all signal activation. Signal thresholds and observed-rainfall gating not yet defined.
 
 ---
 
@@ -41,16 +43,20 @@ Patient presentation
     → Cohere embed → Chroma (top 6 candidate conditions)
     → Neo4j (symptom profiles + argues_against per candidate)
     → Cohere embed → Chroma (top 5 prose passages per candidate)
-    → Environmental context engine (static calendar + ENSO flag → labelled prior evidence)
+    → Environmental context engine
+        ├── StaticCalendarProvider (signal activation — gates all signals in Phase 9 MVP)
+        └── OpenMeteoProvider → RainfallFeatures (7/30/60d mm) → ContextResult.rainfall
+            (audit trail only; does not activate signals until thresholds are defined)
     → Gemini (SEVEN RULES, temperature=0, JSON schema enforced)
     → jsonschema validate → structured differential assessment
     → Disambiguation loop (tied candidates → discriminating questions → enriched re-run)
     → Streamlit UI (approval workflow → SQLite encounters)
 ```
 
-**Embedding:** Cohere `embed-multilingual-v3.0`
-**LLM:** Gemini `gemini-2.0-flash` (temperature=0)
-**Graph:** Neo4j AuraDB free tier
+**Embedding:** Cohere `embed-multilingual-v3.0`  
+**LLM:** Gemini `gemini-2.0-flash` (temperature=0)  
+**Graph:** Neo4j AuraDB free tier  
+**Rainfall:** Open-Meteo Historical API (ERA5-Land, ~11km, no key)
 
 ---
 
@@ -83,12 +89,19 @@ cds/
 │   └── cds_theme.py                  CSS design tokens + Phosphor icon helpers
 ├── phase7/
 │   ├── context_engine.py             environmental context engine (static calendar + ENSO)
-│   └── tests/                        context engine + prompt injection tests (22 pass)
+│   ├── kenya_locations.py            KNBS location normalization (PLACE_ALIASES, CROSS_COUNTY_PLACES)
+│   ├── rainfall_providers.py         RainfallProvider protocol + OpenMeteoProvider + RainfallFeatures
+│   └── tests/                        49 tests — context engine, locations, rainfall, prompt injection
 ├── phase8/
 │   ├── disambiguate.py               is_ambiguous(), get_discriminating_questions(), enrich_presentation()
 │   ├── evaluate_disambiguation.py    5-case disambiguation eval (gate ≥4/5)
 │   ├── rubric.py                     10-dim reasoning rubric (deterministic + LLM judge)
 │   └── evaluate_reasoning.py         reasoning eval harness (gate 90% deterministic, judge as artifact)
+├── phase9/
+│   ├── validate_rainfall.py          Open-Meteo vs NASA POWER/MERRA-2 comparison (5 sites × 3 dates)
+│   ├── chirps_fetcher.py             CHIRPS v2.0 GeoTIFF downloader + rasterio pixel reader (validation only)
+│   ├── compare_chirps.py             CHIRPS adjudication — Kisumu and Mombasa discrepancies
+│   └── validation_findings.md        auditable source comparison table + source decision
 └── .github/workflows/
     └── cds_pipeline.yml              CI — ingest → Neo4j → embed → RAG eval → disam eval → reasoning eval
 ```
@@ -112,43 +125,18 @@ make eval-reasoning   # 10-dim reasoning eval, deterministic gate 90% (judge out
 # Single query
 python phase5/rag.py "45F, 3 weeks cough, night sweats, weight loss"
 
-# Reasoning evaluation — specific cases, or with LLM judge
-python phase8/evaluate_reasoning.py d1 d3
-python phase8/evaluate_reasoning.py --no-judge   # deterministic dims only
+# Phase 9 validation (requires network; downloads ~600KB/file on first run)
+python -m phase9.validate_rainfall           # Open-Meteo vs MERRA-2, 5 sites × 3 dates
+python -m phase9.compare_chirps              # CHIRPS adjudication for Kisumu + Mombasa
 ```
 
-Credentials are loaded from `.env` (local) or environment variables (CI). See `.env.example` if present.
+Credentials are loaded from `.env` (local) or environment variables (CI).
 
 ---
 
 ## Condition cards
 
-Each card is a `.md` file with YAML frontmatter and 9 fixed prose sections.
-
-**Frontmatter (schema v2.1):**
-```yaml
-condition:       canonical condition name
-icd11:           WHO ICD-11 code
-icd10:           ICD-10 code
-category:        disease category
-corpus_version:  increment on clinical content change
-schema_version:  increment on frontmatter structure change
-review_status:   draft | under_review | clinician_verified
-reviewed_by:     clinician name + credential
-last_reviewed:   YYYY-MM-DD
-sources:
-  - organization: WHO
-    title: Guidelines for Malaria
-    year: "2023"
-graph:
-  cardinal_symptoms:   [fever, chills, rigors]
-  associated_symptoms: [myalgia, splenomegaly]
-  risk_factors:        [endemic area residence, pregnancy]
-  differentials:       [typhoid fever, dengue fever]
-  argues_against:      [no endemic area exposure]
-  red_flags:           [altered consciousness, coma]
-  confirms:            [positive malaria RDT, positive thick blood film]
-```
+Each card is a `.md` file with YAML frontmatter (schema 2.1) and 9 fixed prose sections.
 
 **9 prose sections (fixed order — parser depends on it):**
 
@@ -228,5 +216,22 @@ draft → under_review → clinician_verified
 
 `ingest.py` warns on draft cards. Only `clinician_verified` cards enter production.
 
-**Sources:** WHO guidelines, Kenya MOH, Kenya NLTP, British Thoracic Society, ADA, ISH.
+**Sources:** WHO guidelines, Kenya MOH, Kenya NLTP, British Thoracic Society, ADA, ISH.  
 **Regional orientation:** East Africa / Kenya primary care.
+
+---
+
+## What remains
+
+**Phase 9 — next steps (in order):**
+1. Establish multi-year historical ERA5-Land baseline per ecology (≥5 years) — prerequisite for thresholds.
+2. Define signal activation thresholds per signal per ecology. Coast dry-season (Jan–Feb) requires CHIRPS or corrected source; all other ecology/season combinations can use ERA5-Land.
+3. Replace `StaticCalendarProvider` signal gating with observed-rainfall thresholds per signal.
+
+**Phase 2 — clinician review (external dependency):** All 15 cards are `draft`. This is the production gate.
+
+**Phase 7f — 3 new cards:** Cholera, Rift Valley Fever, Chikungunya — blocked on clinician review.
+
+**Eval expansion:** Current suite is 5 reasoning cases. Should grow to match the 15-condition corpus before Phase 8 clarification questions are built.
+
+**Phase 8 — environmental clarification:** Unmet `requires_exposure` signals become the source of clarification questions. Design is locked; implementation waits on corpus expansion and clinician review.
