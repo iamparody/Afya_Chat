@@ -264,20 +264,26 @@ def run(
     patient_exposures: list | None = None,
     encounter_date: datetime | None = None,
     onset_date: datetime | None = None,
+    patient_latitude: float | None = None,
+    patient_longitude: float | None = None,
 ) -> dict:
     """
     Full RAG pipeline for a patient presentation.
     Returns validated dict or raises ValueError on failure.
 
-    embedder          : optional embed_provider.CohereEmbedder or PubMedBertEmbedder.
-                        Defaults to CohereEmbedder when not supplied.
-    hybrid            : if True, uses BM25 + dense vector RRF for candidate selection.
-                        if False (default), uses dense-only — preserves the Cohere 7/8 baseline.
-    patient_location  : endemic_region vocabulary value (optional); passed to context engine.
-    patient_exposures : list of exposure vocabulary values (optional).
-    encounter_date    : datetime of the encounter; defaults to now(). Used as seasonal reference
-                        when onset_date is not provided.
-    onset_date        : symptom onset datetime (optional); used as seasonal reference if provided.
+    embedder           : optional embed_provider.CohereEmbedder or PubMedBertEmbedder.
+                         Defaults to CohereEmbedder when not supplied.
+    hybrid             : if True, uses BM25 + dense vector RRF for candidate selection.
+                         if False (default), uses dense-only — preserves the Cohere 7/8 baseline.
+    patient_location   : endemic_region vocabulary value (optional); passed to context engine.
+    patient_exposures  : list of exposure vocabulary values (optional).
+    encounter_date     : datetime of the encounter; defaults to now(). Used as seasonal reference
+                         when onset_date is not provided.
+    onset_date         : symptom onset datetime (optional); used as seasonal reference if provided.
+    patient_latitude   : county centroid latitude from LocationNormalization (optional).
+    patient_longitude  : county centroid longitude from LocationNormalization (optional).
+                         When both are provided, OpenMeteoProvider fetches raw rainfall features
+                         attached to ContextResult for audit.  Signal activation is unaffected.
     """
     if embedder is None:
         from embed_provider import CohereEmbedder
@@ -328,6 +334,8 @@ def run(
             patient_location=patient_location,
             patient_exposures=patient_exposures or [],
             onset_date=onset_date,
+            latitude=patient_latitude,
+            longitude=patient_longitude,
         )
         env_evidence = _env.evidence if isinstance(_env, ContextResult) else []
 

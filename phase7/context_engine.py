@@ -34,6 +34,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
+from phase7.rainfall_providers import OpenMeteoProvider, RainfallFeatures
+
 # Sentinel returned when no candidates have declared environmental_signals,
 # OR when all signals fail region/exposure/seasonal gates before reaching
 # the strength/confidence gate.  Distinguishable from ContextResult with
@@ -124,6 +126,7 @@ class ContextResult:
     """
     evidence: list[EnvironmentalEvidence]
     suppressed: list[EnvironmentalEvidence]
+    rainfall: RainfallFeatures | None = None   # raw features; None when lat/lon unavailable
 
     @property
     def has_evidence(self) -> bool:
@@ -298,6 +301,8 @@ def get_environmental_evidence(
     patient_location: Optional[str] = None,
     patient_exposures: Optional[list[str]] = None,
     onset_date: Optional[datetime] = None,
+    latitude: Optional[float] = None,
+    longitude: Optional[float] = None,
 ) -> ContextResult | str:
     """
     Evaluate environmental context for RAG candidates.
@@ -321,6 +326,12 @@ def get_environmental_evidence(
     patient_exposures : list of exposure vocabulary values
     onset_date        : symptom onset datetime; used as seasonal reference if provided,
                         otherwise encounter_date is used
+    latitude          : county centroid latitude from LocationNormalization (optional)
+    longitude         : county centroid longitude from LocationNormalization (optional)
+                        When both are provided, OpenMeteoProvider fetches raw rainfall
+                        features attached to ContextResult.rainfall for audit and future
+                        threshold calibration.  Signal activation is still controlled by
+                        StaticCalendarProvider regardless of whether rainfall data is present.
 
     Gate sequence (applied per signal):
       1. Region: if signal.regions is non-empty, patient_location must be in it
@@ -334,6 +345,15 @@ def get_environmental_evidence(
 
     env_signals = _load_environmental_signals()
     provider = CHIRPSProvider()
+
+    # Fetch raw rainfall features when coordinates are available.
+    # These are attached to ContextResult for audit; they do not gate signals.
+    rainfall: RainfallFeatures | None = None
+    if latitude is not None and longitude is not None:
+        try:
+            rainfall = OpenMeteoProvider().get_rainfall_features(latitude, longitude, reference_date)
+        except Exception:
+            rainfall = None
 
     passed: list[EnvironmentalEvidence] = []
     suppressed: list[EnvironmentalEvidence] = []
@@ -425,4 +445,4 @@ def get_environmental_evidence(
 
     if not any_reached_gate_4:
         return NO_RELEVANT_CONTEXT
-    return ContextResult(evidence=passed, suppressed=suppressed)
+    return ContextResult(evidence=passed, suppressed=suppressed, rainfall=rainfall)
