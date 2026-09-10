@@ -350,12 +350,28 @@ def run_all(case_ids=None, use_judge=True):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Phase 8 reasoning evaluation rubric")
+    parser = argparse.ArgumentParser(description="Phase 8 reasoning evaluation harness")
     parser.add_argument("cases", nargs="*", help="Case IDs to run (e.g. d1 d3); omit for all")
     parser.add_argument(
         "--no-judge",
         action="store_true",
         help="Skip LLM judge calls — scores deterministic dims only",
     )
+    parser.add_argument(
+        "--gate",
+        type=int,
+        default=None,
+        metavar="PCT",
+        help="Exit non-zero if overall score < PCT%% of applicable max (e.g. --gate 80)",
+    )
     args = parser.parse_args()
-    run_all(args.cases or None, use_judge=not args.no_judge)
+    results = run_all(args.cases or None, use_judge=not args.no_judge)
+
+    if args.gate is not None:
+        grand_total = sum(r["total"] for r in results)
+        grand_max   = sum(r["max"]   for r in results)
+        pct = (100 * grand_total // grand_max) if grand_max else 0
+        if pct < args.gate:
+            print(f"\nGATE FAILED: {grand_total}/{grand_max} ({pct}%) < {args.gate}% threshold")
+            sys.exit(1)
+        print(f"\nGATE PASSED: {grand_total}/{grand_max} ({pct}%) >= {args.gate}% threshold")
