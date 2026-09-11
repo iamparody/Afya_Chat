@@ -265,25 +265,53 @@ ENSO acts as an amplifier on existing seasonal signals — it does not directly 
 
 ## Governance Rules
 
+### Approved Card Authoring Methods
+
+Two methods are approved for creating new condition cards. Both require clinician review before ingest — the method changes how the draft is produced, not the review gate.
+
+**Method A — LLM-assisted drafting from WHO/MOH guidelines (preferred)**
+1. Source a WHO clinical guideline, Kenya MOH protocol, or equivalent trusted PDF for the condition
+2. Feed the PDF to an LLM with the card schema (9 sections + frontmatter) as the target format and a prompt to extract structured clinical content
+3. LLM produces a draft card — clinician reviews and corrects the draft, not a blank page
+4. Pin the source document in the card's `sources:` frontmatter field
+5. Authoring time: ~20 minutes of clinician review per card (vs. hours from scratch)
+
+**Method B — PrimeKG scaffold + clinical authorship**
+1. Query PrimeKG (open knowledge graph, Harvard/Nature 2023 — disease-symptom-differential relationships, 17,080 diseases) for the target condition
+2. Use the returned symptom and differential relationships as the skeleton for the `graph:` block and Section 1–2 prose
+3. Author Kenya-specific content (endemic regions, environmental signals, primary care framing) manually — PrimeKG has no regional epidemiology
+4. Clinician reviews the full card before ingest
+5. Use for: conditions with clear global disease burden data but limited Kenya-specific guidelines
+
+**What neither method changes:**
+- All 9 sections are still mandatory
+- Clinician review is still required before `review_status` moves from `draft`
+- `ingest.py` validation still gates on unknown vocabulary terms
+- ICD codes must still be verified at icd.who.int
+- Kenya-specific context (endemic regions, environmental signals, primary care framing) must be authored — it cannot be sourced from PrimeKG or generic guidelines
+
+---
+
 ### Adding a New Condition Card
 
-1. Copy an existing card (e.g., `malaria.md`) as the template — it has all current fields including `environmental_signals`
-2. Fill all 9 clinical sections — no section may be omitted
-3. Set frontmatter:
+1. Choose authoring method (A or B above) and document the source in `sources:` frontmatter
+2. Copy an existing card (e.g., `malaria.md`) as the template — it has all current fields including `environmental_signals`
+3. Fill all 9 clinical sections — no section may be omitted
+4. Set frontmatter:
    - `review_status: draft`
    - `reviewed_by:` (leave blank)
    - `last_reviewed:` (leave blank)
    - `corpus_version: 1.0`
-   - `schema_version: 2.0` (current schema version — do not change unless adding fields)
+   - `schema_version: 2.1` (current schema version — do not change unless adding fields)
    - `icd11` and `icd10` — verify both at icd.who.int; confirm they map to the same condition
    - `endemic_regions` — use controlled vocabulary only
    - `environmental_signals` — only include signals with meaningful clinical evidence; leave empty list if none
-4. Send to colleague for clinical review **before** running ingest
-5. After colleague sign-off: add to `symptoms_dictionary/index.md`, define new terms in `glossary.md`, update [[STATUS]]
-6. Run `python ingest.py` — confirm no chunk validation errors and no unknown graph terms
-7. Run `python chroma/chroma_loader.py` — re-embed ALL chunks into the vector store (required after any card change; without this the RAG pipeline uses stale embeddings)
-8. Run `python neo4j/neo4j_loader.py` — confirm condition loaded
-9. Test with a representative clinical case via the Streamlit app
+5. Send to colleague for clinical review **before** running ingest
+6. After colleague sign-off: add to `symptoms_dictionary/index.md`, define new terms in `glossary.md`, update [[STATUS]]
+7. Run `python ingest.py` — confirm no chunk validation errors and no unknown graph terms
+8. Run `python chroma/chroma_loader.py` — re-embed ALL chunks into the vector store (required after any card change; without this the RAG pipeline uses stale embeddings)
+9. Run `python neo4j/neo4j_loader.py` — confirm condition loaded
+10. Test with a representative clinical case via the Streamlit app
 
 ### Clinical Review Workflow
 

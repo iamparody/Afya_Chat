@@ -544,6 +544,7 @@ See Phase 8b section above.
 | 2026-09-02 | UTI graph.argues_against simplified to "male sex" | Compound qualifier "male sex without catheter or structural abnormality" fails at LLM reasoning step — model can't confirm absence (Rule 1), so compound fails; prose and red flags carry the clinical nuance |
 | 2026-09-10 | Open-Meteo/ERA5-Land accepted as Phase 9 live rainfall source | CHIRPS adjudication confirms ERA5-Land within 1.15–1.45x at Kisumu (lake_basin); MERRA-2 was over-estimating. Sole exception: Mombasa coast Jan–Feb dry season (~6.7x over-estimate); CHIRPS must be used for coast dry-season threshold calibration. No architecture changes required. |
 | 2026-09-10 | OpenMeteoProvider feeds audit trail only (does not gate signals) | Thresholds are not yet calibrated; activating rainfall gating without a characterised baseline would introduce uncalibrated priors. StaticCalendarProvider remains the gating mechanism until thresholds are derived from ≥5-year historical baseline. |
+| 2026-09-11 | Two approved card authoring methods: LLM-assisted drafting from WHO/MOH PDFs (preferred) and PrimeKG scaffold + clinical authorship | LLM drafting cuts authoring time from hours to ~20 min of clinician review; PrimeKG provides disease-symptom-differential scaffolds for conditions with clear global data but limited Kenya guidelines. Neither removes clinician review gate. Documented in CLAUDE.md Governance Rules. |
 
 ---
 
