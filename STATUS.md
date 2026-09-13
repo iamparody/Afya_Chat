@@ -512,8 +512,8 @@ See Phase 8b section above.
 > Full spec: see memory/project_corpus_pipeline_experiment.md
 
 **Build order:**
-- [ ] `corpus_pipeline/schema.py` — Pydantic models for `condition.yaml` (all frontmatter fields, 9 sections, graph block, environmental signals)
-- [ ] Migrate 2–3 cards to `condition.yaml` (malaria, pulmonary_tb, pneumonia)
+- [x] `corpus_pipeline/schema.py` — Pydantic models for `condition.yaml` (all frontmatter fields, 9 sections, graph block, environmental signals) ✅ 6c4735c
+- [x] Migrate 2–3 cards to `condition.yaml` (malaria, pulmonary_tb, pneumonia) ✅ 6c4735c — finding: existing cards had `category: infectious / respiratory` (invalid vocab); schema caught it; fixed to single primary category
 - [ ] `corpus_pipeline/validator.py` — pre-review automated checks (vocabulary, ICD format, section completeness, graph terms, cross-card consistency)
 - [ ] `corpus_pipeline/ingest_yaml.py` — reads `condition.yaml` → identical `chunks.jsonl` + `graph_entities.jsonl`
 - [ ] `corpus_pipeline/markdown_gen.py` — pure template rendering: `condition.yaml` → `.md` (no inference or logic)
