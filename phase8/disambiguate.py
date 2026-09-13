@@ -17,7 +17,32 @@ Design spec (PF-4):
   - Enrichment: free text appended to the original presentation string.
 """
 
+import re
+
 MAX_ROUNDS = 3
+
+_STOPWORDS = frozenset({"or", "and", "the", "a", "an", "of", "for", "with", "in", "is", "are", "has", "no", "not"})
+
+
+def _key_words(s: str) -> frozenset:
+    tokens = re.sub(r"[^\w\s]", "", s.lower()).split()
+    return frozenset(t.rstrip("s") for t in tokens if t not in _STOPWORDS)
+
+
+def _dedup_questions(questions: list) -> list:
+    """Drop longer questions whose key concepts are fully covered by a shorter one."""
+    keep = []
+    for i, q in enumerate(questions):
+        q_kw = _key_words(q)
+        redundant = any(
+            i != j
+            and _key_words(questions[j]) <= q_kw
+            and len(questions[j]) < len(q)
+            for j in range(len(questions))
+        )
+        if not redundant:
+            keep.append(q)
+    return keep
 
 
 def is_ambiguous(result: dict) -> bool:
@@ -88,7 +113,7 @@ def get_discriminating_questions(result: dict) -> list:
 
     all_missing = set().union(*missing_per_candidate)
     shared = set.intersection(*missing_per_candidate)
-    discriminating = sorted(all_missing - shared)
+    discriminating = _dedup_questions(sorted(all_missing - shared))
 
     return discriminating
 

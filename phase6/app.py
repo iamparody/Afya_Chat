@@ -3,6 +3,7 @@ CDS Streamlit MVP — Phase 6.
 Run from cds/ root: streamlit run phase6/app.py
 """
 
+import re
 import sys
 import logging
 import uuid
@@ -59,10 +60,10 @@ _ICD = {
     "community-acquired pneumonia":       ("CA40",  "J18"),
     "urinary tract infection":            ("GC08",  "N39.0"),
     "iron deficiency anaemia":            ("3A00",  "D50"),
-    "peptic ulcer disease":               ("DA60",  "K27"),
+    "peptic ulcer disease":               ("DA62",  "K27"),
     "acute gastroenteritis (infectious)": ("1A09",  "A09"),
     "typhoid fever":                      ("1A07",  "A01.0"),
-    "functional dyspepsia":               ("DA82",  "K30"),
+    "functional dyspepsia":               ("DA94",  "K30"),
     "gastro-oesophageal reflux disease":  ("DA22",  "K21"),
     "asthma":                             ("CA23",  "J45"),
     "dengue fever":                       ("1D2Z",  "A90"),
@@ -188,6 +189,7 @@ def _render_presentation_collapsed(text: str):
 
 def _render_red_flags(result: dict):
     flags = result.get("red_flags", [])
+    flags = [f for f in flags if not re.match(r"documented\s*[—\-]+\s*none", f, re.IGNORECASE)]
     if not flags:
         return
     items_html = ""
