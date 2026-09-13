@@ -507,6 +507,29 @@ See Phase 8 section above.
 ### Phase 8b — Reasoning Evaluation Harness ✅ Done (2026-09-10)
 See Phase 8b section above.
 
+### Corpus Pipeline Experiment — yaml-as-canonical (parallel, isolated) 🔴 Not started
+> Parallel experiment only. Existing Markdown pipeline untouched until all 4 acceptance criteria pass.
+> Full spec: see memory/project_corpus_pipeline_experiment.md
+
+**Build order:**
+- [ ] `corpus_pipeline/schema.py` — Pydantic models for `condition.yaml` (all frontmatter fields, 9 sections, graph block, environmental signals)
+- [ ] Migrate 2–3 cards to `condition.yaml` (malaria, pulmonary_tb, pneumonia)
+- [ ] `corpus_pipeline/validator.py` — pre-review automated checks (vocabulary, ICD format, section completeness, graph terms, cross-card consistency)
+- [ ] `corpus_pipeline/ingest_yaml.py` — reads `condition.yaml` → identical `chunks.jsonl` + `graph_entities.jsonl`
+- [ ] `corpus_pipeline/markdown_gen.py` — pure template rendering: `condition.yaml` → `.md` (no inference or logic)
+- [ ] `corpus_pipeline/diff.py` — artifact diff: existing `.md` vs generated `.md`; flags missing content, polarity changes, silent omissions
+- [ ] Equivalence gate: run `make eval` / `make eval-disam` / `make eval-reasoning` against yaml pipeline output
+
+**Acceptance criteria (all 4 must pass before any migration decision):**
+- [ ] YAML represents existing cards without clinical content loss — verified by `diff.py`
+- [ ] Method A/B produce cleaner validated drafts than current Markdown authoring
+- [ ] New front-end produces equivalent Chroma + Neo4j retrieval artifacts — verified at candidate level, not aggregate score only
+- [ ] Existing eval gates hold: 8/8 RAG · 4/5 disambiguation · 90% reasoning
+
+**Excluded from this experiment:** WHO APIs, PostgreSQL, SNOMED CT, separate ingestion service, agentic authoring layer, PrimeKG mapper (separate task).
+
+---
+
 ### Phase 9 — Live Rainfall Provider 🟡 Partial
 
 - [x] `phase7/rainfall_providers.py` — `RainfallProvider` protocol, `OpenMeteoProvider` (ERA5-Land via Open-Meteo Historical API), `RainfallFeatures` frozen dataclass
