@@ -243,6 +243,7 @@ Independently (Phase 9 MVP):
 - 2026-09-09: 8/8 after Phase 7d environmental context integration
 - 2026-09-14: 8/8 after router seam refactor (RetrievalRouter in rag.py, behaviourally equivalent)
 - 2026-09-14: 8/8 after presentation map integration (PresentationMapClassifier, 9 pathways, provenance labels)
+- 2026-09-14: 8/8 after comorbidity context engine (comorbidity_engine.py wired; Fixture A pregnancy alert confirmed)
 
 ---
 
@@ -576,7 +577,7 @@ See Phase 8b section above.
 - [x] 3. Neo4j pairwise-discrimination schema — DIFFERENTIATED_FROM relationship + indexes; afi_pairs.yaml (source of truth); pairwise_loader.py; all 17 pairs dry-run validated (2026-09-14)
 - [x] 4. Section 4 pairwise matrix (domain contract) — 17 pairs complete (2026-09-14): 3 mandatory safety + 14 required; 5 pending governance decisions
 - [x] 5. Graph relationship schema migration — ASSOCIATED_WITH / COMPLICATED_BY / REQUIRES_CONTEXT; neo4j/migrations/003_comorbidity_schema.cypher; :ClinicalContext node (constraint + label index); 6 relationship property indexes (2026-09-14)
-- [ ] 6. Comorbidity context engine — phase7/comorbidity_engine.py; same 3-layer pattern as get_environmental_evidence(); injected via build_context(); base ICD preserved, alert note added
+- [x] 6. Comorbidity context engine — `phase7/comorbidity_engine.py`; `ComorbidityAlert` dataclass; `get_comorbidity_alerts()` reads YAML-pipeline output (schema 2.2); injected via `build_context()` as `## Comorbidity and clinical context alerts`; Fixture A verified: Malaria `missing_information` now includes pregnancy status (2026-09-14, 8/8 eval preserved)
 - [ ] Future components (BM25, cross-encoder reranker, query expansion) — added only when a measured retrieval failure justifies them; corpus size alone is not a trigger
 
 **Target retrieval stack:**
