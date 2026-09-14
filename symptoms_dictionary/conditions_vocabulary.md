@@ -77,3 +77,7 @@
 | bladder stone | vesical calculus |
 | overactive bladder syndrome | OAB |
 | prostatitis | |
+| cholera | Vibrio cholerae infection |
+| brucellosis | undulant fever, Brucella infection |
+| rickettsial illness | spotted fever, rickettsia infection, tick typhus |
+| acute gastroenteritis | gastroenteritis, non-specific gastroenteritis, AGE |
