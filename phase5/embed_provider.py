@@ -6,7 +6,8 @@ Each provider implements:
   embed_document(text) -> list[float]  — for indexing (task-type aware)
 and exposes a COLLECTION class attribute naming its Chroma collection.
 
-rag.py accepts an optional embedder; defaults to GoogleEmbedder.
+Active backends: CohereEmbedder (primary), GoogleEmbedder (alternative).
+rag.py accepts an optional embedder; defaults to CohereEmbedder.
 chroma_loader.py uses embed_document() for corpus indexing.
 """
 
@@ -74,19 +75,3 @@ class CohereEmbedder:
             )
             all_embeddings.extend(result.embeddings)
         return all_embeddings
-
-
-class PubMedBertEmbedder:
-    COLLECTION = "cds_conditions_pubmedbert"
-    _MODEL_NAME = "pritamdeka/S-PubMedBert-MS-MARCO"
-
-    def __init__(self):
-        from sentence_transformers import SentenceTransformer
-        self._model = SentenceTransformer(self._MODEL_NAME)
-
-    def embed_query(self, text: str) -> list:
-        return self._model.encode(text).tolist()
-
-    def embed_document(self, text: str) -> list:
-        # Sentence transformers are symmetric — same encoding for docs and queries
-        return self._model.encode(text).tolist()

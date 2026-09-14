@@ -5,9 +5,8 @@ Reads chunks.jsonl, embeds each chunk via the selected backend,
 upserts into a local Chroma collection. Idempotent — safe to re-run.
 
 Run from the cds/ directory:
-    python chroma/chroma_loader.py                   # Google (default)
-    python chroma/chroma_loader.py --backend cohere
-    python chroma/chroma_loader.py --backend pubmedbert
+    python chroma/chroma_loader.py                   # Cohere (default)
+    python chroma/chroma_loader.py --backend google
 """
 
 import argparse
@@ -35,7 +34,7 @@ def load_chunks():
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--backend", default="cohere", choices=["google", "cohere", "pubmedbert"],
+        "--backend", default="cohere", choices=["google", "cohere"],
         help="Embedding backend (default: cohere)",
     )
     args = parser.parse_args()
@@ -43,17 +42,14 @@ def main():
     if not CHUNKS_JSONL.exists():
         raise SystemExit("Run ingest.py first — chunks.jsonl not found")
 
-    from embed_provider import GoogleEmbedder, CohereEmbedder, PubMedBertEmbedder
+    from embed_provider import GoogleEmbedder, CohereEmbedder
 
     if args.backend == "google":
         print("Backend: Google gemini-embedding-001")
         embedder = GoogleEmbedder()
-    elif args.backend == "cohere":
+    else:
         print("Backend: Cohere embed-multilingual-v3.0")
         embedder = CohereEmbedder()
-    else:
-        print(f"Backend: PubMedBERT ({PubMedBertEmbedder._MODEL_NAME})")
-        embedder = PubMedBertEmbedder()
 
     chunks = load_chunks()
     print(f"Chunks to embed: {len(chunks)}")

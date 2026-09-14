@@ -2,13 +2,12 @@
 Phase 5 evaluation harness.
 
 Runs all 8 contract cases through rag.run(), scores each against
-chroma/evaluation_contract.md criteria.
+docs/evaluation_contract.md criteria.
 
 Usage:
     python phase5/evaluate.py                    # all cases, dense-only (Cohere baseline)
-    python phase5/evaluate.py --hybrid           # all cases, BM25 + dense RRF
     python phase5/evaluate.py 2a                 # single case
-    python phase5/evaluate.py --hybrid 2a 2b     # specific cases, hybrid mode
+    python phase5/evaluate.py 2a 4b              # specific cases
 """
 
 import json
@@ -403,7 +402,7 @@ def print_paired(comp: dict):
 
 # ── Runner ────────────────────────────────────────────────────────────────────
 
-def run_all(case_ids=None, embedder=None, hybrid=False):
+def run_all(case_ids=None, embedder=None):
     cases_to_run = CASES
     if case_ids:
         cases_to_run = [c for c in CASES if c["id"] in case_ids]
@@ -414,7 +413,7 @@ def run_all(case_ids=None, embedder=None, hybrid=False):
     for case in cases_to_run:
         print(f"\nRunning Case {case['id']}: {case['label']} ...", flush=True)
         try:
-            result = rag.run(case["presentation"], embedder=embedder, hybrid=hybrid)
+            result = rag.run(case["presentation"], embedder=embedder)
             scored = score(case, result)
             results_by_id[case["id"]] = result
             scored_list.append(scored)
@@ -463,12 +462,8 @@ if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--backend", default="cohere", choices=["google", "cohere", "pubmedbert"],
+        "--backend", default="cohere", choices=["google", "cohere"],
         help="Embedding backend to use (default: cohere)",
-    )
-    parser.add_argument(
-        "--hybrid", action="store_true",
-        help="Use BM25 + dense vector RRF for candidate selection (default: dense-only)",
     )
     parser.add_argument("cases", nargs="*", help="Optional case IDs to run (e.g. 2a 4b)")
     args = parser.parse_args()
@@ -478,18 +473,10 @@ if __name__ == "__main__":
         from embed_provider import GoogleEmbedder
         embedder = GoogleEmbedder()
         print(f"Using collection: {embedder.COLLECTION}\n")
-    elif args.backend == "pubmedbert":
-        from embed_provider import PubMedBertEmbedder
-        print("Loading PubMedBERT model...")
-        embedder = PubMedBertEmbedder()
-        print(f"Model loaded. Using collection: {embedder.COLLECTION}\n")
 
-    if args.hybrid:
-        print("Retrieval mode: BM25 + dense vector RRF\n")
-    else:
-        print(f"Retrieval mode: dense-only ({args.backend})\n")
+    print(f"Retrieval mode: dense-only ({args.backend})\n")
 
-    scored = run_all(args.cases or None, embedder=embedder, hybrid=args.hybrid)
+    scored = run_all(args.cases or None, embedder=embedder)
 
     # Hard gate — only enforced on full suite runs; single-case runs are exempt
     if not args.cases:
