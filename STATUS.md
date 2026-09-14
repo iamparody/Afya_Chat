@@ -383,25 +383,25 @@ COPD, Heart failure, HIV/AIDS, Sickle cell, PID, Malaria in pregnancy, Meningoco
 
 | Card | ICD-11 | Category | Review Status | Reviewer | Last Reviewed |
 |------|--------|----------|--------------|----------|---------------|
-| [[type_2_diabetes]] | 5A11 | Endocrine/Metabolic | 🟡 draft | — | — |
-| [[hypertension]] | BA00 | Cardiovascular | 🟡 draft | — | — |
-| [[obesity]] | 5B81 | Metabolic | 🟡 draft | — | — |
-| [[malaria]] | 1F40 | Infectious | 🟡 draft | — | — |
-| [[pulmonary_tb]] | 1B10 | Infectious/Respiratory | 🟡 draft | — | — |
-| [[pneumonia]] | CA40 | Respiratory/Infectious | 🟡 draft | — | — |
-| [[uti]] | GC08 | Urogenital/Infectious | 🟡 draft | — | — |
-| [[anaemia]] | 3A00 | Haematological | 🟡 draft | — | — |
-| [[peptic_ulcer_disease]] | DA62 | Gastroenterological | 🟡 draft | — | — |
-| [[acute_gastroenteritis]] | 1A09 | Gastroenterological/Infectious | 🟡 draft | — | — |
-| [[typhoid_fever]] | 1A07 | Infectious | 🟡 draft | — | — |
-| [[functional_dyspepsia]] | DA94 | Gastroenterological | 🟡 draft | — | — |
-| [[gerd]] | DA22 | Gastroenterological | 🟡 draft | — | — |
-| [[asthma]] | CA23 | Respiratory | 🟡 draft | — | — |
-| [[dengue_fever]] | 1D2Z | Infectious | 🟡 draft | — | — |
+| [[type_2_diabetes]] | 5A11 | Endocrine/Metabolic | ✅ clinician_verified | Colleague | 2026-09-14 |
+| [[hypertension]] | BA00 | Cardiovascular | ✅ clinician_verified | Colleague | 2026-09-14 |
+| [[obesity]] | 5B81 | Metabolic | ✅ clinician_verified | Colleague | 2026-09-14 |
+| [[malaria]] | 1F40 | Infectious | ✅ clinician_verified | Colleague | 2026-09-14 |
+| [[pulmonary_tb]] | 1B10 | Infectious/Respiratory | ✅ clinician_verified | Colleague | 2026-09-14 |
+| [[pneumonia]] | CA40 | Respiratory/Infectious | ✅ clinician_verified | Colleague | 2026-09-14 |
+| [[uti]] | GC08 | Urogenital/Infectious | ✅ clinician_verified | Colleague | 2026-09-14 |
+| [[anaemia]] | 3A00 | Haematological | ✅ clinician_verified | Colleague | 2026-09-14 |
+| [[peptic_ulcer_disease]] | DA62 | Gastroenterological | ✅ clinician_verified | Colleague | 2026-09-14 |
+| [[acute_gastroenteritis]] | 1A09 | Gastroenterological/Infectious | ✅ clinician_verified | Colleague | 2026-09-14 |
+| [[typhoid_fever]] | 1A07 | Infectious | ✅ clinician_verified | Colleague | 2026-09-14 |
+| [[functional_dyspepsia]] | DA94 | Gastroenterological | ✅ clinician_verified | Colleague | 2026-09-14 |
+| [[gerd]] | DA22 | Gastroenterological | ✅ clinician_verified | Colleague | 2026-09-14 |
+| [[asthma]] | CA23 | Respiratory | ✅ clinician_verified | Colleague | 2026-09-14 |
+| [[dengue_fever]] | 1D2Z | Infectious | ✅ clinician_verified | Colleague | 2026-09-14 |
 
 **Legend:** 🟡 draft · 🔵 under_review · ✅ clinician_verified
 
-**Production gate:** 0 / 15 cards verified. Dev work proceeds freely on draft cards.
+**Production gate:** 15 / 15 cards clinician_verified (2026-09-14). Outstanding: ICD code verification for comorbidity-specific codes (e.g. Malaria in pregnancy combinations) — flagged by reviewer; resolve before production ingest.
 
 ---
 
@@ -414,7 +414,7 @@ COPD, Heart failure, HIV/AIDS, Sickle cell, PID, Malaria in pregnancy, Meningoco
 - [x] Machine-readable index created ([[index]])
 - [x] `graph:` blocks added to all 10 cards (7 relationship keys per card)
 - [x] [[symptom_vocabulary]] created — canonical term list, synonym blacklist
-- [ ] Clinician review — all 10 cards (production gate, not a dev blocker)
+- [x] Clinician review — all 15 cards ✅ (2026-09-14); outstanding: ICD code verification for comorbidity-specific codes flagged by reviewer
 - [ ] Corpus v2 expansion (asthma, COPD, heart failure, HIV, typhoid, sickle cell, STIs, pregnancy)
 
 ### Phase 2 — Graph Extraction + Normalization ✅
