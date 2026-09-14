@@ -5,6 +5,9 @@ graph_entities.jsonl
 graph_inspect.txt
 chroma/db/
 
+# Corpus pipeline generated artifacts — not source-controlled
+corpus_pipeline/output/
+
 # Secrets
 .env
 Neo4j-*.txt

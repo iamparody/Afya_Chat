@@ -507,17 +507,19 @@ See Phase 8 section above.
 ### Phase 8b — Reasoning Evaluation Harness ✅ Done (2026-09-10)
 See Phase 8b section above.
 
-### Corpus Pipeline Experiment — yaml-as-canonical (parallel, isolated) 🟡 Gates 1/3/4 PASS — Gate 2 deferred
+### Corpus Pipeline Experiment — yaml-as-canonical (parallel, isolated) 🟡 Gates 1/3/4 PASS — Gate 2 deferred — Batch 2 migrated (8/15)
 > Parallel experiment only. Existing Markdown pipeline untouched until all 4 acceptance criteria pass.
 > Full spec: see memory/project_corpus_pipeline_experiment.md
 
 **Build order:**
 - [x] `corpus_pipeline/schema.py` — Pydantic models for `condition.yaml` (all frontmatter fields, 9 sections, graph block, environmental signals) ✅ 6c4735c
 - [x] Migrate 2–3 cards to `condition.yaml` (malaria, pulmonary_tb, pneumonia) ✅ 6c4735c — finding: existing cards had `category: infectious / respiratory` (invalid vocab); schema caught it; fixed to single primary category
-- [x] `corpus_pipeline/validator.py` — pre-review automated checks (vocabulary, ICD format, section completeness, graph terms, cross-card consistency) ✅ — 0 errors, 7 warnings across 3 cards; all warnings are real compound argues_against terms in migrated cards
-- [x] `corpus_pipeline/ingest_yaml.py` — reads `condition.yaml` → identical `chunks.jsonl` + `graph_entities.jsonl` ✅ — 27 chunks, 3 graph records, 0 unknown terms; outputs to corpus_pipeline/output/
-- [x] `corpus_pipeline/markdown_gen.py` — pure template rendering: `condition.yaml` → `.md` (no inference or logic) ✅ — 3/3 generated; known omission: intro paragraph not in schema, diff.py will flag
+- [x] `corpus_pipeline/schema.py` — hedging vocabulary expanded (2026-09-14): "suggests", "argues", "some", "most", "common", "should", "considered" added; fixes false positives for legitimate clinical probability language; schema regression PASS (0 errors across 8 YAML cards after fix)
+- [x] `corpus_pipeline/validator.py` — pre-review automated checks (vocabulary, ICD format, section completeness, graph terms, cross-card consistency) ✅ — 0 errors, 12 warnings across 8 cards; all warnings are pre-existing compound graph terms from source Markdown cards
+- [x] `corpus_pipeline/ingest_yaml.py` — reads `condition.yaml` → identical `chunks.jsonl` + `graph_entities.jsonl` ✅ — 72 chunks, 8 graph records, 0 unknown terms; outputs to corpus_pipeline/output/
+- [x] `corpus_pipeline/markdown_gen.py` — pure template rendering: `condition.yaml` → `.md` (no inference or logic) ✅ — 8/8 generated; known omission: intro paragraph not in schema, diff.py will flag
 - [x] `corpus_pipeline/diff.py` — artifact diff: existing `.md` vs generated `.md`; flags missing content, polarity changes, silent omissions ✅ — Gate 1 PASS: 0 unexpected clinical differences; 8 accepted normalizations (symbol→words) in `accepted_diffs.json`; exact-hash matching + stale fixture detection
+- [x] **Batch 2 migration (2026-09-14):** asthma, dengue_fever, type_2_diabetes, acute_gastroenteritis, hypertension — Gate 1 PASS (0 unexpected, 0 stale); Gate 3 PASS (0 prose diffs → trivially equivalent); category corrections: `endocrine / metabolic` → `endocrine`, `gastroenterological / infectious` → `gastroenterological` (invalid vocab, flagged CORRECTED not DIFFERS)
 - [x] Equivalence gate: run `make eval` / `make eval-disam` / `make eval-reasoning` against yaml pipeline output ✅ — Gate 4 PASS (2026-09-14)
 
 **Acceptance criteria (all 4 must pass before any migration decision):**
@@ -537,7 +539,9 @@ See Phase 8b section above.
 
 **Final record (2026-09-14):** Gates 1, 3, and 4 PASS. Gate 2 CONDITIONALLY PASS. YAML migration and technical authoring are validated; clinician-led new-card authoring remains the sole unvalidated workflow component. Broader corpus equivalence to be established through batch migration and validation.
 
-**Next:** proceed to batch migration; run Gate 1 + Gate 3 automated checks per batch; Gate 4 after each batch of 3–5 cards; Gate 2 closure test at first genuinely new card authored from a source document.
+**Batch migration progress:** 8/15 cards in YAML (malaria, pulmonary_tb, pneumonia, asthma, dengue_fever, type_2_diabetes, acute_gastroenteritis, hypertension). 7 remaining: obesity, uti, anaemia, peptic_ulcer_disease, gerd, functional_dyspepsia, typhoid_fever.
+
+**Next:** Gate 2 closure test — author Cholera as first genuinely new card from WHO/MOH PDF (Method A); measure validator friction, time to first valid draft, author effort. Then migrate remaining 7 cards.
 
 **Excluded from this experiment:** WHO APIs, PostgreSQL, SNOMED CT, separate ingestion service, agentic authoring layer, PrimeKG mapper (separate task).
 

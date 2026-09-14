@@ -240,6 +240,9 @@ class ClinicalSections(BaseModel):
             "typical_presentation", "differential_diagnoses", "argues_against",
         }
         hedging = {"may", "usually", "commonly", "often", "typically", "can", "suggest",
+                   "suggests", "suggested", "argues", "argue", "weakens", "weaken",
+                   "some", "most", "frequently", "rarely", "common",
+                   "should", "characteristically", "consistent", "considered",
                    "likely", "unlikely", "possible", "probable", "reduces", "cannot"}
         for key in probability_sections:
             val = getattr(self, key, "")
