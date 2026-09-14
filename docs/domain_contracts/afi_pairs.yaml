@@ -1,0 +1,479 @@
+# AFI Domain — Pairwise Disambiguation Pairs
+# Source of truth: docs/domain_contracts/acute_febrile_illness.md §4
+#
+# Pathways are derived from §3 presentation matrix — do not curate independently.
+# Condition names must match the `condition:` frontmatter field of the corpus card exactly.
+# Terms in shared_features, discriminating_evidence, red_flags must exist in
+# symptoms_dictionary/symptom_vocabulary.md before use.
+#
+# governance_pending: true  → source decision required before card authoring (§2.5)
+#                             evaluation fixtures for this pair cannot be authored yet
+# cross_domain: true        → one or both conditions are owned by another domain
+
+pairs:
+
+  # ── Mandatory safety pairs ──────────────────────────────────────────────────
+
+  - pair_id: MSP-01
+    priority: mandatory_safety
+    condition_a: "Malaria (unspecified)"
+    condition_b: "Meningitis (bacterial)"
+    pathways: [P2, P1]
+    governance_pending: false
+    cross_domain: false
+    shared_features:
+      - fever
+      - altered consciousness
+      - headache
+      - seizures
+    discriminating_evidence:
+      - positive malaria RDT
+      - neck stiffness
+      - purpura non-blanching
+      - turbid CSF
+    missing_information:
+      - malaria RDT result
+      - neck stiffness on examination
+      - photophobia
+      - rash presence and character
+      - GCS and trend
+    red_flags:
+      - altered consciousness
+      - purpura non-blanching
+      - papilloedema
+      - respiratory distress
+
+  - pair_id: MSP-02
+    priority: mandatory_safety
+    condition_a: "Meningitis (bacterial)"
+    condition_b: "Dengue fever"
+    pathways: [P5, P2]
+    governance_pending: false
+    cross_domain: false
+    shared_features:
+      - fever
+      - petechiae
+      - headache
+      - vomiting
+    discriminating_evidence:
+      - neck stiffness
+      - positive tourniquet test
+      - thrombocytopenia
+    missing_information:
+      - rash spread rate and blanching
+      - neck stiffness on examination
+      - tourniquet test result
+      - platelet count
+    red_flags:
+      - purpura non-blanching
+      - plasma leakage
+      - severe bleeding
+      - altered consciousness
+
+  - pair_id: MSP-03
+    priority: mandatory_safety
+    condition_a: Cholera
+    condition_b: "Acute gastroenteritis (infectious)"
+    pathways: [P8]
+    governance_pending: false
+    cross_domain: false
+    shared_features:
+      - diarrhoea
+      - vomiting
+      - dehydration
+      - abdominal cramps
+    discriminating_evidence:
+      - complete absence of fever
+    missing_information:
+      - stool character and appearance
+      - fever presence and degree
+      - outbreak context
+      - geographic and sanitation context
+    red_flags:
+      - severe dehydration
+      - hypotension
+      - altered consciousness
+
+  # ── Required pairs ───────────────────────────────────────────────────────────
+
+  - pair_id: RP-01
+    priority: required
+    condition_a: "Malaria (unspecified)"
+    condition_b: "Dengue fever"
+    pathways: [P1, P6]
+    governance_pending: false
+    cross_domain: false
+    shared_features:
+      - fever
+      - myalgia
+      - arthralgia
+      - headache
+    discriminating_evidence:
+      - positive malaria RDT
+      - retro-orbital headache
+      - maculopapular rash
+      - positive tourniquet test
+    missing_information:
+      - malaria RDT result
+      - retro-orbital pain
+      - rash onset and character
+      - geographic exposure
+      - tourniquet test result
+    red_flags:
+      - plasma leakage
+      - prostration
+      - altered consciousness
+      - severe bleeding
+
+  - pair_id: RP-02
+    priority: required
+    condition_a: "Malaria (unspecified)"
+    condition_b: "Typhoid fever"
+    pathways: [P1, P4, P9]
+    governance_pending: false
+    cross_domain: false
+    shared_features:
+      - fever
+      - headache
+      - malaise
+      - nausea
+      - vomiting
+    discriminating_evidence:
+      - positive malaria RDT
+      - relative bradycardia
+      - rose spots
+      - constipation
+      - splenomegaly
+    missing_information:
+      - malaria RDT result
+      - fever onset pattern
+      - bowel habit
+      - pulse-temperature dissociation
+      - blood culture result
+    red_flags:
+      - intestinal perforation
+      - peritonism
+      - altered consciousness
+      - prostration
+
+  - pair_id: RP-03
+    priority: required
+    condition_a: "Dengue fever"
+    condition_b: Chikungunya
+    pathways: [P1, P5, P6]
+    governance_pending: false
+    cross_domain: false
+    shared_features:
+      - fever
+      - maculopapular rash
+      - arthralgia
+      - myalgia
+    discriminating_evidence:
+      - severe myalgia
+      - retro-orbital headache
+      - plasma leakage
+      - positive tourniquet test
+      - thrombocytopenia
+    missing_information:
+      - arthralgia severity versus myalgia severity
+      - haemorrhagic features
+      - tourniquet test result
+      - retro-orbital pain
+    red_flags:
+      - plasma leakage
+      - severe bleeding
+      - dehydration
+
+  - pair_id: RP-04
+    priority: required
+    condition_a: "Typhoid fever"
+    condition_b: Cholera
+    pathways: [P4, P8]
+    governance_pending: false
+    cross_domain: false
+    shared_features:
+      - fever
+      - diarrhoea
+      - vomiting
+      - abdominal pain
+    discriminating_evidence:
+      - relative bradycardia
+      - complete absence of fever
+      - severe dehydration
+    missing_information:
+      - stool character and volume
+      - fever degree and pattern
+      - onset timing
+      - dehydration severity
+    red_flags:
+      - severe dehydration
+      - intestinal perforation
+      - peritonism
+      - hypotension
+
+  - pair_id: RP-05
+    priority: required
+    condition_a: "Malaria (unspecified)"
+    condition_b: Leptospirosis
+    pathways: [P7, P6]
+    governance_pending: true
+    cross_domain: false
+    shared_features:
+      - fever
+      - myalgia
+      - headache
+      - jaundice
+    discriminating_evidence:
+      - positive malaria RDT
+      - calf muscle tenderness
+      - conjunctival suffusion
+      - haematuria
+    missing_information:
+      - malaria RDT result
+      - calf muscle tenderness on examination
+      - conjunctival appearance
+      - renal function indicators
+      - floodwater or livestock exposure history
+    red_flags:
+      - rapidly deteriorating renal function
+      - altered consciousness
+      - haemoglobinuria
+
+  - pair_id: RP-06
+    priority: required
+    condition_a: "Malaria (unspecified)"
+    condition_b: "Rickettsial illness"
+    pathways: [P1, P2]
+    governance_pending: true
+    cross_domain: false
+    shared_features:
+      - fever
+      - headache
+      - myalgia
+      - malaise
+    discriminating_evidence:
+      - positive malaria RDT
+      - eschar
+      - maculopapular rash
+      - tick exposure
+    missing_information:
+      - malaria RDT result
+      - eschar on full skin examination
+      - tick exposure history
+      - rash presence and timing
+    red_flags:
+      - altered consciousness
+      - prostration
+
+  - pair_id: RP-07
+    priority: required
+    condition_a: "Dengue fever"
+    condition_b: "Rickettsial illness"
+    pathways: [P5]
+    governance_pending: true
+    cross_domain: false
+    shared_features:
+      - fever
+      - maculopapular rash
+      - headache
+      - myalgia
+    discriminating_evidence:
+      - eschar
+      - positive tourniquet test
+      - thrombocytopenia
+      - tick exposure
+    missing_information:
+      - eschar on full skin examination
+      - tick exposure history
+      - tourniquet test result
+      - rash character and distribution
+    red_flags:
+      - plasma leakage
+      - severe bleeding
+      - altered consciousness
+
+  - pair_id: RP-08
+    priority: required
+    condition_a: Chikungunya
+    condition_b: Brucellosis
+    pathways: [P6, P9]
+    governance_pending: true
+    cross_domain: false
+    shared_features:
+      - fever
+      - arthralgia
+    discriminating_evidence:
+      - maculopapular rash
+      - livestock exposure
+    missing_information:
+      - joint distribution (small vs large joints)
+      - livestock or raw milk exposure history
+      - fever pattern over time
+      - rash during febrile phase
+    red_flags:
+      - dehydration
+
+  - pair_id: RP-09
+    priority: required
+    condition_a: "Typhoid fever"
+    condition_b: Brucellosis
+    pathways: [P9]
+    governance_pending: true
+    cross_domain: false
+    shared_features:
+      - fever
+      - malaise
+      - splenomegaly
+      - hepatomegaly
+    discriminating_evidence:
+      - relative bradycardia
+      - rose spots
+      - positive blood culture
+      - livestock exposure
+    missing_information:
+      - fever pattern (stepwise vs relapsing)
+      - livestock or raw milk exposure history
+      - blood culture result
+      - bowel pattern
+    red_flags:
+      - intestinal perforation
+      - peritonism
+
+  - pair_id: RP-10
+    priority: required
+    condition_a: "Malaria (unspecified)"
+    condition_b: "Community-acquired pneumonia"
+    pathways: [P3]
+    governance_pending: false
+    cross_domain: true
+    shared_features:
+      - fever
+      - dry cough
+    discriminating_evidence:
+      - positive malaria RDT
+      - crackles
+      - bronchial breathing
+      - purulent sputum
+    missing_information:
+      - malaria RDT result
+      - respiratory examination findings
+      - sputum character
+      - oxygen saturation
+    red_flags:
+      - multilobar consolidation
+      - hypotension
+      - respiratory distress
+
+  - pair_id: RP-11
+    priority: required
+    condition_a: "Dengue fever"
+    condition_b: "Typhoid fever"
+    pathways: [P4]
+    governance_pending: false
+    cross_domain: false
+    shared_features:
+      - fever
+      - nausea
+      - vomiting
+      - abdominal pain
+    discriminating_evidence:
+      - plasma leakage
+      - relative bradycardia
+      - maculopapular rash
+      - thrombocytopenia
+    missing_information:
+      - fever onset timeline
+      - abdominal pain severity and progression
+      - haemorrhagic features
+      - pulse-temperature dissociation
+    red_flags:
+      - plasma leakage
+      - intestinal perforation
+      - peritonism
+
+  - pair_id: RP-12
+    priority: required
+    condition_a: Leptospirosis
+    condition_b: "Dengue fever"
+    pathways: [P6, P7]
+    governance_pending: true
+    cross_domain: false
+    shared_features:
+      - fever
+      - myalgia
+      - headache
+      - malaise
+    discriminating_evidence:
+      - calf muscle tenderness
+      - conjunctival suffusion
+      - retro-orbital headache
+      - positive tourniquet test
+      - haematuria
+    missing_information:
+      - calf muscle tenderness on examination
+      - retro-orbital pain
+      - tourniquet test result
+      - renal function indicators
+      - floodwater or livestock exposure history
+    red_flags:
+      - rapidly deteriorating renal function
+      - plasma leakage
+      - severe bleeding
+
+  - pair_id: RP-13
+    priority: required
+    condition_a: "Pulmonary tuberculosis"
+    condition_b: "Community-acquired pneumonia"
+    pathways: [P3, P9]
+    governance_pending: false
+    cross_domain: true
+    shared_features:
+      - fever
+      - productive cough
+      - dyspnoea
+    discriminating_evidence:
+      - productive cough ≥2 weeks
+      - night sweats
+      - weight loss
+      - haemoptysis
+      - positive GeneXpert MTB/RIF
+      - positive AFB smear
+    missing_information:
+      - cough duration
+      - weight loss
+      - night sweats
+      - haemoptysis
+      - HIV infection status
+      - TB contact history
+    red_flags:
+      - unintentional weight loss
+      - miliary TB
+      - MDR-TB features
+      - multilobar consolidation
+
+  - pair_id: RP-14
+    priority: required
+    condition_a: "Typhoid fever"
+    condition_b: "Acute gastroenteritis (infectious)"
+    pathways: [P4]
+    governance_pending: false
+    cross_domain: true
+    shared_features:
+      - fever
+      - diarrhoea
+      - vomiting
+      - abdominal pain
+    discriminating_evidence:
+      - relative bradycardia
+      - rose spots
+      - positive blood culture
+      - constipation
+    missing_information:
+      - fever duration and pattern
+      - onset timing relative to food exposure
+      - bowel pattern in early illness
+      - fever severity
+    red_flags:
+      - intestinal perforation
+      - peritonism
+      - diarrhoea beyond 14 days

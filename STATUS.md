@@ -571,7 +571,7 @@ See Phase 8b section above.
 **Build sequence:**
 - [ ] 1. Router seam refactor — `rag.py` retrieval abstracted behind `RetrievalRouter`; behaviourally equivalent; eval must hold at 8/8 RAG · 4/5 disam · 94% reasoning
 - [ ] 2. Presentation map integration — boost + provenance labels per candidate (`map-supported` / `retrieval-only` / `map+retrieval`)
-- [ ] 3. Neo4j pairwise-discrimination schema — designed alongside Section 4 of domain contract; enables condition-vs-condition graph queries; 17 pairs in §4.4 define the required edges
+- [x] 3. Neo4j pairwise-discrimination schema — DIFFERENTIATED_FROM relationship + indexes; afi_pairs.yaml (source of truth); pairwise_loader.py; all 17 pairs dry-run validated (2026-09-14)
 - [x] 4. Section 4 pairwise matrix (domain contract) — 17 pairs complete (2026-09-14): 3 mandatory safety + 14 required; 5 pending governance decisions
 - [ ] Future components (BM25, cross-encoder reranker, query expansion) — added only when a measured retrieval failure justifies them; corpus size alone is not a trigger
 

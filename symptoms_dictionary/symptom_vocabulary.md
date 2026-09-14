@@ -113,6 +113,7 @@
 | retro-orbital headache | retro-orbital pain, pain behind eyes |
 | maculopapular rash | dengue rash, erythematous maculopapular rash |
 | severe myalgia | break-bone fever pain, intense muscle pain |
+| photophobia | light sensitivity, light intolerance |
 
 ---
 
@@ -146,6 +147,12 @@
 | coma | unconsciousness |
 | prostration | inability to sit or stand |
 | seizures | convulsions, fits |
+| neck stiffness | nuchal rigidity, meningism |
+| petechiae | petechial haemorrhage, petechial rash |
+| purpura | purpuric rash, purpuric skin lesions |
+| conjunctival suffusion | conjunctival injection without discharge (leptospirosis sign) |
+| calf muscle tenderness | gastrocnemius tenderness, calf tenderness on compression |
+| eschar | inoculation scab, tick bite eschar, inoculation site necrosis |
 
 ---
 
@@ -235,6 +242,9 @@
 | previous TB treatment | prior TB treatment |
 | household contact with smear-positive TB | TB contact |
 | socioeconomic disadvantage | low socioeconomic status |
+| livestock exposure | livestock contact, animal husbandry contact |
+| tick exposure | tick bite, tick habitat exposure, tick contact |
+| floodwater exposure | floodwater contact, flood water exposure |
 | ultra-processed food diet | ultra-processed food intake |
 | urbanisation | urban living |
 | genetic predisposition | genetic susceptibility |
@@ -284,6 +294,7 @@
 | multilobar consolidation | bilateral or multilobar infiltrates |
 | unexplained anaemia | anaemia of unknown cause |
 | septic shock | |
+| purpura non-blanching | non-blanching purpura, meningococcal purpura |
 | high-output cardiac failure | high output heart failure |
 | miliary TB | disseminated TB |
 | MDR-TB features | multidrug-resistant TB features |
