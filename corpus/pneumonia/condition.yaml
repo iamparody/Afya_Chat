@@ -136,9 +136,9 @@ sections:
     Systemic features include fatigue, myalgia, and anorexia. Tachycardia and tachypnoea are
     reliable signs of severity. Examination of the chest may reveal localised dullness to
     percussion, bronchial breathing, and coarse inspiratory crackles over the affected lobe.
-    Reduced oxygen saturation on pulse oximetry is an objective severity marker. In elderly
-    patients, confusion may be the dominant or initial presenting feature even before respiratory
-    symptoms are prominent.
+    Reduced oxygen saturation on pulse oximetry is an objective severity marker. Herpes labialis
+    may accompany pneumococcal pneumonia. In elderly patients, confusion may be the dominant or
+    initial presenting feature even before respiratory symptoms are prominent.
 
   diagnostic_features: |
     Chest X-ray demonstrating new pulmonary infiltrate — consolidation, lobar opacification, or
@@ -195,14 +195,13 @@ sections:
     malaria, or typhoid in endemic settings.
 
   red_flags: |
-    CURB-65 severity scoring: one point each for confusion (new), urea above 7 mmol/L,
-    respiratory rate of 30 breaths/minute or above, blood pressure below 90 mmHg systolic or
-    60 mmHg diastolic or below, age 65 years or above. Score of 3 or above indicates high
-    mortality risk requiring hospital admission with consideration of ICU-level care. Additional
-    red flags: oxygen saturation below 94% on air, bilateral or multi-lobar infiltrates, septic
-    shock, age below 2 months in children. PCP presenting with oxygen saturation below 94% and
-    CD4 below 200 in an HIV-positive patient requires urgent high-dose co-trimoxazole and
-    adjuvant corticosteroids.
+    One point each for: Confusion (new), Urea >7 mmol/L, Respiratory rate ≥30 breaths/minute,
+    Blood pressure <90 mmHg systolic or ≤60 mmHg diastolic, age ≥65 years. Score ≥3 indicates
+    high mortality risk and requires hospital admission with consideration of ICU-level care.
+    Additional red flags: oxygen saturation <94% on air, bilateral or multi-lobar infiltrates,
+    septic shock, age <2 months (in children). PCP presenting with oxygen saturation <94% and
+    CD4 <200 in an HIV-positive patient requires urgent high-dose co-trimoxazole and adjuvant
+    corticosteroids.
 
   diagnostic_context: |
     CAP is primarily a clinical diagnosis. Chest X-ray should be obtained to confirm pneumonic
