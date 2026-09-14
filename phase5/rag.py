@@ -40,15 +40,19 @@ TOP_N_PASSAGES   = 5  # per candidate — wider window to ensure red flag + diag
 
 # ── Retrieval: vector candidate generation ────────────────────────────────────
 
-def get_vector_candidates(embedder, collection, presentation, n=TOP_N_CANDIDATES):
+def get_vector_candidates(embedder, collection, presentation, n=TOP_N_CANDIDATES, query_embedding=None):
     """Unrestricted semantic search → top N unique conditions.
 
     Uses a large n_results pool to ensure n unique conditions are found even
     when a small number of conditions dominate the top-k chunk rankings.
     With 9 chunks per condition, worst-case requires (n-1)*9+1 results to
     guarantee n unique conditions; 500 safely covers any realistic corpus size.
+
+    query_embedding: optional precomputed embedding of `presentation` — pass this
+    when the caller already embedded the same text elsewhere in the same request
+    (see run()), to avoid a redundant Cohere call. Computed here if not supplied.
     """
-    emb = embedder.embed_query(presentation)
+    emb = query_embedding if query_embedding is not None else embedder.embed_query(presentation)
 
     results = collection.query(
         query_embeddings=[emb],
@@ -93,14 +97,17 @@ def count_overlap(presentation_lower, terms):
 
 RED_FLAG_SECTION = "red_flags"  # must match section key from ingest.py
 
-def get_filtered_passages(embedder, collection, presentation, conditions):
+def get_filtered_passages(embedder, collection, presentation, conditions, query_embedding=None):
     """
     Semantic search restricted to the graph's top candidates.
     Red flags section is always retrieved FIRST per condition — positional
     primacy ensures the LLM sees it regardless of presentation similarity.
     Top-N similarity passages follow.
+
+    query_embedding: optional precomputed embedding of `presentation` — see
+    get_vector_candidates(). Computed here if not supplied.
     """
-    emb = embedder.embed_query(presentation)
+    emb = query_embedding if query_embedding is not None else embedder.embed_query(presentation)
 
     passages = []
     for condition in conditions:
@@ -156,7 +163,7 @@ class RetrievalRouter:
         self.embedder   = embedder
         self.collection = collection
 
-    def get_candidates(self, presentation: str, n: int = TOP_N_CANDIDATES) -> list[dict]:
+    def get_candidates(self, presentation: str, n: int = TOP_N_CANDIDATES, query_embedding=None) -> list[dict]:
         """
         Return [{condition, source}, ...].
 
@@ -167,8 +174,13 @@ class RetrievalRouter:
             "retrieval"      — dense vector only
             "map+retrieval"  — present in both map and dense vector
             "map-only"       — map candidate not found by dense vector (has a corpus card)
+
+        query_embedding: optional precomputed embedding of `presentation` — see
+        get_vector_candidates(). Computed here if not supplied.
         """
-        retrieval_conditions = get_vector_candidates(self.embedder, self.collection, presentation, n)
+        retrieval_conditions = get_vector_candidates(
+            self.embedder, self.collection, presentation, n, query_embedding=query_embedding
+        )
         retrieval_set = set(retrieval_conditions)
 
         pathway_ids = _map_classify(presentation)
@@ -295,9 +307,14 @@ def run(
     provider = get_provider()
 
     try:
+        # Embed the presentation once and reuse — get_candidates() and
+        # get_filtered_passages() both need it; embedding it separately in each
+        # was doubling the Cohere embed-call volume for identical input text.
+        query_embedding = embedder.embed_query(presentation)
+
         # Step 1 — Candidate generation: dense vector search via router
         router = RetrievalRouter(embedder, col)
-        router_candidates = router.get_candidates(presentation)
+        router_candidates = router.get_candidates(presentation, query_embedding=query_embedding)
 
         # Step 2 — Graph: symptom profiles + argues_against per candidate
         presentation_lower = presentation.lower()
@@ -321,7 +338,7 @@ def run(
 
         # Step 3 — Vector: prose passages filtered to candidates only
         top_conditions = [c["condition"] for c in candidates]
-        passages = get_filtered_passages(embedder, col, presentation, top_conditions)
+        passages = get_filtered_passages(embedder, col, presentation, top_conditions, query_embedding=query_embedding)
 
         # Step 3b — Environmental context (optional; no-op when no location/signals match)
         _enc = encounter_date or datetime.now()
