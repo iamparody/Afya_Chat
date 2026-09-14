@@ -31,6 +31,7 @@ from phase7.context_engine import ContextResult, get_environmental_evidence
 
 from prompts import SYSTEM_PROMPT, OUTPUT_SCHEMA, build_context
 from providers import get_provider
+from presentation_map import classify as _map_classify, get_map_candidates as _map_get_candidates
 
 CHROMA_DIR       = ROOT / "chroma" / "db"
 TOP_N_CANDIDATES = 9
@@ -156,9 +157,35 @@ class RetrievalRouter:
         self.collection = collection
 
     def get_candidates(self, presentation: str, n: int = TOP_N_CANDIDATES) -> list[dict]:
-        """Return [{condition, source}, ...] ordered by dense retrieval ranking."""
-        conditions = get_vector_candidates(self.embedder, self.collection, presentation, n)
-        return [{"condition": c, "source": "retrieval"} for c in conditions]
+        """
+        Return [{condition, source}, ...].
+
+        Dense retrieval candidates are listed first (preserving vector rank).
+        Map-only candidates are appended at the end.
+
+        source values:
+            "retrieval"      — dense vector only
+            "map+retrieval"  — present in both map and dense vector
+            "map-only"       — map candidate not found by dense vector (has a corpus card)
+        """
+        retrieval_conditions = get_vector_candidates(self.embedder, self.collection, presentation, n)
+        retrieval_set = set(retrieval_conditions)
+
+        pathway_ids = _map_classify(presentation)
+        map_conditions = _map_get_candidates(pathway_ids)
+        map_set = set(map_conditions)
+
+        result: list[dict] = []
+        for c in retrieval_conditions:
+            result.append({
+                "condition": c,
+                "source": "map+retrieval" if c in map_set else "retrieval",
+            })
+        for c in map_conditions:
+            if c not in retrieval_set:
+                result.append({"condition": c, "source": "map-only"})
+
+        return result
 
 
 # ── Validation ────────────────────────────────────────────────────────────────
@@ -316,7 +343,17 @@ def run(
         raw     = provider.generate(SYSTEM_PROMPT, context)
 
         # Step 5 — Validate (fail closed)
-        return validate(raw)
+        result = validate(raw)
+
+        # Step 6 — Enrich output candidates with retrieval provenance
+        # source_map keyed on lowercase condition name; LLM diagnosis field may differ in
+        # capitalisation but wording is generally stable.
+        source_map = {c["condition"].lower(): c["source"] for c in candidates}
+        for cand in result.get("candidates", []):
+            diag_lower = cand.get("diagnosis", "").lower()
+            cand["retrieval_source"] = source_map.get(diag_lower, "unknown")
+
+        return result
 
     finally:
         driver.close()
