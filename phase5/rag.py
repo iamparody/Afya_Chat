@@ -138,6 +138,29 @@ def get_filtered_passages(embedder, collection, presentation, conditions):
     return passages
 
 
+# ── Retrieval: router ─────────────────────────────────────────────────────────
+
+class RetrievalRouter:
+    """
+    Candidate generation seam. Currently: dense-only (Chroma vector search).
+    Returns candidates with provenance labels.
+
+    Provenance values:
+        "retrieval"      — dense vector only (current)
+        "map+retrieval"  — map-confirmed + vector (step 2, presentation map boost)
+        "map"            — map-only, not found by vector (step 2)
+    """
+
+    def __init__(self, embedder, collection):
+        self.embedder   = embedder
+        self.collection = collection
+
+    def get_candidates(self, presentation: str, n: int = TOP_N_CANDIDATES) -> list[dict]:
+        """Return [{condition, source}, ...] ordered by dense retrieval ranking."""
+        conditions = get_vector_candidates(self.embedder, self.collection, presentation, n)
+        return [{"condition": c, "source": "retrieval"} for c in conditions]
+
+
 # ── Validation ────────────────────────────────────────────────────────────────
 
 _CONF_ORDER = {"low": 0, "moderate": 1, "high": 2}
@@ -245,22 +268,25 @@ def run(
     provider = get_provider()
 
     try:
-        # Step 1 — Candidate generation: dense vector search
-        candidate_conditions = get_vector_candidates(embedder, col, presentation)
+        # Step 1 — Candidate generation: dense vector search via router
+        router = RetrievalRouter(embedder, col)
+        router_candidates = router.get_candidates(presentation)
 
         # Step 2 — Graph: symptom profiles + argues_against per candidate
         presentation_lower = presentation.lower()
         candidates = []
 
         with driver.session() as session:
-            for condition in candidate_conditions:
+            for rc in router_candidates:
+                condition = rc["condition"]
                 symptoms, argues_against = get_graph_profile(session, condition)
                 matched = count_overlap(presentation_lower, symptoms)
                 candidates.append({
-                    "condition":       condition,
-                    "matched_count":   len(matched),
+                    "condition":        condition,
+                    "source":           rc["source"],
+                    "matched_count":    len(matched),
                     "matched_symptoms": matched,
-                    "argues_against":  argues_against,
+                    "argues_against":   argues_against,
                 })
 
         # Do not sort by matched_count — vector order is the primary semantic ranking.
