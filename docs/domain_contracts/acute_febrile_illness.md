@@ -365,7 +365,485 @@ Each required pair must specify:
 - expected disambiguation question(s);
 - escalation/referral implication where applicable.
 
-**To be populated** after inventory and presentation map are complete.
+### 4.4 Pair index
+
+All required pairs derived from the Section 3 presentation matrix. Pairs involving conditions with `governance_pending` source status are flagged ⚠ — evaluation fixtures for these pairs cannot be authored until the governance decision in §2.5 is resolved. Cross-domain pairs are flagged ↔.
+
+| ID | Pair | Pathways | Priority |
+|----|------|----------|----------|
+| MSP-01 | Malaria (cerebral) vs Meningitis (bacterial) | P2, P1 | Mandatory safety |
+| MSP-02 | Meningitis (bacterial) vs Dengue (haemorrhagic) | P5, P2 | Mandatory safety |
+| MSP-03 | Cholera vs Acute gastroenteritis | P8 | Mandatory safety |
+| RP-01 | Malaria vs Dengue fever | P1, P6 | Required |
+| RP-02 | Malaria vs Typhoid fever | P1, P4, P9 | Required |
+| RP-03 | Dengue vs Chikungunya | P1, P5, P6 | Required |
+| RP-04 | Typhoid vs Cholera | P4, P8 | Required |
+| RP-05 | Malaria vs Leptospirosis ⚠ | P7, P6 | Required |
+| RP-06 | Malaria vs Rickettsial illness ⚠ | P1, P2 | Required |
+| RP-07 | Dengue vs Rickettsial illness ⚠ | P5 | Required |
+| RP-08 | Chikungunya vs Brucellosis ⚠ | P6, P9 | Required |
+| RP-09 | Typhoid vs Brucellosis ⚠ | P9 | Required |
+| RP-10 | Malaria vs Pneumonia ↔ | P3 | Required |
+| RP-11 | Dengue vs Typhoid | P4 | Required |
+| RP-12 | Leptospirosis ⚠ vs Dengue | P6, P7 | Required |
+| RP-13 | TB vs Pneumonia ↔ | P3, P9 | Required |
+| RP-14 | Typhoid vs Acute gastroenteritis ↔ | P4 | Required |
+
+---
+
+### 4.5 Mandatory safety pairs
+
+#### MSP-01: Malaria (cerebral) vs Meningitis (bacterial)
+
+**Pathways:** P2, P1
+**Why mandatory:** Both present with fever and impaired consciousness. Failure to distinguish materially alters immediate management and referral route. Empirical treatment for one does not cover the other.
+
+**Shared features:** Fever, impaired or altered consciousness, headache, seizures (especially in children).
+
+**Discriminating evidence:**
+- Malaria RDT positive: supports cerebral malaria; negative significantly increases meningitis likelihood (do not exclude malaria on RDT alone in high-transmission areas)
+- Neck stiffness / meningism: present in meningitis; typically absent in cerebral malaria (may also be absent in infants even with bacterial meningitis)
+- Purpuric or petechial rash: present in meningococcaemia; absent in malaria
+- CSF (lumbar puncture): turbid, raised white cells and protein = bacterial meningitis; normal = increases probability of cerebral malaria if RDT positive
+- Focal neurological signs: more consistent with meningitis or cerebral abscess than cerebral malaria
+
+**Missing information required:** RDT result; neck stiffness on examination; photophobia; presence and character of any rash; seizure history and type; GCS trend.
+
+**Red flags:** GCS ≤ 12 and falling; purpuric or petechial rash; papilloedema (contra-indicates LP until imaging); respiratory compromise.
+
+**Disambiguation questions:**
+1. "Is there neck stiffness or does the patient resist having their neck flexed?"
+2. "What is the current GCS or level of consciousness, and is it changing?"
+3. "What did the malaria RDT show?"
+4. "Is there any rash — petechiae or purpura?"
+
+**Escalation:** Both require immediate hospital referral. Do not delay empirical antibiotics for bacterial meningitis if LP is unavailable or delayed. If RDT is negative and meningism is present: treat empirically for bacterial meningitis. Purpuric rash + fever = meningococcaemia — give IV benzylpenicillin before transfer without waiting for LP.
+
+---
+
+#### MSP-02: Meningitis (bacterial) vs Dengue (haemorrhagic) — Fever + Petechiae/Purpura
+
+**Pathways:** P5, P2
+**Why mandatory:** Petechial or purpuric rash with fever is the sentinel presentation for meningococcaemia. Dengue haemorrhagic fever can also produce petechiae. Failure to recognise meningococcaemia causes preventable death within hours.
+
+**Shared features:** Fever, petechiae or purpuric rash, headache, vomiting, malaise.
+
+**Discriminating evidence:**
+- Rash spread and character: meningococcaemia rash spreads rapidly (hours), is non-blanching, may coalesce into purpura; dengue petechiae are typically less rapidly progressive and non-coalescing
+- Meningism (neck stiffness, Kernig's sign): present in meningococcal meningitis; absent in dengue haemorrhagic fever
+- Tourniquet test: positive (≥20 petechiae per 2.5 cm²) in dengue thrombocytopenia; negative in meningococcaemia
+- Dengue clinical warning signs: vomiting + severe abdominal pain + mucosal bleeding without meningism — not features of meningitis
+- FBC: thrombocytopenia in dengue; leucocytosis or very low count in meningococcaemia
+
+**Missing information required:** Rash onset timing and spread rate; whether rash is blanching; meningism on examination; tourniquet test; FBC (platelet count); fever duration and pattern.
+
+**Red flags:** Non-blanching purpura that is spreading rapidly = meningococcaemia emergency — act before other results are available.
+
+**Disambiguation questions:**
+1. "How quickly did the rash appear and spread — within hours or over days?"
+2. "Does the rash fade when pressed firmly?"
+3. "Is there neck stiffness?"
+4. "Is there abdominal pain or bleeding from the gums or nose?"
+
+**Escalation:** Non-blanching spreading purpura = treat as meningococcaemia immediately — IV benzylpenicillin and transfer. DHF with warning signs = same-day referral for IV access and monitoring. Do not delay meningococcaemia treatment for tourniquet test or FBC results.
+
+---
+
+#### MSP-03: Cholera vs Acute gastroenteritis — Severe dehydration emergency
+
+**Pathways:** P8
+**Why mandatory:** Both present with acute watery diarrhoea and dehydration. Cholera requires antibiotic therapy and is a notifiable disease requiring immediate public health response. The immediate management of dehydration is shared; the subsequent response pathways diverge critically.
+
+**Shared features:** Profuse watery diarrhoea, vomiting, dehydration, abdominal cramping.
+
+**Discriminating evidence:**
+- Stool character: rice-water, colourless, odourless or fishy-odour stools = cholera; non-specific watery or mucoid = AGE
+- Fever: cholera is often afebrile or low-grade; fever suggests AGE or co-pathology
+- Volume and rate: cholera = very rapid and voluminous purging leading to severe dehydration within hours
+- Outbreak context: cholera clusters rapidly in households or community around a shared water source; AGE may cluster but less dramatically
+- Geographic and seasonal context: cholera risk highest in lake basin, coastal areas, informal settlements with limited sanitation; highest during and after flooding
+
+**Missing information required:** Stool character; presence or absence of fever; other household or community members affected; geographic and sanitation context.
+
+**Red flags (both — act immediately on either):** Severe dehydration (sunken eyes, skin turgor ≥2 seconds, unable to drink), shock (rapid weak pulse, cold extremities), altered consciousness, reduced urine output.
+
+**Disambiguation questions:**
+1. "Are the stools profuse, watery, and colourless — 'rice water' in appearance?"
+2. "Is there fever?"
+3. "Are other people in the household or nearby community ill with the same symptoms?"
+
+**Escalation:** Begin ORS immediately for any dehydration; IV fluids for severe dehydration (both). Cholera: doxycycline single dose (adult), tetracycline alternatives; notify public health authority; isolate and apply infection control. AGE: antibiotic only for bloody stool, immunocompromised patient, or systemic features.
+
+---
+
+### 4.6 Required pairs
+
+#### RP-01: Malaria vs Dengue fever
+
+**Pathways:** P1, P6
+**Shared features:** Acute fever, severe myalgia, arthralgia, headache. Pre-rash dengue (days 1–3) is clinically indistinguishable from malaria. Both high-safety priority.
+
+**Discriminating evidence:**
+- Malaria RDT positive: strongly favours malaria; negative increases dengue probability
+- Retro-orbital pain: pathognomonic for dengue; absent in malaria
+- Dengue rash: maculopapular, appears day 3–5, typically spares palms and soles; not a malaria feature
+- Geographic context: dengue endemic in coast and lake basin; malaria endemic nationwide with highest transmission in lake basin, coast, and lowlands
+- Dengue warning signs: vomiting + severe abdominal pain + clinical deterioration = plasma leakage; not a malaria feature
+
+**Missing information required:** RDT result; retro-orbital pain; rash (presence, day of illness); geographic exposure; tourniquet test.
+
+**Red flags:** Dengue: warning signs (severe vomiting, abdominal pain, clinical deterioration, mucosal bleeding); Malaria: prostration, inability to sit unaided, jaundice, impaired consciousness.
+
+**Disambiguation questions:**
+1. "Is there pain behind or around the eyes that is worse with eye movement?"
+2. "What did the malaria RDT show?"
+3. "Has the patient been on the coast or in the lake basin recently?"
+
+**Escalation:** Dengue with warning signs = same-day referral for monitoring and IV access. Malaria = immediate ACT. Co-infection is possible — treat malaria if RDT positive even when dengue is also suspected.
+
+---
+
+#### RP-02: Malaria vs Typhoid fever
+
+**Pathways:** P1, P4, P9
+**Shared features:** Fever, headache, malaise, GI symptoms (nausea, vomiting, diarrhoea or constipation). Cannot be separated clinically without testing.
+
+**Discriminating evidence:**
+- Malaria RDT positive: favours malaria; negative raises typhoid probability substantially
+- Onset pattern: malaria = acute onset (hours to 72 hours); typhoid = insidious step-wise fever rising over 5–7 days
+- Relative bradycardia (Faget's sign): heart rate inappropriately low relative to fever height — strongly suggests typhoid
+- Rose spots: faint pink maculae on abdomen (typhoid) — pathognomonic but subtle and often missed
+- Bowel pattern: early typhoid commonly causes constipation, not diarrhoea; malaria does not cause constipation
+- Splenomegaly: both; more prominent in prolonged typhoid
+
+**Missing information required:** RDT result; onset pattern (acute vs step-wise over days); bowel pattern (constipation or diarrhoea); pulse-temperature dissociation on examination; blood culture access.
+
+**Red flags:** Typhoid: acute abdomen (intestinal perforation), gastrointestinal haemorrhage, hepatomegaly, peritonism; Malaria: cerebral features, prostration.
+
+**Disambiguation questions:**
+1. "Has the fever been building gradually over several days, or did it start suddenly?"
+2. "Is the patient constipated or having diarrhoea?"
+3. "What did the malaria RDT show?"
+4. "Has any blood culture been collected?"
+
+**Escalation:** Typhoid perforation = immediate surgical referral. Do not delay antibiotic treatment if one diagnosis is strongly suspected. Co-treat if both are plausible and patient is deteriorating without diagnostic access.
+
+---
+
+#### RP-03: Dengue vs Chikungunya
+
+**Pathways:** P1, P5, P6
+**Shared features:** Acute fever, maculopapular rash, arthralgia and myalgia, both arboviral, co-endemic in coast and lake basin with documented co-circulation in Kenya.
+
+**Discriminating evidence:**
+- Arthralgia severity and pattern: chikungunya = severe symmetric polyarthralgia (small joints: MCP, wrist, ankle, MTP); can incapacitate and persist weeks post-fever; dengue = prominent myalgia and bone-break pain, but arthralgia less incapacitating
+- Dengue warning signs: abdominal pain, vomiting, mucosal bleeding, clinical deterioration = plasma leakage; chikungunya does not produce plasma leakage
+- Retro-orbital pain: specific for dengue; absent in chikungunya
+- Haemorrhagic features: dengue (petechiae, positive tourniquet test, mucosal bleeding); uncommon in chikungunya
+
+**Missing information required:** Whether joint pain or muscle/bone pain is more severe; haemorrhagic features; tourniquet test; retro-orbital pain; rash timing.
+
+**Red flags:** Dengue warning signs (vomiting + abdominal pain + clinical deterioration + mucosal bleeding) = immediate referral. Chikungunya rarely life-threatening acutely; watch for dehydration in elderly.
+
+**Disambiguation questions:**
+1. "Is the joint pain or the bone and muscle pain more severe?"
+2. "Is there pain behind or around the eyes?"
+3. "Any bleeding from the gums, nose, or visible blood in stool or vomit?"
+
+**Escalation:** Dengue with warning signs = same-day referral for IV access. Chikungunya = symptomatic management; paracetamol preferred over NSAIDs during acute fever phase.
+
+---
+
+#### RP-04: Typhoid vs Cholera
+
+**Pathways:** P4, P8
+**Shared features:** Fever + diarrhoea, gastrointestinal illness, both waterborne or food-borne in similar settings.
+
+**Discriminating evidence:**
+- Stool character: cholera = profuse rice-water stools; typhoid = looser stool in early disease, blood or mucus in complications
+- Fever: high and sustained in typhoid; often low-grade or absent in cholera
+- Onset: cholera = explosive, hours after exposure; typhoid = insidious, step-wise over 5–7 days
+- Dehydration rate: cholera causes rapid severe dehydration within hours; typhoid does not cause this severity of early fluid loss
+
+**Missing information required:** Stool character and volume; fever degree; onset timing; dehydration severity.
+
+**Red flags:** Cholera: severe dehydration, shock; Typhoid: perforation signs (peritonism, acute abdomen, rebound tenderness).
+
+**Disambiguation questions:**
+1. "How severe is the diarrhoea — is the stool colourless and watery like water, or does it contain blood or mucus?"
+2. "Did the illness start suddenly within hours, or build up gradually over several days?"
+3. "Is there high sustained fever or just low-grade or no fever?"
+
+**Escalation:** Cholera: aggressive ORS/IV hydration + doxycycline + immediate notification. Typhoid: antibiotics (resistance-guided) + monitor for complications. Antibiotic choice and public health response differ — distinguish before treatment where possible.
+
+---
+
+#### RP-05: Malaria vs Leptospirosis
+
+**Pathways:** P7 (fever + jaundice), P6 (fever + myalgia)
+**Note:** Leptospirosis = governance_pending ⚠ — evaluation fixtures for this pair cannot be authored until source decision in §2.5 is made and card is authored.
+
+**Shared features:** Acute fever, severe myalgia, headache, jaundice in severe presentations.
+
+**Discriminating evidence:**
+- Malaria RDT positive: confirms malaria; consider co-infection in high-exposure settings
+- Calf muscle tenderness: severe, on compression of gastrocnemius — highly specific for leptospirosis; absent in malaria
+- Conjunctival suffusion: bilateral redness without discharge or follicles — specific for leptospirosis; not a malaria feature
+- Jaundice type: haemolytic (indirect bilirubin) in malaria; hepatocellular + cholestatic in Weil's disease
+- Renal involvement: oliguria, haematuria — leptospirosis (Weil's disease); uncommon in malaria outside severe disease
+- Exposure history: floodwater contact, livestock handling, occupational water exposure — discriminating for leptospirosis
+
+**Missing information required:** RDT result; calf muscle tenderness on examination; conjunctival appearance; renal function indicators (urine output, haematuria); floodwater or livestock exposure in past 2 weeks.
+
+**Red flags:** Weil's disease triad (fever + jaundice + renal failure) = high mortality — immediate referral. Severe malaria with jaundice = also high-risk.
+
+**Disambiguation questions:**
+1. "Any contact with floodwater, livestock, or muddy water in the past 2 weeks?"
+2. "Is there severe pain in the calf muscles, specifically on squeezing the back of the lower leg?"
+3. "What did the malaria RDT show?"
+4. "Is there any reduction in urine output or blood in the urine?"
+
+**Escalation:** Weil's disease = immediate referral for IV penicillin or doxycycline + fluid management + renal monitoring. Severe malaria = immediate artemisinin treatment + referral. Empirically co-treat both if patient is deteriorating without diagnostic access.
+
+---
+
+#### RP-06: Malaria vs Rickettsial illness
+
+**Pathways:** P1, P2
+**Note:** Rickettsial illness = governance_pending ⚠ — evaluation fixtures for this pair cannot be authored until source decision in §2.5 is made and card is authored.
+
+**Shared features:** Acute fever, severe headache, myalgia, malaise.
+
+**Discriminating evidence:**
+- Malaria RDT positive: confirms malaria; negative raises rickettsial suspicion in tick-exposed patients
+- Eschar (inoculation site): a small dark necrotic skin lesion — pathognomonic for spotted fever group rickettsiae and scrub typhus; must examine scalp, axillae, groin and waistband areas that are frequently missed
+- Tick exposure history: specific for rickettsial illness; mosquito exposure: malaria
+- Rash: malaria does not cause rash; rickettsial illness produces maculopapular or petechial rash, typically appearing day 3–5
+- Treatment response: doxycycline produces rapid clinical improvement (24–48 hours) in rickettsial illness; ACT improves malaria within 24–48 hours
+
+**Missing information required:** RDT result; tick bite or tick exposure history; full skin examination for eschar (including hidden areas); rash presence and timing.
+
+**Red flags:** Rickettsial meningoencephalitis — severe headache + fever + neurological signs without meningism; high mortality without prompt doxycycline.
+
+**Disambiguation questions:**
+1. "Any tick bite, or exposure to livestock, bush, or long grass in the past 2 weeks?"
+2. "Is there any small dark scab or skin mark — like a cigarette burn — anywhere on the body, including under clothing?"
+3. "What did the malaria RDT show?"
+
+**Escalation:** Suspected rickettsial illness = empirical doxycycline without waiting for laboratory confirmation (treatment delay increases mortality substantially). Malaria = ACT. Do not withhold doxycycline pending RDT if eschar is found or tick exposure is documented.
+
+---
+
+#### RP-07: Dengue vs Rickettsial illness
+
+**Pathways:** P5
+**Note:** Rickettsial illness = governance_pending ⚠.
+
+**Shared features:** Fever + rash, headache, myalgia, generalised malaise.
+
+**Discriminating evidence:**
+- Eschar: pathognomonic for rickettsial illness when present; absent in dengue
+- Tick exposure history: specific for rickettsial; dengue requires mosquito vector in endemic area
+- Rash character: rickettsial = maculopapular beginning on trunk or extremities, may become petechial; dengue = maculopapular with islands of normal-appearing skin, appears day 3–5
+- Tourniquet test: positive in dengue (thrombocytopenia); negative in rickettsial illness
+- Dengue warning signs: abdominal pain + vomiting + mucosal bleeding; not features of rickettsial illness
+
+**Missing information required:** Eschar examination (full skin including hidden sites); tick exposure; tourniquet test; rash character and distribution; abdominal pain.
+
+**Red flags:** Rickettsial neurological involvement (meningoencephalitis); dengue haemorrhagic features (mucosal bleeding, rapid deterioration).
+
+**Disambiguation questions:**
+1. "Is there any eschar — a small dark skin scab at a possible bite site?"
+2. "Any tick bite or exposure to tick habitat?"
+3. "Any abdominal pain, bleeding from the gums, or visible blood in stool?"
+
+**Escalation:** Rickettsial illness: empirical doxycycline — do not delay for laboratory confirmation. Dengue with haemorrhagic features: same-day referral.
+
+---
+
+#### RP-08: Chikungunya vs Brucellosis
+
+**Pathways:** P6, P9
+**Note:** Brucellosis = governance_pending ⚠.
+
+**Shared features:** Fever + arthralgia, systemic illness; both can produce prolonged or relapsing fever.
+
+**Discriminating evidence:**
+- Joint pattern: chikungunya = symmetric small-joint polyarthralgia (MCP, wrist, ankle, MTP); brucellosis = sacroiliac, hip, or knee (large-joint monoarthritis or oligoarthritis)
+- Livestock exposure: brucellosis is discriminating — cattle, goats, camels in Kenya; raw milk consumption; abattoir or farm work
+- Fever pattern: brucellosis = undulant (fever resolves and recurs over weeks, may persist months); chikungunya = acute fever resolves within 7–10 days, arthralgia may persist
+- Rash: chikungunya may produce maculopapular rash during febrile phase; brucellosis does not
+- Mosquito exposure (vector): chikungunya requires Aedes bite
+
+**Missing information required:** Joint distribution (small peripheral vs large/sacroiliac); livestock or raw milk exposure; fever pattern over time (continuous vs relapsing); rash during febrile phase.
+
+**Red flags:** Brucellosis with vertebral involvement (spondylitis) or endocarditis; chikungunya rarely life-threatening acutely.
+
+**Disambiguation questions:**
+1. "Which joints are most affected — small joints of the fingers, toes, or wrists, or larger joints like the hips, knees, or lower back?"
+2. "Any contact with livestock (cattle, goats, camels) or consumption of raw milk or soft cheese?"
+3. "Has the fever been continuous since it started, or does it resolve and then return over days or weeks?"
+
+**Escalation:** Brucellosis: combination antibiotics (doxycycline + rifampicin for 6 weeks minimum); monotherapy leads to relapse. Chikungunya: symptomatic management; NSAIDs for arthralgia after acute febrile phase.
+
+---
+
+#### RP-09: Typhoid vs Brucellosis
+
+**Pathways:** P9
+**Note:** Brucellosis = governance_pending ⚠.
+
+**Shared features:** Prolonged fever, malaise, systemic illness; both can produce splenomegaly, hepatomegaly, and GI overlap.
+
+**Discriminating evidence:**
+- Fever pattern: typhoid = stepwise rising fever (Wunderlich curve, increases daily for first week then plateaus); brucellosis = undulant (remitting-relapsing pattern over weeks)
+- Relative bradycardia: typhoid (pulse-temperature dissociation); not a brucellosis feature
+- Rose spots: faint pink abdominal maculae — typhoid (rare, often missed, pathognomonic when present)
+- Livestock exposure: brucellosis discriminating
+- Blood culture: positive for Salmonella typhi in ~50–75% of typhoid cases (early blood culture most sensitive); Brucella requires extended incubation and special media — cannot be excluded on standard blood culture
+
+**Missing information required:** Fever pattern over days (step-wise rising vs relapsing); livestock or raw milk exposure; blood culture result; bowel pattern.
+
+**Red flags:** Typhoid intestinal perforation (acute abdomen, rebound tenderness); brucellosis spondylitis (back pain, focal spinal tenderness) or endocarditis.
+
+**Disambiguation questions:**
+1. "Has the fever been rising steadily each day, or does it come and go — improving for a few days then returning?"
+2. "Any contact with livestock or raw milk consumption?"
+3. "Has a blood culture been collected and sent?"
+
+**Escalation:** Typhoid perforation = immediate surgical referral. Brucellosis = prolonged combination antibiotic course; do not give monotherapy.
+
+---
+
+#### RP-10: Malaria vs Pneumonia — Fever + Respiratory
+
+**Pathways:** P3 (cross-domain — Pneumonia owned by Respiratory domain)
+**Shared features:** Fever + cough; both common in Kenya primary care and can co-occur.
+
+**Discriminating evidence:**
+- Malaria RDT positive: confirms malaria; cough is an associated symptom in malaria and should not anchor the diagnosis to a respiratory condition
+- Focal respiratory signs: pneumonia = productive cough, pleuritic chest pain, focal crackles or bronchial breathing, reduced air entry; malaria does not produce focal respiratory signs
+- Oxygen saturation: reduced SpO2 suggests respiratory pathology; not a malaria feature unless severe disease
+- Sputum character: purulent sputum = pneumonia; absent or clear in malaria
+- Co-infection: malaria and pneumonia can coexist — a positive RDT does not exclude concurrent focal pneumonia if respiratory signs are present
+
+**Missing information required:** RDT result; respiratory examination findings (auscultation, percussion); sputum character; oxygen saturation; chest X-ray access.
+
+**Red flags:** Hypoxia (SpO2 < 94%); multilobar involvement; inability to maintain oral intake; features of severe malaria (cerebral, jaundice, prostration) with respiratory compromise.
+
+**Disambiguation questions:**
+1. "What did the malaria RDT show?"
+2. "Is the cough productive — does it produce phlegm or sputum?"
+3. "Are there focal findings on chest auscultation?"
+
+**Escalation:** Do not allow a positive RDT to preclude treating focal pneumonia if respiratory signs are present — treat both if both are diagnosed. Severe pneumonia (hypoxia, multilobar) = referral. Severe malaria = immediate treatment + referral.
+
+---
+
+#### RP-11: Dengue vs Typhoid — Fever + GI
+
+**Pathways:** P4
+**Shared features:** Fever, nausea, vomiting, abdominal pain or discomfort; both can present to primary care at an undifferentiated early stage.
+
+**Discriminating evidence:**
+- Onset pattern: dengue = acute (2–5 days); typhoid = insidious step-wise fever over 5–7 days
+- Dengue warning signs: severe abdominal pain + vomiting + clinical deterioration = plasma leakage; typhoid does not produce this pattern of acute deterioration
+- Relative bradycardia: typhoid (pulse-temperature dissociation); not a feature of dengue
+- Thrombocytopenia on FBC: dengue; leucopenia with normal or low platelets in typhoid
+- Dengue rash: maculopapular, day 3–5; absent in typhoid
+
+**Missing information required:** Onset timeline; abdominal pain severity, character, and progression; haemorrhagic features; pulse rate relative to temperature height.
+
+**Red flags:** Dengue: warning signs (abdominal pain + vomiting + clinical deterioration, mucosal bleeding); Typhoid: peritonism, perforation signs.
+
+**Disambiguation questions:**
+1. "Did the illness start suddenly or build up gradually over several days?"
+2. "How severe is the abdominal pain, and is it getting worse rapidly?"
+3. "Any skin rash?"
+
+**Escalation:** Dengue with warning signs = same-day referral. Typhoid with peritonism = immediate surgical referral.
+
+---
+
+#### RP-12: Leptospirosis vs Dengue — Fever + Myalgia
+
+**Pathways:** P6, P7
+**Note:** Leptospirosis = governance_pending ⚠.
+
+**Shared features:** Acute fever, severe myalgia, headache, malaise; both produce marked constitutional symptoms that can mask the diagnosis.
+
+**Discriminating evidence:**
+- Calf muscle tenderness: severe tenderness on palpation or compression of gastrocnemius — specific for leptospirosis; absent in dengue
+- Conjunctival suffusion: bilateral periorbital redness without discharge — specific for leptospirosis; dengue may have conjunctival injection but less pronounced
+- Retro-orbital pain: dengue (pathognomonic); absent in leptospirosis
+- Tourniquet test: positive in dengue (thrombocytopenia); negative in leptospirosis
+- Renal involvement: oliguria, haematuria — leptospirosis (Weil's disease); uncommon in dengue except in severe disease
+- Exposure: floodwater or livestock = leptospirosis; mosquito bite in endemic area = dengue
+
+**Missing information required:** Calf tenderness on examination; retro-orbital pain; tourniquet test; renal function (urine output, haematuria); floodwater or livestock exposure.
+
+**Red flags:** Weil's disease (fever + jaundice + renal failure) = immediate referral. Dengue haemorrhagic features = same-day referral.
+
+**Disambiguation questions:**
+1. "Is there severe pain in the calf muscles — specifically in the back of the lower leg, on squeezing?"
+2. "Is there pain behind or around the eyes?"
+3. "Any exposure to floodwater, livestock, or occupational water contact in the past 2 weeks?"
+4. "Any reduction in urine output?"
+
+**Escalation:** Weil's disease = immediate referral for IV penicillin/doxycycline + fluid management. Dengue with haemorrhagic features = same-day referral.
+
+---
+
+#### RP-13: TB vs Pneumonia — Fever + Respiratory (Subacute)
+
+**Pathways:** P3, P9 (cross-domain — TB owned by NTLD-P domain; Pneumonia by Respiratory domain)
+**Shared features:** Fever, cough, respiratory symptoms; both common in Kenya primary care.
+
+**Discriminating evidence:**
+- Symptom duration: cough for ≥2 weeks = TB until proven otherwise (Kenya NTLD-P guideline); CAP = acute onset over days
+- Night sweats: profuse night sweats = TB (systemic); not a CAP feature
+- Weight loss: documented weight loss = TB; not CAP
+- Haemoptysis: TB; uncommon in CAP except complicated cases
+- Antibiotic response: CAP should substantially improve within 5–7 days of standard antibiotics; persistent fever and cough after treatment = urgent TB consideration
+- HIV status: significantly increases TB risk and alters clinical presentation; HIV-positive patient with respiratory illness has high prior probability for TB
+
+**Missing information required:** Cough duration (days vs weeks); weight loss; night sweats; haemoptysis; HIV status; close contacts with known TB; GeneXpert or AFB access.
+
+**Red flags:** Haemoptysis; significant weight loss; HIV-positive patient with respiratory illness; failure to respond to standard antibiotics at 5–7 days.
+
+**Disambiguation questions:**
+1. "How long has the cough been present — days or weeks?"
+2. "Any weight loss over the past weeks or months?"
+3. "Night sweats?"
+4. "Any blood in the sputum or when coughing?"
+5. "Known HIV status, or any close contacts with known or suspected TB?"
+
+**Escalation:** Suspected TB = do not treat empirically as CAP (risk of masking drug-susceptibility testing, delay in appropriate regimen); refer for sputum GeneXpert. CAP = standard antibiotic course. If both are suspected: treat CAP empirically and initiate TB investigation concurrently without delay.
+
+---
+
+#### RP-14: Typhoid vs Acute gastroenteritis — Fever + Diarrhoea
+
+**Pathways:** P4 (cross-domain — AGE owned by Gastrointestinal domain)
+**Shared features:** Fever + diarrhoea, vomiting, abdominal pain; both waterborne or food-borne in similar settings.
+
+**Discriminating evidence:**
+- Onset pattern: AGE = acute, typically hours after a specific food or water exposure; typhoid = insidious step-wise onset over days
+- Fever degree and pattern: typhoid = high, sustained, rising; AGE = low-grade or absent, resolving within 24–72 hours
+- Bowel pattern: early typhoid commonly causes constipation, not diarrhoea; AGE is characterised by diarrhoea
+- Relative bradycardia: typhoid (pulse-temperature dissociation); not AGE
+- Duration: AGE is self-limiting (3–7 days typical); typhoid worsens without antibiotics
+
+**Missing information required:** Fever duration and pattern; onset timing relative to food or water exposure; bowel pattern (constipation or diarrhoea in early illness); fever severity.
+
+**Red flags:** Typhoid: perforation (acute abdomen, rebound tenderness, peritonism); sustained fever beyond 5–7 days without improvement on supportive care.
+
+**Disambiguation questions:**
+1. "How long has the fever been present, and is it getting worse each day or starting to improve?"
+2. "Did the symptoms start suddenly after a specific meal or drink, or come on gradually over several days?"
+3. "In the early part of the illness, was there more constipation or more diarrhoea?"
+
+**Escalation:** Typhoid = antibiotics guided by local resistance patterns; monitor for complications. AGE = ORS and supportive care; antibiotics only for bloody stool, high-risk host, or systemic features.
 
 ---
 
@@ -498,7 +976,7 @@ The freeze creates a stable benchmark against which subsequent domain replicatio
 ## Known gaps at time of drafting
 
 - Section 2 inventory — Pass 1 complete (2026-09-14). Three governance decisions outstanding (Brucellosis, Leptospirosis, Rickettsial illness) before card authoring can begin for those conditions. Inventory is otherwise locked.
-- Section 3 presentation map — not yet populated; depends on inventory (now unblocked).
-- Section 4 pairwise matrix — not yet populated; depends on Section 3.
+- Section 3 presentation map — complete (2026-09-14). 9 pathways, 17 candidates, cross-domain participants and exclusions documented.
+- Section 4 pairwise matrix — complete (2026-09-14). 17 pairs: 3 mandatory safety pairs + 14 required pairs. 5 pairs blocked on governance decisions (governance_pending conditions); 2 cross-domain pairs.
 - Numerical thresholds for evaluation gates — not yet set; to be defined using current baselines (8/8 RAG, 4/5 disambiguation, 94% reasoning deterministic subset).
-- Effort estimate: 3 new AFI-owned cards minimum before governance decisions (Meningitis, Cholera, Dengue/Chikungunya already validated); up to 6 if Brucellosis/Leptospirosis/Rickettsial are approved. ~15–25 pairwise fixtures estimated pending Section 3 completion.
+- Effort estimate: 2 new AFI-owned cards required before governance decisions (Meningitis, Cholera); Dengue and Chikungunya cards already validated. Up to 5 additional if Brucellosis/Leptospirosis/Rickettsial are approved. 17 pairwise evaluation fixtures required; 5 blocked pending governance decisions.
