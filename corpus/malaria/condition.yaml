@@ -2,8 +2,8 @@ condition: Malaria (unspecified)
 icd11: 1F40
 icd10: B54
 category: infectious
-corpus_version: "1.2"
-schema_version: "2.1"
+corpus_version: "1.3"
+schema_version: "2.2"
 review_status: draft
 reviewed_by:
 last_reviewed:
@@ -91,6 +91,23 @@ environmental_signals:
       requires_exposure:
         - mosquito_exposure_high
       amplifiers: []
+
+comorbidity_signals:
+  - context: pregnancy_status
+    triggers:
+      - missed period
+      - amenorrhoea
+      - pregnant
+      - pregnancy
+    demographic_gate:
+      sex: female
+      reproductive_age: true
+    effect: management_modifier
+    priority: mandatory
+    missing_info_prompt: >
+      Pregnancy status or pregnancy test — management and antimalarial
+      choice differ significantly in pregnancy.
+    icd_note: "Use pregnancy-specific malaria coding only when pregnancy is confirmed."
 
 graph:
   cardinal_symptoms:

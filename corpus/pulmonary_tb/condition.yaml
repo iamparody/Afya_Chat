@@ -3,7 +3,7 @@ icd11: 1B10
 icd10: A15
 category: infectious
 corpus_version: "1.2"
-schema_version: "2.1"
+schema_version: "2.2"
 review_status: draft
 reviewed_by:
 last_reviewed:

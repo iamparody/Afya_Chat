@@ -28,6 +28,7 @@ load_dotenv(ROOT / ".env")
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 from phase7.context_engine import ContextResult, get_environmental_evidence
+from phase7.comorbidity_engine import get_comorbidity_alerts
 
 from prompts import SYSTEM_PROMPT, OUTPUT_SCHEMA, build_context
 from providers import get_provider
@@ -336,8 +337,15 @@ def run(
         )
         env_evidence = _env.evidence if isinstance(_env, ContextResult) else []
 
+        # Step 3c — Comorbidity context (deterministic; no-op when no triggers match)
+        comorbidity_alerts = get_comorbidity_alerts(top_conditions, presentation)
+
         # Step 4 — Build context and call LLM
-        context = build_context(presentation, candidates, passages, env_evidence=env_evidence)
+        context = build_context(
+            presentation, candidates, passages,
+            env_evidence=env_evidence,
+            comorbidity_alerts=comorbidity_alerts,
+        )
         if hasattr(provider, "set_schema"):
             provider.set_schema(OUTPUT_SCHEMA)
         raw     = provider.generate(SYSTEM_PROMPT, context)

@@ -88,8 +88,9 @@ def _base_metadata(card: ConditionCard) -> dict:
         "reviewed_by":           card.reviewed_by,   # None if empty (Pydantic coerces)
         "last_reviewed":         card.last_reviewed,
         "sources":               [s.model_dump() for s in card.sources],
-        "endemic_regions":       list(card.endemic_regions),
-        "environmental_signals": [s.model_dump() for s in card.environmental_signals],
+        "endemic_regions":        list(card.endemic_regions),
+        "environmental_signals":  [s.model_dump() for s in card.environmental_signals],
+        "comorbidity_signals":    [s.model_dump() for s in card.comorbidity_signals],
     }
 
 
@@ -154,8 +155,9 @@ def _meta_for_graph(card: ConditionCard) -> dict:
         "reviewed_by":           card.reviewed_by,
         "last_reviewed":         card.last_reviewed,
         "sources":               [s.model_dump() for s in card.sources],
-        "endemic_regions":       list(card.endemic_regions),
-        "environmental_signals": [s.model_dump() for s in card.environmental_signals],
+        "endemic_regions":        list(card.endemic_regions),
+        "environmental_signals":  [s.model_dump() for s in card.environmental_signals],
+        "comorbidity_signals":    [s.model_dump() for s in card.comorbidity_signals],
     }
 
 

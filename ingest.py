@@ -97,6 +97,11 @@ VALID_EXPOSURES = {
 }
 VALID_CAUSAL_DISTANCE = {"direct", "indirect"}
 
+# ── Comorbidity signal vocabulary (schema 2.2) ──────────────────────────────
+VALID_COMORBIDITY_EFFECTS    = {"management_modifier"}
+VALID_COMORBIDITY_PRIORITIES = {"mandatory", "important"}
+VALID_DEMOGRAPHIC_SEX        = {"male", "female", "any"}
+
 EXPECTED_SCHEMA_VERSION = "2.1"
 
 # Canonical section names in display order.
@@ -160,8 +165,10 @@ def build_base_metadata(meta):
         "last_reviewed":         blank_to_none(meta.get("last_reviewed", "")),
         "sources":               meta.get("sources", []),
         # Phase 7 — environmental context fields
-        "endemic_regions":       meta.get("endemic_regions", []),
-        "environmental_signals": meta.get("environmental_signals", []),
+        "endemic_regions":        meta.get("endemic_regions", []),
+        "environmental_signals":  meta.get("environmental_signals", []),
+        # Phase 7 — comorbidity context fields (schema 2.2)
+        "comorbidity_signals":    meta.get("comorbidity_signals", []),
     }
 
 
@@ -361,6 +368,40 @@ def validate_environmental(meta, condition):
     return warnings
 
 
+def validate_comorbidity(meta, condition):
+    """
+    Validate comorbidity_signals block against controlled vocabularies.
+    Returns a list of warning strings. Empty list = clean.
+    """
+    warnings = []
+    signals = meta.get("comorbidity_signals", [])
+    for sig in signals:
+        ctx    = sig.get("context", "<unknown>")
+        effect = sig.get("effect", "")
+        if effect and effect not in VALID_COMORBIDITY_EFFECTS:
+            warnings.append(
+                f"WARN unknown comorbidity effect '{effect}' in '{condition}' context '{ctx}' "
+                f"— valid: {sorted(VALID_COMORBIDITY_EFFECTS)}"
+            )
+        priority = sig.get("priority", "")
+        if priority and priority not in VALID_COMORBIDITY_PRIORITIES:
+            warnings.append(
+                f"WARN unknown comorbidity priority '{priority}' in '{condition}' context '{ctx}' "
+                f"— valid: {sorted(VALID_COMORBIDITY_PRIORITIES)}"
+            )
+        if not sig.get("triggers"):
+            warnings.append(
+                f"WARN comorbidity context '{ctx}' in '{condition}' has no triggers"
+            )
+        sex = (sig.get("demographic_gate") or {}).get("sex")
+        if sex and sex not in VALID_DEMOGRAPHIC_SEX:
+            warnings.append(
+                f"WARN unknown demographic_gate.sex '{sex}' in '{condition}' context '{ctx}' "
+                f"— valid: {sorted(VALID_DEMOGRAPHIC_SEX)}"
+            )
+    return warnings
+
+
 # ─── Graph extraction pipeline ─────────────────────────────────────────────
 
 def load_vocabulary(path):
@@ -487,9 +528,11 @@ def build_graph_record(meta, normalized_graph):
         "last_reviewed":         blank_to_none(meta.get("last_reviewed", "")),
         "sources":               meta.get("sources", []),
         # Phase 7 — environmental context fields
-        "endemic_regions":       meta.get("endemic_regions", []),
-        "environmental_signals": meta.get("environmental_signals", []),
-        "graph":                 normalized_graph,
+        "endemic_regions":        meta.get("endemic_regions", []),
+        "environmental_signals":  meta.get("environmental_signals", []),
+        # Phase 7 — comorbidity context fields (schema 2.2)
+        "comorbidity_signals":    meta.get("comorbidity_signals", []),
+        "graph":                  normalized_graph,
     }
 
 
@@ -502,17 +545,18 @@ def process_graph_file(path, vocabularies):
     meta, _ = parse_frontmatter(text)
 
     condition = meta.get("condition", path.stem)
-    env_warnings = validate_environmental(meta, condition)
+    env_warnings         = validate_environmental(meta, condition)
+    comorbidity_warnings = validate_comorbidity(meta, condition)
 
     raw_graph = extract_graph(meta)
     if not raw_graph:
         return None, {"canonicalized": 0, "already_canonical": 0, "unknown": 0}, [
             f"WARN no graph: block found in '{condition}'"
-        ] + env_warnings
+        ] + env_warnings + comorbidity_warnings
 
     normalized, stats, warnings = normalize_graph(raw_graph, vocabularies, condition)
     record = build_graph_record(meta, normalized)
-    return record, stats, warnings + env_warnings
+    return record, stats, warnings + env_warnings + comorbidity_warnings
 
 
 # ─── Main ──────────────────────────────────────────────────────────────────

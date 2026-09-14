@@ -214,7 +214,7 @@ OUTPUT_SCHEMA = {
 
 # ── Context template ──────────────────────────────────────────────────────────
 
-def build_context(presentation, candidates, prose_passages, env_evidence=None):
+def build_context(presentation, candidates, prose_passages, env_evidence=None, comorbidity_alerts=None):
     """
     Assemble the per-query context block sent to the LLM.
 
@@ -234,6 +234,11 @@ def build_context(presentation, candidates, prose_passages, env_evidence=None):
     env_evidence: list of EnvironmentalEvidence objects from context_engine, or None.
         When non-empty, an environmental context section is appended. Each item
         carries a source-labelled explanation string. Clinical evidence takes precedence.
+
+    comorbidity_alerts: list of ComorbidityAlert objects from comorbidity_engine, or None.
+        When non-empty, a comorbidity alerts section is appended. Each alert carries a
+        missing_info_prompt the LLM should surface in missing_information. These are
+        context signals, NOT diagnosis assertions — the clinician must confirm.
     """
     lines = []
 
@@ -294,6 +299,23 @@ def build_context(presentation, candidates, prose_passages, env_evidence=None):
         lines.append("")
         for ev in env_evidence:
             lines.append(f"• {ev.explanation}")
+        lines.append("")
+
+    if comorbidity_alerts:
+        lines.append("## Comorbidity and clinical context alerts")
+        lines.append(
+            "The following clinical context signals were detected in the patient presentation. "
+            "These may affect management, treatment choice, or ICD coding for specific candidates. "
+            "Surface the relevant missing_info_prompt in the missing_information field. "
+            "Do NOT assert an unconfirmed comorbidity as a diagnosis."
+        )
+        lines.append("")
+        for alert in comorbidity_alerts:
+            applies = ", ".join(alert.applies_to) if alert.applies_to else "unspecified"
+            lines.append(f"• [{alert.priority.upper()}] {alert.missing_info_prompt}")
+            lines.append(f"  Applies to: {applies}")
+            if alert.icd_note:
+                lines.append(f"  ICD note: {alert.icd_note}")
         lines.append("")
 
     return "\n".join(lines)

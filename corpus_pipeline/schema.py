@@ -4,7 +4,7 @@ Pydantic schema for condition.yaml — the canonical condition card representati
 condition.yaml is the single source of truth. Markdown and ingest artifacts are
 generated from it; they are never edited directly.
 
-Schema version: 2.1 (matches symptoms_dictionary/ frontmatter schema_version)
+Schema version: 2.2 — adds comorbidity_signals block
 """
 
 from __future__ import annotations
@@ -59,6 +59,11 @@ VALID_EXPOSURES = {
 }
 
 VALID_REVIEW_STATUSES = {"draft", "under_review", "clinician_verified"}
+
+# ── Comorbidity signal vocabularies (schema 2.2) ──────────────────────────────
+VALID_COMORBIDITY_EFFECTS    = {"management_modifier"}
+VALID_COMORBIDITY_PRIORITIES = {"mandatory", "important"}
+VALID_DEMOGRAPHIC_SEX        = {"male", "female", "any"}
 
 SECTION_KEYS = [
     "cardinal_symptoms",
@@ -202,6 +207,35 @@ class EnvironmentalSignal(BaseModel):
         return v
 
 
+class DemographicGate(BaseModel):
+    sex: Optional[Literal["male", "female", "any"]] = None
+    reproductive_age: Optional[bool] = None
+
+
+class ComorbiditySignal(BaseModel):
+    context: str
+    triggers: list[str]
+    demographic_gate: DemographicGate = DemographicGate()
+    effect: str
+    priority: str
+    missing_info_prompt: str
+    icd_note: Optional[str] = None
+
+    @field_validator("effect")
+    @classmethod
+    def check_effect(cls, v: str) -> str:
+        if v not in VALID_COMORBIDITY_EFFECTS:
+            raise ValueError(f"Unknown effect '{v}' — valid: {sorted(VALID_COMORBIDITY_EFFECTS)}")
+        return v
+
+    @field_validator("priority")
+    @classmethod
+    def check_priority(cls, v: str) -> str:
+        if v not in VALID_COMORBIDITY_PRIORITIES:
+            raise ValueError(f"Unknown priority '{v}' — valid: {sorted(VALID_COMORBIDITY_PRIORITIES)}")
+        return v
+
+
 class GraphBlock(BaseModel):
     cardinal_symptoms: list[str] = []
     associated_symptoms: list[str] = []
@@ -264,7 +298,7 @@ class ConditionCard(BaseModel):
     icd10: str
     category: str
     corpus_version: str
-    schema_version: Literal["2.1"]
+    schema_version: Literal["2.2"]
     review_status: str
     reviewed_by: Optional[str] = None
     last_reviewed: Optional[str] = None
@@ -275,6 +309,9 @@ class ConditionCard(BaseModel):
 
     # ── Environmental signals ─────────────────────────────────────────────────
     environmental_signals: list[EnvironmentalSignal] = []
+
+    # ── Comorbidity signals ───────────────────────────────────────────────────
+    comorbidity_signals: list[ComorbiditySignal] = []
 
     # ── Graph ─────────────────────────────────────────────────────────────────
     graph: GraphBlock
