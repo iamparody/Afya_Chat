@@ -1,13 +1,13 @@
 """
-Retrieval inspector — shows top-k chunks retrieved for a given presentation
-under both Cohere and PubMedBERT backends.
+Retrieval inspector — shows top-k chunks retrieved for a given presentation.
+
+Useful for debugging what the vector store surfaces for a given input.
 
 Usage (from cds/ root):
     python phase5/inspect_retrieval.py
     python phase5/inspect_retrieval.py "custom presentation text"
 """
 
-import os
 import sys
 from pathlib import Path
 
@@ -18,13 +18,14 @@ from dotenv import load_dotenv
 load_dotenv(ROOT / ".env")
 
 import chromadb
-from embed_provider import CohereEmbedder, PubMedBertEmbedder
+from embed_provider import CohereEmbedder
 
 CHROMA_DIR = ROOT / "chroma" / "db"
 TOP_K = 18  # n_results for unrestricted search (matches get_vector_candidates n*3)
 
 
-def inspect(embedder, label, presentation):
+def inspect(presentation):
+    embedder = CohereEmbedder()
     db  = chromadb.PersistentClient(path=str(CHROMA_DIR))
     col = db.get_collection(embedder.COLLECTION)
 
@@ -36,7 +37,7 @@ def inspect(embedder, label, presentation):
     )
 
     print(f"\n{'='*60}")
-    print(f"{label} — top {TOP_K} chunks")
+    print(f"Cohere — top {TOP_K} chunks")
     print(f"Collection: {embedder.COLLECTION}")
     print(f"{'='*60}")
     print(f"{'Rank':<5} {'Distance':>8}  {'Condition':<40} {'Section'}")
@@ -48,7 +49,6 @@ def inspect(embedder, label, presentation):
     ):
         cond = meta["condition"]
         sec  = meta["section"]
-        first = "*" if cond not in seen_conditions else " "
         seen_conditions[cond] = seen_conditions.get(cond, 0) + 1
         print(f"{rank:<5} {dist:>8.4f}  {cond:<40} {sec}")
 
@@ -63,12 +63,5 @@ if __name__ == "__main__":
         if len(sys.argv) > 1
         else "26F, 2 days fever, nausea, lower abdominal pain. Feeling weak. No urinary symptoms mentioned."
     )
-
     print(f"Presentation: {presentation}\n")
-
-    cohere_embedder = CohereEmbedder()
-    inspect(cohere_embedder, "COHERE", presentation)
-
-    print("\nLoading PubMedBERT model...")
-    pubmed_embedder = PubMedBertEmbedder()
-    inspect(pubmed_embedder, "PubMedBERT", presentation)
+    inspect(presentation)
