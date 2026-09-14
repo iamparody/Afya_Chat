@@ -545,6 +545,8 @@ See Phase 8b section above.
 
 **Excluded from this experiment:** WHO APIs, PostgreSQL, SNOMED CT, separate ingestion service, agentic authoring layer, PrimeKG mapper (separate task).
 
+**Domain scaling:** `docs/domain_contracts/acute_febrile_illness.md` — domain contract for first production-grade domain; Section 2 (condition inventory) is the critical path before any new card is authored under this domain.
+
 ---
 
 ### Phase 9 — Live Rainfall Provider 🟡 Partial
