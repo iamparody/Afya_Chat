@@ -98,11 +98,62 @@ Therefore:
 
 ### 2.3 Condition inventory
 
-**To be populated.** Populate before authoring any new card.
+Verified against Kenya source hierarchy (Pass 1 complete — 2026-09-14).
 
-Open items: named condition list, source per condition, safety priority per condition, existing vs new card status.
+**Pathway codes used in this table:**
+- AUF — acute undifferentiated fever
+- FRS — fever with respiratory symptoms
+- FGI — fever with gastrointestinal symptoms
+- FNS — fever with neurological symptoms
+- FRash — fever with rash or systemic features
 
-Known existing cards that participate in this domain: malaria, dengue fever, typhoid fever, community-acquired pneumonia, pulmonary tuberculosis.
+**Ownership note:** conditions marked `canonical_domain ≠ Acute Febrile Illness` are owned by their respective domain but participate in AFI presentation pathways. They do not require new cards authored under this domain contract — their existing validated cards are used as-is.
+
+| Condition | Canonical domain | Primary source | Source type | Presentation pathways | Safety priority | Existing card | Card status |
+|-----------|-----------------|----------------|-------------|----------------------|----------------|---------------|-------------|
+| Malaria (unspecified) | Acute Febrile Illness | Kenya NMCP Guidelines for the Diagnosis, Treatment and Prevention of Malaria, 6th ed. (2024) | Kenya MOH disease-specific guideline | AUF; FNS (cerebral malaria) | High | Yes | Validated |
+| Typhoid fever | Acute Febrile Illness | Kenya MOH Clinical Guidelines Vol 2 — Level 2-3 Facilities (2025), Chapter: Salmonella Infections | Kenya MOH STG | AUF; FGI | High | Yes | Validated |
+| Meningitis (bacterial) | Acute Febrile Illness | Kenya MOH Clinical Guidelines Vol 2 — Level 2-3 Facilities (2025), Chapter: Meningitis | Kenya MOH STG | FNS; AUF | High | No | Not started |
+| Cholera | Acute Febrile Illness | WHO-AFRO Cholera Management Guidelines, 2023 Edition | WHO guideline | FGI | High | No | Not started |
+| Dengue fever | Acute Febrile Illness | WHO Guidelines for Clinical Management of Arboviral Diseases (2025) | WHO guideline | AUF; FRash | High | Yes | Validated |
+| Brucellosis | Acute Febrile Illness | KNPHI/ZDU Human Brucellosis Testing Guidelines (2024) — diagnostic only; ⚠ no Kenya MOH treatment protocol confirmed | Other ⚠ | AUF | Important | No | Not started |
+| Leptospirosis | Acute Febrile Illness | WHO Human Leptospirosis: Guidance for Diagnosis, Surveillance and Control (WHO/ILS, 2003) — ⚠ 22 years old; no updated source confirmed | WHO guideline ⚠ | AUF; FRash | Important | No | Not started |
+| Chikungunya | Acute Febrile Illness | WHO Guidelines for Clinical Management of Arboviral Diseases (2025) | WHO guideline | AUF; FRash | Important | Yes | Validated |
+| Rickettsial illness | Acute Febrile Illness | ⛔ No Kenya MOH guideline. No dedicated WHO guideline. CDC/IDSA guidance + East Africa peer literature only. See governance note below. | Other ⛔ | AUF; FRash | Important | No | Not started |
+| Pneumonia (CAP) | **Respiratory** ← cross-domain | Kenya MOH Clinical Guidelines Vol 2 — Level 2-3 Facilities (2025), Chapter: Pneumonia | Kenya MOH STG | FRS; AUF | High | Yes | Validated |
+| Pulmonary tuberculosis | **NTLD-P** ← cross-domain | Kenya MOH NTLD-P Guideline for Integrated Tuberculosis, Leprosy and Lung Disease in Kenya (2017) | Kenya MOH disease-specific guideline | FRS; AUF | High | Yes | Validated |
+
+### 2.4 Source verification notes
+
+**Malaria:** Kenya NMCP guideline (2024) takes precedence over the general MOH Clinical Guidelines Vol 2/3 for all malaria-specific protocols. Vol 2/3 cross-references NMCP for detailed management. Use NMCP as primary source; Vol 2/3 provides facility-level context.
+
+**Typhoid fever:** Full chapter in both Vol 2 (primary care) and Vol 3 (hospital) as "Salmonella Infections / Typhoid Fever." No separate stand-alone Kenya typhoid guideline confirmed. Vol 2 is the primary source for primary-care CDS scope.
+
+**Meningitis:** Full chapter in Vol 2 (2025) with management flowcharts for primary-care triage and referral, and dedicated paediatric chapter in Vol 3. No separate Kenya meningitis-specific guideline. Vol 2 is the primary source for primary-care scope.
+
+**Cholera:** Kenya MOH Vol 2/3 covers cholera only within diarrhoeal disease management tables — no standalone chapter. The treatment note in Vol 3 (doxycycline x 7 days) predates current WHO 2023 recommendations. WHO-AFRO Cholera Management Guidelines 2023 is the authoritative source. Published on the WHO-AFRO Kenya country page. This is the Gate 2 closure test condition — first new card authored in YAML (Method A).
+
+**Dengue and Chikungunya:** Neither condition has a standalone chapter in any Kenya MOH Clinical Guidelines volume. Dengue appears only as a line-item within the Viral Haemorrhagic Fever differential group in Vol 3 (2009). The WHO 2025 arboviral guideline (Dengue, Chikungunya, Zika, Yellow Fever) is the primary source for both. Kenya-specific epidemiological context (endemic counties, seasonal patterns, co-circulation with malaria) must be authored separately — it is not in the WHO guideline.
+
+**TB (cross-domain):** NTLD-P 2017 guideline takes precedence over general MOH Clinical Guidelines for all TB management. TB is owned by the NTLD-P domain. Its existing validated card participates in AFI pathways (FRS, prolonged fever differential) without requiring AFI domain ownership.
+
+**Pneumonia (cross-domain):** Full chapter in both Vol 2 and Vol 3. Owned by the Respiratory domain. Existing validated card participates in AFI pathways (FRS, AUF) without requiring AFI domain ownership.
+
+**Brucellosis ⚠ source gap:** No dedicated clinical management chapter in any confirmed Kenya MOH guideline. The KNPHI/ZDU 2024 policy brief covers diagnostic testing only. The 2021–2040 national strategy is epidemiological, not clinical. For treatment protocols, no Kenya-level source has been confirmed — practitioners currently rely on WHO/international references (WHO Manual on Brucellosis, Corbel 2006; IDSA guidance). Card authoring for brucellosis requires a clinical governance decision on acceptable source before work begins.
+
+**Leptospirosis ⚠ outdated source:** The only formal WHO-level guidance is the 2003 WHO/ILS document, now 22 years old. No updated WHO guideline, no Kenya MOH protocol. The condition is documented as a significant cause of febrile illness in Kenya (zoonotic, leptospira borgpetersenii confirmed in Kenyan livestock populations) but lacks a current national or international management guideline. Card authoring requires a source decision — the 2003 document may be usable if the clinical content (diagnosis, treatment with doxycycline/penicillin) is verified against current clinical practice standards.
+
+**Rickettsial illness ⛔ governance required:** No Kenya MOH guideline exists. No dedicated WHO guideline for rickettsial disease in East Africa exists. Multiple species are documented in Kenya (Rickettsia felis, spotted fever group, Q fever, scrub typhus) but national management protocols are absent. Available sources are: CDC/IDSA guidance (US-authored, not Kenya-specific); East Africa peer literature (Maina et al. 2012, Luce-Fedrow 2015). This falls below the source hierarchy floor. A governance decision is required before this condition can enter the card authoring pipeline: either accept CDC/IDSA as an explicitly labelled fallback source, or defer until a Kenya-relevant source is identified.
+
+### 2.5 Inventory governance decisions required before card authoring
+
+The following decisions must be made before any new card is authored for these conditions. They do not block completion of Sections 3 and 4.
+
+| Condition | Decision required |
+|-----------|------------------|
+| Brucellosis | Accept WHO Manual on Brucellosis (Corbel 2006) or IDSA guidance as fallback source, explicitly labelled? Or defer card authoring? |
+| Leptospirosis | Accept WHO 2003 guidance as source with explicit age-of-evidence caveat in frontmatter? Or defer? |
+| Rickettsial illness | Accept CDC/IDSA guidance as fallback source with explicit non-Kenya label? Or defer until regional guideline exists? |
 
 ---
 
@@ -304,8 +355,8 @@ The freeze creates a stable benchmark against which subsequent domain replicatio
 
 ## Known gaps at time of drafting
 
-- Section 2 inventory not yet populated — critical path before any new card is authored.
-- Section 3 presentation map not yet populated — depends on inventory.
-- Section 4 pairwise matrix not yet populated — depends on presentation map.
-- Numerical thresholds for evaluation gates not yet set — to be defined at inventory completion based on current system baselines.
-- Effort estimate not yet determined — rough estimate possible after inventory is complete (~5–6 new cards, ~15–20 pairwise fixtures, clinician review).
+- Section 2 inventory — Pass 1 complete (2026-09-14). Three governance decisions outstanding (Brucellosis, Leptospirosis, Rickettsial illness) before card authoring can begin for those conditions. Inventory is otherwise locked.
+- Section 3 presentation map — not yet populated; depends on inventory (now unblocked).
+- Section 4 pairwise matrix — not yet populated; depends on Section 3.
+- Numerical thresholds for evaluation gates — not yet set; to be defined using current baselines (8/8 RAG, 4/5 disambiguation, 94% reasoning deterministic subset).
+- Effort estimate: 3 new AFI-owned cards minimum before governance decisions (Meningitis, Cholera, Dengue/Chikungunya already validated); up to 6 if Brucellosis/Leptospirosis/Rickettsial are approved. ~15–25 pairwise fixtures estimated pending Section 3 completion.
