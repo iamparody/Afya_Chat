@@ -1,0 +1,66 @@
+[
+  {
+    "condition": "Malaria (unspecified)",
+    "section": "red_flags",
+    "category": "symbol_to_words",
+    "description": "Haemoglobin thresholds: '<7 g/dL' and '<8 g/dL' written as 'less than 7 g/dL' and 'less than 8 g/dL' in condition.yaml authoring convention",
+    "orig_hash": "816b5f85a9b14c6a",
+    "gen_hash": "900b6794cba8e212"
+  },
+  {
+    "condition": "Community-acquired pneumonia",
+    "section": "diagnostic_features",
+    "category": "symbol_to_words",
+    "description": "Fever threshold: 'Fever ≥38°C' written as 'Fever of 38°C or above'",
+    "orig_hash": "44473eab91b745f4",
+    "gen_hash": "9b455353eade653b"
+  },
+  {
+    "condition": "Community-acquired pneumonia",
+    "section": "predisposing_factors",
+    "category": "minor_wording",
+    "description": "Sentence fragment 'Chronic lung disease (asthma, COPD, bronchiectasis).' completed with predicate: '...bronchiectasis) predisposes.' Semantically equivalent.",
+    "orig_hash": "4dc225ef97453ad1",
+    "gen_hash": "dfb87e4992fd3bcd"
+  },
+  {
+    "condition": "Community-acquired pneumonia",
+    "section": "against",
+    "category": "symbol_to_words",
+    "description": "En-dash range: '24–48 hours' written as '24 to 48 hours'",
+    "orig_hash": "9ee2b053cbf4d7c6",
+    "gen_hash": "0a830d4dcff7547b"
+  },
+  {
+    "condition": "Community-acquired pneumonia",
+    "section": "diagnostic_context",
+    "category": "symbol_to_words",
+    "description": "En-dash range: '48–72 hours' written as '48 to 72 hours'",
+    "orig_hash": "6bb93344b3c77182",
+    "gen_hash": "e1d2216f51dbdda9"
+  },
+  {
+    "condition": "Pulmonary tuberculosis",
+    "section": "predisposing_factors",
+    "category": "symbol_to_words",
+    "description": "BMI threshold: 'BMI <18.5 kg/m²' written as 'BMI less than 18.5 kg/m²'",
+    "orig_hash": "d0fdf92d15882c0e",
+    "gen_hash": "5f07debe2526eaef"
+  },
+  {
+    "condition": "Pulmonary tuberculosis",
+    "section": "typical_presentation",
+    "category": "minor_wording",
+    "description": "Quotation marks removed: '\"a persistent cough and weight loss\"' rendered without quotes. Semantically equivalent.",
+    "orig_hash": "f0ea868a752fd222",
+    "gen_hash": "f7a04bdaaa38f81c"
+  },
+  {
+    "condition": "Pulmonary tuberculosis",
+    "section": "red_flags",
+    "category": "symbol_to_words",
+    "description": "CD4 threshold: 'CD4 <200 cells/μL' written as 'CD4 less than 200 cells/μL'",
+    "orig_hash": "0c826fa14df42c69",
+    "gen_hash": "be57948bac7af39f"
+  }
+]
