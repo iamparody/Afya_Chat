@@ -459,8 +459,8 @@ COPD, Heart failure, HIV/AIDS, Sickle cell, PID, Malaria in pregnancy, Meningoco
 
 ### Phase 5e — Retrieval + Pipeline Hardening ✅
 - [x] **5a** pytest suite — `phase5/tests/`: card validation, ingest output, Neo4j edges, Chroma count, RAG schema; 54/54 including integration pass (AuraDB + Gemini confirmed)
-- [x] **5b** PubMedBERT embedding experiment — A/B infrastructure built; result 6/8 < gate; **rejected**. Cohere stays. Root cause: filtered passages miss `against` section in PubMedBERT biomedical space; forced-inject caused context interference across other cases.
-- [x] **5c** BM25 hybrid retrieval — `rank_bm25` index + RRF (k=60) in `get_vector_candidates_hybrid()`; `--hybrid` flag in evaluate.py; result: hybrid 7/8 but introduces 4a→4b regression; **rejected**. Dense-only confirmed superior for 89-chunk corpus. Case 2b confirmed as model reasoning problem, not retrieval.
+- [x] **5b** PubMedBERT — 6/8, rejected. Code removed (chore commit 098e173). Cohere dense-only confirmed.
+- [x] **5c** BM25 hybrid — 7/8 but 4a→4b regression, rejected. Code removed (098e173). Revisit only on measurable retrieval failure; corpus size alone is not a trigger.
 - [x] **5d** Case 2b prompt fix — softened arguing_against ranking rule; result 6/8 (arguing_against field went empty, Case 4a regressed); **reverted**. 7/8 is the prompt ceiling.
 - [x] **5e** Pipeline orchestration — `Makefile` (5 targets: ingest, load-neo4j, embed, eval, pipeline); hard eval gate in `evaluate.py` (exits non-zero if <7/8 on full suite); `.github/workflows/cds_pipeline.yml` triggers on `symptoms_dictionary/**`, `ingest.py`, `phase5/**` changes
   - Prefect deferred: pipeline is linear + single-environment; revisit if Phase 6 introduces scheduled inference, cloud deployment, or multi-stage branching
@@ -499,7 +499,7 @@ COPD, Heart failure, HIV/AIDS, Sickle cell, PID, Malaria in pregnancy, Meningoco
 See full detail in Phase 7 section above (steps 7a–7e complete).
 - [x] Schema 2.1, context engine, ContextResult audit trail
 - [x] rag.py + prompts.py + app.py wired; 22 tests pass; eval 8/8
-- [ ] **7f** — 3 new condition cards (Cholera, Rift Valley fever, Chikungunya) — blocked on clinician review
+- [ ] **7f** — Cholera card (new, Gate 2 closure test — Method A from WHO-AFRO 2023 guideline); Chikungunya card already exists and validated; Rift Valley fever excluded from AFI domain (outbreak-only, not routine primary-care differential — see domain contract §3.4)
 
 ### Phase 8 — Interactive Disambiguation Loop ✅ Done (2026-09-07)
 See Phase 8 section above.
@@ -562,6 +562,38 @@ See Phase 8b section above.
 
 ---
 
+## Retrieval Architecture — Locked Direction (2026-09-14)
+
+**Two locked principles — not to be revisited without a documented failure trigger:**
+- The router refactor must preserve current retrieval behaviour exactly. Any evaluation change after the refactor is a regression until explained.
+- The presentation map is a boost/prior and audit signal, never an exclusion gate. A condition absent from the map must not disappear from the candidate set.
+
+**Build sequence:**
+- [ ] 1. Router seam refactor — `rag.py` retrieval abstracted behind `RetrievalRouter`; behaviourally equivalent; eval must hold at 8/8 RAG · 4/5 disam · 94% reasoning
+- [ ] 2. Presentation map integration — boost + provenance labels per candidate (`map-supported` / `retrieval-only` / `map+retrieval`)
+- [ ] 3. Neo4j pairwise-discrimination schema — designed alongside Section 4 of domain contract; enables condition-vs-condition graph queries
+- [ ] 4. Section 4 pairwise matrix (domain contract) — drives the graph's discrimination relationships
+- [ ] Future components (BM25, cross-encoder reranker, query expansion) — added only when a measured retrieval failure justifies them; corpus size alone is not a trigger
+
+**Target retrieval stack:**
+```
+Presentation
+    ↓
+Pathway classifier → boost signal (not gate)
+    ↓
+RetrievalRouter [ Dense + Neo4j (today) | ↌ BM25 on failure evidence ]
+    ↓
+Candidates [ labelled: map-supported / retrieval-only / map+retrieval ]
+    ↓
+Reranker (passthrough initially — fusion slot)
+    ↓
+Evidence retrieval → Reasoning → Disambiguation → Safety
+    ↓
+Clinician decision → Encounters DB → (future) feedback signal
+```
+
+---
+
 ## Decisions Log
 
 | Date | Decision | Rationale |
@@ -587,17 +619,13 @@ See Phase 8b section above.
 | 2026-09-10 | Open-Meteo/ERA5-Land accepted as Phase 9 live rainfall source | CHIRPS adjudication confirms ERA5-Land within 1.15–1.45x at Kisumu (lake_basin); MERRA-2 was over-estimating. Sole exception: Mombasa coast Jan–Feb dry season (~6.7x over-estimate); CHIRPS must be used for coast dry-season threshold calibration. No architecture changes required. |
 | 2026-09-10 | OpenMeteoProvider feeds audit trail only (does not gate signals) | Thresholds are not yet calibrated; activating rainfall gating without a characterised baseline would introduce uncalibrated priors. StaticCalendarProvider remains the gating mechanism until thresholds are derived from ≥5-year historical baseline. |
 | 2026-09-11 | Two approved card authoring methods: LLM-assisted drafting from WHO/MOH PDFs (preferred) and PrimeKG scaffold + clinical authorship | LLM drafting cuts authoring time from hours to ~20 min of clinician review; PrimeKG provides disease-symptom-differential scaffolds for conditions with clear global data but limited Kenya guidelines. Neither removes clinician review gate. Documented in CLAUDE.md Governance Rules. |
+| 2026-09-14 | Retrieval architecture: router seam + boost model | Presentation map is a boost/prior, not an exclusion gate. RetrievalRouter abstracts retrieval behind a stable interface; future components (BM25, cross-encoder) plug in without touching outer pipeline logic. Trigger for new components: measured retrieval failure, not corpus size. |
 
 ---
 
 ## Open Questions
 
-- [x] Neo4j hosting → AuraDB free tier (resolved)
-- [x] Embedding model → Cohere `embed-multilingual-v3.0` (resolved)
-- [x] RAG output format → structured JSON confirmed
-- [x] UI library → Streamlit MVP confirmed; Chainlit/Reflex path documented
-- [x] Orchestrator → Makefile + GitHub Actions confirmed; Prefect deferred
-- [x] Phase 9 source — Open-Meteo/ERA5-Land accepted; CHIRPS required for coast Jan–Feb calibration only (resolved 2026-09-10)
-- [ ] Clinician reviewer — name a reviewer + set a deadline for Phase 2 production gate; process blocker, not technical; all 15 cards remain draft
-- [ ] Phase 9 historical baseline — which site/date range, how many years, storage format for ERA5-Land historical pull
+- [ ] Clinician reviewer — name a reviewer + set a deadline for Phase 2 production gate; process blocker, not technical
+- [ ] Phase 9 historical baseline — site/date range, years, storage format for ERA5-Land historical pull
 - [ ] Coast dry-season — CHIRPS directly (ClimateSERV) or ERA5-Land bias correction for coast Jan–Feb threshold calibration
+- [ ] AFI domain source governance — Brucellosis / Leptospirosis / Rickettsial illness: accept fallback sources or defer? (see domain contract §2.5)
