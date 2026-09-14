@@ -244,6 +244,7 @@ Independently (Phase 9 MVP):
 - 2026-09-14: 8/8 after router seam refactor (RetrievalRouter in rag.py, behaviourally equivalent)
 - 2026-09-14: 8/8 after presentation map integration (PresentationMapClassifier, 9 pathways, provenance labels)
 - 2026-09-14: 8/8 after comorbidity context engine (comorbidity_engine.py wired; Fixture A pregnancy alert confirmed)
+- 2026-09-14: 8/8 after YAML corpus pipeline batch migration complete (15/15 cards; production graph_entities.jsonl swapped; Fixture A + B confirmed)
 
 ---
 
@@ -510,7 +511,7 @@ See Phase 8 section above.
 ### Phase 8b — Reasoning Evaluation Harness ✅ Done (2026-09-10)
 See Phase 8b section above.
 
-### Corpus Pipeline Experiment — yaml-as-canonical (parallel, isolated) 🟡 Gates 1/3/4 PASS — Gate 2 deferred — Batch 2 migrated (8/15)
+### Corpus Pipeline Experiment — yaml-as-canonical (parallel, isolated) ✅ Batch migration complete (15/15) — 0 unexpected diffs — production graph_entities.jsonl swapped — 8/8 eval PASS
 > Parallel experiment only. Existing Markdown pipeline untouched until all 4 acceptance criteria pass.
 > Full spec: see memory/project_corpus_pipeline_experiment.md
 
@@ -542,9 +543,9 @@ See Phase 8b section above.
 
 **Final record (2026-09-14):** Gates 1, 3, and 4 PASS. Gate 2 CONDITIONALLY PASS. YAML migration and technical authoring are validated; clinician-led new-card authoring remains the sole unvalidated workflow component. Broader corpus equivalence to be established through batch migration and validation.
 
-**Batch migration progress:** 8/15 cards in YAML (malaria, pulmonary_tb, pneumonia, asthma, dengue_fever, type_2_diabetes, acute_gastroenteritis, hypertension). 7 remaining: obesity, uti, anaemia, peptic_ulcer_disease, gerd, functional_dyspepsia, typhoid_fever.
+**Batch migration progress:** 15/15 cards migrated to YAML (all complete 2026-09-14). Batch 3: obesity, uti, anaemia, peptic_ulcer_disease, gerd, functional_dyspepsia, typhoid_fever. diff.py: 0 unexpected diffs, 0 stale across all 15 pairs. Production graph_entities.jsonl swapped to YAML-derived (15 conditions, corpus_version 1.3 for malaria). 8/8 eval gate passed post-swap. Fixture A + B confirmed: comorbidity semantic boundary holds.
 
-**Next:** Gate 2 closure test — author Cholera as first genuinely new card from WHO/MOH PDF (Method A); measure validator friction, time to first valid draft, author effort. Then migrate remaining 7 cards.
+**Next:** Gate 2 closure test — author Cholera as first genuinely new card from WHO/MOH PDF (Method A); measure validator friction, time to first valid draft, author effort.
 
 **Excluded from this experiment:** WHO APIs, PostgreSQL, SNOMED CT, separate ingestion service, agentic authoring layer, PrimeKG mapper (separate task).
 

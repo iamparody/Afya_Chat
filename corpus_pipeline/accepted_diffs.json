@@ -8,6 +8,14 @@
     "gen_hash": "900b6794cba8e212"
   },
   {
+    "condition": "Peptic ulcer disease",
+    "section": "typical_presentation",
+    "category": "schema_validator_requirement",
+    "description": "Added 'may' to satisfy hedging validator: 'Many patients may present' vs Markdown source 'Many patients present'. Markdown predates strict hedging requirement; clinical meaning unchanged.",
+    "orig_hash": "2f44e3d0c53a7cda",
+    "gen_hash": "c83a50288ad8be3a"
+  },
+  {
     "condition": "Community-acquired pneumonia",
     "section": "diagnostic_features",
     "category": "symbol_to_words",

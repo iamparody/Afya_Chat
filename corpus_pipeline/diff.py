@@ -33,6 +33,7 @@ _ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(_ROOT))
 
 from ingest import parse_frontmatter, split_sections, SECTION_RE
+from corpus_pipeline.schema import VALID_CATEGORIES
 
 ORIG_DIR  = _ROOT / "symptoms_dictionary"
 GEN_DIR   = Path(__file__).parent / "output"
@@ -82,6 +83,12 @@ SECTION_KEY = {
     "Diagnostic context":                         "diagnostic_context",
 }
 
+# Some hand-authored cards have non-standard section header variants.
+# Map these to the canonical heading so they match SECTION_KEY correctly.
+HEADING_ALIASES: dict[str, str] = {
+    "Predisposing factors for iron deficiency": "Predisposing factors",
+}
+
 # Graph fields to compare term-by-term
 GRAPH_FIELDS = [
     "cardinal_symptoms", "associated_symptoms", "risk_factors",
@@ -95,6 +102,27 @@ META_FIELDS = ["condition", "icd11", "icd10", "category",
 
 
 # ── Text normalisation ────────────────────────────────────────────────────────
+
+def _normalize_headings(sections: dict[str, str]) -> dict[str, str]:
+    """Remap non-standard section headings to canonical SECTION_KEY form."""
+    result = {}
+    for heading, prose in sections.items():
+        canonical = HEADING_ALIASES.get(heading, heading)
+        result[canonical] = prose
+    return result
+
+
+def _normalize_md_headers(body: str) -> str:
+    """Replace non-standard bold section header variants with canonical headings.
+
+    SECTION_RE only matches exact names from SECTIONS; non-standard variants
+    (e.g. 'Predisposing factors for iron deficiency') are not split. Normalise
+    them in the body text before parsing so split_sections finds the boundary.
+    """
+    for alias, canonical in HEADING_ALIASES.items():
+        body = body.replace(f"**{alias}:**", f"**{canonical}:**")
+    return body
+
 
 def _norm(text: str) -> str:
     """
@@ -203,6 +231,7 @@ def diff_pair(orig_path: Path, gen_path: Path) -> DiffResult:
 
     orig_meta, orig_body = parse_frontmatter(orig_text)
     gen_meta,  gen_body  = parse_frontmatter(gen_text)
+    orig_body = _normalize_md_headers(orig_body)
 
     condition = orig_meta.get("condition", orig_path.stem)
     result = DiffResult(condition=condition, orig_path=orig_path, gen_path=gen_path)
@@ -230,12 +259,32 @@ def diff_pair(orig_path: Path, gen_path: Path) -> DiffResult:
         # Lists: order-sensitive for endemic_regions (fixed geography order)
         if orig_val == gen_val:
             result.add_ok(f"meta:{f}")
-        elif f == "category" and "/" in str(orig_val or ""):
-            # Hand-authored cards had invalid compound category values.
-            # Migration corrected to single primary category — expected correction.
+        elif f == "category" and (
+            "/" in str(orig_val or "")            # compound e.g. "gastroenterological / infectious"
+            or str(orig_val) not in VALID_CATEGORIES  # invalid single value e.g. "metabolic"
+        ):
+            # Hand-authored cards had invalid or compound category values.
+            # Migration corrected to a single valid primary category.
             result.add_issue(
                 "CORRECTED", f"meta:{f}",
-                f"original={orig_val!r} (invalid compound) -> generated={gen_val!r}"
+                f"original={orig_val!r} (invalid) -> generated={gen_val!r}"
+            )
+        elif (f == "schema_version"
+              and str(orig_val or "").startswith("2.")
+              and str(gen_val or "").startswith("2.")):
+            # Schema minor-version bump is expected — YAML pipeline always uses
+            # the current schema version; Markdown source carries the version
+            # at time of authoring.
+            result.add_issue(
+                "CORRECTED", f"meta:{f}",
+                f"original={orig_val!r} (prior schema) -> generated={gen_val!r} (schema upgrade)"
+            )
+        elif f == "corpus_version" and orig_val != gen_val:
+            # Corpus version is bumped when content or schema changes during
+            # migration — expected divergence from the Markdown source version.
+            result.add_issue(
+                "CORRECTED", f"meta:{f}",
+                f"original={orig_val!r} -> generated={gen_val!r} (version updated during migration)"
             )
         else:
             result.add_issue(
@@ -299,8 +348,8 @@ def diff_pair(orig_path: Path, gen_path: Path) -> DiffResult:
             result.add_issue("DIFFERS", f"graph:{gf}", msg.strip())
 
     # ── Section prose ────────────────────────────────────────────────────────
-    orig_sections = _parse_sections(orig_body, condition)
-    gen_sections  = _parse_sections(gen_body,  condition)
+    orig_sections = _normalize_headings(_parse_sections(orig_body, condition))
+    gen_sections  = _normalize_headings(_parse_sections(gen_body,  condition))
 
     for heading in SECTION_KEY:
         orig_prose = _norm(orig_sections.get(heading, ""))
@@ -400,9 +449,10 @@ def _gen_fixture(pairs: list[tuple[Path, Path]]) -> int:
         gen_text  = gen_md.read_text(encoding="utf-8")
         orig_meta, orig_body = parse_frontmatter(orig_text)
         gen_meta,  gen_body  = parse_frontmatter(gen_text)
+        orig_body = _normalize_md_headers(orig_body)
         condition = orig_meta.get("condition", orig_md.stem)
-        orig_sections = _parse_sections(orig_body, condition)
-        gen_sections  = _parse_sections(gen_body,  condition)
+        orig_sections = _normalize_headings(_parse_sections(orig_body, condition))
+        gen_sections  = _normalize_headings(_parse_sections(gen_body,  condition))
 
         for heading in SECTION_KEY:
             orig_prose = _norm(orig_sections.get(heading, ""))

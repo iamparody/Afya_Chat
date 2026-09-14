@@ -1,0 +1,185 @@
+condition: Functional dyspepsia
+icd11: DA94
+icd10: K30
+category: gastroenterological
+corpus_version: "1.0"
+schema_version: "2.2"
+review_status: draft
+reviewed_by:
+last_reviewed:
+
+sources:
+  - organization: Rome Foundation
+    title: Rome IV Criteria for Functional Gastrointestinal Disorders
+    year: "2016"
+  - organization: British Society of Gastroenterology
+    title: Guidelines for the Management of Dyspepsia
+    year: "2022"
+  - organization: American College of Gastroenterology
+    title: ACG and CAG Clinical Guidelines for Dyspepsia
+    year: "2017"
+
+endemic_regions:
+  - nationwide
+
+environmental_signals: []
+
+graph:
+  cardinal_symptoms:
+    - epigastric pain
+    - postprandial fullness
+    - early satiety
+    - epigastric burning
+  associated_symptoms:
+    - nausea
+    - bloating
+    - belching
+    - vomiting
+    - heartburn
+    - weight loss
+  risk_factors:
+    - H. pylori infection
+    - NSAID use
+    - anxiety
+    - psychological stress
+    - female sex
+    - smoking
+    - excessive alcohol
+  differentials:
+    - peptic ulcer disease
+    - gastro-oesophageal reflux disease
+    - gastric cancer
+    - acute pancreatitis
+    - biliary colic
+  argues_against:
+    - alarm features present
+    - normal endoscopy explains all symptoms with alternative structural cause
+    - symptom onset clearly linked to NSAID or H. pylori and resolves on treatment
+  red_flags:
+    - unintentional weight loss
+    - progressive dysphagia
+    - persistent vomiting
+    - haematemesis
+    - palpable epigastric mass
+    - new onset dyspepsia
+    - unexplained anaemia
+  confirms:
+    - normal upper GI endoscopy during symptoms
+    - positive H. pylori CLO test
+
+sections:
+  cardinal_symptoms: |
+    Epigastric pain or discomfort — dull aching, pressure, or burning centred in
+    the epigastrium — is the dominant symptom, not clearly related to defaecation
+    (distinguishing it from irritable bowel syndrome). Postprandial fullness — a
+    prolonged and distressing sense of food remaining in the stomach after a
+    normal-sized meal — and early satiety — an inability to finish a normal meal due
+    to premature fullness — together constitute the postprandial distress syndrome
+    (PDS) subtype of functional dyspepsia. Epigastric pain or burning unrelated to
+    meals constitutes the epigastric pain syndrome (EPS) subtype. Many patients have
+    overlapping features of both subtypes.
+
+  associated_symptoms: |
+    Nausea is common, particularly in the postprandial distress subtype, and may be
+    severe enough to impair eating. Bloating and belching are reported by most
+    patients. Vomiting occurs in a minority. Heartburn may overlap with
+    gastro-oesophageal reflux disease, and distinguishing the two on clinical
+    grounds alone is often not possible without endoscopy. Mild weight loss may
+    occur from reduced food intake due to pain or nausea, but significant or
+    progressive weight loss is an alarm feature that argues against functional
+    dyspepsia and mandates investigation.
+
+  diagnostic_features: |
+    Functional dyspepsia is a diagnosis of exclusion — normal upper gastrointestinal
+    endoscopy during active symptoms, with no mucosal lesion, ulcer, or malignancy
+    identified, is the defining investigation. Rome IV criteria require: one or more
+    of epigastric pain, epigastric burning, postprandial fullness, or early satiety;
+    onset at least six months before diagnosis; active symptoms in the past three
+    months; and absence of structural disease to explain symptoms. H. pylori testing
+    must be performed — H. pylori-associated dyspepsia is a distinct entity;
+    eradication produces symptom resolution in approximately 10% of patients, and
+    those who respond should not carry a functional dyspepsia label. In
+    resource-limited settings where endoscopy is not immediately available, a
+    test-and-treat strategy for H. pylori in patients under 55 without alarm
+    features is an acceptable first step; non-responders should proceed to endoscopy.
+
+  predisposing_factors: |
+    H. pylori infection — present in a significant proportion of patients with
+    dyspepsia in East Africa; its role in functional dyspepsia is distinct from its
+    role in ulcer disease, but eradication is recommended before diagnosing true
+    functional dyspepsia. NSAID and aspirin use cause mucosal injury; symptoms on
+    NSAIDs that are not fully explained by endoscopic findings may reflect
+    drug-related functional change rather than structural disease. Psychological
+    factors — anxiety, depression, early life adversity, and psychological stress —
+    are significantly associated with functional dyspepsia and contribute to symptom
+    severity and chronicity. Female sex is associated with a higher prevalence of
+    functional dyspepsia globally. Smoking and excessive alcohol are contributing
+    factors.
+
+  typical_presentation: |
+    A woman in her 30s to 50s describes months to years of recurrent epigastric
+    discomfort and postprandial fullness, often worse after large or fatty meals,
+    with nausea and bloating. Symptoms fluctuate in severity — better periods
+    alternate with flares, sometimes correlated with psychological stress. Endoscopy
+    has been normal or revealed only mild gastritis without ulceration. There is no
+    weight loss, dysphagia, or haematemesis. The patient is otherwise well and has
+    no systemic features.
+
+  differential_diagnoses: |
+    Peptic ulcer disease shares epigastric pain and food-timing patterns but has an
+    identifiable mucosal lesion on endoscopy — duodenal or gastric ulcer — and is
+    associated with H. pylori or NSAID use; eradication or NSAID cessation produces
+    durable healing. Gastro-oesophageal reflux disease produces heartburn and acid
+    regurgitation as cardinal features; overlap with functional dyspepsia is common
+    (up to 40% of patients have both), but the predominance of retrosternal burning
+    and regurgitation points to GERD; a PPI trial that resolves symptoms supports
+    GERD. Gastric cancer shares epigastric pain and weight loss with functional
+    dyspepsia but is associated with alarm features — progressive dysphagia, early
+    satiety with weight loss, palpable mass, anaemia — and must be excluded by
+    endoscopy in patients over 55 with new dyspepsia or in those with alarm features
+    at any age. Acute pancreatitis produces severe epigastric pain radiating to the
+    back, elevated serum amylase or lipase, and a precipitating trigger (alcohol,
+    gallstones). Biliary colic produces colicky right upper quadrant pain radiating
+    to the right shoulder, precipitated by fatty meals, without epigastric burning or
+    fullness; ultrasound confirms gallstones.
+
+  argues_against: |
+    The presence of any alarm feature — unintentional weight loss, progressive
+    dysphagia, persistent vomiting, haematemesis, palpable epigastric mass,
+    new-onset dyspepsia over 55, unexplained iron deficiency anaemia — argues
+    strongly against functional dyspepsia and mandates urgent endoscopic
+    investigation before this diagnosis is accepted. A clear structural cause
+    identified on endoscopy — active peptic ulcer, severe oesophagitis, malignancy
+    — excludes functional dyspepsia. Symptoms that onset clearly in temporal
+    relation to NSAID initiation and resolve completely on cessation are more
+    consistent with NSAID-associated dyspepsia than functional dyspepsia. Complete
+    response to H. pylori eradication with sustained symptom resolution reclassifies
+    the diagnosis as H. pylori-associated dyspepsia, not functional dyspepsia.
+
+  red_flags: |
+    Unintentional weight loss in a patient with dyspepsia requires urgent endoscopy
+    to exclude malignancy. Progressive dysphagia — to solids, worsening over weeks
+    — alongside dyspepsia raises concern for oesophageal or gastric cancer.
+    Persistent vomiting indicates possible gastric outlet obstruction, warranting
+    endoscopy. Haematemesis or melaena requires resuscitation and urgent endoscopy.
+    A palpable epigastric or abdominal mass is a surgical emergency. New-onset
+    dyspepsia in a patient over 55 without prior documented dyspepsia warrants early
+    endoscopy. Unexplained iron deficiency anaemia in a dyspeptic patient requires
+    upper and lower GI investigation.
+
+  diagnostic_context: |
+    The test-and-treat H. pylori strategy — non-invasive H. pylori testing (urea
+    breath test or stool antigen test) followed by eradication in positive patients
+    — is the recommended first step in patients under 55 without alarm features in
+    East African primary care settings, where H. pylori prevalence is high and
+    endoscopy access may be limited. Symptom response to eradication should be
+    assessed at 4–6 weeks. Non-responders and all patients with alarm features
+    should proceed to endoscopy. Empirical PPI therapy for 4–8 weeks is a
+    reasonable second-line manoeuvre in H. pylori-negative patients or
+    non-responders to eradication; partial response to PPI may indicate GERD
+    overlap. Prokinetic agents (metoclopramide, domperidone) address postprandial
+    fullness and nausea in the PDS subtype. Tricyclic antidepressants at low dose
+    (amitriptyline 10–25 mg) have evidence for the EPS subtype. Lifestyle measures
+    — smaller and more frequent meals, avoidance of fatty and spicy foods, stress
+    management — should be offered. Long-term follow-up is important; functional
+    dyspepsia is chronic and relapsing in the majority of patients.
