@@ -242,6 +242,7 @@ Independently (Phase 9 MVP):
 **Eval history update:**
 - 2026-09-09: 8/8 after Phase 7d environmental context integration
 - 2026-09-14: 8/8 after router seam refactor (RetrievalRouter in rag.py, behaviourally equivalent)
+- 2026-09-14: 8/8 after presentation map integration (PresentationMapClassifier, 9 pathways, provenance labels)
 
 ---
 
@@ -571,7 +572,7 @@ See Phase 8b section above.
 
 **Build sequence:**
 - [x] 1. Router seam refactor — `rag.py` retrieval abstracted behind `RetrievalRouter`; behaviourally equivalent; eval must hold at 8/8 RAG · 4/5 disam · 94% reasoning (2026-09-14, 8/8 confirmed)
-- [ ] 2. Presentation map integration — boost + provenance labels per candidate (`map-supported` / `retrieval-only` / `map+retrieval`)
+- [x] 2. Presentation map integration — boost + provenance labels per candidate (`map-supported` / `retrieval-only` / `map+retrieval`) (2026-09-14, 8/8 confirmed)
 - [x] 3. Neo4j pairwise-discrimination schema — DIFFERENTIATED_FROM relationship + indexes; afi_pairs.yaml (source of truth); pairwise_loader.py; all 17 pairs dry-run validated (2026-09-14)
 - [x] 4. Section 4 pairwise matrix (domain contract) — 17 pairs complete (2026-09-14): 3 mandatory safety + 14 required; 5 pending governance decisions
 - [ ] 5. Graph relationship schema migration — ASSOCIATED_WITH (comorbidity/context), COMPLICATED_BY (complication), REQUIRES_CONTEXT (material missing info); neo4j/migrations/003_comorbidity_schema.cypher; corpus cards add comorbidity_signals frontmatter block
