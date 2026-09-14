@@ -159,38 +159,180 @@ The following decisions must be made before any new card is authored for these c
 
 ## 3. Presentation and Differential Map
 
-The map is constructed **condition-first**, not presentation-first.
+### 3.1 Architecture
 
-For each condition:
+The map is **presentation-first**, not condition-first. Each row answers: *"A patient arrives with this cluster — what conditions must the system consider?"*
+
+This is the inverse of a condition card. Condition cards are authored outward from a disease. The presentation map works inward from symptom clusters to candidate conditions. It is what makes the clinical reasoning auditable and what drives Section 4 (which pairs actually need formal disambiguation).
+
+**Cross-domain participation rule:** conditions owned by other domains appear in this map without transferring ownership. TB (NTLD-P domain) and Pneumonia (Respiratory domain) appear as candidates in the pathways where they are clinically relevant. Their existing validated cards are used as-is.
+
+**Source-governance flag:** conditions with `governance_pending` source status appear in the map so the cross-domain structure is visible. They must not enter card authoring until the governance decision in Section 2.5 is resolved.
 
 ```
-Condition
-    ↓
-Primary-care presentations it explains
-    ↓
-Important alternative presentations
-    ↓
-Dangerous alternatives
-    ↓
-Presentation pathways in which it participates
+Patient presentation cluster
+        ↓
+Candidate conditions (AFI-owned + cross-domain participants)
+        ↓
+Flags: safety_priority · source_status · canonical_domain
+        ↓
+Section 4: which pairs require formal disambiguation
 ```
 
-Only after this mapping is established are presentation pathways aggregated.
+### 3.2 Presentation matrix
 
-Candidate pathways include:
+**Legend:**
+- ● AFI-owned condition, card exists
+- ○ AFI-owned condition, card needed
+- ◑ Cross-domain participant, card exists
+- ⚠ governance_pending — source decision required before card authoring
 
-- acute undifferentiated fever;
-- fever with respiratory symptoms;
-- fever with gastrointestinal symptoms;
-- fever with urinary symptoms;
-- fever with neurological symptoms;
-- fever with rash or other systemic features.
+---
 
-These are **not assumed to have equal scope or complexity**. Their content is determined by the conditions that legitimately participate in each pathway.
+**P1 — Acute undifferentiated fever**
+*Fever without a localising focus at point of initial assessment.*
 
-Every condition appearing in a pathway must have an explicit card-level justification.
+| Candidate | Status | Safety | Notes |
+|-----------|--------|--------|-------|
+| Malaria | ● | High | Must be first consideration in all endemic regions |
+| Dengue | ● | High | Especially coast and lake basin; pre-rash phase indistinguishable from malaria |
+| Typhoid | ● | High | Insidious onset; constipation or no GI symptoms in early phase |
+| Chikungunya | ● | Important | Arthralgia may be subtle or absent in first 48h |
+| Leptospirosis | ○ ⚠ | Important | Often missed; exposure history (floodwater, livestock) is key discriminator |
+| Rickettsial illness | ○ ⚠ | Important | Eschar and rash often absent or unnoticed at first presentation |
+| Brucellosis | ○ ⚠ | Important | Undulant fever pattern; livestock exposure is discriminating |
+| Meningitis | ○ | High | Must be excluded before fever is labelled undifferentiated; neck stiffness may be absent early |
 
-**To be populated** after inventory is complete.
+---
+
+**P2 — Fever + headache / neurological features**
+*Fever with prominent headache, altered consciousness, neck stiffness, photophobia, or focal neurology.*
+
+| Candidate | Status | Safety | Notes |
+|-----------|--------|--------|-------|
+| Meningitis | ○ | High | Mandatory safety candidate whenever fever + headache + any neurological sign |
+| Malaria (cerebral) | ● | High | Altered consciousness with fever = cerebral malaria until proven otherwise |
+| Typhoid | ● | High | Typhoid encephalopathy; headache is a cardinal feature of early typhoid |
+| Dengue | ● | High | Retro-orbital headache is discriminating; severe headache in dengue haemorrhagic fever |
+| Rickettsial illness | ○ ⚠ | Important | Severe headache + fever + rash triad; meningeal involvement documented |
+| Leptospirosis | ○ ⚠ | Important | Weil's disease can present with meningism |
+
+---
+
+**P3 — Fever + respiratory symptoms**
+*Fever with cough, dyspnoea, chest pain, or abnormal respiratory examination.*
+
+| Candidate | Status | Safety | Notes |
+|-----------|--------|--------|-------|
+| Pneumonia (CAP) | ◑ | High | Primary respiratory candidate; acute onset, productive cough, pleuritic pain |
+| Malaria | ● | High | Cough is associated symptom in malaria; do not anchor on respiratory presentation alone |
+| TB | ◑ | High | Subacute/chronic; duration >2 weeks, night sweats, weight loss distinguish from acute CAP |
+| Leptospirosis | ○ ⚠ | Important | Pulmonary haemorrhage syndrome (Weil–Leptospirosis lung); rare but high mortality |
+| Rickettsial illness | ○ ⚠ | Important | Interstitial pneumonitis documented in scrub typhus and spotted fever group |
+
+---
+
+**P4 — Fever + gastrointestinal symptoms**
+*Fever with diarrhoea, vomiting, abdominal pain, or nausea.*
+
+| Candidate | Status | Safety | Notes |
+|-----------|--------|--------|-------|
+| Typhoid | ● | High | Relative bradycardia, abdominal distension, rose spots; perforation is a red flag |
+| Cholera | ○ | High | Rice-water diarrhoea, rapid severe dehydration; high mortality without prompt fluid replacement |
+| Malaria | ● | High | GI symptoms common in malaria; do not dismiss malaria because GI features are present |
+| Dengue | ● | High | Vomiting and abdominal pain are warning signs for dengue haemorrhagic fever |
+| Leptospirosis | ○ ⚠ | Important | Nausea, vomiting, and abdominal pain in early phase |
+| Acute gastroenteritis | ◑ | Routine–Important | Cross-domain participant (GI domain); cholera must be distinguished from other AGE |
+
+---
+
+**P5 — Fever + rash**
+*Fever with any skin manifestation: maculopapular rash, petechiae, purpura, eschar, or erythema.*
+
+| Candidate | Status | Safety | Notes |
+|-----------|--------|--------|-------|
+| Dengue | ● | High | Maculopapular rash day 3–5; petechiae/purpura = haemorrhagic dengue, high risk |
+| Chikungunya | ● | Important | Maculopapular rash; often concurrent with dengue in co-endemic regions |
+| Rickettsial illness | ○ ⚠ | Important | Eschar (inoculation site) is pathognomonic where present; maculopapular or petechial rash |
+| Meningitis | ○ | High | Petechial or purpuric rash with fever = meningococcal septicaemia until proven otherwise; emergency |
+| Malaria | ● | High | Rash is not a malaria feature; its presence should prompt consideration of an alternative or co-diagnosis |
+
+---
+
+**P6 — Fever + arthralgia / myalgia**
+*Fever with joint pain, joint swelling, or severe muscle aches as a prominent feature.*
+
+| Candidate | Status | Safety | Notes |
+|-----------|--------|--------|-------|
+| Chikungunya | ● | Important | Severe polyarthralgia is the defining feature; can persist weeks after fever resolves |
+| Dengue | ● | High | Bone-break fever; severe myalgia and arthralgia, retro-orbital pain |
+| Malaria | ● | High | Myalgia and arthralgia common; must not be displaced by a musculoskeletal label |
+| Leptospirosis | ○ ⚠ | Important | Severe myalgia (especially calf muscles) is a discriminating feature |
+| Rickettsial illness | ○ ⚠ | Important | Myalgia prominent; arthralgia less common than in chikungunya |
+| Brucellosis | ○ ⚠ | Important | Arthritis (sacroiliac, large joints) in subacute brucellosis |
+
+---
+
+**P7 — Fever + jaundice**
+*Fever with visible jaundice or laboratory evidence of hepatic or haemolytic dysfunction.*
+
+| Candidate | Status | Safety | Notes |
+|-----------|--------|--------|-------|
+| Malaria | ● | High | Haemolytic jaundice; severe malaria — high urgency |
+| Leptospirosis | ○ ⚠ | Important | Weil's disease: fever + jaundice + renal failure triad; high mortality |
+| Typhoid | ● | High | Hepatomegaly and jaundice in complicated typhoid |
+| Dengue | ● | High | Hepatitis in severe dengue; jaundice is a warning sign |
+
+---
+
+**P8 — Acute watery diarrhoea ± severe dehydration**
+*Profuse watery diarrhoea with or without vomiting; dehydration as the dominant clinical problem.*
+
+| Candidate | Status | Safety | Notes |
+|-----------|--------|--------|-------|
+| Cholera | ○ | High | Rice-water stools, absence of fever in many cases; suspect in outbreak context or known endemic area |
+| Acute gastroenteritis | ◑ | Routine–Important | Cross-domain (GI domain); more common cause; distinguished from cholera by stool character and context |
+| Typhoid | ● | High | Diarrhoea can occur in typhoid; not the dominant presentation — important safety differential |
+
+*Note: P8 has deliberate overlap with P4. The distinction is that P8 is triggered when dehydration severity drives the clinical encounter rather than fever.*
+
+---
+
+**P9 — Prolonged or recurrent fever**
+*Fever lasting >7 days, or fever that resolves and recurs without a confirmed diagnosis.*
+
+| Candidate | Status | Safety | Notes |
+|-----------|--------|--------|-------|
+| TB | ◑ | High | Subacute systemic disease; the key differential when acute causes have been excluded |
+| Brucellosis | ○ ⚠ | Important | Undulant fever is the classic pattern; livestock exposure history is essential |
+| Typhoid | ● | High | Persistent fever with relative bradycardia; stepped fever pattern in classic presentation |
+| Malaria | ● | High | Recurrent fever with periodicity (tertian/quartan); must be excluded by repeat RDT |
+| Leptospirosis | ○ ⚠ | Important | Biphasic illness: leptospiraemic phase + immune phase separated by brief remission |
+
+### 3.3 Cross-domain participation summary
+
+| Condition | Canonical domain | Participates in AFI pathways |
+|-----------|-----------------|------------------------------|
+| Pneumonia (CAP) | Respiratory | P3, P1 (as differential) |
+| Pulmonary tuberculosis | NTLD-P | P3, P9 |
+| Acute gastroenteritis | Gastrointestinal | P4, P8 |
+
+These conditions appear in the presentation matrix because excluding them is clinically necessary. They do not require new cards under this domain contract.
+
+### 3.4 Conditions not included and why
+
+The following conditions can cause fever but are **not included** in this domain's presentation map at this stage:
+
+| Condition | Reason excluded |
+|-----------|----------------|
+| Yellow fever | Vaccine-preventable; limited Kenya primary-care diagnostic relevance outside outbreak; no endemic primary-care caseload |
+| Rift Valley fever | Outbreak-associated; not a routine primary-care differential; surveillance-driven detection |
+| Viral haemorrhagic fevers (Ebola, Marburg) | Outbreak-only; primary care role is recognition + immediate isolation/referral, not differential diagnosis; separate protocol required |
+| Visceral leishmaniasis | Chronic rather than acute febrile presentation; distinct geographic restriction (Baringo, Turkana, Isiolo); separate domain |
+| HIV primary infection | Seroconversion illness overlaps but HIV belongs to a distinct chronic-disease management domain |
+| Malaria in pregnancy | Managed under an obstetric domain overlay; existing card flags this; not a separate AFI condition |
+
+Mention in a reference guideline is not sufficient for inclusion. Inclusion requires: routine primary-care diagnostic relevance + a plausible treatment pathway at primary-care level + a defensible authoritative source.
 
 ---
 
