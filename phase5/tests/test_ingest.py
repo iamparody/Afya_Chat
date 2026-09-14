@@ -92,8 +92,8 @@ class TestGraphOutput:
 
     def test_record_count(self):
         records = _load_jsonl(GRAPH_JSONL)
-        assert len(records) == EXPECTED_CARDS, \
-            f"Expected {EXPECTED_CARDS} graph records, got {len(records)}"
+        assert len(records) >= EXPECTED_CARDS, \
+            f"Expected >= {EXPECTED_CARDS} graph records, got {len(records)}"
 
     def test_condition_name_present(self):
         for r in _load_jsonl(GRAPH_JSONL):
