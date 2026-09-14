@@ -573,6 +573,8 @@ See Phase 8b section above.
 - [ ] 2. Presentation map integration — boost + provenance labels per candidate (`map-supported` / `retrieval-only` / `map+retrieval`)
 - [x] 3. Neo4j pairwise-discrimination schema — DIFFERENTIATED_FROM relationship + indexes; afi_pairs.yaml (source of truth); pairwise_loader.py; all 17 pairs dry-run validated (2026-09-14)
 - [x] 4. Section 4 pairwise matrix (domain contract) — 17 pairs complete (2026-09-14): 3 mandatory safety + 14 required; 5 pending governance decisions
+- [ ] 5. Graph relationship schema migration — ASSOCIATED_WITH (comorbidity/context), COMPLICATED_BY (complication), REQUIRES_CONTEXT (material missing info); neo4j/migrations/003_comorbidity_schema.cypher; corpus cards add comorbidity_signals frontmatter block
+- [ ] 6. Comorbidity context engine — phase7/comorbidity_engine.py; same 3-layer pattern as get_environmental_evidence(); injected via build_context(); base ICD preserved, alert note added
 - [ ] Future components (BM25, cross-encoder reranker, query expansion) — added only when a measured retrieval failure justifies them; corpus size alone is not a trigger
 
 **Target retrieval stack:**
@@ -620,6 +622,8 @@ Clinician decision → Encounters DB → (future) feedback signal
 | 2026-09-10 | OpenMeteoProvider feeds audit trail only (does not gate signals) | Thresholds are not yet calibrated; activating rainfall gating without a characterised baseline would introduce uncalibrated priors. StaticCalendarProvider remains the gating mechanism until thresholds are derived from ≥5-year historical baseline. |
 | 2026-09-11 | Two approved card authoring methods: LLM-assisted drafting from WHO/MOH PDFs (preferred) and PrimeKG scaffold + clinical authorship | LLM drafting cuts authoring time from hours to ~20 min of clinician review; PrimeKG provides disease-symptom-differential scaffolds for conditions with clear global data but limited Kenya guidelines. Neither removes clinician review gate. Documented in CLAUDE.md Governance Rules. |
 | 2026-09-14 | Retrieval architecture: router seam + boost model | Presentation map is a boost/prior, not an exclusion gate. RetrievalRouter abstracts retrieval behind a stable interface; future components (BM25, cross-encoder) plug in without touching outer pipeline logic. Trigger for new components: measured retrieval failure, not corpus size. |
+| 2026-09-14 | Graph relationship taxonomy — four distinct clinical relationships | DIFFERENTIATED_FROM (competing diagnosis, built); ASSOCIATED_WITH (comorbidity/context — e.g. pregnancy, HIV); COMPLICATED_BY (complication — e.g. anaemia, AKI); REQUIRES_CONTEXT (clinically material missing information). Pregnancy is not a differential or complication — it is a context that changes management and coding. Schema migration for ASSOCIATED_WITH / COMPLICATED_BY / REQUIRES_CONTEXT to follow router seam refactor. |
+| 2026-09-14 | Comorbidity context engine — Phase 7 analogy | Same 3-layer pattern as environmental context: corpus cards declare comorbidity_signals (presentation_indicators, demographic gate, effect, missing_info_prompt); engine scans presentation text deterministically; injects labelled alert into LLM via build_context(). ICD is base code + alert note — system does not assert unconfirmed comorbidity. Builds after router seam + map integration. |
 
 ---
 
