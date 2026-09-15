@@ -1,0 +1,243 @@
+condition: Chikungunya
+icd11: 1D67
+icd10: A92.0
+category: infectious
+corpus_version: "1.0"
+schema_version: "2.2"
+review_status: draft
+reviewed_by:
+last_reviewed:
+
+sources:
+  - organization: World Health Organization
+    title: "Chikungunya Fact Sheet"
+    year: "2025"
+    url: "https://www.who.int/news-room/fact-sheets/detail/chikungunya"
+
+endemic_regions:
+  - coast
+  - lake_basin
+  - urban_informal
+
+environmental_signals:
+  - signal: post_long_rains
+    pathways:
+      - vector_borne
+    effect_type: transmission_opportunity
+    effect_direction: up
+    lag_weeks:
+      min: 0
+      max: 4
+    strength: moderate
+    confidence: moderate
+    causal_distance: direct
+    evidence_type: regional_epidemiological_evidence
+    regions:
+      - coast
+      - lake_basin
+    seasonal_basis: typical_long_rains
+    applicability:
+      requires_exposure:
+        - mosquito_exposure_high
+      amplifiers: []
+  - signal: post_short_rains
+    pathways:
+      - vector_borne
+    effect_type: transmission_opportunity
+    effect_direction: up
+    lag_weeks:
+      min: 0
+      max: 4
+    strength: moderate
+    confidence: moderate
+    causal_distance: direct
+    evidence_type: regional_epidemiological_evidence
+    regions:
+      - coast
+      - lake_basin
+    seasonal_basis: typical_short_rains
+    applicability:
+      requires_exposure:
+        - mosquito_exposure_high
+      amplifiers: []
+
+graph:
+  cardinal_symptoms:
+    - fever
+    - polyarthralgia
+    - maculopapular rash
+  associated_symptoms:
+    - joint swelling
+    - myalgia
+    - headache
+    - nausea
+    - fatigue
+    - pruritus
+  risk_factors:
+    - endemic area residence
+    - travel to endemic area
+    - no acquired immunity
+  differentials:
+    - Dengue fever
+    - Malaria (unspecified)
+    - Typhoid fever
+    - Zika virus infection
+    - Reactive arthritis
+    - Rheumatic fever
+  argues_against:
+    - retro-orbital headache
+    - thrombocytopenia
+    - severe bleeding
+    - dengue warning signs
+  red_flags:
+    - severe dehydration
+    - altered consciousness
+  confirms:
+    - positive CHIKV RT-PCR
+    - positive anti-CHIKV IgM
+
+sections:
+  cardinal_symptoms: |
+    Chikungunya presents with abrupt-onset high fever — characteristically 38.5–40°C —
+    and severe polyarthralgia that is often debilitating. The arthralgia is the defining
+    clinical feature: it is symmetric, predominantly affects small joints (wrists,
+    metacarpophalangeal joints, ankles, metatarsophalangeal joints), and may be so
+    severe that the patient cannot walk or grip. A maculopapular rash typically appears
+    on days 2–5 of illness, is generalised including the palms and soles, and is often
+    pruritic. The name chikungunya derives from a Kimakonde word meaning "that which
+    bends up," describing the stooped posture of patients with severe joint pain. Fever
+    typically resolves within 7–10 days; arthralgia may persist for weeks to months
+    after the acute febrile phase and can be misdiagnosed as rheumatoid arthritis or
+    gout in the convalescent period.
+
+  associated_symptoms: |
+    Joint swelling accompanies arthralgia in many cases — periarticular oedema of the
+    wrists and ankles is common. Myalgia is less severe than in dengue and rarely
+    produces the "break-bone" intensity characteristic of dengue. Headache is common
+    and typically frontal or generalised; unlike dengue, retro-orbital pain is unusual.
+    Nausea is frequent in the early febrile phase. Fatigue may be profound and persist
+    well beyond the febrile phase, contributing to the post-chikungunya syndrome of
+    chronic arthralgia and fatigue. Pruritus accompanying the rash is a useful feature
+    when present. Mild mucosal bleeding such as gum bleeding may occur rarely but is
+    not a feature of chikungunya — its presence should prompt re-evaluation for dengue.
+    In infants, febrile seizures may occur but are not specific. Lymphadenopathy is
+    occasionally reported.
+
+  diagnostic_features: |
+    At primary care level in Kenya, chikungunya is a clinical diagnosis. No point-of-
+    care test is currently available in most primary care settings. Definitive laboratory
+    diagnosis requires RT-PCR for CHIKV RNA in the first 5 days of illness (when
+    viraemia is high) or anti-CHIKV IgM serology from day 5 onwards; both require
+    referral laboratory capacity. A positive malaria RDT in a febrile patient does not
+    exclude concurrent chikungunya — co-infection with malaria is possible in endemic
+    areas and both should be considered. Full blood count: chikungunya characteristically
+    does not produce significant thrombocytopenia (in contrast to dengue, which typically
+    shows platelet count below 100,000/µL by day 3–5). Leukopenia may occur but is
+    milder than in dengue. Lymphopenia rather than thrombocytopenia supports chikungunya
+    over dengue. In settings with dengue co-endemicity, a negative dengue NS1 antigen
+    test on days 1–5, combined with prominent polyarthralgia, strongly supports
+    chikungunya. Liver enzymes (ALT, AST) may be mildly elevated.
+
+  predisposing_factors: |
+    Residence in or travel to a chikungunya-endemic area is the primary risk factor —
+    the vector, Aedes aegypti and Aedes albopictus mosquitoes, are the same as for
+    dengue and Zika. In Kenya, coastal regions (Mombasa, Kilifi, Lamu, Malindi) and
+    urban informal settlements — where containers with standing water provide abundant
+    breeding sites — carry the highest transmission risk. Chikungunya has caused
+    documented outbreaks in Mombasa and Mandera counties. The lake basin (Kisumu) is
+    at moderate risk. Individuals without prior chikungunya infection are fully
+    susceptible; prior infection confers durable immunity. Aedes mosquitoes are day-
+    biting, with peak activity in early morning and late afternoon. At-risk periods
+    coincide with post-rainfall Aedes breeding peaks: 2–6 weeks after the long rains
+    (March–May) and 2–6 weeks after the short rains (October–November).
+
+  typical_presentation: |
+    An adult or older child presents from coastal Kenya — Mombasa, Kilifi, Malindi — or
+    from an urban informal settlement with sudden-onset high fever and severe joint pain
+    that appeared simultaneously over one to two days. The patient is unable to walk
+    comfortably due to ankle and wrist pain. Small joints of the hands are also painful
+    and swollen. On days 3–5, a pruritic maculopapular rash appears over the trunk,
+    face, and limbs. Headache is present; retro-orbital pain is absent. There is no
+    severe abdominal pain, no mucosal bleeding, and no haemodynamic instability. A
+    malaria RDT is negative. Platelet count, if available, is normal or near-normal.
+    The patient does not have significant prior joint disease. Recovery of the fever
+    occurs within a week but the patient reports that joint pain persists and may seek
+    follow-up care weeks later for ongoing arthralgia — at which point the acute febrile
+    episode may not be volunteered unless specifically asked.
+
+  differential_diagnoses: |
+    Dengue fever is the critical differential in co-endemic coastal Kenya and urban
+    Nairobi. Shared features include acute fever, maculopapular rash, arthralgia and
+    myalgia. Distinguishing features: dengue produces retro-orbital pain (diagnostically
+    useful when present); thrombocytopenia (platelet count below 100,000/µL) is
+    characteristic of dengue and rare in chikungunya; severe myalgia ("break-bone fever")
+    is more prominent in dengue; dengue warning signs (persistent vomiting, severe
+    abdominal pain, mucosal bleeding, clinical deterioration) indicate plasma leakage —
+    a dengue complication that does not occur in chikungunya; dengue NS1 antigen test
+    is positive in early dengue. The severity of polyarthralgia — incapacitating, small-
+    joint, symmetric — is the most useful discriminating feature for chikungunya.
+    Malaria must always be excluded with a malaria RDT in Kenya given its prevalence
+    and the overlap in fever pattern. Zika virus infection shares the same vector and
+    can cause fever, rash, and mild arthralgia; Zika arthralgia is typically much milder
+    than chikungunya and congenital Zika syndrome (microcephaly) is the primary concern
+    in pregnancy. Typhoid fever presents with gradual-onset fever, prominent abdominal
+    features, and relative bradycardia — without the acute polyarthralgia or rash
+    pattern of chikungunya. Reactive arthritis (post-infectious arthritis) can cause
+    symmetric joint involvement following enteric or urogenital infection but presents
+    days to weeks after an initial infection and without the acute febrile-rash-arthralgia
+    triad of chikungunya onset. Acute rheumatic fever presents with migratory arthritis
+    — typically affecting large joints in sequence — in a child or adolescent after
+    streptococcal pharyngitis; fever and rash (erythema marginatum) may coexist but the
+    migratory pattern and cardiac involvement distinguish it.
+
+  argues_against: |
+    Retro-orbital pain — pain behind the eyes worsened by eye movement — is a
+    characteristic dengue feature and argues against chikungunya when prominent; its
+    presence should lower chikungunya likelihood and raise dengue. Dengue warning signs
+    — persistent vomiting preventing oral intake, severe abdominal pain, bleeding from
+    mucous membranes (gums, nose, vagina), clinical deterioration or restlessness,
+    liver enlargement — indicate plasma leakage and argue strongly against chikungunya.
+    Significant thrombocytopenia (platelet count below 100,000/µL) argues against
+    chikungunya and toward dengue. Haemorrhagic manifestations — spontaneous mucosal
+    bleeding, purpura, haematemesis — argue strongly against chikungunya and toward
+    dengue haemorrhagic fever; chikungunya does not cause clinically significant
+    haemorrhage. Gradual insidious onset over more than three days argues against
+    chikungunya (which is characteristically abrupt) and toward typhoid or TB. Absence
+    of joint involvement — fever and rash without arthralgia — argues against chikungunya,
+    for which polyarthralgia is the defining feature; if arthralgia is truly absent,
+    dengue or malaria are more likely. Prior confirmed chikungunya infection argues
+    against current chikungunya, as reinfection is rare.
+
+  red_flags: |
+    Severe dehydration — especially in elderly patients or young children — can result
+    from fever and inability to maintain oral intake due to joint pain limiting mobility
+    and self-care. Assess hydration status and ensure oral rehydration or IV access if
+    needed before discharge. Neurological complications — encephalitis, Guillain-Barré
+    syndrome, acute disseminated encephalomyelitis — are rare but reported with CHIKV
+    infection; altered consciousness, focal neurological signs, or seizures in a patient
+    with chikungunya should prompt urgent referral. Neonatal chikungunya — occurring
+    when a mother develops viraemia within 4 days before delivery — is associated with
+    severe neonatal disease including encephalopathy, haemorrhage, myocardial damage,
+    and high mortality; a neonate born to a febrile mother with suspected chikungunya
+    requires paediatric review. Cardiovascular complications (myocarditis, pericarditis)
+    are rare but have been reported; chest pain or cardiac arrhythmia in the context of
+    chikungunya warrants referral.
+
+  diagnostic_context: |
+    At primary care level, chikungunya management is symptomatic and supportive: no
+    antiviral treatment exists. Paracetamol (15 mg/kg 6-hourly in children; 500 mg–1g
+    6-hourly in adults) is first-line for fever and pain. Non-steroidal anti-inflammatory
+    drugs (NSAIDs — ibuprofen, diclofenac) should be withheld until dengue has been
+    excluded, as NSAIDs increase haemorrhagic risk in dengue. Once dengue is excluded,
+    NSAIDs may be used for arthralgia in the convalescent phase. Aspirin should be
+    avoided. Oral rehydration is essential — encourage 2–3 litres of fluid daily.
+    Patients should avoid further mosquito bites during the viraemic phase (first week)
+    to prevent transmission to Aedes mosquitoes and onwards. Do not prescribe
+    corticosteroids in the acute phase. The critical clinical decision is dengue
+    exclusion: if the patient has any dengue warning signs, significant thrombocytopenia,
+    or retro-orbital pain — refer same day for dengue assessment and IV access. For
+    convalescent arthralgia persisting beyond 4 weeks, refer for outpatient review and
+    consider rheumatological assessment if joint inflammation continues beyond 3 months
+    (post-chikungunya chronic arthropathy). Notify the disease surveillance officer for
+    any cluster of chikungunya-compatible cases — chikungunya is a notifiable arboviral
+    disease in Kenya that may signal an outbreak requiring vector control response.

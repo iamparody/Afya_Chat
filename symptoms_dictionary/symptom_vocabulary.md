@@ -503,3 +503,8 @@
 | Glasgow Coma Scale below 8 | GCS below 8, GCS 8 or less, severe coma GCS |
 | turbid CSF on lumbar puncture | cloudy CSF, purulent CSF, turbid cerebrospinal fluid LP |
 | positive blood culture | blood culture positive, bacteraemia on culture |
+| polyarthralgia | symmetric polyarthritis, multiple joint pain, polyarthropathy |
+| joint swelling | swollen joints, periarticular swelling, joint oedema |
+| dengue warning signs | dengue plasma leakage signs, dengue warning criteria, abdominal pain vomiting mucosal bleeding deterioration |
+| positive CHIKV RT-PCR | chikungunya RT-PCR positive, CHIKV PCR positive, chikungunya nucleic acid detected |
+| positive anti-CHIKV IgM | chikungunya serology positive, anti-chikungunya IgM, CHIKV IgM positive |

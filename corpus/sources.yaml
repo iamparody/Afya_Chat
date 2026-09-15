@@ -169,6 +169,13 @@ sources:
     year: 2024
     url: ""
 
+  - condition: Chikungunya
+    authority_tier: who_global
+    authority: World Health Organization
+    title: "Chikungunya Fact Sheet"
+    year: 2025
+    url: "https://www.who.int/news-room/fact-sheets/detail/chikungunya"
+
   # ── Cholera — Gate 2 closure card ─────────────────────────────────────────────
   - condition: Cholera
     authority_tier: who_afro

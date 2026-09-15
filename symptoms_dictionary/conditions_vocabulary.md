@@ -106,3 +106,6 @@
 | amoebic colitis | amoebic dysentery, amoebiasis, Entamoeba histolytica infection |
 | irritable bowel syndrome | IBS, spastic colon |
 | tropical sprue | post-infectious malabsorption, tropical malabsorption |
+| Zika virus infection | Zika fever, Zika virus disease, ZIKV infection |
+| Reactive arthritis | post-infectious arthritis, Reiter's syndrome, post-infectious reactive arthropathy |
+| Rheumatic fever | acute rheumatic fever, ARF, streptococcal arthritis, post-streptococcal arthritis |

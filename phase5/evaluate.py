@@ -217,6 +217,28 @@ COVERAGE_CASES = [
             ],
         },
     },
+    {
+        "id": "8",
+        "label": "Chikungunya — coastal Kenya, severe polyarthralgia",
+        "presentation": (
+            "28F from Kilifi, coastal Kenya. 3 days of abrupt-onset high fever 39.5°C "
+            "and severe symmetric joint pain affecting both wrists, ankles, and fingers — "
+            "cannot grip a cup or walk comfortably. Pruritic maculopapular rash appeared "
+            "yesterday over trunk and arms. No retro-orbital pain. No abdominal pain. "
+            "No mucosal bleeding. Malaria RDT negative."
+        ),
+        "checks": {
+            "primary_contains":     ["chikungunya"],
+            "red_flags_contain":    [],
+            "missing_info_contain": ["dengue", "platelet", "NS1"],
+            "prohibited_strings":   [],
+            "manual": [
+                "Polyarthralgia severity and small-joint symmetric pattern cited as key discriminating feature vs dengue",
+                "Dengue exclusion explicitly addressed — retro-orbital pain, thrombocytopenia, or warning signs absent",
+                "Paracetamol preferred over NSAIDs until dengue excluded",
+            ],
+        },
+    },
 ]
 
 
