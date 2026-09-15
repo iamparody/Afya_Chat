@@ -98,7 +98,7 @@ CASES = [
             "No urinary symptoms mentioned."
         ),
         "checks": {
-            "primary_contains":     ["uti", "urinary", "gastroenteritis", "appendicitis"],
+            "primary_contains":     ["uti", "urinary", "gastroenteritis"],
             "red_flags_contain":    [],  # Red flags scope limited to leading+same-confidence; AGE/malaria red flag content varies
             "missing_info_contain": ["dysuria", "frequency", "urine", "dipstick"],
             "prohibited_strings":   ["no uti because", "no dysuria", "dysuria present", "dysuria is absent"],
@@ -106,7 +106,6 @@ CASES = [
                 "Neither UTI nor AGE confirmed as sole primary — must be co-equal candidates",
                 "Absent urinary symptoms stated as 'not documented', not as negative finding",
                 "Urosepsis and dehydration should appear as red flags — verify in output",
-                "Appendicitis is clinically valid primary for this presentation — accepted alongside UTI/AGE",
             ],
         },
     },
@@ -185,6 +184,36 @@ CASES = [
             "manual": [
                 "Absent GI symptoms noted but NOT used to exclude GI blood loss as a cause",
                 "Haemoglobin <7 g/dL threshold should appear as red flag — verify in output",
+            ],
+        },
+    },
+]
+
+# Cases 1-6 are the regression suite (baseline 8/8). Case 7+ are coverage tests
+# for conditions added after the baseline was established. Gate applies to CASES
+# only; COVERAGE_CASES are reported separately and do not move the gate threshold.
+REGRESSION_IDS = {"1", "2a", "2b", "3", "4a", "4b", "5", "6"}
+
+COVERAGE_CASES = [
+    {
+        "id": "7",
+        "label": "Appendicitis — classical RLQ migration",
+        "presentation": (
+            "19M, 14 hours of periumbilical pain that has shifted and localised to the "
+            "right lower abdomen. Refused food since yesterday morning — anorexic. "
+            "Nausea, one episode of vomiting after pain started. Low-grade fever 37.9°C. "
+            "Maximal tenderness at McBurney's point. Rebound tenderness on release. "
+            "No diarrhoea."
+        ),
+        "checks": {
+            "primary_contains":     ["appendicitis"],
+            "red_flags_contain":    [],
+            "missing_info_contain": ["fbc", "leucocyt", "ultrasound", "USS", "urin"],
+            "prohibited_strings":   [],
+            "manual": [
+                "Pain migration sequence (periumbilical → RLQ) cited as key discriminating feature",
+                "Anorexia preceding vomiting used to support diagnosis — not reverse",
+                "Referral language present — appendicitis is recognition-and-refer in primary care",
             ],
         },
     },
@@ -403,14 +432,9 @@ def print_paired(comp: dict):
 
 # ── Runner ────────────────────────────────────────────────────────────────────
 
-def run_all(case_ids=None, embedder=None):
-    cases_to_run = CASES
-    if case_ids:
-        cases_to_run = [c for c in CASES if c["id"] in case_ids]
-
+def _run_cases(cases_to_run, embedder):
     results_by_id = {}
     scored_list   = []
-
     for case in cases_to_run:
         print(f"\nRunning Case {case['id']}: {case['label']} ...", flush=True)
         try:
@@ -427,36 +451,66 @@ def run_all(case_ids=None, embedder=None):
                 "checks": [{"label": "Pipeline", "pass": False, "detail": str(e)}],
                 "manual": [], "result": {},
             })
+    return results_by_id, scored_list
 
-    # Paired comparisons (only when both cases ran)
+
+def run_all(case_ids=None, embedder=None):
+    if case_ids:
+        # Single-case runs — check both CASES and COVERAGE_CASES
+        all_known = CASES + COVERAGE_CASES
+        cases_to_run = [c for c in all_known if c["id"] in case_ids]
+        results_by_id, scored_list = _run_cases(cases_to_run, embedder)
+        total_pass  = sum(1 for s in scored_list if s["failed"] == 0)
+        total_fail  = len(scored_list) - total_pass
+        total_manual = sum(len(s["manual"]) for s in scored_list)
+        print(f"\n{'='*60}")
+        print(f"SUMMARY: {total_pass}/{len(scored_list)} cases auto-passed | {total_fail} failed | {total_manual} manual checks")
+        print(f"{'='*60}")
+        return scored_list
+
+    # Full suite: regression cases first, then coverage cases
+    print(f"\n{'='*60}")
+    print("REGRESSION SUITE (Cases 1-6)")
+    print(f"{'='*60}")
+    reg_results, reg_scored = _run_cases(CASES, embedder)
+
+    # Paired comparisons
     print(f"\n{'='*60}")
     print("Paired confidence comparisons")
     print(f"{'='*60}")
-
-    if "2a" in results_by_id and "2b" in results_by_id:
+    if "2a" in reg_results and "2b" in reg_results:
         comp = compare_confidence(
-            results_by_id["2a"], results_by_id["2b"],
+            reg_results["2a"], reg_results["2b"],
             ["tuberculosis", "tb"], "2a TB", "2b TB"
         )
         print_paired(comp)
-
-    if "4a" in results_by_id and "4b" in results_by_id:
+    if "4a" in reg_results and "4b" in reg_results:
         comp = compare_confidence(
-            results_by_id["4a"], results_by_id["4b"],
+            reg_results["4a"], reg_results["4b"],
             ["diabetes", "type 2"], "4a T2DM", "4b T2DM"
         )
         print_paired(comp)
 
+    # Coverage cases
+    print(f"\n{'='*60}")
+    print("COVERAGE TESTS (corpus expansion — not part of regression gate)")
+    print(f"{'='*60}")
+    _, cov_scored = _run_cases(COVERAGE_CASES, embedder)
+
     # Summary
-    total_pass  = sum(1 for s in scored_list if s["failed"] == 0)
-    total_fail  = len(scored_list) - total_pass
-    total_manual = sum(len(s["manual"]) for s in scored_list)
+    reg_pass  = sum(1 for s in reg_scored if s["failed"] == 0)
+    reg_fail  = len(reg_scored) - reg_pass
+    cov_pass  = sum(1 for s in cov_scored if s["failed"] == 0)
+    cov_total = len(cov_scored)
+    total_manual = sum(len(s["manual"]) for s in reg_scored + cov_scored)
 
     print(f"\n{'='*60}")
-    print(f"SUMMARY: {total_pass}/{len(scored_list)} cases auto-passed | {total_fail} failed | {total_manual} manual checks")
+    print(f"REGRESSION:  {reg_pass}/{len(reg_scored)} | {reg_fail} failed")
+    print(f"COVERAGE:    {cov_pass}/{cov_total}")
+    print(f"Manual checks: {total_manual}")
     print(f"{'='*60}")
 
-    return scored_list
+    return reg_scored + cov_scored
 
 
 if __name__ == "__main__":
@@ -466,7 +520,7 @@ if __name__ == "__main__":
         "--backend", default="cohere", choices=["google", "cohere"],
         help="Embedding backend to use (default: cohere)",
     )
-    parser.add_argument("cases", nargs="*", help="Optional case IDs to run (e.g. 2a 4b)")
+    parser.add_argument("cases", nargs="*", help="Optional case IDs to run (e.g. 2a 4b 7)")
     args = parser.parse_args()
 
     embedder = None  # CohereEmbedder initialised inside rag.run() by default
@@ -479,11 +533,13 @@ if __name__ == "__main__":
 
     scored = run_all(args.cases or None, embedder=embedder)
 
-    # Hard gate — only enforced on full suite runs; single-case runs are exempt
+    # Hard gate — regression suite only; single-case and coverage cases are exempt
     if not args.cases:
         THRESHOLD = 7
-        passes = sum(1 for s in scored if s["failed"] == 0)
+        reg_ids = REGRESSION_IDS
+        reg_only = [s for s in scored if s["id"] in reg_ids]
+        passes = sum(1 for s in reg_only if s["failed"] == 0)
         if passes < THRESHOLD:
-            print(f"\nGATE FAIL — {passes}/{len(CASES)} < {THRESHOLD} required. Pipeline blocked.")
+            print(f"\nGATE FAIL — Regression {passes}/{len(CASES)} < {THRESHOLD} required. Pipeline blocked.")
             sys.exit(1)
-        print(f"\nGATE PASS — {passes}/{len(CASES)} >= {THRESHOLD}.")
+        print(f"\nGATE PASS — Regression {passes}/{len(CASES)} >= {THRESHOLD}.")
