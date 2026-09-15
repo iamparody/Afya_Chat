@@ -1,0 +1,248 @@
+condition: Cholera
+icd11: 1A00
+icd10: A00.9
+category: infectious
+corpus_version: "1.0"
+schema_version: "2.2"
+review_status: draft
+reviewed_by:
+last_reviewed:
+
+sources:
+  - organization: WHO Regional Office for Africa / Ministry of Health Kenya
+    title: "Cholera Management Guidelines, 2023 Edition"
+    year: "2023"
+  - organization: Medscape
+    title: "Cholera Clinical Presentation and Differential Diagnosis"
+    year: "2023"
+
+endemic_regions:
+  - nationwide
+  - urban_informal
+  - lake_basin
+  - coast
+
+environmental_signals:
+  - signal: flooding
+    pathways:
+      - waterborne
+    effect_type: transmission_opportunity
+    effect_direction: up
+    lag_weeks:
+      min: 0
+      max: 2
+    strength: strong
+    confidence: high
+    causal_distance: direct
+    evidence_type: observed_outbreaks
+    regions:
+      - nationwide
+    seasonal_basis: outbreak_associated
+    applicability:
+      requires_exposure:
+        - unsafe_water
+      amplifiers:
+        - floodwater_contact
+
+  - signal: water_scarcity
+    pathways:
+      - waterborne
+    effect_type: transmission_opportunity
+    effect_direction: up
+    lag_weeks:
+      min: 0
+      max: 4
+    strength: moderate
+    confidence: moderate
+    causal_distance: indirect
+    evidence_type: expert_estimate
+    regions:
+      - arid_semi_arid
+      - urban_informal
+    seasonal_basis: dry_season
+    applicability:
+      requires_exposure:
+        - unsafe_water
+      amplifiers: []
+
+graph:
+  cardinal_symptoms:
+    - profuse watery diarrhoea
+    - rice-water stool
+    - acute onset diarrhoea
+    - severe dehydration
+    - vomiting
+  associated_symptoms:
+    - muscle cramps
+    - nausea
+    - sunken eyes
+    - dry mucous membranes
+    - reduced skin turgor
+    - tachycardia
+    - oliguria
+    - acidosis
+  risk_factors:
+    - contaminated water
+    - poor sanitation
+    - poor hand hygiene
+    - malnutrition
+    - HIV
+    - flooding
+    - displacement camp
+    - raw shellfish consumption
+  differentials:
+    - acute gastroenteritis
+    - rotavirus gastroenteritis
+    - shigellosis
+    - typhoid fever
+  argues_against:
+    - bloody stool
+    - mucoid stool
+    - insidious onset
+    - prominent fever
+    - tenesmus
+    - no rapid dehydration
+  red_flags:
+    - severe dehydration
+    - hypovolaemic shock
+    - altered consciousness
+    - pregnancy with cholera
+    - severe acute malnutrition
+    - pulmonary oedema
+    - renal failure
+  confirms:
+    - positive RDT for Vibrio cholerae
+    - positive stool culture
+    - positive PCR Vibrio cholerae
+
+sections:
+  cardinal_symptoms: |
+    Profuse, painless, effortless watery diarrhoea — characteristically described
+    as rice-water in appearance, often containing flakes of mucus — is the defining
+    feature of cholera. The onset is sudden, with stool output that may reach
+    10–20 litres per day in severe cases, leading to rapid and profound dehydration.
+    Vomiting commonly accompanies the diarrhoea, particularly in the early stages
+    of illness. Dehydration may progress from mild to severe within hours if fluid
+    losses are not replaced. Abdominal pain and cramping are notably absent or
+    minimal — the diarrhoea is effortless and non-painful, a distinguishing feature
+    from most other causes of acute diarrhoea.
+
+  associated_symptoms: |
+    Muscle cramps — particularly of the legs and abdomen — commonly result from
+    electrolyte losses, especially sodium and potassium. In severe dehydration,
+    signs of circulatory compromise may develop: sunken eyes, dry mucous membranes,
+    reduced skin turgor, and a rapid, weak, or impalpable radial pulse. Acidosis
+    from bicarbonate losses may cause deep, laboured breathing. Oliguria or anuria
+    reflects severe hypovolaemia and impending renal failure. Children are more
+    likely to be febrile than adults; fever is not a dominant or consistent feature
+    in most adult cases. Nausea typically accompanies the early vomiting phase.
+
+  diagnostic_features: |
+    Cholera is diagnosed clinically in outbreak settings using standard case
+    definitions. A suspected case is any person aged two years or older presenting
+    with effortless acute watery diarrhoea and severe dehydration, or dying from
+    such illness, in an area where an outbreak has not been confirmed; in a declared
+    outbreak area, any person presenting with effortless acute watery diarrhoea meets
+    the suspected case definition. A probable case is a suspected case with an
+    epidemiological link to a confirmed case, or a patient positive on a rapid
+    diagnostic test (RDT). A confirmed case requires microbiological confirmation —
+    Vibrio cholerae O1 or O139 identified by culture or PCR. Stool culture remains
+    the gold standard; RDT provides rapid presumptive diagnosis in field and primary
+    care settings. Acute watery diarrhoea is defined as three or more loose or watery
+    non-bloody stools within 24 hours. Laboratory investigations that may inform
+    management include full blood count, urea and electrolytes, creatinine, and blood
+    glucose — particularly in children and patients with comorbidities.
+
+  predisposing_factors: |
+    Cholera is fundamentally a disease of inadequate water, sanitation, and hygiene
+    (WASH). Principal risk factors include access to contaminated drinking water
+    from any source; inadequate sanitation and open defaecation; poor hand hygiene
+    around food preparation and after defaecation; consumption of raw or undercooked
+    seafood, particularly shellfish, from contaminated water; and contaminated food
+    or shared water containers. Populations at highest risk include residents of
+    informal settlements, displacement camps, prisons, and overcrowded institutions
+    with shared water sources. Malnutrition, underlying chronic diseases, and HIV
+    infection are thought to increase the severity of illness. Flooding and
+    environmental contamination of water sources are the most common precipitants
+    of outbreak-level transmission in Kenya.
+
+  typical_presentation: |
+    A patient from an urban informal settlement, displacement camp, or flood-affected
+    area — or residing in the context of a declared cholera outbreak — typically
+    presents with sudden onset of profuse, painless, watery diarrhoea with a
+    characteristic rice-water appearance and associated early vomiting. The patient
+    may appear acutely dehydrated: sunken eyes, dry mouth, reduced skin turgor, and
+    a rapid weak pulse. Abdominal pain is notably absent. The history usually reveals
+    exposure to a potentially contaminated water or food source, or close contact
+    with a known cholera case. In adults, the absence of significant fever and the
+    rapidity of dehydration relative to the degree of illness help distinguish cholera
+    from most other causes of acute diarrhoea. Children may present with additional
+    features of febrile illness.
+
+  differential_diagnoses: |
+    The clinical picture of cholera — sudden onset, profuse painless watery diarrhoea
+    with rapid profound dehydration — is usually distinctive and unlikely to be
+    confused with other conditions in adults, where no other infectious disease
+    commonly causes such rapid and severe fluid loss. In children, the differential
+    is broader. Enterotoxigenic Escherichia coli (ETEC) gastroenteritis produces
+    watery diarrhoea that may be clinically similar to mild cholera, but is generally
+    less severe, self-limiting, and causes less profound dehydration; culture or PCR
+    is required to differentiate. Rotavirus gastroenteritis is a major cause of acute
+    watery diarrhoea in children under five, with a similar clinical picture but
+    typically less voluminous and less rapidly dehydrating; it is usually self-limiting.
+    Shigellosis produces bloody, mucoid diarrhoea with fever and tenesmus — not the
+    clear watery rice-water stool of cholera — and confirms an inflammatory rather
+    than secretory aetiology. Typhoid fever has an insidious stepwise onset over one
+    to two weeks, with constipation more common than diarrhoea in the first week,
+    and does not produce the dramatic acute dehydration characteristic of cholera.
+    Other acute infectious gastroenteritides typically produce less voluminous
+    diarrhoea, may be accompanied by fever and abdominal cramps, and are less likely
+    to cause rapid cardiovascular compromise.
+
+  argues_against: |
+    Blood or mucus in the stool argues strongly against cholera — the presence of
+    blood in stool is explicitly not a characteristic of cholera and should prompt
+    consideration of shigellosis, amoebic colitis, or haemorrhagic E. coli infection.
+    Insidious onset over days to weeks rather than sudden onset within hours argues
+    against cholera and towards typhoid fever or tuberculosis. Prominent fever as the
+    dominant presenting feature is more consistent with malaria, typhoid, or bacterial
+    dysentery. Tenesmus and painful diarrhoea suggest an inflammatory or invasive
+    aetiology rather than the secretory mechanism of cholera. The absence of rapid or
+    profound dehydration despite significant diarrhoeal volume argues against cholera
+    in adults. No epidemiological link to a known outbreak, contaminated water source,
+    or cholera-affected setting substantially reduces the probability of cholera,
+    though sporadic cases may occur.
+
+  red_flags: |
+    Severe dehydration or hypovolaemic shock — evidenced by an absent or very weak
+    radial pulse, temperature gradient (cold peripheries), AVPU less than Alert, or
+    inability to drink — is a medical emergency requiring immediate intravenous
+    rehydration. Altered consciousness or coma indicates severe systemic compromise
+    and mandates urgent escalation and parenteral treatment. Pregnancy with cholera
+    carries a significantly higher risk of fetal loss, particularly in the second
+    and third trimester; immediate assessment and single-dose antibiotic therapy
+    are required alongside rehydration. Severe acute malnutrition (SAM) with
+    concurrent cholera markedly increases the risk of complications including
+    hypoglycaemia and pulmonary oedema from rehydration; special fluid protocols
+    apply and standard ORS — not ReSoMal — should be used. Oliguria or anuria
+    despite adequate rehydration may indicate acute renal failure requiring senior
+    review. Respiratory distress developing during intravenous rehydration should
+    raise concern for pulmonary oedema from excessive fluid administration.
+
+  diagnostic_context: |
+    In Kenya primary care, cholera should be considered in any patient presenting
+    with sudden-onset profuse watery diarrhoea — particularly in the context of a
+    declared outbreak, recent flooding, or residence in a high-risk setting such as
+    an informal settlement or displacement camp. Clinical assessment should rapidly
+    classify the degree of dehydration using the four-category system (no dehydration,
+    some dehydration, severe dehydration, shock), which determines the treatment plan.
+    Fluid management is the mainstay of treatment: oral rehydration solution (ORS)
+    for mild-to-moderate dehydration; Ringer's lactate intravenously for severe
+    dehydration and shock. Antibiotics — doxycycline as a single oral dose; azithromycin
+    or ciprofloxacin as alternatives — should be reserved for patients hospitalised
+    with severe dehydration, those failing initial rehydration, and patients with
+    comorbidities including pregnancy. A stool specimen or rectal swab should be
+    collected before antibiotic initiation wherever possible. Any suspected case must
+    be notified to the sub-county health management team within 24 hours — cholera is
+    a notifiable disease in Kenya and a single suspected case is an alert threshold
+    requiring immediate field investigation and enhanced WASH measures.

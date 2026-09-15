@@ -123,11 +123,18 @@ sources:
     url: ""
 
   # ── Cholera — Gate 2 closure card ─────────────────────────────────────────────
-  # URL verified from WHO AFRO Kenya publications page.
-  # PDF must be downloaded and archived before authoring begins.
   - condition: Cholera
     authority_tier: who_afro
-    authority: WHO Regional Office for Africa
+    authority: WHO Regional Office for Africa / Ministry of Health Kenya
     title: "Cholera Management Guidelines, 2023 Edition"
     year: 2023
     url: "https://www.afro.who.int/countries/kenya/publication/cholera-management-guidelines-2023-edition"
+    supplementary_sources:
+      - authority: Medscape
+        title: "Cholera Clinical Presentation and Differential Diagnosis"
+        year: 2023
+        url: "https://emedicine.medscape.com/article/962643-overview"
+        sections_covered:
+          - differential_diagnoses
+          - argues_against
+        reason: "Primary source (Kenya MOH outbreak guide) does not contain differential diagnosis or argues-against content — supplemented with Medscape clinical reference"
