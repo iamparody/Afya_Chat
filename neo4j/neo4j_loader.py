@@ -41,7 +41,7 @@ URI      = os.environ["NEO4J_URI"]
 USERNAME = os.environ["NEO4J_USERNAME"]
 PASSWORD = os.environ["NEO4J_PASSWORD"]
 
-GRAPH_JSONL = ROOT / "graph_entities.jsonl"
+GRAPH_JSONL = ROOT / "corpus_pipeline" / "output" / "graph_entities.jsonl"
 
 # Maps graph: block keys → (relationship_type, target_node_label)
 KEY_MAP = {

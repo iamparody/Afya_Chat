@@ -22,7 +22,7 @@ load_dotenv(ROOT / ".env")
 sys.path.insert(0, str(ROOT / "phase5"))
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
-CHUNKS_JSONL = ROOT / "chunks.jsonl"
+CHUNKS_JSONL = ROOT / "corpus_pipeline" / "output" / "chunks.jsonl"
 CHROMA_DIR   = ROOT / "chroma" / "db"
 
 
