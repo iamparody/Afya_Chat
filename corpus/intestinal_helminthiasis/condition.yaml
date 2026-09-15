@@ -1,0 +1,259 @@
+condition: Intestinal helminthiasis
+icd11: 1F5Z
+icd10: B82.0
+category: infectious
+corpus_version: "1.0"
+schema_version: "2.2"
+review_status: draft
+reviewed_by:
+last_reviewed:
+
+sources:
+  - organization: Ministry of Health Kenya
+    title: "Clinical Guidelines for Management and Referral of Common Conditions at Level 2-3, 2024"
+    year: "2024"
+  - organization: Medscape
+    title: "Ascariasis Clinical Presentation, Differential Diagnosis and Workup"
+    year: "2024"
+
+endemic_regions:
+  - nationwide
+
+environmental_signals:
+  - signal: flooding
+    pathways:
+      - waterborne
+    effect_type: transmission_opportunity
+    effect_direction: up
+    lag_weeks:
+      min: 0
+      max: 4
+    strength: moderate
+    confidence: low
+    causal_distance: indirect
+    evidence_type: expert_estimate
+    regions:
+      - nationwide
+    seasonal_basis: outbreak_associated
+    applicability:
+      requires_exposure:
+        - unsafe_water
+      amplifiers:
+        - floodwater_contact
+
+graph:
+  cardinal_symptoms:
+    - abdominal pain
+    - abdominal distension
+    - passage of worms in stool
+    - perianal itching
+    - chronic diarrhoea
+    - failure to thrive
+  associated_symptoms:
+    - anaemia
+    - pallor
+    - malnutrition
+    - nausea
+    - vomiting
+    - rectal prolapse
+    - eosinophilia
+    - ground itch
+  risk_factors:
+    - poor sanitation
+    - open defaecation
+    - soil contact
+    - contaminated food or water
+    - poor hand hygiene
+    - barefoot walking
+    - age five to fifteen years
+    - geophagy
+    - malnutrition
+  differentials:
+    - iron deficiency anaemia
+    - giardiasis
+    - amoebic colitis
+    - irritable bowel syndrome
+    - tropical sprue
+    - inflammatory bowel disease
+  argues_against:
+    - negative stool microscopy
+    - acute high fever
+    - bloody mucoid diarrhoea
+    - tenesmus
+    - rapid severe dehydration
+    - no eosinophilia
+  red_flags:
+    - intestinal obstruction
+    - biliary obstruction
+    - Loeffler syndrome
+    - severe anaemia
+    - rectal prolapse
+    - hyperinfection syndrome
+  confirms:
+    - stool ova on microscopy
+    - worm passed in stool
+
+sections:
+  cardinal_symptoms: |
+    Intestinal helminthiasis encompasses several common soil-transmitted nematode
+    infections, each with a characteristic clinical signature. Ascaris lumbricoides
+    (roundworm) most commonly causes vague abdominal discomfort, bloating, nausea,
+    and intermittent diarrhoea; many infections are asymptomatic in light burden.
+    The passage of a large, round, cream-coloured worm (15–35 cm) in the stool is
+    highly characteristic and frequently the presenting complaint. In children, heavy
+    Ascaris burden causes abdominal distension and failure to thrive. Hookworm
+    (Ancylostoma duodenale, Necator americanus) presents primarily as iron deficiency
+    anaemia from chronic occult intestinal blood loss — fatigue, pallor, and dyspnoea
+    on exertion are the dominant symptoms; ground itch (pruritic papular rash at the
+    larval entry site on the feet or legs) may be the first symptom. Trichuris
+    trichiura (whipworm) causes abdominal pain and mucoid, sometimes bloody, diarrhoea
+    in heavy infections; rectal prolapse is a recognised complication in children.
+    Enterobius vermicularis (pinworm/threadworm) causes intense perianal itching,
+    characteristically nocturnal, with restlessness and disrupted sleep; vulvovaginitis
+    may occur in girls. Strongyloides stercoralis causes alternating diarrhoea and
+    constipation, abdominal pain, and a migratory urticarial rash (larva currens).
+
+  associated_symptoms: |
+    Malnutrition and failure to thrive are the dominant systemic consequences of
+    heavy helminth infection, particularly in children aged 5–15 years who carry
+    the greatest burden. Iron deficiency anaemia — with pallor, fatigue, tachycardia,
+    and reduced exercise tolerance — is the principal systemic feature of hookworm
+    infection and may be severe in pregnant women, where it contributes to adverse
+    maternal and neonatal outcomes. Peripheral eosinophilia is a characteristic
+    laboratory finding in helminth infections; an elevated eosinophil count (typically
+    5–15% of the differential) in a child with non-specific abdominal symptoms should
+    always prompt consideration of helminthiasis. During larval migration of Ascaris
+    through the lungs (Löffler syndrome), transient respiratory symptoms — cough,
+    wheeze, dyspnoea — occur, accompanied by bilateral pulmonary infiltrates and
+    marked eosinophilia. Nausea and vomiting may accompany heavy Ascaris infection.
+    Rectal prolapse occurs in severe Trichuris infection in young children.
+
+  diagnostic_features: |
+    Stool microscopy for ova and parasites is the cornerstone of diagnosis and
+    identifies the species by morphologically distinct ova: Ascaris ova are large and
+    oval with a thick, irregular (mamillated) outer coat; hookworm ova are thin-shelled
+    and oval, containing developing larvae; Trichuris ova are barrel-shaped with
+    characteristic bipolar mucous plugs. Strongyloides produces rhabditiform larvae
+    rather than ova in stool, and repeated examinations or Baermann technique may
+    be required for detection. For Enterobius, stool microscopy is insensitive; the
+    adhesive tape test — clear tape pressed to the perianal skin before bathing first
+    thing in the morning — is the correct method and recovers eggs laid overnight.
+    Full blood count typically shows eosinophilia and may show hypochromic microcytic
+    anaemia in hookworm disease. Serum ferritin and iron studies are indicated when
+    hookworm anaemia is suspected. Abdominal plain X-ray or ultrasound may demonstrate
+    a worm bolus causing intestinal obstruction in heavy Ascaris infection. Stool
+    culture is not required for helminth diagnosis.
+
+  predisposing_factors: |
+    Soil-transmitted helminths share a common epidemiological footprint: transmission
+    occurs in settings of poor sanitation and open defaecation where ova or larvae
+    contaminate soil, food, and water. Children aged 5–15 years carry the heaviest
+    burden globally and in Kenya, and are the primary target of mass drug
+    administration programmes. Barefoot walking on soil contaminated with human faeces
+    is the primary route of hookworm and Strongyloides larval skin penetration. Geophagy
+    (soil eating) — common in young children — amplifies Ascaris and Trichuris
+    transmission through direct ingestion of ova. Consumption of raw or inadequately
+    washed vegetables and fruits grown in faeces-contaminated soil transmits Ascaris.
+    Overcrowded households, schools, daycare centres, and informal settlements with
+    shared latrines and limited handwashing facilities sustain transmission of all
+    species. Pinworm (Enterobius) spreads primarily by the faecal-oral route via
+    contaminated hands after perianal scratching; it is common in institutional settings
+    and causes household clustering. Malnutrition increases susceptibility to heavy
+    worm burden and worsens the consequences of infection. Pregnancy is associated
+    with increased severity of hookworm-related anaemia. Reinfection after treatment
+    is common unless sanitation and hygiene conditions improve.
+
+  typical_presentation: |
+    A school-aged child (5–15 years) from a rural community or urban informal
+    settlement presents with one or more of: vague chronic abdominal discomfort with
+    intermittent diarrhoea; a parent's report of worms passed in the stool (Ascaris);
+    pallor, fatigue, and poor school performance consistent with iron deficiency anaemia
+    (hookworm); or nocturnal perianal itching with restless sleep and secondary
+    scratching (Enterobius). Failure to thrive and reduced school attendance in a
+    child from an endemic setting should prompt consideration of helminth coinfection
+    even without prominent gastrointestinal symptoms. In adults, the presentation may
+    be dominated by symptomatic iron deficiency anaemia — particularly in pregnant
+    women — with pallor and fatigue as the primary complaints. Stool microscopy
+    confirms the diagnosis and identifies the causative species, guiding targeted
+    treatment. A full blood count showing peripheral eosinophilia in any patient with
+    non-specific abdominal symptoms in an endemic setting should prompt diagnostic
+    evaluation for helminthiasis.
+
+  differential_diagnoses: |
+    Iron deficiency anaemia from non-parasitic causes — dietary insufficiency,
+    menstrual blood loss, peptic ulcer disease — may be clinically indistinguishable
+    from hookworm anaemia; stool ova examination, clinical risk factor assessment,
+    and iron studies together establish the diagnosis. Giardia intestinalis infection
+    produces bloating, flatulence, and fatty malabsorptive diarrhoea without
+    eosinophilia; stool microscopy for Giardia cysts or antigen testing distinguishes
+    it from helminthiasis. Amoebic colitis (Entamoeba histolytica) may produce
+    bloody mucoid diarrhoea overlapping with heavy Trichuris infection; microscopy
+    identifies E. histolytica trophozoites containing ingested red cells. Malabsorption
+    syndromes — tropical sprue, coeliac disease, small bowel bacterial overgrowth —
+    produce weight loss and steatorrhoea similar to heavy helminth burden; these
+    conditions do not produce eosinophilia or stool ova. Irritable bowel syndrome
+    may mimic the intermittent abdominal discomfort of light helminth infection; the
+    key distinguishing features are absence of eosinophilia and negative stool
+    microscopy. Inflammatory bowel disease may be considered when bloody diarrhoea
+    is prominent; it is uncommon in Kenya primary care populations and does not
+    produce eosinophilia or stool ova. Coinfection of multiple helminth species is
+    common and should be anticipated when screening patients in endemic settings.
+
+  argues_against: |
+    A well-performed stool microscopy for ova and parasites on a freshly collected
+    specimen, conducted by an experienced practitioner, argues against intestinal
+    helminthiasis as the primary cause of symptoms — though Enterobius requires the
+    adhesive tape test rather than stool microscopy, so negative stool microscopy alone
+    does not exclude pinworm. Acute onset with high fever argues against helminthiasis,
+    which typically has an insidious or chronic onset; high fever should prompt
+    consideration of bacterial or protozoan infection. The dysentery syndrome — bloody
+    mucoid diarrhoea with tenesmus and fever — is not a feature of helminth infection
+    (except in very heavy Trichuris infection) and should direct the differential
+    towards Shigella, Entamoeba histolytica, or Campylobacter. Rapid severe dehydration
+    is not a feature of helminth infection and argues strongly towards acute secretory
+    diarrhoea (cholera, rotavirus). Absence of eosinophilia on a full blood count
+    in a patient with chronic abdominal symptoms makes active helminth infection less
+    likely, though very light infections and some Enterobius infections may not
+    produce detectable eosinophilia.
+
+  red_flags: |
+    Intestinal obstruction — colicky abdominal pain, vomiting, abdominal distension,
+    cessation of flatus and stool — in a child from an endemic area may represent
+    a bolus of Ascaris worms occluding the small bowel; this is a surgical emergency
+    requiring immediate referral. Biliary obstruction (jaundice, right upper quadrant
+    pain, fever) may result from Ascaris migrating into the common bile duct or
+    pancreatic duct; this requires urgent specialist assessment. Löffler syndrome —
+    bilateral pulmonary infiltrates, marked eosinophilia, cough, and wheeze during
+    the larval migration phase of Ascaris — requires specialist assessment if severe
+    and may be confused with pneumonia. Severe anaemia (Hb below 7 g/dL) with
+    haemodynamic compromise in the context of known or suspected hookworm infection
+    requires urgent assessment and may require blood transfusion before antihelminthic
+    treatment. Rectal prolapse in a child with suspected or confirmed Trichuris
+    infection requires immediate referral. Hyperinfection syndrome in Strongyloides —
+    disseminated larval migration causing meningitis, septicaemia, or respiratory
+    failure — may occur in immunocompromised patients including those receiving
+    corticosteroids or with HTLV-1 infection; it carries high mortality and requires
+    urgent referral and specialist management.
+
+  diagnostic_context: |
+    In Kenya primary care, intestinal helminthiasis is endemic nationwide, with the
+    highest burden in school-aged children in communities with poor sanitation. Any
+    child with pallor, failure to thrive, chronic abdominal discomfort, or perianal
+    itching in an endemic setting should have stool microscopy for ova and parasites
+    as part of the initial workup. A full blood count showing eosinophilia (eosinophils
+    >500/µL or >5%) in a patient with non-specific abdominal symptoms should prompt
+    the same investigation. For Enterobius, adhesive tape pressed to the perianal
+    skin before bathing, first thing in the morning, is the correct diagnostic method.
+    Treatment follows Kenya MOH 2024 guidelines: Albendazole 400mg STAT for Ascaris
+    lumbricoides, hookworm (Ancylostoma/Necator), and Trichuris trichiura (adults and
+    children ≥2 years); Levamisole 2.5mg/kg as a single dose is an alternative for
+    Ascaris and hookworm. Strongyloides requires Albendazole 400mg BD for three days.
+    Enterobius requires Mebendazole 500mg STAT or Levamisole 2.5mg/kg STAT, repeated
+    after 10 days to clear hatching larvae. Iron supplementation should accompany
+    hookworm treatment in patients with established iron deficiency anaemia. Pregnant
+    women may receive albendazole after the first trimester. Mass drug administration
+    using albendazole twice yearly is conducted through Kenya's school health programme
+    in high-prevalence districts. Reinfection is common without sustained WASH
+    improvement; treatment alone without hygiene education has limited long-term impact.
+    Helminthiasis coinfection with malaria, HIV, and malnutrition is common in
+    endemic settings and each condition worsens the others.

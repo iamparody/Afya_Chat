@@ -386,6 +386,26 @@
 | positive dengue NS1 antigen | dengue NS1 positive, NS1 test positive |
 | positive dengue IgM serology | dengue IgM positive, dengue serology positive |
 | positive tourniquet test | Rumpel-Leede test positive, capillary fragility positive |
+| stool ova on microscopy | ova and parasites positive, stool microscopy ova positive |
+| worm passed in stool | worm in stool, passage of helminth |
+| passage of worms in stool | worms in stool, helminth passage |
+| perianal itching | perianal pruritus, anal itching, rectal itching |
+| chronic diarrhoea | persistent diarrhoea, long-standing diarrhoea |
+| failure to thrive | growth faltering, poor weight gain, FTT |
+| rectal prolapse | prolapsed rectum |
+| eosinophilia | raised eosinophils, elevated eosinophil count |
+| ground itch | larva migrans cutaneous, hookworm skin rash |
+| intestinal obstruction | bowel obstruction, small bowel obstruction |
+| biliary obstruction | bile duct obstruction, obstructive jaundice |
+| Loeffler syndrome | Loeffler's syndrome, pulmonary eosinophilia transient |
+| hyperinfection syndrome | Strongyloides hyperinfection |
+| severe anaemia | Hb critically low, haemoglobin severely reduced |
+| open defaecation | outdoor defaecation, defaecation in open |
+| soil contact | soil exposure, contact with contaminated soil |
+| contaminated food or water | food or water contamination |
+| barefoot walking | walking without footwear |
+| geophagy | soil eating, earth eating, pica soil |
+| age five to fifteen years | school age, primary school age |
 
 ---
 
@@ -414,3 +434,9 @@
 | recurrent episodic diarrhoea over months | |
 | no identifiable infectious exposure | no infective contact |
 | BMI below 25 under age 35 | lean young adult |
+| negative stool microscopy | stool ova negative, no ova on stool exam |
+| acute high fever | high fever acute onset |
+| bloody mucoid diarrhoea | blood and mucus in stool, dysenteric stool |
+| tenesmus | painful urge to defaecate, rectal tenesmus |
+| rapid severe dehydration | rapid dehydration, acute severe dehydration |
+| no eosinophilia | absent eosinophilia, normal eosinophil count |

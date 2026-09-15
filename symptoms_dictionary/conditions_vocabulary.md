@@ -85,3 +85,8 @@
 | brucellosis | undulant fever, Brucella infection |
 | rickettsial illness | spotted fever, rickettsia infection, tick typhus |
 | Acute gastroenteritis (infectious) | acute gastroenteritis, gastroenteritis, non-specific gastroenteritis, AGE |
+| Intestinal helminthiasis | helminthiasis, soil-transmitted helminths, worm infection, ascariasis, hookworm disease |
+| giardiasis | Giardia infection, giardia, lambliasis |
+| amoebic colitis | amoebic dysentery, amoebiasis, Entamoeba histolytica infection |
+| irritable bowel syndrome | IBS, spastic colon |
+| tropical sprue | post-infectious malabsorption, tropical malabsorption |
