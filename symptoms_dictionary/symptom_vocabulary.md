@@ -434,6 +434,32 @@
 | recurrent episodic diarrhoea over months | |
 | no identifiable infectious exposure | no infective contact |
 | BMI below 25 under age 35 | lean young adult |
+| periumbilical pain migrating to RLQ | central pain migrating to right iliac fossa, pain migration to RLQ |
+| RLQ tenderness at McBurney's point | McBurney's point tenderness, right iliac fossa tenderness |
+| rebound tenderness | peritoneal rebound, Blumberg sign |
+| low-grade fever | low-grade temperature, mild fever, subfever |
+| abdominal guarding | voluntary guarding, involuntary guarding |
+| abdominal rigidity | board-like rigidity, rigid abdomen |
+| Rovsing's sign | Rovsing sign positive |
+| Psoas sign | iliopsoas sign, psoas test positive |
+| cutaneous hyperaesthesia RLQ | skin hyperaesthesia right iliac fossa |
+| age ten to thirty years | second decade, third decade, young adult age range |
+| low-fibre diet | low dietary fibre, fibre-poor diet |
+| fecalith | appendiceal fecalith, faecalith, appendicolith |
+| vomiting preceding pain | vomiting before pain onset, emesis before pain |
+| absent RLQ pain migration | no pain migration, pain without migration to RLQ |
+| non-localised lower abdominal pain | diffuse lower abdominal pain, bilateral lower abdominal pain, non-specific abdominal pain |
+| bilateral lower abdominal tenderness | bilateral iliac fossa tenderness, diffuse lower abdominal tenderness |
+| absence of anorexia | no anorexia, appetite preserved |
+| diarrhoea as dominant symptom | predominant diarrhoea, diarrhoea predominant |
+| spontaneous improvement | self-limiting pain, pain improving without treatment |
+| generalised peritonitis | diffuse peritonitis, peritonitis generalised |
+| sudden pain relief then deterioration | pain relief then worsening, perforation sign |
+| sepsis | systemic sepsis, septicaemia |
+| palpable RLQ mass | right iliac fossa mass, appendiceal mass |
+| pregnant with acute abdominal pain | pregnancy acute abdomen, abdominal pain in pregnancy |
+| neutrophilia on FBC | neutrophil leucocytosis, FBC neutrophilia |
+| appendiceal oedema on USS | appendix oedematous on ultrasound, USS appendix positive |
 | negative stool microscopy | stool ova negative, no ova on stool exam |
 | acute high fever | high fever acute onset |
 | bloody mucoid diarrhoea | blood and mucus in stool, dysenteric stool |

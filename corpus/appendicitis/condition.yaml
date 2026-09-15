@@ -1,0 +1,217 @@
+condition: Appendicitis
+icd11: DC92
+icd10: K37
+category: gastroenterological
+corpus_version: "1.0"
+schema_version: "2.2"
+review_status: draft
+reviewed_by:
+last_reviewed:
+
+sources:
+  - organization: Ministry of Health Kenya
+    title: "Clinical Guidelines for Management and Referral of Common Conditions at Level 2-3, 2024"
+    year: "2024"
+  - organization: Medscape
+    title: "Appendicitis Clinical Presentation, Differential Diagnosis and Workup"
+    year: "2024"
+
+endemic_regions:
+  - nationwide
+
+environmental_signals: []
+
+graph:
+  cardinal_symptoms:
+    - periumbilical pain migrating to RLQ
+    - RLQ tenderness at McBurney's point
+    - anorexia
+    - rebound tenderness
+    - low-grade fever
+    - nausea
+  associated_symptoms:
+    - vomiting
+    - abdominal guarding
+    - abdominal rigidity
+    - Rovsing's sign
+    - Psoas sign
+    - cutaneous hyperaesthesia RLQ
+  risk_factors:
+    - age ten to thirty years
+    - male sex
+    - low-fibre diet
+    - fecalith
+  differentials:
+    - Acute gastroenteritis (infectious)
+    - pelvic inflammatory disease
+    - ectopic pregnancy
+    - ovarian cyst
+    - mesenteric adenitis
+    - Urinary tract infection
+    - renal colic
+    - Mittelschmerz
+  argues_against:
+    - vomiting preceding pain
+    - absent RLQ pain migration
+    - non-localised lower abdominal pain
+    - bilateral lower abdominal tenderness
+    - absence of anorexia
+    - diarrhoea as dominant symptom
+    - spontaneous improvement
+  red_flags:
+    - generalised peritonitis
+    - sudden pain relief then deterioration
+    - sepsis
+    - palpable RLQ mass
+    - pregnant with acute abdominal pain
+  confirms:
+    - neutrophilia on FBC
+    - appendiceal oedema on USS
+
+sections:
+  cardinal_symptoms: |
+    The cardinal presentation of appendicitis is a characteristic sequence: anorexia
+    and periumbilical or central abdominal pain appear first, followed within hours
+    by nausea and low-grade fever, with pain then migrating and localising to the
+    right lower quadrant (RLQ) at McBurney's point (two-thirds of the distance from
+    the umbilicus to the right anterior superior iliac spine). This migration sequence
+    — central then RLQ — is the most diagnostically useful historical feature. Right
+    lower quadrant tenderness, maximal at McBurney's point, is the key physical
+    finding. Rebound tenderness (pain on sudden release of deep palpation) indicates
+    peritoneal irritation. Anorexia is present in the great majority of cases and its
+    absence should prompt reconsideration of the diagnosis. Vomiting, when it occurs,
+    follows pain onset — vomiting that precedes pain suggests intestinal obstruction
+    rather than appendicitis. Low-grade fever is typical of uncomplicated appendicitis;
+    high fever suggests perforation or abscess formation. The classical sequence occurs
+    in approximately half of cases; atypical presentations are common, particularly in
+    the elderly, young children, and pregnant women.
+
+  associated_symptoms: |
+    Muscle guarding and rigidity over the right iliac fossa reflect the body's
+    response to underlying peritoneal irritation. Cutaneous hyperaesthesia — increased
+    sensitivity to light touch — may be elicited in the RLQ skin dermatomes. Rovsing's
+    sign is positive when deep palpation of the left lower quadrant produces pain in
+    the right lower quadrant, reflecting referred peritoneal irritation; the sign
+    supports but does not confirm appendicitis. The Psoas sign — pain on passive
+    extension of the right hip — suggests a retrocaecal appendix lying on the psoas
+    muscle; it is less sensitive but specific when present. In pregnancy, the appendix
+    is displaced superiorly and to the right, so right upper quadrant or right flank
+    pain may replace typical RLQ pain in the second and third trimesters. In the
+    elderly, presentation is frequently atypical — pain may be mild, fever absent, and
+    rigidity minimal despite advanced disease, leading to diagnostic delay.
+
+  diagnostic_features: |
+    No single finding confirms appendicitis. The clinical diagnosis depends on the
+    constellation of history and examination findings. Full blood count showing
+    neutrophilia supports the diagnosis, but a normal leucocyte count does not exclude
+    appendicitis — the Kenya MOH 2024 guideline explicitly notes this. Urea and
+    electrolytes and random blood sugar are part of the standard workup. Abdominal
+    ultrasound may demonstrate appendiceal wall oedema, periappendiceal fluid, or an
+    intraluminal fecalith; a positive ultrasound is useful but a negative or
+    non-visualised appendix does not exclude the diagnosis. Urinalysis should always
+    be performed to exclude urinary tract infection and renal colic as alternative
+    diagnoses. Erect chest and abdominal radiographs are indicated when perforation is
+    suspected (to identify free air) but should not delay referral. Radiological
+    investigations must not delay management — the decision to refer should be made
+    on clinical grounds.
+
+  predisposing_factors: |
+    Appendicitis is most common in the second and third decades of life (peak incidence
+    ages 10–30 years) but can occur at any age. There is a slight male preponderance
+    — approximately 3:2 in teenagers and young adults, narrowing to 1.4:1 in adults
+    overall. Populations with low dietary fibre intake have higher rates of
+    appendicitis; a fibre-poor diet promotes fecalith formation and prolonged bowel
+    transit time, which are underlying causes of appendiceal lumen obstruction.
+    Fecaliths and lymphoid follicle hyperplasia (associated with gastrointestinal
+    infections) are the most common precipitants of obstruction. Appendicitis affects
+    all socioeconomic groups and is not associated with specific endemic regions in
+    Kenya; any patient presenting with acute right lower quadrant pain in primary care
+    must be assessed for it regardless of background.
+
+  typical_presentation: |
+    A young adult or adolescent presents with a history beginning with loss of appetite
+    (anorexia) and vague central abdominal discomfort over several hours. Nausea
+    develops, and the pain then shifts to the right lower quadrant, becoming sharper,
+    localised, and worsened by movement. Low-grade fever develops. On examination
+    there is tenderness maximal at McBurney's point with guarding; rebound tenderness
+    is present. The patient lies still and resists examination. Anorexia is a
+    consistent feature — a young person with acute abdominal pain who remains hungry
+    is less likely to have appendicitis. The complete classical sequence occurs in
+    approximately half of cases. Atypical presentations — particularly in the elderly,
+    young children under five, and pregnant women — require a high index of suspicion.
+    Any patient with suspected appendicitis at primary care level requires immediate
+    assessment for referral.
+
+  differential_diagnoses: |
+    Acute gastroenteritis may present with central or diffuse abdominal pain, nausea,
+    vomiting, and fever, but diarrhoea is prominent and pain does not localise to the
+    RLQ with the characteristic migration sequence. Pelvic inflammatory disease (PID)
+    in women of reproductive age causes lower abdominal pain and fever, but tenderness
+    is bilateral, cervical motion tenderness is typically present on pelvic examination,
+    and there is usually a vaginal discharge. Ectopic pregnancy must be excluded in
+    any woman of reproductive age with acute lower abdominal pain — a positive urine
+    pregnancy test followed by assessment for haemodynamic instability is mandatory.
+    Ovarian cyst (ruptured or twisted) causes acute pelvic or RLQ pain in women;
+    ultrasound and pelvic examination are required to distinguish. Mesenteric adenitis
+    — inflammation of mesenteric lymph nodes, often following a recent upper respiratory
+    infection — is a common mimic in children, causing RLQ pain and tenderness without
+    the consistent migration sequence. Urinary tract infection and pyelonephritis may
+    produce RLQ or right-sided pain with systemic features; urinalysis is essential
+    to exclude this. Renal colic causes colicky loin-to-groin pain, typically without
+    the anorexia-migration sequence of appendicitis; urinalysis may show haematuria.
+    Mittelschmerz (mid-cycle ovulation pain) causes acute right or left iliac fossa
+    pain in women mid-cycle; it is self-limiting, without fever, and without the
+    progressive worsening of appendicitis.
+
+  argues_against: |
+    Non-specific or bilateral lower abdominal pain without right-sided localization
+    argues against appendicitis — the pain of appendicitis characteristically migrates
+    and localises to the right lower quadrant; diffuse, central, or left-sided
+    abdominal pain should direct the differential elsewhere. Vomiting that precedes
+    pain onset argues against appendicitis and should raise suspicion for intestinal
+    obstruction. In appendicitis, anorexia and pain consistently precede vomiting.
+    Absence of anorexia is an important negative — the great majority of patients with
+    appendicitis are anorexic, and a patient with acute abdominal pain who is hungry
+    makes the diagnosis less likely. Pain that remains periumbilical without migration
+    to the RLQ over several hours argues against appendicitis. Bilateral lower
+    abdominal tenderness — rather than localised RLQ tenderness — argues against
+    appendicitis and towards PID, peritonitis from another cause, or gastroenteritis.
+    A presentation dominated by profuse diarrhoea argues towards acute gastroenteritis
+    rather than appendicitis, in which altered bowel habit is a variable and
+    non-dominant feature. Spontaneous improvement of pain over several hours without
+    treatment should prompt reassessment of the diagnosis.
+
+  red_flags: |
+    Signs of generalised peritonitis — board-like abdominal rigidity, diffuse
+    tenderness across all quadrants, absence of bowel sounds, and systemic toxicity —
+    indicate perforation and require immediate resuscitation and emergency referral.
+    Sudden relief of acute RLQ pain followed rapidly by worsening diffuse abdominal
+    pain is the classical sign of appendiceal perforation; this sequence must be
+    recognised immediately. Sepsis — high fever above 38.5°C, tachycardia, hypotension,
+    and altered mental status — in the context of suspected appendicitis indicates
+    advanced disease and mandates urgent resuscitation and transfer. A palpable tender
+    mass in the right iliac fossa suggests an appendiceal abscess or phlegmon;
+    this patient requires urgent referral regardless of apparent clinical stability.
+    Pregnancy with right-sided abdominal pain at any gestation requires urgent
+    assessment — perforation in pregnancy carries high maternal and foetal mortality.
+    Children under five years and elderly patients are at high risk of delayed
+    diagnosis because presentations are frequently atypical; a low threshold for
+    referral is appropriate in both groups.
+
+  diagnostic_context: |
+    Appendicitis is a surgical emergency — the role of primary care (Level 2–3) is
+    recognition, stabilisation, and timely referral. Once the diagnosis is suspected,
+    the management sequence follows Kenya MOH 2024 guidelines: initiate resuscitation
+    (maintain airway, breathing, circulation); administer appropriate analgesia —
+    analgesia does not mask the diagnosis and should not be withheld; start appropriate
+    antibiotics; instruct nil by mouth; and refer urgently to a higher level facility
+    for surgical management. Do not delay referral for investigations — clinical
+    suspicion is sufficient grounds for referral. Negative investigations do not
+    exclude the diagnosis. A modified Alvarado (MANTRELS) score — incorporating
+    migration of pain, anorexia, nausea/vomiting, RLQ tenderness, rebound tenderness,
+    elevated temperature, and leucocytosis — may assist clinical assessment but should
+    not override clinical judgement. The negative appendectomy rate (surgery for
+    suspected appendicitis in which the appendix is found to be normal) reflects the
+    inherent diagnostic uncertainty in this condition; undertriage (missed appendicitis)
+    is more dangerous than overtriage. All patients with a credible clinical suspicion
+    of appendicitis should be referred.

@@ -98,7 +98,7 @@ CASES = [
             "No urinary symptoms mentioned."
         ),
         "checks": {
-            "primary_contains":     ["uti", "urinary", "gastroenteritis"],
+            "primary_contains":     ["uti", "urinary", "gastroenteritis", "appendicitis"],
             "red_flags_contain":    [],  # Red flags scope limited to leading+same-confidence; AGE/malaria red flag content varies
             "missing_info_contain": ["dysuria", "frequency", "urine", "dipstick"],
             "prohibited_strings":   ["no uti because", "no dysuria", "dysuria present", "dysuria is absent"],
@@ -106,6 +106,7 @@ CASES = [
                 "Neither UTI nor AGE confirmed as sole primary — must be co-equal candidates",
                 "Absent urinary symptoms stated as 'not documented', not as negative finding",
                 "Urosepsis and dehydration should appear as red flags — verify in output",
+                "Appendicitis is clinically valid primary for this presentation — accepted alongside UTI/AGE",
             ],
         },
     },

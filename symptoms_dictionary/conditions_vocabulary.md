@@ -85,7 +85,14 @@
 | brucellosis | undulant fever, Brucella infection |
 | rickettsial illness | spotted fever, rickettsia infection, tick typhus |
 | Acute gastroenteritis (infectious) | acute gastroenteritis, gastroenteritis, non-specific gastroenteritis, AGE |
+| Appendicitis | appendicitis, acute appendicitis |
 | Intestinal helminthiasis | helminthiasis, soil-transmitted helminths, worm infection, ascariasis, hookworm disease |
+| pelvic inflammatory disease | PID, salpingitis, adnexitis |
+| ectopic pregnancy | tubal pregnancy, extrauterine pregnancy |
+| ovarian cyst | ruptured ovarian cyst, twisted ovarian cyst, ovarian torsion |
+| mesenteric adenitis | mesenteric lymphadenitis |
+| renal colic | ureteric colic, nephrolithiasis colic |
+| Mittelschmerz | mid-cycle pain, ovulation pain |
 | giardiasis | Giardia infection, giardia, lambliasis |
 | amoebic colitis | amoebic dysentery, amoebiasis, Entamoeba histolytica infection |
 | irritable bowel syndrome | IBS, spastic colon |
