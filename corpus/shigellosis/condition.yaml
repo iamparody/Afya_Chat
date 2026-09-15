@@ -1,0 +1,271 @@
+condition: Shigellosis (acute dysentery)
+icd11: 1A03
+icd10: A03.9
+category: infectious
+corpus_version: "1.0"
+schema_version: "2.2"
+review_status: draft
+reviewed_by:
+last_reviewed:
+
+sources:
+  - organization: Ministry of Health Kenya
+    title: "Clinical Guidelines for Management and Referral of Common Conditions at Level 2-3, 2024"
+    year: "2024"
+  - organization: Medscape
+    title: "Shigellosis Clinical Presentation, Differential Diagnosis and Workup"
+    year: "2024"
+
+endemic_regions:
+  - nationwide
+  - urban_informal
+
+environmental_signals:
+  - signal: flooding
+    pathways:
+      - waterborne
+    effect_type: transmission_opportunity
+    effect_direction: up
+    lag_weeks:
+      min: 0
+      max: 2
+    strength: strong
+    confidence: high
+    causal_distance: direct
+    evidence_type: observed_outbreaks
+    regions:
+      - nationwide
+    seasonal_basis: outbreak_associated
+    applicability:
+      requires_exposure:
+        - unsafe_water
+      amplifiers:
+        - floodwater_contact
+
+  - signal: water_scarcity
+    pathways:
+      - waterborne
+    effect_type: transmission_opportunity
+    effect_direction: up
+    lag_weeks:
+      min: 0
+      max: 4
+    strength: moderate
+    confidence: moderate
+    causal_distance: indirect
+    evidence_type: expert_estimate
+    regions:
+      - arid_semi_arid
+      - urban_informal
+    seasonal_basis: dry_season
+    applicability:
+      requires_exposure:
+        - unsafe_water
+      amplifiers: []
+
+graph:
+  cardinal_symptoms:
+    - bloody diarrhoea
+    - mucoid stool
+    - tenesmus
+    - abdominal cramps
+    - fever
+    - urgency to defaecate
+  associated_symptoms:
+    - vomiting
+    - dehydration
+    - lower abdominal tenderness
+    - anorexia
+  risk_factors:
+    - poor sanitation
+    - contaminated water
+    - poor hand hygiene
+    - malnutrition
+    - HIV
+    - overcrowding
+    - institutional setting
+    - age under five years
+  differentials:
+    - amoebic colitis
+    - acute gastroenteritis
+    - campylobacter gastroenteritis
+    - salmonellosis
+    - typhoid fever
+    - cholera
+  argues_against:
+    - watery non-bloody stool
+    - absence of tenesmus
+    - absence of fever
+    - profuse rice-water stool
+    - insidious onset
+  red_flags:
+    - haemolytic uraemic syndrome
+    - bacteraemia
+    - toxic megacolon
+    - febrile seizures
+    - severe dehydration
+    - colonic perforation
+  confirms:
+    - positive stool culture Shigella
+    - positive stool PCR Shigella
+
+sections:
+  cardinal_symptoms: |
+    Acute bloody diarrhoea — stool containing visible blood and mucus — is the
+    defining feature of shigellosis (bacillary dysentery). The onset is typically
+    abrupt, usually within one to two days of exposure, and may be preceded by a
+    brief episode of watery stool that rapidly becomes bloody and mucoid. Tenesmus
+    — a painful, persistent urge to defaecate with little or no stool passed — is a
+    highly characteristic feature and reflects the inflammatory colitis caused by
+    Shigella invasion of the colonic epithelium. Abdominal cramping and urgency
+    accompany the diarrhoeal episodes. Fever appears early, usually within one to
+    three days of symptom onset. The illness is typically self-limiting over two to
+    seven days in otherwise healthy patients, but can be severe or prolonged in
+    children under five years, malnourished individuals, and immunocompromised
+    patients. Shigella is highly infectious — as few as 180 organisms are sufficient
+    to cause disease.
+
+  associated_symptoms: |
+    Vomiting may occur in approximately one-third of patients and is usually not the
+    dominant feature. Anorexia is common. Dehydration may develop but is typically
+    less profound than in cholera or rotavirus gastroenteritis, because stool volumes
+    in shigellosis are lower than in secretory diarrhoea. On examination, lower
+    abdominal tenderness is usually present, often diffuse but may be more marked in
+    the left iliac fossa corresponding to the sigmoid colon. Bowel sounds are normal
+    or increased. High fever may be associated with systemic toxicity, particularly
+    in young children, where febrile seizures may occur. Extra-intestinal
+    manifestations are uncommon but include reactive arthritis (a triad of arthritis,
+    urethritis, and conjunctivitis — particularly associated with HLA-B27 positive
+    individuals after S. flexneri infection), and rarely Shigella bacteraemia in
+    severely malnourished or immunocompromised patients.
+
+  diagnostic_features: |
+    The clinical diagnosis of shigellosis is based on the combination of acute bloody
+    mucoid diarrhoea with tenesmus and fever, particularly in an appropriate
+    epidemiological context (institutional setting, household contact with a known
+    case, or contaminated water source). Stool microscopy and culture should be
+    obtained in all suspected cases and specimens processed promptly after collection.
+    Stool microscopy may reveal numerous red blood cells and pus cells (leucocytes),
+    consistent with inflammatory colitis; ova and parasite examination should be
+    included to exclude amoebic dysentery and other parasitic causes. A full blood
+    count may show leucocytosis; a leukemoid reaction (markedly elevated white cell
+    count) may occur, particularly in children. Stool culture confirms the diagnosis
+    and allows sensitivity testing, which is essential given the increasing prevalence
+    of antimicrobial resistance in Shigella species, including cotrimoxazole and
+    ciprofloxacin resistance. Sigmoidoscopy or colonoscopy is not required at primary
+    care level and should be deferred to specialist settings.
+
+  predisposing_factors: |
+    Shigellosis is fundamentally a disease of poor water, sanitation, and hygiene
+    (WASH). Principal risk factors include access to contaminated water or food,
+    inadequate sanitation and open defaecation, and poor hand hygiene — particularly
+    around food preparation and after defaecation. Shigella spreads readily in
+    overcrowded settings including informal settlements, displacement camps, prisons,
+    daycare centres, schools, and nursing homes. War, flooding, and natural disasters
+    that disrupt water and sanitation infrastructure are recognised precipitants of
+    outbreaks. Children between six months and five years of age carry the greatest
+    burden of disease globally and in Kenya. Malnutrition substantially increases the
+    risk of severe disease, prolonged illness, and bacteraemia. HIV infection and
+    other causes of immunocompromise are associated with increased severity and risk
+    of complications. Travel to endemic areas may be a risk factor for adults from
+    lower-endemicity settings, though in Kenya primary care, domestic exposure in
+    high-risk environments is far more common.
+
+  typical_presentation: |
+    A child under five or an adult from an urban informal settlement, displacement
+    camp, or overcrowded institutional setting presents with one to two days of
+    abrupt-onset lower abdominal cramps followed by frequent, small-volume stools
+    containing blood and mucus. The patient reports a persistent painful urge to
+    defaecate (tenesmus) even when nothing passes. Fever is present and may be high.
+    Vomiting may occur. The patient appears unwell and uncomfortable. On examination,
+    there is lower abdominal tenderness. In a child, high fever with marked
+    systemic toxicity may be the presenting concern. The history usually reveals
+    exposure to a potential contaminated water or food source, a household contact
+    with similar symptoms, or residence in a setting with inadequate sanitation.
+    In an outbreak context — whether declared or suspected — bloody diarrhoea with
+    tenesmus and fever in any patient from the affected area should prompt immediate
+    consideration of Shigella.
+
+  differential_diagnoses: |
+    Amoebic dysentery (Entamoeba histolytica) is the most important differential
+    at primary care level and may be clinically indistinguishable from shigellosis.
+    Amoebic dysentery typically presents with bloody mucoid diarrhoea and abdominal
+    cramps but is usually afebrile or mildly febrile — the absence of fever or
+    low-grade fever in a patient with bloody mucoid stool favours amoebic over
+    bacterial dysentery; stool microscopy showing E. histolytica trophozoites with
+    ingested red cells confirms amoebic disease. Campylobacter jejuni gastroenteritis
+    produces bloody diarrhoea with cramping and fever and may be clinically
+    indistinguishable — culture is required to distinguish. Salmonella enteritis
+    (non-typhoidal) typically produces watery or mildly bloody diarrhoea with fever;
+    it is less likely to cause prominent tenesmus than Shigella. Typhoid fever
+    should be considered when fever has an insidious step-wise onset over several
+    days, constipation is more prominent than diarrhoea in the early phase, and
+    gastrointestinal bleeding is a late complication rather than the initial
+    presentation. Cholera produces profuse watery rice-water stool without blood,
+    mucus, or tenesmus, and the degree of dehydration is typically more severe
+    than in shigellosis. Enterohemorrhagic E. coli (EHEC, including O157:H7) produces
+    bloody diarrhoea without fever in many cases — the absence of fever with bloody
+    diarrhoea and haemolytic uraemic syndrome should prompt consideration of EHEC;
+    this pathogen may be less common in Kenya primary care but should be considered
+    in outbreak settings. Ulcerative colitis is a chronic inflammatory bowel disease
+    that may present similarly to shigellosis, but the chronic relapsing course,
+    absence of infectious contacts, and colonoscopic findings distinguish it;
+    it is uncommon in Kenya primary care populations.
+
+  argues_against: |
+    Profuse watery or rice-water diarrhoea without blood or mucus argues strongly
+    against shigellosis and towards cholera, viral gastroenteritis, or toxigenic
+    E. coli — Shigella causes inflammatory colitis, not secretory diarrhoea. The
+    absence of tenesmus argues against Shigella, as tenesmus is a hallmark of colonic
+    inflammation and is not a feature of most other causes of acute diarrhoea.
+    Absence of fever, or very low-grade fever only, in a patient with bloody mucoid
+    diarrhoea argues against bacterial Shigella dysentery and in favour of amoebic
+    dysentery — though the distinction requires stool microscopy or culture for
+    confirmation. An insidious onset over five to seven days argues against Shigella
+    (which is typically abrupt) and towards typhoid fever, which may also produce
+    bloody stool as a late complication. Profound dehydration with rapid cardiovascular
+    compromise and large-volume watery stool is more consistent with cholera than
+    with shigellosis. Resolution without antibiotic treatment within 48 hours is
+    unusual for Shigella and may suggest a self-limiting viral or non-inflammatory
+    aetiology.
+
+  red_flags: |
+    Haemolytic uraemic syndrome (HUS) — the triad of microangiopathic haemolytic
+    anaemia, thrombocytopenia, and acute renal failure — is the most dangerous
+    complication of shigellosis and is associated primarily with Shigella dysenteriae
+    type 1 in children; pallor, oliguria, and bruising in a child with recent bloody
+    diarrhoea should prompt immediate referral. Bacteraemia occurs in 0–7% of cases
+    and carries a reported mortality of approximately 20% in malnourished children;
+    high fever, systemic toxicity, and haemodynamic instability in a child with
+    bloody diarrhoea require urgent assessment. Febrile seizures may complicate
+    shigellosis in young children with high fever; a first febrile seizure in the
+    setting of bloody diarrhoea requires same-day clinical assessment. Toxic megacolon
+    is a rare but life-threatening complication, occurring primarily with S. dysenteriae
+    infection; abdominal distension, cessation of stool output, and deteriorating
+    systemic status in a patient with known or suspected shigellosis requires
+    immediate referral. Colonic perforation is extremely rare but occurs in infants or
+    severely malnourished patients. Antimotility agents (loperamide) are contraindicated
+    in bloody diarrhoea and may precipitate toxic megacolon — their use should be
+    specifically warned against.
+
+  diagnostic_context: |
+    In Kenya primary care, shigellosis should be considered in any patient presenting
+    with acute bloody mucoid diarrhoea with tenesmus and fever, particularly in
+    children under five, patients from informal settlements or institutional settings,
+    or in the context of a household or community cluster. The clinical priority is
+    rapid assessment of dehydration severity using standard clinical criteria, followed
+    by stool specimen collection for microscopy and culture before antibiotic initiation
+    where possible. Rehydration with ORS is the first-line intervention for mild-to-
+    moderate dehydration; IV fluids for severe dehydration. Antibiotic treatment is
+    indicated for dysentery per Kenya MOH guidelines. First-line treatment in adults:
+    cotrimoxazole 960 mg twice daily for five days, or amoxicillin 500 mg four times
+    daily for five days, or ciprofloxacin 500 mg once daily for five days. Ceftriaxone
+    is the parenteral alternative. In children: ciprofloxacin 15 mg/kg twice daily
+    for three days. Antimotility agents must not be used. Amoebic dysentery should be
+    considered if fever is absent and the initial antibiotic course fails — confirmed
+    by stool microscopy showing E. histolytica trophozoites with ingested red cells;
+    treat with metronidazole 400 mg three times daily for five days. Given increasing
+    antimicrobial resistance in Shigella species, local resistance patterns should
+    guide antibiotic selection wherever culture and sensitivity data are available.
+    Shigellosis is a notifiable condition — clusters or outbreaks require immediate
+    reporting to the sub-county health management team and enhanced WASH investigation.

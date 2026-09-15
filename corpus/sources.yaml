@@ -122,6 +122,46 @@ sources:
     year: 2022
     url: ""
 
+  # ── Kenya MOH Vol 2 (2024) cards ──────────────────────────────────────────────
+  - condition: Shigellosis (acute dysentery)
+    authority_tier: kenya_moh
+    authority: Ministry of Health Kenya
+    title: "Clinical Guidelines for Management and Referral of Common Conditions at Level 2-3, 2024"
+    year: 2024
+    url: ""
+    supplementary_sources:
+      - authority: Medscape
+        title: "Shigellosis Clinical Presentation, Differential Diagnosis and Workup"
+        year: 2024
+        url: "https://emedicine.medscape.com/article/182767-overview"
+        sections_covered:
+          - predisposing_factors
+          - red_flags
+          - differential_diagnoses
+          - argues_against
+        reason: "Primary source (Kenya MOH 2024) covers cardinal symptoms and management but is thin on predisposing factors, complications/red flags, and differential diagnoses"
+
+  - condition: Intestinal helminthiasis
+    authority_tier: kenya_moh
+    authority: Ministry of Health Kenya
+    title: "Clinical Guidelines for Management and Referral of Common Conditions at Level 2-3, 2024"
+    year: 2024
+    url: ""
+
+  - condition: Appendicitis
+    authority_tier: kenya_moh
+    authority: Ministry of Health Kenya
+    title: "Clinical Guidelines for Management and Referral of Common Conditions at Level 2-3, 2024"
+    year: 2024
+    url: ""
+
+  - condition: Acute viral hepatitis A
+    authority_tier: kenya_moh
+    authority: Ministry of Health Kenya
+    title: "Clinical Guidelines for Management and Referral of Common Conditions at Level 2-3, 2024"
+    year: 2024
+    url: ""
+
   # ── Cholera — Gate 2 closure card ─────────────────────────────────────────────
   - condition: Cholera
     authority_tier: who_afro
