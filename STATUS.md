@@ -245,24 +245,28 @@ Independently (Phase 9 MVP):
 - 2026-09-14: 8/8 after presentation map integration (PresentationMapClassifier, 9 pathways, provenance labels)
 - 2026-09-14: 8/8 after comorbidity context engine (comorbidity_engine.py wired; Fixture A pregnancy alert confirmed)
 - 2026-09-14: 8/8 after YAML corpus pipeline batch migration complete (15/15 cards; production graph_entities.jsonl swapped; Fixture A + B confirmed)
+- 2026-09-15: 7/8 GATE PASS after AFI expansion (Bacterial meningitis + Chikungunya, 22 conditions/198 chunks). Case 2b remains known ceiling. Coverage 2/2 (Case 7 Appendicitis, Case 8 Chikungunya).
 
 ---
 
-### 7f — New condition cards (Tier 1 — pending clinician review)
-> Workflow: author → colleague clinical review → ingest → Neo4j reload → RAG test
+### 7f — New condition cards (Tier 1)
 
-- [ ] **Cholera** — signals: flooding (waterborne, strong), water_scarcity (moderate)
-- [ ] **Rift Valley fever** — signals: flooding (zoonotic, requires: livestock_contact)
-- [ ] **Chikungunya** — signals: post_long_rains (vector_borne, coast)
+**GI domain — COMPLETE (2026-09-15):**
+- [x] Cholera — commit (Gate 2 closure test, Method A, WHO-AFRO 2023)
+- [x] Shigellosis (acute dysentery) — committed
+- [x] Intestinal helminthiasis — committed
+- [x] Appendicitis — committed (recognition-and-refer scope, MOH 2024)
+- [x] Acute viral hepatitis A — committed (MOH 2024 + Medscape supplementary)
 
-**Already authored (awaiting review):**
-- [x] GERD — authored, RAG tested ✅
-- [x] Functional dyspepsia — authored, RAG tested ✅
-- [x] Typhoid fever — authored, RAG tested ✅
-- [ ] Asthma — signals: cold_dry_season (low), dry_dusty_season (low)
+**AFI domain — in progress:**
+- [x] Bacterial meningitis — committed (MOH 2024; MSP-01 + MSP-02 closed)
+- [x] Chikungunya — committed (WHO 2025 fact sheet; RP-03 addressed)
+- [ ] Brucellosis — ⚠ governance decision required (see §2.5 of AFI domain contract)
+- [ ] Leptospirosis — ⚠ governance decision required
+- [ ] Rickettsial illness — ⛔ governance decision required (below source hierarchy floor)
 
-**Tier 2 (after ≥18 conditions):**
-COPD, Heart failure, HIV/AIDS, Sickle cell, PID, Malaria in pregnancy, Meningococcal meningitis, Leptospirosis
+**Excluded:**
+- Rift Valley fever — outbreak-only, not routine primary-care differential (AFI domain contract §3.4)
 
 ---
 
@@ -385,27 +389,35 @@ COPD, Heart failure, HIV/AIDS, Sickle cell, PID, Malaria in pregnancy, Meningoco
 
 ## Condition Card Review Status
 
-| Card | ICD-11 | Category | Review Status | Reviewer | Last Reviewed |
-|------|--------|----------|--------------|----------|---------------|
-| [[type_2_diabetes]] | 5A11 | Endocrine/Metabolic | ✅ clinician_verified | Colleague | 2026-09-14 |
-| [[hypertension]] | BA00 | Cardiovascular | ✅ clinician_verified | Colleague | 2026-09-14 |
-| [[obesity]] | 5B81 | Metabolic | ✅ clinician_verified | Colleague | 2026-09-14 |
-| [[malaria]] | 1F40 | Infectious | ✅ clinician_verified | Colleague | 2026-09-14 |
-| [[pulmonary_tb]] | 1B10 | Infectious/Respiratory | ✅ clinician_verified | Colleague | 2026-09-14 |
-| [[pneumonia]] | CA40 | Respiratory/Infectious | ✅ clinician_verified | Colleague | 2026-09-14 |
-| [[uti]] | GC08 | Urogenital/Infectious | ✅ clinician_verified | Colleague | 2026-09-14 |
-| [[anaemia]] | 3A00 | Haematological | ✅ clinician_verified | Colleague | 2026-09-14 |
-| [[peptic_ulcer_disease]] | DA62 | Gastroenterological | ✅ clinician_verified | Colleague | 2026-09-14 |
-| [[acute_gastroenteritis]] | 1A09 | Gastroenterological/Infectious | ✅ clinician_verified | Colleague | 2026-09-14 |
-| [[typhoid_fever]] | 1A07 | Infectious | ✅ clinician_verified | Colleague | 2026-09-14 |
-| [[functional_dyspepsia]] | DA94 | Gastroenterological | ✅ clinician_verified | Colleague | 2026-09-14 |
-| [[gerd]] | DA22 | Gastroenterological | ✅ clinician_verified | Colleague | 2026-09-14 |
-| [[asthma]] | CA23 | Respiratory | ✅ clinician_verified | Colleague | 2026-09-14 |
-| [[dengue_fever]] | 1D2Z | Infectious | ✅ clinician_verified | Colleague | 2026-09-14 |
+| Card | ICD-11 | ICD-10 | Category | Review Status | Reviewer | Last Reviewed |
+|------|--------|--------|----------|--------------|----------|---------------|
+| type_2_diabetes | 5A11 | E11 | endocrine | ✅ clinician_verified | Colleague | 2026-09-14 |
+| hypertension | BA00 | I10 | cardiovascular | ✅ clinician_verified | Colleague | 2026-09-14 |
+| obesity | 5B81 | E66 | endocrine | ✅ clinician_verified | Colleague | 2026-09-14 |
+| malaria | 1F40 | B54 | infectious | ✅ clinician_verified | Colleague | 2026-09-14 |
+| pulmonary_tb | 1B10 | A15 | respiratory | ✅ clinician_verified | Colleague | 2026-09-14 |
+| pneumonia | CA40 | J18 | respiratory | ✅ clinician_verified | Colleague | 2026-09-14 |
+| uti | GC08 | N39.0 | urological | ✅ clinician_verified | Colleague | 2026-09-14 |
+| anaemia | 3A00 | D50 | haematological | ✅ clinician_verified | Colleague | 2026-09-14 |
+| peptic_ulcer_disease | DA62 | K27 | gastroenterological | ✅ clinician_verified | Colleague | 2026-09-14 |
+| acute_gastroenteritis | 1A09 | A09 | gastroenterological | ✅ clinician_verified | Colleague | 2026-09-14 |
+| typhoid_fever | 1A07 | A01.0 | infectious | ✅ clinician_verified | Colleague | 2026-09-14 |
+| functional_dyspepsia | DA94 | K30 | gastroenterological | ✅ clinician_verified | Colleague | 2026-09-14 |
+| gerd | DA22 | K21 | gastroenterological | ✅ clinician_verified | Colleague | 2026-09-14 |
+| asthma | CA23 | J45 | respiratory | ✅ clinician_verified | Colleague | 2026-09-14 |
+| dengue_fever | 1D2Z | A90 | infectious | ✅ clinician_verified | Colleague | 2026-09-14 |
+| cholera | — | A00.9 | infectious | 🟡 draft | — | — |
+| shigellosis | — | A03.9 | infectious | 🟡 draft | — | — |
+| intestinal_helminthiasis | — | B82.9 | infectious | 🟡 draft | — | — |
+| appendicitis | DC92 | K37 | gastroenterological | 🟡 draft | — | — |
+| acute_viral_hepatitis_a | 1E50.0 | B15.9 | infectious | 🟡 draft | — | — |
+| bacterial_meningitis | 1C1Z | G00.9 | infectious | 🟡 draft | — | — |
+| chikungunya | 1D67 | A92.0 | infectious | 🟡 draft | — | — |
 
 **Legend:** 🟡 draft · 🔵 under_review · ✅ clinician_verified
 
-**Production gate:** 15 / 15 cards clinician_verified (2026-09-14). Outstanding: ICD code verification for comorbidity-specific codes (e.g. Malaria in pregnancy combinations) — flagged by reviewer; resolve before production ingest.
+**Production gate:** 15/22 cards clinician_verified. 7 cards authored after the 2026-09-14 review are draft — blocked from production ingest until a second review pass.
+Outstanding: ICD code verification for comorbidity-specific codes (e.g. Malaria in pregnancy combinations) — flagged by reviewer.
 
 ---
 
@@ -635,7 +647,8 @@ Clinician decision → Encounters DB → (future) feedback signal
 
 ## Open Questions
 
-- [ ] Clinician reviewer — name a reviewer + set a deadline for Phase 2 production gate; process blocker, not technical
-- [ ] Phase 9 historical baseline — site/date range, years, storage format for ERA5-Land historical pull
-- [ ] Coast dry-season — CHIRPS directly (ClimateSERV) or ERA5-Land bias correction for coast Jan–Feb threshold calibration
-- [ ] AFI domain source governance — Brucellosis / Leptospirosis / Rickettsial illness: accept fallback sources or defer? (see domain contract §2.5)
+- [ ] **Clinician review — 7 new cards** — schedule a second review pass for Cholera, Shigellosis, Helminthiasis, Appendicitis, Hepatitis A, Bacterial Meningitis, Chikungunya before production ingest
+- [ ] **AFI source governance** — Brucellosis / Leptospirosis / Rickettsial illness: accept fallback sources or defer? (see domain contract §2.5) — ⏳ awaiting decision
+- [ ] **Phase 9 historical baseline** — site/date range, years, storage format for ERA5-Land historical pull
+- [ ] **Coast dry-season** — CHIRPS directly (ClimateSERV) or ERA5-Land bias correction for coast Jan–Feb threshold calibration
+- [ ] **ICD code verification** — comorbidity-specific codes (Malaria in pregnancy combinations) flagged by reviewer; resolve before production ingest
