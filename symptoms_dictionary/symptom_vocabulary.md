@@ -61,6 +61,11 @@
 | irregular menstruation | oligomenorrhoea |
 | irritability | |
 | jaundice | icterus |
+| dark urine | bilirubinuria, tea-coloured urine, cola-coloured urine |
+| pale stool | acholic stool, clay-coloured stool |
+| pruritus | generalised itching, generalised pruritus, skin itching |
+| RUQ tenderness | right upper quadrant tenderness, right hypochondrial tenderness |
+| right upper quadrant pain | RUQ pain, right hypochondrial pain, right upper abdominal pain |
 | relative bradycardia | pulse-temperature dissociation |
 | rose spots | rose-coloured spots, typhoid rash |
 | constipation | |
@@ -406,6 +411,14 @@
 | barefoot walking | walking without footwear |
 | geophagy | soil eating, earth eating, pica soil |
 | age five to fifteen years | school age, primary school age |
+| close contact with HAV case | household contact hepatitis A, contact jaundiced person |
+| unvaccinated status | no hepatitis A vaccination, HAV unvaccinated |
+| travel to endemic area | travel endemic region, visit to HAV-endemic country |
+| childcare setting | daycare centre, nursery setting, preschool contact |
+| urban informal settlement | informal settlement residence, slum residence |
+| elevated ALT and AST | transaminitis, raised liver enzymes, elevated transaminases |
+| elevated bilirubin | raised bilirubin, hyperbilirubinaemia |
+| positive anti-HAV IgM | HAV IgM positive, anti-HAV IgM detected, hepatitis A serology positive |
 
 ---
 
@@ -466,3 +479,11 @@
 | tenesmus | painful urge to defaecate, rectal tenesmus |
 | rapid severe dehydration | rapid dehydration, acute severe dehydration |
 | no eosinophilia | absent eosinophilia, normal eosinophil count |
+| chronic liver disease features | signs of chronic liver disease, stigmata of chronic liver disease |
+| parenteral exposure without fecal-oral risk | blood-borne exposure only, IV drug use only |
+| negative anti-HAV IgM | HAV IgM negative, anti-HAV IgM not detected, hepatitis A serology negative |
+| no prodrome before jaundice | jaundice without prodrome, sudden onset jaundice |
+| hepatic encephalopathy | liver encephalopathy, hepatic coma, altered consciousness liver failure |
+| acute liver failure | fulminant hepatic failure, fulminant liver failure |
+| coagulopathy | bleeding tendency, clotting abnormality, coagulopathy acute |
+| prolonged prothrombin time | raised INR, PT prolongation, INR elevated |

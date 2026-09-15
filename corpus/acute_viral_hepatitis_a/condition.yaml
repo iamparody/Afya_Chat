@@ -1,0 +1,245 @@
+condition: Acute viral hepatitis A
+icd11: 1E50.0
+icd10: B15.9
+category: infectious
+corpus_version: "1.0"
+schema_version: "2.2"
+review_status: draft
+reviewed_by:
+last_reviewed:
+
+sources:
+  - organization: Ministry of Health Kenya
+    title: "Clinical Guidelines for Management and Referral of Common Conditions at Level 2-3, 2024"
+    year: "2024"
+  - organization: Medscape
+    title: "Hepatitis A Clinical Presentation, Differential Diagnosis and Workup"
+    year: "2026"
+    url: ""
+
+endemic_regions:
+  - nationwide
+  - urban_informal
+
+environmental_signals:
+  - signal: flooding
+    pathways:
+      - waterborne
+    effect_type: transmission_opportunity
+    effect_direction: up
+    lag_weeks:
+      min: 2
+      max: 6
+    strength: moderate
+    confidence: moderate
+    causal_distance: direct
+    evidence_type: regional_epidemiological_evidence
+    regions:
+      - nationwide
+      - urban_informal
+    seasonal_basis: outbreak_associated
+    applicability:
+      requires_exposure:
+        - unsafe_water
+      amplifiers:
+        - floodwater_contact
+
+graph:
+  cardinal_symptoms:
+    - jaundice
+    - dark urine
+    - anorexia
+    - fatigue
+    - nausea
+    - right upper quadrant pain
+    - low-grade fever
+  associated_symptoms:
+    - hepatomegaly
+    - RUQ tenderness
+    - malaise
+    - vomiting
+    - pale stool
+    - pruritus
+    - splenomegaly
+    - myalgia
+  risk_factors:
+    - poor sanitation
+    - contaminated food or water
+    - close contact with HAV case
+    - unvaccinated status
+    - travel to endemic area
+    - childcare setting
+    - urban informal settlement
+  differentials:
+    - hepatitis E
+    - acute hepatitis B
+    - Typhoid fever
+    - Malaria (unspecified)
+    - leptospirosis
+    - drug-induced hepatitis
+  argues_against:
+    - chronic liver disease features
+    - parenteral exposure without fecal-oral risk
+    - negative anti-HAV IgM
+    - no prodrome before jaundice
+  red_flags:
+    - hepatic encephalopathy
+    - prolonged prothrombin time
+    - coagulopathy
+    - haemodynamic compromise
+    - acute liver failure
+  confirms:
+    - positive anti-HAV IgM
+    - elevated ALT and AST
+    - elevated bilirubin
+
+sections:
+  cardinal_symptoms: |
+    The classic presentation of acute hepatitis A virus (HAV) infection is biphasic.
+    The prodromal phase, lasting 1–2 weeks before jaundice appears, is dominated by
+    anorexia — the earliest and most consistent symptom — followed by nausea, vomiting,
+    fatigue, malaise, and low-grade fever (usually below 39.5°C). Right upper quadrant
+    discomfort or pain is common during the prodrome and icteric phase. The icteric
+    phase begins with dark urine (bilirubinuria) — the first sign, appearing before
+    visible jaundice — followed by yellowing of the sclera and skin. Jaundice occurs
+    in 70–85% of adults with symptomatic HAV infection; it is less common in children
+    under five years and uncommon in infants, who often have anicteric or asymptomatic
+    illness. The severity of symptoms increases with age — older adults and those with
+    pre-existing liver disease may have a more protracted course. Pale stool may
+    accompany jaundice but is not universal.
+
+  associated_symptoms: |
+    Mild hepatomegaly with right upper quadrant tenderness is present on examination
+    in most patients with symptomatic HAV infection; the liver is typically enlarged
+    with a firm, smooth, sharp edge. Splenomegaly occurs in 10–20% of patients. Myalgia
+    and mild headache are common in the prodrome. Pruritus (generalised itching)
+    accompanies jaundice in a proportion of patients and is thought to reflect bile
+    salt deposition in the skin. Significant vomiting and anorexia may produce
+    dehydration, manifesting as tachycardia, dry mucous membranes, reduced skin turgor,
+    and reduced urine output. A skin rash — usually on the lower limbs, occasionally
+    with a vasculitic appearance — occurs in a minority of patients and may accompany
+    arthralgias.
+
+  diagnostic_features: |
+    Diagnosis of acute HAV infection is confirmed by serology: IgM anti-HAV is
+    positive at or within a few days of symptom onset, remains positive for 3–6 months,
+    and is both sensitive and specific for acute infection. IgG anti-HAV indicates
+    past infection or vaccination and confers lifelong immunity but does not diagnose
+    acute disease. Liver function tests show elevated ALT and AST — typically 4–100
+    times the upper limit of normal — and elevated bilirubin; ALT and AST elevations
+    may precede symptoms by a week or more and usually peak within 3–10 days of
+    clinical illness onset. Prolongation of the prothrombin time (INR >1.5) and a
+    falling serum albumin indicate significant hepatocyte failure and require urgent
+    review. At Kenya primary care level (Level 2–3), anti-HAV IgM serology and LFTs
+    may require referral to Level 4 for processing. A provisional clinical diagnosis
+    may be made when: fecal-oral exposure is plausible; the prodrome-then-jaundice
+    sequence is present; and malaria and drug-induced hepatitis have been excluded.
+    Abdominal ultrasound is not routinely required but may be needed to exclude
+    biliary obstruction, abscess, or unsuspected underlying chronic liver disease.
+
+  predisposing_factors: |
+    HAV is transmitted by the fecal-oral route — ingestion of contaminated food or
+    water is the primary mechanism. Risk is highest in settings with poor sanitation,
+    limited access to clean water, and inadequate hygiene infrastructure, which persist
+    across much of Kenya's informal urban settlements and some rural communities.
+    Close household or institutional contact with an infected person is a common
+    transmission mechanism; HAV is shed at highest titre during the prodromal phase
+    before jaundice appears, when the source case may not yet be recognised as ill.
+    Food handlers with undiagnosed prodromal infection are a recognised source of
+    community outbreaks. Shellfish harvested from sewage-contaminated coastal or
+    lake-shore waters may concentrate virus. Young children in childcare settings
+    may be a silent reservoir — they often have anicteric illness and continue to
+    shed virus. Flooding and disruption of water and sanitation infrastructure
+    markedly increase waterborne transmission risk. Unvaccinated individuals of all
+    ages remain susceptible; hepatitis A vaccine is not currently included in Kenya's
+    routine childhood immunisation schedule, though hepatitis B is.
+
+  typical_presentation: |
+    A young adult or school-aged child from a community with limited sanitation, or
+    from an urban informal settlement, presents with 1–2 weeks of progressively
+    worsening anorexia, fatigue, malaise, nausea, and right upper quadrant discomfort.
+    Family members note yellowing of the eyes; the patient reports dark, tea-coloured
+    urine. Low-grade fever was present in the preceding week. On examination there is
+    mild scleral and skin jaundice, mild hepatomegaly, and right upper quadrant
+    tenderness; the patient is otherwise haemodynamically stable. A history of
+    consuming unboiled water, food from street vendors, or contact with a jaundiced
+    household member in the preceding 2–6 weeks supports the diagnosis. The illness
+    is typically at its most symptomatic at jaundice onset; most patients begin to
+    improve within 2–4 weeks. The critical tasks at primary care level are: assess
+    for red flag features of acute liver failure; exclude malaria as a co-cause of
+    jaundice; take a medication history to exclude drug-induced hepatitis.
+
+  differential_diagnoses: |
+    Hepatitis E virus (HEV) infection is the most important differential — both
+    viruses share fecal-oral transmission, identical clinical presentation, and
+    similar epidemiology in East Africa; serological testing (anti-HEV IgM) is the
+    only way to distinguish them. HEV is particularly dangerous in pregnancy, where
+    fulminant hepatitis occurs in up to 20% of cases. Acute hepatitis B presents
+    similarly but is transmitted parenterally (blood, sexual contact, vertical
+    transmission); HBsAg and a history of parenteral exposure assist diagnosis.
+    Typhoid fever can cause hepatitis with elevated liver enzymes and jaundice in a
+    proportion of cases; the full enteric fever picture — prolonged stepwise fever,
+    relative bradycardia, rose spots — and blood culture or Widal test assist the
+    diagnosis. Malaria causes haemolytic jaundice in severe disease; a malaria RDT
+    or thick blood film must be performed in any jaundiced patient from an endemic
+    area. Leptospirosis causes acute hepatitis with jaundice in the icteric (Weil's
+    disease) form; conjunctival suffusion, severe myalgia, and a history of floodwater
+    or animal contact support this diagnosis. Drug-induced hepatitis — particularly
+    from anti-tuberculosis therapy (isoniazid, rifampicin), antifungals, and
+    paracetamol overdose — should be considered in patients on hepatotoxic medications;
+    a careful medication history is essential.
+
+  argues_against: |
+    A chronic or relapsing-remitting course of liver disease argues against HAV
+    infection — hepatitis A is always acute and self-limiting; it never causes
+    chronic hepatitis or a carrier state. Predominant parenteral or sexual exposure
+    history without a plausible fecal-oral risk (contaminated food, water, or close
+    contact with a jaundiced person) makes HAV less likely and should direct suspicion
+    towards HBV or HCV. Negative anti-HAV IgM at or after symptom onset argues
+    strongly against the diagnosis; the principal exception is testing within the
+    first 1–2 days of illness. Features of chronic liver disease — spider angiomata,
+    ascites, splenomegaly disproportionate to the acute illness, leukonychia, palmar
+    erythema — argue against HAV as the primary cause and should prompt consideration
+    of acute-on-chronic liver disease. Sudden onset of jaundice without the
+    characteristic prodrome of anorexia and fatigue argues against HAV and towards
+    biliary obstruction, haemolytic jaundice, or drug-induced cholestasis — in HAV,
+    the prodromal phase consistently precedes the icteric phase by 1–2 weeks.
+
+  red_flags: |
+    Hepatic encephalopathy — confusion, altered consciousness, disorientation, or
+    asterixis (liver flap) — indicates fulminant hepatic failure, which occurs in
+    fewer than 0.5% of HAV infections but carries high mortality without intensive
+    supportive care; immediate resuscitation and emergency referral to a facility
+    with ICU capacity are required. Prolongation of the prothrombin time (INR >1.5)
+    or a falling serum albumin indicates significant hepatocyte failure and warrants
+    urgent referral to Level 4. Coagulopathy — bruising, petechiae, haematemesis, or
+    melaena — in the context of acute hepatitis indicates severe liver dysfunction
+    and requires emergency referral. Haemodynamic compromise — persistent tachycardia
+    or hypotension — from severe dehydration due to vomiting or from hepatic failure
+    requires immediate intravenous resuscitation and transfer. Pregnant women with
+    acute jaundice require urgent assessment regardless of severity — HEV (the
+    closest clinical differential) causes fulminant hepatitis in up to 20% of
+    pregnant women and must be excluded. Children under five and elderly patients
+    with acute hepatitis who deteriorate rapidly require admission-level assessment.
+
+  diagnostic_context: |
+    At Kenya primary care level, the initial assessment of a jaundiced patient with
+    acute illness should follow this sequence: (1) perform a malaria RDT — malaria
+    causing haemolytic jaundice must not be missed; (2) take a detailed medication
+    history — anti-TB drugs (isoniazid, rifampicin), antifungals, and paracetamol
+    are the most important hepatotoxins; (3) assess for red flag features of acute
+    liver failure (encephalopathy, coagulopathy, haemodynamic instability); (4)
+    request LFTs (ALT, AST, bilirubin) and full blood count where available. A
+    provisional clinical diagnosis of HAV infection may be made when: fecal-oral
+    exposure is plausible, the prodrome-then-jaundice sequence is present, malaria
+    and drug-induced hepatitis have been excluded, and no features of chronic liver
+    disease are present. Refer to Level 4 for: anti-HAV IgM serology, HBsAg, and
+    anti-HEV IgM (to distinguish HAV from HBV and HEV); and for management of any
+    red flag features. Management is supportive: adequate oral hydration, antiemetics
+    for nausea, avoidance of alcohol and all hepatotoxic drugs, nutritional support,
+    and rest. There is no specific antiviral treatment for acute HAV infection.
+    Instruct the patient to avoid food handling during the infectious period (until
+    one week after jaundice onset). Hepatitis A is a notifiable condition — report to
+    the sub-county public health office. Household contacts should be advised on hand
+    hygiene and safe water practices; post-exposure immunoglobulin is available at
+    higher-level facilities.

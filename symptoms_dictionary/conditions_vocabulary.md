@@ -93,6 +93,10 @@
 | mesenteric adenitis | mesenteric lymphadenitis |
 | renal colic | ureteric colic, nephrolithiasis colic |
 | Mittelschmerz | mid-cycle pain, ovulation pain |
+| Acute viral hepatitis A | hepatitis A, HAV infection, hepatitis A virus infection, acute hepatitis A |
+| hepatitis E | HEV infection, hepatitis E virus infection, acute hepatitis E |
+| acute hepatitis B | HBV infection, hepatitis B virus infection, hepatitis B acute |
+| drug-induced hepatitis | hepatotoxicity, drug-induced liver injury, DILI, medication-induced hepatitis |
 | giardiasis | Giardia infection, giardia, lambliasis |
 | amoebic colitis | amoebic dysentery, amoebiasis, Entamoeba histolytica infection |
 | irritable bowel syndrome | IBS, spastic colon |
