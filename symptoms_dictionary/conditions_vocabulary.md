@@ -16,14 +16,14 @@
 | Canonical Term | Do Not Use |
 |---|---|
 | type 1 diabetes mellitus | T1DM, type 1 diabetes, juvenile diabetes |
-| type 2 diabetes mellitus | T2DM, type 2 diabetes, adult-onset diabetes |
+| Type 2 diabetes mellitus | type 2 diabetes mellitus, T2DM, type 2 diabetes, adult-onset diabetes |
 | MODY | maturity-onset diabetes of the young |
 | diabetes insipidus | |
 | glucocorticoid-induced hyperglycaemia | steroid-induced diabetes |
 | Cushing syndrome | Cushing's syndrome, Cushing's disease |
 | acromegaly | |
 | pancreatic disease | |
-| essential hypertension | primary hypertension |
+| Essential hypertension | essential hypertension, primary hypertension |
 | white coat hypertension | |
 | primary hyperaldosteronism | Conn syndrome, Conn's syndrome |
 | phaeochromocytoma | pheochromocytoma |
@@ -34,16 +34,17 @@
 | polycystic ovary syndrome | PCOS |
 | Prader-Willi syndrome | |
 | drug-induced weight gain | |
-| typhoid fever | enteric fever, typhoid |
-| dengue fever | dengue, break-bone fever |
+| Obesity | obesity |
+| Typhoid fever | typhoid fever, enteric fever, typhoid |
+| Dengue fever | dengue fever, dengue, break-bone fever |
 | leptospirosis | Weil disease |
 | influenza | flu |
 | bacterial sepsis | septicaemia, sepsis |
 | meningitis | |
-| malaria | |
-| community-acquired pneumonia | CAP, pneumonia |
-| pulmonary tuberculosis | TB, PTB |
-| asthma | bronchial asthma |
+| Malaria (unspecified) | malaria |
+| Community-acquired pneumonia | community-acquired pneumonia, CAP, pneumonia |
+| Pulmonary tuberculosis | pulmonary tuberculosis, TB, PTB |
+| Asthma | asthma, bronchial asthma |
 | COPD | chronic obstructive pulmonary disease |
 | chikungunya | chikungunya fever |
 | non-tuberculous mycobacterial infection | NTM infection |
@@ -56,14 +57,16 @@
 | pulmonary embolism | PE |
 | acute decompensated heart failure | cardiac pulmonary oedema, pulmonary oedema |
 | anaemia of chronic disease | anaemia of inflammation |
+| Iron deficiency anaemia | iron deficiency anaemia, IDA |
 | malaria-related haemolytic anaemia | |
 | sickle cell disease | SCD |
 | G6PD deficiency | glucose-6-phosphate dehydrogenase deficiency |
 | thalassaemia trait | thalassemia trait |
 | vitamin B12 deficiency | B12 deficiency |
 | folate deficiency | folic acid deficiency |
-| gastro-oesophageal reflux disease | GERD, GORD, acid reflux disease |
-| functional dyspepsia | |
+| Gastro-oesophageal reflux disease | gastro-oesophageal reflux disease, GERD, GORD, acid reflux disease |
+| Functional dyspepsia | functional dyspepsia |
+| Peptic ulcer disease | peptic ulcer disease, PUD |
 | gastric cancer | stomach cancer |
 | acute pancreatitis | |
 | biliary colic | |
@@ -71,6 +74,7 @@
 | appendicitis | |
 | inflammatory bowel disease | IBD |
 | Clostridioides difficile infection | C. diff, CDI |
+| Urinary tract infection | urinary tract infection, UTI |
 | chlamydia urethritis | chlamydia |
 | gonorrhoea urethritis | gonorrhea, gonorrhoea |
 | vaginitis | |
@@ -80,4 +84,4 @@
 | cholera | Vibrio cholerae infection |
 | brucellosis | undulant fever, Brucella infection |
 | rickettsial illness | spotted fever, rickettsia infection, tick typhus |
-| acute gastroenteritis | gastroenteritis, non-specific gastroenteritis, AGE |
+| Acute gastroenteritis (infectious) | acute gastroenteritis, gastroenteritis, non-specific gastroenteritis, AGE |
