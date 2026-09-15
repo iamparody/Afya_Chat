@@ -17,7 +17,7 @@ PYTHON ?= python
 .PHONY: ingest load-neo4j embed eval eval-disam eval-reasoning pipeline
 
 ingest:
-	$(PYTHON) ingest.py
+	$(PYTHON) corpus_pipeline/ingest_yaml.py corpus/
 
 load-neo4j:
 	$(PYTHON) neo4j/neo4j_loader.py

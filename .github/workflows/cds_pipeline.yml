@@ -3,8 +3,8 @@ name: CDS Pipeline
 on:
   push:
     paths:
-      - 'symptoms_dictionary/**'
-      - 'ingest.py'
+      - 'corpus/**'
+      - 'corpus_pipeline/**'
       - 'phase5/**'
       - 'phase8/**'
   workflow_dispatch:
