@@ -28,6 +28,14 @@
 | weight loss | |
 | malaise | general unwellness |
 | headache | |
+| severe headache | worst headache of life, intense headache, severe head pain |
+| Kernig's sign | Kernig sign, knee extension pain hip flexed |
+| Brudzinski's sign | Brudzinski sign, neck flexion hip knee flexion reflex |
+| cranial nerve palsy | cranial nerve deficit, nerve palsy, facial or ocular nerve palsy |
+| phonophobia | sound sensitivity, noise intolerance, sound intolerance |
+| low immunity | immunocompromised, reduced immunity, immune deficiency, immunosuppressed |
+| asplenia | splenectomy, absent spleen, functional asplenia, post-splenectomy |
+| crowded living conditions | overcrowding, crowded housing, close contact setting |
 | myalgia | muscle pain, muscle ache |
 | arthralgia | joint pain, joint ache |
 | nausea | |
@@ -487,3 +495,11 @@
 | acute liver failure | fulminant hepatic failure, fulminant liver failure |
 | coagulopathy | bleeding tendency, clotting abnormality, coagulopathy acute |
 | prolonged prothrombin time | raised INR, PT prolongation, INR elevated |
+| absence of meningism | no neck stiffness, no meningeal signs, meningism absent |
+| thunderclap headache | sudden severe headache, instantaneous headache, worst-of-life onset headache |
+| clear CSF on lumbar puncture | normal CSF, clear cerebrospinal fluid LP |
+| herniation signs | brain herniation signs, tentorial herniation, uncal herniation, Cushing triad |
+| status epilepticus | prolonged seizure, continuous seizure, refractory seizure |
+| Glasgow Coma Scale below 8 | GCS below 8, GCS 8 or less, severe coma GCS |
+| turbid CSF on lumbar puncture | cloudy CSF, purulent CSF, turbid cerebrospinal fluid LP |
+| positive blood culture | blood culture positive, bacteraemia on culture |

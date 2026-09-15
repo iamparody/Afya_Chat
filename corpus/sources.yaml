@@ -162,6 +162,13 @@ sources:
     year: 2024
     url: ""
 
+  - condition: Bacterial meningitis
+    authority_tier: kenya_moh
+    authority: Ministry of Health Kenya
+    title: "Clinical Guidelines for Management and Referral of Common Conditions at Level 2-3, 2024"
+    year: 2024
+    url: ""
+
   # ── Cholera — Gate 2 closure card ─────────────────────────────────────────────
   - condition: Cholera
     authority_tier: who_afro

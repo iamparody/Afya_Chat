@@ -93,6 +93,11 @@
 | mesenteric adenitis | mesenteric lymphadenitis |
 | renal colic | ureteric colic, nephrolithiasis colic |
 | Mittelschmerz | mid-cycle pain, ovulation pain |
+| Bacterial meningitis | pyogenic meningitis, purulent meningitis, bacterial meningoencephalitis, acute bacterial meningitis |
+| viral encephalitis | aseptic meningitis, viral meningitis, viral meningoencephalitis |
+| TB meningitis | tuberculous meningitis, TBM, tubercular meningitis |
+| cryptococcal meningitis | crypto meningitis, Cryptococcus neoformans meningitis, fungal meningitis |
+| subarachnoid haemorrhage | SAH, subarachnoid bleed, subarachnoid hemorrhage |
 | Acute viral hepatitis A | hepatitis A, HAV infection, hepatitis A virus infection, acute hepatitis A |
 | hepatitis E | HEV infection, hepatitis E virus infection, acute hepatitis E |
 | acute hepatitis B | HBV infection, hepatitis B virus infection, hepatitis B acute |

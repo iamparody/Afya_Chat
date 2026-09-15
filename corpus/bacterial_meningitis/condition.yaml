@@ -1,0 +1,248 @@
+condition: Bacterial meningitis
+icd11: 1C1Z
+icd10: G00.9
+category: infectious
+corpus_version: "1.0"
+schema_version: "2.2"
+review_status: draft
+reviewed_by:
+last_reviewed:
+
+sources:
+  - organization: Ministry of Health Kenya
+    title: "Clinical Guidelines for Management and Referral of Common Conditions at Level 2-3, 2024"
+    year: "2024"
+
+endemic_regions:
+  - nationwide
+  - northern_kenya
+  - arid_semi_arid
+
+environmental_signals:
+  - signal: dry_dusty_season
+    pathways:
+      - respiratory_mucosal
+    effect_type: transmission_opportunity
+    effect_direction: up
+    lag_weeks:
+      min: 0
+      max: 4
+    strength: low
+    confidence: moderate
+    causal_distance: indirect
+    evidence_type: regional_epidemiological_evidence
+    regions:
+      - northern_kenya
+      - arid_semi_arid
+    seasonal_basis: dry_season
+    applicability:
+      requires_exposure: []
+      amplifiers:
+        - pastoralist_mobility
+
+graph:
+  cardinal_symptoms:
+    - fever
+    - severe headache
+    - neck stiffness
+    - photophobia
+    - vomiting
+    - altered consciousness
+  associated_symptoms:
+    - Kernig's sign
+    - Brudzinski's sign
+    - petechiae
+    - purpura
+    - seizures
+    - cranial nerve palsy
+    - papilloedema
+    - phonophobia
+  risk_factors:
+    - low immunity
+    - HIV infection
+    - age under five
+    - age over 65
+    - asplenia
+    - crowded living conditions
+    - unvaccinated status
+  differentials:
+    - Malaria (unspecified)
+    - Dengue fever
+    - Typhoid fever
+    - viral encephalitis
+    - TB meningitis
+    - cryptococcal meningitis
+    - subarachnoid haemorrhage
+  argues_against:
+    - absence of meningism
+    - gradual insidious onset
+    - clear CSF on lumbar puncture
+    - thunderclap headache
+  red_flags:
+    - purpura non-blanching
+    - septic shock
+    - herniation signs
+    - status epilepticus
+    - Glasgow Coma Scale below 8
+  confirms:
+    - turbid CSF on lumbar puncture
+    - positive blood culture
+
+sections:
+  cardinal_symptoms: |
+    Bacterial meningitis presents with the classic triad of fever, severe headache, and
+    neck stiffness. In practice, all three features are present simultaneously in only
+    approximately 44% of adult cases; any two of the three in a patient with an acute
+    febrile illness should prompt urgent clinical suspicion. Altered consciousness —
+    ranging from drowsiness and confusion to deep coma — is the most important predictor
+    of severity and outcome and may evolve rapidly over hours. Photophobia (discomfort
+    in bright light) is a sensitive early feature and can be elicited by shining a torch
+    briefly at the patient. Vomiting, often forceful, occurs in most patients. In young
+    children under two years and infants, the classic triad may be absent: irritability,
+    poor feeding, high-pitched cry, and a bulging tense fontanelle are the dominant
+    features. In the elderly, neck stiffness may be absent or minimal and altered mental
+    status may dominate. Tuberculous (TB) meningitis characteristically has a slower
+    onset over days to weeks, with prominent cranial nerve palsies and a subacute course.
+    Meningococcal meningitis may be preceded by a brief upper respiratory prodrome and
+    rapidly progresses; the petechial or purpuric rash may appear within the first hours
+    of illness.
+
+  associated_symptoms: |
+    Kernig's sign — inability to passively extend the knee when the hip is flexed to
+    90° due to meningeal irritation — and Brudzinski's sign — involuntary flexion of
+    the hips and knees when the neck is passively flexed — are classical examination
+    findings but are insensitive: their absence does not exclude bacterial meningitis,
+    particularly in infants and the elderly. A petechial or purpuric non-blanching rash
+    is the hallmark of meningococcaemia (meningococcal septicaemia) and represents a
+    clinical emergency; press a glass firmly against any petechial lesion — non-blanching
+    rash requires immediate action. Focal neurological signs — hemiparesis, cranial nerve
+    palsies (particularly III and VI), gaze deviation — indicate parenchymal involvement
+    (meningoencephalitis) or intracranial complications. Seizures occur in 20–40% of
+    bacterial meningitis cases and may be the presenting feature, particularly in
+    children. Papilloedema — swelling of the optic disc on fundoscopy — may indicate
+    raised intracranial pressure; its presence is a contraindication to LP without
+    prior CT. Phonophobia (sound sensitivity) commonly accompanies photophobia.
+
+  diagnostic_features: |
+    Lumbar puncture (LP) and CSF analysis are the definitive investigations for
+    bacterial meningitis but should NOT be performed at Level 2-3 — if bacterial
+    meningitis is suspected, start treatment and refer urgently. At Level 4+, CSF
+    characteristics assist aetiological diagnosis: turbid or cloudy CSF with high
+    polymorphonuclear leucocyte count (hundreds to thousands per µL), raised protein,
+    and low glucose (<40% of blood glucose) is characteristic of bacterial meningitis.
+    Clear or opalescent CSF with lymphocytic pleocytosis, moderately raised protein, and
+    low glucose supports TB meningitis. Clear CSF with lymphocytic pleocytosis, normal
+    glucose, and moderately raised protein is typical of viral (aseptic) meningitis. At
+    primary care level: (1) perform a malaria RDT in all febrile patients with
+    neurological signs in endemic areas; (2) measure blood glucose to exclude
+    hypoglycaemia as a cause of altered consciousness; (3) request full blood count if
+    immediately available. Blood culture should be taken before antibiotic administration
+    if immediately feasible — but must not delay treatment.
+
+  predisposing_factors: |
+    Low immunity is the dominant risk factor in Kenya — HIV-positive individuals are at
+    markedly increased risk of bacterial meningitis (Streptococcus pneumoniae), TB
+    meningitis, and cryptococcal meningitis; CD4 count is a key determinant of suscept-
+    ibility. Young children under five years are highly susceptible to Haemophilus
+    influenzae type b (Hib) and Streptococcus pneumoniae meningitis — both are vaccine-
+    preventable through Kenya's routine immunisation schedule. Older adults and the
+    immunocompromised are at higher risk of Listeria monocytogenes meningitis. Asplenia
+    (functional or post-splenectomy) markedly increases susceptibility to encapsulated
+    organisms (Streptococcus pneumoniae, Neisseria meningitidis, Haemophilus influenzae).
+    Contiguous spread from sinusitis, otitis media, mastoiditis, or pneumonia is a
+    recognised predisposing mechanism in Kenya primary care patients. Crowded living
+    conditions and close institutional contact facilitate meningococcal transmission
+    through respiratory droplets. Meningococcal meningitis occurs in epidemic waves in
+    Kenya, particularly in northern counties bordering the sub-Saharan meningitis belt
+    (Turkana, Marsabit, Mandera) and in settings of population displacement. Unvaccinated
+    individuals — especially for Hib and pneumococcal vaccines — carry higher risk.
+
+  typical_presentation: |
+    A young adult or child presents acutely — over hours to one or two days — with high
+    fever, a severe headache described as the worst of their life, vomiting, and
+    progressive neck stiffness. The patient is intolerant of light and cannot tolerate
+    loud sound. On examination there is fever, neck stiffness with resistance to passive
+    flexion, and either Kernig's or Brudzinski's sign may be positive. Consciousness may
+    be reduced. In an infant, irritability, a high-pitched cry, a bulging fontanelle,
+    and fever without obvious source are the presenting features. In meningococcal
+    disease, a petechial or purpuric non-blanching rash may appear within the first
+    hours and progress rapidly to extensive purpura. The mandatory first investigation
+    in Kenya is a malaria RDT — cerebral malaria can present identically and must be
+    excluded. Both diagnoses are medical emergencies requiring immediate hospital
+    referral; do not delay referral for investigations if clinical suspicion is high.
+
+  differential_diagnoses: |
+    Cerebral malaria is the most critical differential in Kenya — fever, impaired
+    consciousness, seizures, and neck stiffness (when present) are identical to
+    bacterial meningitis; a malaria RDT must be performed in all cases, but a positive
+    result does not exclude concurrent bacterial meningitis, and both may coexist.
+    Negative RDT with meningism: treat empirically for bacterial meningitis. Dengue
+    haemorrhagic fever produces petechiae that superficially resemble meningococcal
+    purpura; absence of neck stiffness, retro-orbital headache, severe bone pain, and
+    dengue warning signs (severe abdominal pain, vomiting, mucosal bleeding without
+    meningism) differentiate; however, non-blanching petechial rash with fever must be
+    treated as meningococcaemia until proven otherwise. Typhoid fever may produce altered
+    consciousness (typhoid encephalopathy) and fever; the enteric fever picture — gradual
+    onset, relative bradycardia, rose spots, prominent abdominal features — and blood
+    culture assist differentiation. TB meningitis has an insidious onset over days to
+    weeks with cranial nerve palsies, history of TB contact or cough, and often HIV
+    co-infection — subacute course and lymphocytic CSF distinguish it. Cryptococcal
+    meningitis in HIV-positive patients presents with subacute fever, severe headache,
+    and neck stiffness; India ink examination of CSF reveals encapsulated yeast.
+    Subarachnoid haemorrhage causes sudden thunderclap headache and neck stiffness
+    without fever — thunderclap onset (maximal intensity within seconds) and absence of
+    fever distinguish it from infectious meningitis.
+
+  argues_against: |
+    Absence of meningism — no neck stiffness, normal neck flexion, and negative Kernig's
+    and Brudzinski's signs — in a febrile patient with altered consciousness argues
+    against bacterial meningitis and supports cerebral malaria as the primary diagnosis
+    when RDT is positive. However, meningism may be absent in infants and the elderly
+    even with confirmed bacterial meningitis, so this finding must be interpreted in
+    clinical context and age should modify the threshold for suspicion. A gradual
+    insidious onset over days to weeks with a subacute course argues against acute
+    bacterial meningitis — TB meningitis or cryptococcal meningitis (in HIV-positive
+    patients) are more likely. Clear CSF with normal glucose and predominantly
+    lymphocytic pleocytosis on LP at Level 4 argues against pyogenic bacterial
+    meningitis and towards viral or TB aetiology; clear CSF with normal glucose and
+    cell count argues against all forms of infectious meningitis. Thunderclap headache
+    — reaching maximum severity within seconds, without fever — argues against
+    infectious meningitis and towards subarachnoid haemorrhage.
+
+  red_flags: |
+    A non-blanching petechial or purpuric rash with fever constitutes a clinical
+    emergency — meningococcaemia must be assumed; give IV/IM benzylpenicillin 4 mega
+    units immediately and arrange emergency transfer without waiting for LP, blood
+    cultures, or diagnostic confirmation. Glasgow Coma Scale (GCS) below 8 or a rapidly
+    falling GCS indicates imminent or actual cerebral herniation — immediate airway
+    protection, resuscitation, and emergency referral are required. Signs of herniation —
+    unequal pupils (anisocoria), decorticate or decerebrate posturing, Cushing's triad
+    (bradycardia, hypertension, irregular respiration) — represent a neurosurgical
+    emergency requiring immediate transfer. Septic shock — hypotension, tachycardia,
+    cold extremities, reduced urine output — accompanying meningitis indicates
+    meningococcal septicaemia; give IV fluids, antibiotics, and transfer immediately.
+    Status epilepticus (seizure lasting more than five minutes or repeated seizures
+    without recovery of consciousness) requires immediate management with IV/IM
+    diazepam 0.3mg/kg before transfer. A bulging tense fontanelle with fever and
+    altered responsiveness in an infant is a paediatric emergency.
+
+  diagnostic_context: |
+    At primary care level (Level 2-3) the role is clinical recognition, immediate
+    treatment initiation, and emergency transfer. Do NOT delay referral for
+    investigations or LP — bacterial meningitis is time-critical. Management sequence
+    (Kenya MOH 2024): (1) Secure IV access and measure blood glucose — treat
+    hypoglycaemia immediately. (2) Perform malaria RDT — treat empirically for malaria
+    if positive in an endemic area; do not withhold antibiotic treatment for meningitis
+    if meningism is present regardless of RDT result. (3) If purpuric rash is present:
+    give benzylpenicillin 4 mega units IV/IM (adults) immediately and transfer
+    without delay — do not wait for LP or blood culture. (4) For suspected bacterial
+    meningitis without purpura: give benzylpenicillin 4 mega units IV/IM (adults) or
+    chloramphenicol 1g IV if penicillin unavailable, then refer to Level 4. (5) Treat
+    seizures with IV/IM diazepam 0.3mg/kg; prevent recurrence with phenobarbitone
+    3–6mg/kg/day. (6) Give dexamethasone 4mg IM/PO three times daily for 72 hours in
+    adults to reduce the risk of deafness as a complication. (7) Notify the disease
+    surveillance officer for any suspected meningococcal meningitis — it is a notifiable
+    disease requiring immediate public health response and prophylaxis for household
+    contacts (rifampicin 600mg BD for 2 days). Refer all suspected meningitis to Level
+    4 for LP, CSF analysis, blood culture, CT where indicated, and definitive management.
+    Pre-referral antibiotics are strongly preferred over deferring antibiotics pending LP.
