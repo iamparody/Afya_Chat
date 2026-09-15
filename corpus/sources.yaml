@@ -1,0 +1,133 @@
+# corpus/sources.yaml — Production governance registry
+#
+# ONE authoritative source record per condition.
+# This is NOT condition.yaml.sources (authoring evidence — all documents consulted).
+# This is the canonical document CI uses to enforce corpus provenance.
+#
+# authority_tier priority (highest → lowest):
+#   kenya_moh > who_afro > who_global > professional_society
+#
+# Fields:
+#   condition      — exact match to condition.yaml `condition:` field
+#   authority_tier — controlled: kenya_moh | who_afro | who_global | professional_society
+#   authority      — organization name (human-readable)
+#   title          — document title
+#   year           — publication year (int)
+#   url            — canonical document URL (leave "" if unverified; triggers WARNING)
+
+sources:
+
+  - condition: Acute gastroenteritis (infectious)
+    authority_tier: who_global
+    authority: WHO
+    title: "Diarrhoeal Disease Fact Sheet"
+    year: 2017
+    url: "https://www.who.int/news-room/fact-sheets/detail/diarrhoeal-disease"
+
+  - condition: Iron deficiency anaemia
+    authority_tier: who_global
+    authority: WHO
+    title: "Haemoglobin Concentrations for the Diagnosis of Anaemia and Assessment of Severity"
+    year: 2011
+    url: "https://iris.who.int/handle/10665/85839"
+
+  - condition: Asthma
+    authority_tier: kenya_moh
+    authority: Kenya Ministry of Health
+    title: "Kenya National Clinical Guidelines for Management of Asthma"
+    year: 2022
+    url: ""
+
+  - condition: Dengue fever
+    authority_tier: who_global
+    authority: WHO
+    title: "Dengue: Guidelines for Diagnosis, Treatment, Prevention and Control"
+    year: 2009
+    url: "https://iris.who.int/handle/10665/44188"
+
+  - condition: Functional dyspepsia
+    authority_tier: professional_society
+    authority: Rome Foundation
+    title: "Rome IV Criteria for Functional Gastrointestinal Disorders"
+    year: 2016
+    url: "https://theromefoundation.org/rome-iv/rome-iv-criteria/"
+
+  - condition: Gastro-oesophageal reflux disease
+    authority_tier: kenya_moh
+    authority: Kenya Ministry of Health
+    title: "Kenya Clinical Guidelines"
+    year: 2022
+    url: ""
+
+  - condition: Essential hypertension
+    authority_tier: who_global
+    authority: WHO
+    title: "HEARTS Technical Package for Cardiovascular Disease Management in Primary Health Care"
+    year: 2023
+    url: "https://www.who.int/publications/i/item/9789240072718"
+
+  - condition: Malaria (unspecified)
+    authority_tier: kenya_moh
+    authority: KEMRI / Ministry of Health, Kenya
+    title: "Kenya Malaria Treatment Guidelines"
+    year: 2019
+    url: ""
+
+  - condition: Obesity
+    authority_tier: who_global
+    authority: WHO
+    title: "Obesity and Overweight Fact Sheet"
+    year: 2024
+    url: "https://www.who.int/news-room/fact-sheets/detail/obesity-and-overweight"
+
+  - condition: Peptic ulcer disease
+    authority_tier: professional_society
+    authority: American College of Gastroenterology
+    title: "Clinical Guideline: Management of Helicobacter pylori Infection"
+    year: 2021
+    url: ""
+
+  - condition: Community-acquired pneumonia
+    authority_tier: kenya_moh
+    authority: Kenya Ministry of Health
+    title: "Kenya Clinical Guidelines"
+    year: 2022
+    url: ""
+
+  - condition: Pulmonary tuberculosis
+    authority_tier: kenya_moh
+    authority: Kenya National Leprosy and TB Programme
+    title: "Kenya National Leprosy and TB Programme Treatment Guidelines"
+    year: 2021
+    url: ""
+
+  - condition: Type 2 diabetes mellitus
+    authority_tier: who_global
+    authority: WHO
+    title: "Classification and Diagnosis of Diabetes"
+    year: 2023
+    url: "https://iris.who.int/handle/10665/96612"
+
+  - condition: Typhoid fever
+    authority_tier: kenya_moh
+    authority: Kenya Ministry of Health
+    title: "Kenya Clinical Guidelines"
+    year: 2022
+    url: ""
+
+  - condition: Urinary tract infection
+    authority_tier: kenya_moh
+    authority: Kenya Ministry of Health
+    title: "Kenya Clinical Guidelines"
+    year: 2022
+    url: ""
+
+  # ── Cholera — Gate 2 closure card ─────────────────────────────────────────────
+  # URL verified from WHO AFRO Kenya publications page.
+  # PDF must be downloaded and archived before authoring begins.
+  - condition: Cholera
+    authority_tier: who_afro
+    authority: WHO Regional Office for Africa
+    title: "Cholera Management Guidelines, 2023 Edition"
+    year: 2023
+    url: "https://www.afro.who.int/countries/kenya/publication/cholera-management-guidelines-2023-edition"

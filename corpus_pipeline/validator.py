@@ -19,11 +19,25 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
 
+import yaml
 from pydantic import ValidationError
 
 _ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(_ROOT))
 from corpus_pipeline.schema import load_card, ConditionCard
+
+# ── Source registry ───────────────────────────────────────────────────────────
+
+AUTHORITY_TIERS = {"kenya_moh", "who_afro", "who_global", "professional_society"}
+_REGISTRY_PATH = _ROOT / "corpus" / "sources.yaml"
+
+
+def load_source_registry() -> dict[str, dict]:
+    """Return {condition_name: registry_entry} from corpus/sources.yaml."""
+    if not _REGISTRY_PATH.exists():
+        return {}
+    data = yaml.safe_load(_REGISTRY_PATH.read_text(encoding="utf-8"))
+    return {entry["condition"]: entry for entry in (data.get("sources") or [])}
 
 
 # ── Issue ─────────────────────────────────────────────────────────────────────
@@ -209,11 +223,46 @@ def _check_self_reference(card: ConditionCard) -> list[Issue]:
     return []
 
 
+# ── Source registry check ─────────────────────────────────────────────────────
+
+def _check_source_registry(card: ConditionCard, registry: dict[str, dict]) -> list[Issue]:
+    """Every production condition.yaml must have exactly one registered source."""
+    issues: list[Issue] = []
+    if not registry:
+        issues.append(Issue(
+            "WARNING", "sources.yaml",
+            "corpus/sources.yaml not found or empty - create registry before production ingest",
+        ))
+        return issues
+    entry = registry.get(card.condition)
+    if entry is None:
+        issues.append(Issue(
+            "ERROR", "sources.yaml",
+            f"No registry entry for '{card.condition}' - "
+            f"add to corpus/sources.yaml before production ingest",
+        ))
+        return issues
+    tier = entry.get("authority_tier", "")
+    if tier not in AUTHORITY_TIERS:
+        issues.append(Issue(
+            "ERROR", "sources.yaml.authority_tier",
+            f"'{tier}' is not a valid authority_tier - "
+            f"use: {' | '.join(sorted(AUTHORITY_TIERS))}",
+        ))
+    if not entry.get("url", "").strip():
+        issues.append(Issue(
+            "WARNING", "sources.yaml.url",
+            "URL is empty - add canonical document URL for traceability",
+        ))
+    return issues
+
+
 # ── Per-card orchestration ────────────────────────────────────────────────────
 
 def validate_card(
     yaml_path: Path,
     vocab: dict[str, set[str]],
+    registry: dict[str, dict] | None = None,
 ) -> tuple[Optional[ConditionCard], list[Issue]]:
     issues: list[Issue] = []
 
@@ -234,6 +283,8 @@ def validate_card(
     issues.extend(_check_signal_regions(card))
     issues.extend(_check_graph_terms(card, vocab))
     issues.extend(_check_self_reference(card))
+    if registry is not None:
+        issues.extend(_check_source_registry(card, registry))
     return card, issues
 
 
@@ -292,6 +343,7 @@ def main() -> int:
         return 1
 
     vocab = load_vocabularies()
+    registry = load_source_registry()
     total_errors = 0
     total_warnings = 0
     loaded: list[tuple[Path, ConditionCard]] = []
@@ -302,7 +354,7 @@ def main() -> int:
         except ValueError:
             rel = yaml_path
 
-        card, issues = validate_card(yaml_path, vocab)
+        card, issues = validate_card(yaml_path, vocab, registry)
 
         label = str(rel)
         if card is not None:
