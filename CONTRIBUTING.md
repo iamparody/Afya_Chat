@@ -110,6 +110,8 @@ Every card needs an authoritative source. Priority order:
 Kenya MOH > WHO-AFRO > WHO Global > Professional society
 ```
 
+**Start with the Kenya MOH document:** `kenya_moh_vol2_2024.md` (in the `cds/` parent directory — `C:\Users\HomePC\Documents\TKLK\kenya_moh_vol2_2024.md`). This is the Kenya MOH Clinical Guidelines for Level 2–3 Facilities. Use Grep (not Read) — it is ~23k lines. Search for your condition by name before concluding it has no chapter. If the condition appears only as a differential mention in another condition's table, that is not a chapter — move down the source hierarchy.
+
 Check `corpus/sources.yaml` — there must be an entry for your condition before the validator will pass.
 
 For conditions where no Kenya MOH guideline exists, a governance decision is required before authoring. Do not author a card based solely on a general web reference.

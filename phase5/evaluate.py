@@ -218,6 +218,28 @@ COVERAGE_CASES = [
         },
     },
     {
+        "id": "9",
+        "label": "Brucellosis — pastoral ASAL patient, subacute fever with back pain",
+        "presentation": (
+            "42M pastoralist from Marsabit county. 3 weeks of intermittent fever with "
+            "drenching night sweats and profound fatigue. Joint and back pain — can barely "
+            "walk. Was treated twice for malaria with no improvement. Family keeps goats and "
+            "cattle; drinks raw camel milk daily. Low-grade fever 38.2°C. Splenomegaly on "
+            "examination. No cough. No diarrhoea. No rash. Malaria RDT negative."
+        ),
+        "checks": {
+            "primary_contains":     ["brucellosis"],
+            "red_flags_contain":    [],
+            "missing_info_contain": ["serology", "culture", "rose bengal", "brucella", "SAT"],
+            "prohibited_strings":   ["brucellosis confirmed"],
+            "manual": [
+                "Livestock/dairy exposure explicitly cited as key epidemiological trigger",
+                "Failure to respond to antimalarials cited as argues-against malaria",
+                "Subacute 3-week course used to differentiate from acute-onset AFI",
+            ],
+        },
+    },
+    {
         "id": "8",
         "label": "Chikungunya — coastal Kenya, severe polyarthralgia",
         "presentation": (

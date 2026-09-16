@@ -1,0 +1,244 @@
+condition: Brucellosis
+icd11: 1B90
+icd10: A23.9
+category: infectious
+corpus_version: "1.0"
+schema_version: "2.2"
+review_status: draft
+reviewed_by:
+last_reviewed:
+
+sources:
+  - organization: "WHO/FAO/OIE"
+    title: "Brucellosis in Humans and Animals"
+    year: "2006"
+  - organization: "WHO"
+    title: "Brucellosis Fact Sheet"
+    year: "2024"
+  - organization: "PLOS Neglected Tropical Diseases"
+    title: "Clinical Manifestations of Human Brucellosis: A Systematic Review and Meta-Analysis"
+    year: "2012"
+  - organization: "PMC / Tropical Medicine and Infectious Disease"
+    title: "Poor performance of the rapid test for human brucellosis in health facilities in Kenya"
+    year: "2017"
+
+endemic_regions:
+  - arid_semi_arid
+  - northern_kenya
+
+environmental_signals: []
+
+graph:
+  cardinal_symptoms:
+    - undulating fever
+    - night sweats
+    - arthralgia
+    - myalgia
+    - malaise
+    - fever
+  associated_symptoms:
+    - splenomegaly
+    - hepatomegaly
+    - back pain
+    - weight loss
+    - diaphoresis
+    - sacroiliitis
+    - headache
+  risk_factors:
+    - livestock exposure
+    - unpasteurized dairy consumption
+  differentials:
+    - Malaria (unspecified)
+    - Typhoid fever
+    - Pulmonary tuberculosis
+    - leptospirosis
+    - Rheumatic fever
+    - bacterial sepsis
+  argues_against:
+    - no livestock or dairy exposure
+    - acute onset under 7 days
+    - rapid antimalarial response
+  red_flags:
+    - altered consciousness
+    - endocarditis
+    - spondylitis
+    - orchitis
+  confirms:
+    - positive blood culture
+    - positive Brucella serology
+
+sections:
+  cardinal_symptoms: |
+    Brucellosis presents with an insidious, subacute onset of fever — often undulating,
+    rising in the evening and subsiding overnight — accompanied by drenching night sweats,
+    profound malaise, arthralgia, and myalgia. The combination of prolonged fever (typically
+    two weeks or more at presentation), musculoskeletal pain, and a clear history of
+    livestock contact or unpasteurized dairy consumption constitutes the primary diagnostic
+    signature at primary care level. Headache is common and may be severe. Chills without
+    frank rigors are frequently reported. The fever may be low-grade to moderate (38–40 °C)
+    and does not necessarily follow a regular pattern in all cases; the classic undulating
+    course is present in a minority. Fatigue and inability to perform usual activities are
+    prominent and disproportionate to the degree of fever. Constitutional symptoms evolve
+    over weeks, distinguishing brucellosis from the acute-onset febrile illnesses common
+    in East Africa — a patient with two or more weeks of febrile illness without a confirmed
+    diagnosis who has livestock or dairy exposure must have brucellosis included in the
+    active differential.
+
+  associated_symptoms: |
+    Splenomegaly is detected in approximately 26% of cases on examination and hepatomegaly
+    in 23%; both may be tender. Lymphadenopathy, though less common, may be present.
+    Musculoskeletal manifestations are prominent: back pain — particularly lumbosacral —
+    affects up to 45% of patients and may reflect sacroiliitis (inflammation of the
+    sacroiliac joint, 15% of cases) or vertebral spondylitis (12%). Arthritis of large
+    peripheral joints — knee, hip, shoulder — occurs in approximately 26% of cases and
+    is non-migratory. Weight loss and anorexia accompany prolonged illness. Diaphoresis
+    — particularly at night — is striking and is often noted by patients as a distinguishing
+    feature of their illness. In male patients, epididymo-orchitis (orchitis) occurs in
+    approximately 10% of cases, presenting with unilateral testicular pain, swelling, and
+    tenderness; it may be the presenting complaint and should prompt exposure inquiry in
+    any male presenting with testicular swelling and fever. Abdominal pain occurs in a
+    minority of patients. Respiratory symptoms are uncommon and, when present, suggest
+    focal pulmonary brucellosis or a concurrent respiratory infection.
+
+  diagnostic_features: |
+    Clinical diagnosis of brucellosis is unreliable — no combination of symptoms or signs
+    is pathognomonic. Confirmed diagnosis requires serology or blood culture. At primary
+    care (Level 2-3), the clinical role is pattern recognition and referral, not
+    microbiological confirmation. The diagnostic trigger is: (1) subacute febrile illness
+    of two or more weeks duration; (2) musculoskeletal involvement (arthralgia, back pain,
+    arthritis); (3) documented livestock contact or unpasteurized dairy consumption in an
+    endemic setting. Refer for serological testing: the Rose Bengal Plate Test (RBPT) is
+    the most accessible field screening test in Kenya — a positive result at primary care
+    should be followed by a quantitative confirmatory test (Brucella Standard Agglutination
+    Test, SAT, or ELISA) at a referral facility. Blood culture remains the gold standard
+    but requires laboratory capacity and four to six days of incubation; it is most likely
+    to be positive in the acute phase. Rapid diagnostic tests (RDTs) for brucellosis
+    perform poorly in pastoral Kenya due to high seroprevalence causing false positives —
+    a positive RDT alone is not sufficient for diagnosis in high-prevalence settings.
+    Leucopenia and thrombocytopenia are common haematological findings; elevated
+    transaminases may indicate hepatic involvement. Anaemia of chronic disease may be
+    present in prolonged illness.
+
+  predisposing_factors: |
+    Livestock contact is the dominant risk factor in Kenya — cattle, goats, sheep, and
+    camels are the primary reservoir species. Direct contact with infected animal products
+    carries the highest transmission risk: placenta, amniotic fluid, and aborted fetal
+    tissue from Brucella-infected animals are highly infectious, and farmers, herders,
+    and veterinarians who assist with animal births or handle abortions are at particular
+    risk. Consumption of unpasteurized milk and fresh unaged dairy products — particularly
+    from goats and camels — is the major dietary transmission route and affects all
+    household members regardless of sex or age. Occupational exposure groups include
+    pastoralists, veterinary workers, abattoir workers, and butchers. Pastoral communities
+    in arid and semi-arid regions carry the highest burden: northern Kenya counties
+    (Turkana, Marsabit, Isiolo, Wajir, Garissa) and pastoral areas of the Rift Valley
+    and eastern regions are the highest-risk areas. Children are affected through dairy
+    exposure. Male sex is associated with higher incidence in occupational-exposure groups
+    through animal handling, though dietary exposure affects both sexes equally. Person-
+    to-person transmission is extremely rare — brucellosis is almost always a zoonosis.
+
+  typical_presentation: |
+    A pastoralist or household member of a livestock-keeping family in an arid or semi-
+    arid county presents after two to six weeks of intermittent fever with night sweats,
+    generalised joint and back pain, and profound fatigue. They may have already received
+    one or more courses of antimalarial treatment without sustained improvement, or have
+    been treated empirically for typhoid. On examination: low-grade to moderate fever,
+    palpable splenomegaly, diffuse musculoskeletal tenderness, and possibly lumbosacral
+    pain on palpation. There is no rash, no respiratory focus, and no diarrhoeal
+    syndrome. The pattern — subacute onset, musculoskeletal dominance, sweating, and
+    failure to respond to antimalarials or anti-typhoid treatment — in a patient from
+    a pastoral or livestock-keeping community, is the clinical signature. Duration of
+    symptoms before presentation is typically four to eight weeks in adults; diagnostic
+    delay is common. In children, the presentation may be less specific, with fever
+    and non-specific musculoskeletal complaints. A male patient with unilateral testicular
+    swelling and systemic febrile illness in a pastoral setting should prompt immediate
+    consideration of brucellosis.
+
+  differential_diagnoses: |
+    Malaria is the most commonly confused diagnosis in sub-Saharan Africa — both produce
+    fever, sweating, and myalgia. Discriminating features: malaria typically has an
+    acute onset of days, rapid clinical deterioration without treatment, and a dramatic
+    response to antimalarials within 24–48 hours; brucellosis has a subacute evolution
+    over weeks, musculoskeletal predominance, and does not respond to antimalarials. A
+    positive malaria RDT in a pastoral patient does not exclude concurrent brucellosis;
+    if the patient fails to recover after appropriate antimalarial treatment, reconsider
+    the differential. Typhoid fever — fever with headache, malaise, and abdominal symptoms
+    overlaps; discriminating features: typhoid has a 1–2 week onset (faster than brucellosis),
+    produces relative bradycardia, rose spots, and a predominantly abdominal syndrome;
+    the musculoskeletal arthropathy of brucellosis (sacroiliitis, spondylitis, arthritis)
+    is absent in typhoid. Pulmonary tuberculosis shares subacute course, night sweats,
+    and weight loss; discriminating: TB produces prominent respiratory symptoms (chronic
+    cough ≥2 weeks, haemoptysis), upper lobe pulmonary infiltrates, and lacks the
+    musculoskeletal arthropathy and livestock-exposure context of brucellosis.
+    Leptospirosis — another zoonosis with fever, myalgia, and hepatosplenomegaly;
+    discriminating: leptospirosis has a more acute onset (3–14 days), conjunctival
+    suffusion, calf muscle tenderness, and is linked to floodwater exposure rather than
+    direct livestock contact with dry animal products. Rheumatic fever — fever with
+    migratory arthritis; discriminating: rheumatic fever follows streptococcal pharyngitis,
+    produces migratory polyarthritis preferring large joints, and is accompanied by
+    carditis; brucellosis arthritis is non-migratory and favours the sacroiliac joint
+    and spine over peripheral joints.
+
+  argues_against: |
+    The absence of any documented livestock contact or unpasteurized dairy consumption
+    should substantially lower suspicion for brucellosis — person-to-person transmission
+    is extremely rare, and virtually all confirmed human cases have a clear zoonotic
+    exposure history. The epidemiological link is close to a prerequisite; a patient
+    with no plausible exposure pathway requires an alternative explanation before
+    brucellosis is pursued. A rapid, sustained response to standard antimalarial therapy
+    — defervescence within 24–48 hours, full recovery without relapse — argues strongly
+    against brucellosis as the primary diagnosis; brucellosis does not respond to
+    antimalarials. Acute onset with illness duration under one week is inconsistent with
+    brucellosis, which has a characteristically subacute evolution over two weeks or more
+    before presentation; a history of abrupt onset with rapid progression should prompt
+    consideration of other AFI diagnoses. Prominent respiratory symptoms as the dominant
+    complaint — productive cough, chest pain, dyspnoea — argue against brucellosis and
+    towards a respiratory diagnosis; brucellosis rarely presents with respiratory symptoms
+    as the leading feature. An exclusively gastrointestinal picture — profuse watery or
+    bloody diarrhoea as the dominant syndrome without fever or musculoskeletal involvement
+    — is not consistent with brucellosis. Complete absence of arthralgia, myalgia, or
+    back pain over a prolonged febrile illness in a patient from a pastoral community
+    should prompt reconsideration of the brucellosis hypothesis.
+
+  red_flags: |
+    Neurological features — new confusion or altered consciousness, meningism (neck
+    stiffness), severe headache, or focal neurological signs — in a patient with suspected
+    or confirmed brucellosis indicate neurobrucellosis, a serious focal complication
+    requiring urgent referral to Level 4 for lumbar puncture, CSF analysis, and IV
+    combination antibiotic therapy. Suspect endocarditis when a new cardiac murmur,
+    signs of heart failure, or embolic phenomena develop in a patient with known
+    brucellosis or a febrile pastoral patient with prolonged bacteraemia — Brucella
+    endocarditis carries high mortality and requires prolonged combination therapy,
+    often including valve surgery; immediate referral is required. Severe back pain with
+    focal spinal tenderness — particularly in the lumbar or sacral spine — accompanied
+    by lower limb weakness, sensory loss, or loss of bladder control indicates vertebral
+    spondylitis with possible spinal cord compromise; imaging and urgent specialist
+    referral are required to prevent permanent neurological injury. In male patients,
+    marked testicular swelling with severe pain and systemic toxicity may indicate
+    epididymo-orchitis with abscess formation, which can result in infertility if
+    untreated; urgent urology or surgical referral is needed. Persistent fever and
+    clinical deterioration after two or more weeks of appropriate antibiotic therapy
+    should prompt investigation for a focal complication (abscess, spondylodiscitis,
+    endocarditis) requiring modified or extended treatment.
+
+  diagnostic_context: |
+    In Kenya primary care (Level 2–3), brucellosis is significantly underdiagnosed —
+    it is rarely on differential lists outside pastoral settings but carries substantial
+    burden in ASAL counties and pastoral Rift Valley. The clinical role at Level 2–3 is
+    pattern recognition, appropriate referral, and avoidance of repeated empirical
+    antimalarial and anti-typhoid courses in non-responding pastoral patients. A pastoral
+    patient with two or more weeks of undulating fever, musculoskeletal pain, and
+    documented livestock or dairy exposure who fails antimalarial treatment should be
+    referred for brucellosis serology. Standard approach: (1) take a detailed exposure
+    history — livestock species kept, raw milk consumption, involvement in animal
+    deliveries or abortions; (2) perform malaria RDT to exclude concurrent malaria;
+    (3) refer for Rose Bengal Plate Test and confirmatory SAT serology at Level 3+ with
+    laboratory capacity. Treatment must not be initiated at Level 2 without laboratory
+    confirmation and referral: standard regimen is doxycycline 100 mg twice daily for
+    six weeks plus rifampicin 600–900 mg once daily for six weeks (Kenya MOH); single-
+    drug therapy has an unacceptably high relapse rate. Alternative: doxycycline plus
+    streptomycin (14 days IM) per WHO/FAO/OIE guidance; gentamicin may substitute for
+    streptomycin. Treatment duration shorter than six weeks carries significant relapse
+    risk. Brucellosis is a notifiable zoonotic disease in Kenya — report to the disease
+    surveillance officer and to veterinary authorities for herd investigation and animal
+    vaccination programme referral. Primary prevention: pasteurisation of all dairy
+    products and protective equipment for workers handling animal births and abortions.

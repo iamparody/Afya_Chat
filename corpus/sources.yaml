@@ -176,6 +176,35 @@ sources:
     year: 2025
     url: "https://www.who.int/news-room/fact-sheets/detail/chikungunya"
 
+  # ── AFI remaining cards ────────────────────────────────────────────────────────
+  - condition: Brucellosis
+    authority_tier: who_global
+    authority: WHO/FAO/OIE
+    title: "Brucellosis in Humans and Animals"
+    year: 2006
+    url: ""
+    supplementary_sources:
+      - authority: PLOS Neglected Tropical Diseases
+        title: "Clinical Manifestations of Human Brucellosis: A Systematic Review and Meta-Analysis"
+        year: 2012
+        url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC3516581/"
+        sections_covered:
+          - cardinal_symptoms
+          - associated_symptoms
+          - predisposing_factors
+          - differential_diagnoses
+          - argues_against
+          - red_flags
+        reason: "Primary PDF (WHO/FAO/OIE 2006) inaccessible online; systematic review provides comprehensive symptom frequencies, risk factor data, and complication rates from 1,966 cases"
+      - authority: Tropical Medicine and Infectious Disease
+        title: "Poor performance of the rapid test for human brucellosis in health facilities in Kenya"
+        year: 2017
+        url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC5413359/"
+        sections_covered:
+          - diagnostic_features
+          - diagnostic_context
+        reason: "Kenya-specific clinical and diagnostic data — rapid test performance, exposure patterns, co-endemic febrile illness context"
+
   # ── Cholera — Gate 2 closure card ─────────────────────────────────────────────
   - condition: Cholera
     authority_tier: who_afro
