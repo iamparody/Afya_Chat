@@ -244,3 +244,21 @@ sources:
           - differential_diagnoses
           - argues_against
         reason: "Primary source (Kenya MOH outbreak guide) does not contain differential diagnosis or argues-against content — supplemented with Medscape clinical reference"
+
+  - condition: Chronic obstructive pulmonary disease
+    authority_tier: kenya_moh
+    authority: Kenya Ministry of Health
+    title: "Clinical Management and Referral Guidelines Vol. 2: Clinical Guidelines for Management of Conditions at Level 2–3 Health Facilities"
+    year: 2024
+    url: ""
+    supplementary_sources:
+      - authority: Medscape
+        title: "Chronic Obstructive Pulmonary Disease (COPD) Clinical Presentation and Differential Diagnosis"
+        year: 2025
+        url: "https://emedicine.medscape.com/article/297664-clinical"
+        sections_covered:
+          - differential_diagnoses
+          - argues_against
+          - associated_symptoms
+          - red_flags
+        reason: "MOH Vol 2 §12.4 covers clinical features and management principles only — no differentials or argues-against content. Medscape used as supplementary clinical reference."

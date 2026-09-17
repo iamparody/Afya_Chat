@@ -285,6 +285,30 @@ COVERAGE_CASES = [
             ],
         },
     },
+    {
+        "id": "11",
+        "label": "COPD — chronic smoker, progressive dyspnoea",
+        "presentation": (
+            "58-year-old male, 30 pack-year smoking history. 4-year history of worsening "
+            "breathlessness — can no longer walk uphill without stopping. Morning productive "
+            "cough with mucoid sputum for years, worse in cold season. No fever, no weight "
+            "loss, no haemoptysis, no night sweats. On exam: barrel chest, diffusely reduced "
+            "breath sounds, end-expiratory wheeze. No clubbing. SpO2 94% on room air. "
+            "Sputum smear negative for AFB."
+        ),
+        "checks": {
+            "primary_contains":     ["copd", "chronic obstructive"],
+            "red_flags_contain":    [],
+            "missing_info_contain": ["spirometry", "FEV", "peak flow"],
+            "prohibited_strings":   ["tuberculosis confirmed", "copd confirmed"],
+            "manual": [
+                "Smoking history cited as primary risk factor",
+                "Asthma listed as key differential with bronchodilator reversibility as discriminating feature",
+                "TB exclusion noted — AFB negative cited",
+                "Spirometry referral recommended for definitive diagnosis",
+            ],
+        },
+    },
 ]
 
 

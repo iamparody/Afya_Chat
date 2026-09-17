@@ -1,0 +1,222 @@
+condition: Chronic obstructive pulmonary disease
+icd11: CA22.Z
+icd_title: "Chronic obstructive pulmonary disease, unspecified"
+icd_entity_uri: "http://id.who.int/icd/release/11/2024-01/mms/133207228/unspecified"
+icd_search_term: "Chronic obstructive pulmonary disease, unspecified"
+icd10: J44.1
+icd_verified: true
+category: respiratory
+corpus_version: "1.0"
+schema_version: "2.2"
+review_status: draft
+reviewed_by:
+last_reviewed:
+
+sources:
+  - organization: "Kenya Ministry of Health"
+    title: "Clinical Management and Referral Guidelines Vol. 2: Clinical Guidelines for Management of Conditions at Level 2–3 Health Facilities"
+    year: "2024"
+  - organization: "Medscape"
+    title: "Chronic Obstructive Pulmonary Disease (COPD) Clinical Presentation"
+    year: "2025"
+
+endemic_regions:
+  - nationwide
+  - urban_informal
+  - highland
+  - arid_semi_arid
+
+environmental_signals:
+  - signal: cold_dry_season
+    pathways:
+      - respiratory_mucosal
+    effect_type: severity_modifier
+    effect_direction: up
+    lag_weeks:
+      min: 0
+      max: 2
+    strength: moderate
+    confidence: moderate
+    causal_distance: direct
+    evidence_type: expert_estimate
+    regions:
+      - highland
+    seasonal_basis: dry_season
+    applicability:
+      requires_exposure: []
+      amplifiers: []
+
+  - signal: dry_dusty_season
+    pathways:
+      - airborne
+    effect_type: severity_modifier
+    effect_direction: up
+    lag_weeks:
+      min: 0
+      max: 1
+    strength: moderate
+    confidence: low
+    causal_distance: direct
+    evidence_type: expert_estimate
+    regions:
+      - arid_semi_arid
+      - northern_kenya
+    seasonal_basis: dry_season
+    applicability:
+      requires_exposure: []
+      amplifiers:
+        - occupational_dust
+
+graph:
+  cardinal_symptoms:
+    - chronic productive cough
+    - progressive dyspnoea
+    - dyspnoea on exertion
+  associated_symptoms:
+    - wheeze
+    - barrel chest
+    - reduced breath sounds
+    - accessory muscle use
+    - cyanosis
+    - ankle oedema
+  risk_factors:
+    - smoking
+    - indoor air pollution
+    - occupational dust exposure
+  differentials:
+    - asthma
+    - Community-acquired pneumonia
+    - Pulmonary tuberculosis
+    - acute decompensated heart failure
+    - bronchiectasis
+    - lung cancer
+  argues_against:
+    - reversible airflow obstruction
+    - clubbing
+    - fever
+    - acute onset under 7 days
+  red_flags:
+    - cyanosis
+    - oxygen saturation <94%
+    - cor pulmonale
+    - haemoptysis
+    - respiratory distress
+  confirms:
+    - irreversible airflow obstruction
+
+sections:
+  cardinal_symptoms: |
+    Chronic obstructive pulmonary disease (COPD) is defined by persistent, progressive
+    airflow limitation. The two cardinal symptoms that bring patients to primary care are
+    chronic productive cough — present for months to years, typically worse in the morning —
+    and gradually worsening dyspnoea on exertion. Patients commonly underreport breathlessness
+    because they have adapted their lifestyle over years to avoid exertional triggers. A careful
+    history often reveals a multiyear trajectory of reducing exercise tolerance that the patient
+    frames as "getting old" rather than illness. The combination of a long smoking history (or
+    sustained biomass fuel exposure) with morning cough and progressive breathlessness in a
+    patient over 40 is the primary diagnostic signature at primary care level.
+
+  associated_symptoms: |
+    Wheeze is present in many patients, particularly on forced expiration or during
+    exacerbations. On examination, hyperinflation of the chest produces a characteristic
+    barrel chest with increased anteroposterior diameter. Breath sounds are diffusely
+    reduced. Accessory muscles of respiration are used in moderate-to-severe disease;
+    pursed-lip breathing is a common adaptive manoeuvre. In advanced disease, cyanosis
+    and bilateral ankle oedema from cor pulmonale may be present. Coarse rhonchi may
+    be heard on auscultation. Notably, clubbing is absent in uncomplicated COPD — its
+    presence should prompt consideration of bronchiectasis, pulmonary tuberculosis, or
+    lung cancer. During acute exacerbations, sputum increases in volume or becomes
+    purulent, and dyspnoea worsens acutely.
+
+  diagnostic_features: |
+    COPD is definitively confirmed by post-bronchodilator spirometry showing an
+    FEV1/FVC ratio below 0.70 — a fixed ratio that does not normalise with bronchodilator
+    administration, distinguishing COPD from asthma. Spirometry is typically unavailable
+    at Kenya primary care level; clinical diagnosis is made from history, examination,
+    and risk factor profile, with spirometric confirmation referred to a higher facility.
+    Peak expiratory flow rate (PEFR) may be measured at primary care: PEFR below
+    150–200 mL suggests a COPD exacerbation rather than cardiac cause of dyspnoea.
+    Chest radiograph may show hyperinflation (flattened diaphragms, increased
+    retrosternal space) but is not required for diagnosis and is not reliably available
+    at Level 2–3 facilities. Oxygen saturation by pulse oximetry guides severity
+    assessment and referral decisions.
+
+  predisposing_factors: |
+    Tobacco smoking is the most important modifiable risk factor, with cumulative
+    pack-year history the strongest predictor of airflow obstruction. In Kenya, indoor
+    air pollution from biomass fuel combustion (firewood, charcoal) in poorly ventilated
+    homes is a major non-smoking risk factor, particularly affecting women who cook with
+    solid fuels — COPD should not be dismissed in non-smokers with heavy biomass
+    exposure. Occupational dust and fume exposure (agriculture, mining, construction,
+    charcoal burning) contributes substantially. Age over 40 is a consistent risk
+    threshold; the disease is rare below this age. Recurrent lower respiratory tract
+    infections in childhood may impair lung development and predispose to COPD in
+    adulthood. HIV infection is associated with an increased risk of COPD independent
+    of smoking, relevant in a high-HIV-prevalence setting.
+
+  typical_presentation: |
+    A patient over 40 — often male with a significant smoking history, or female with
+    sustained indoor biomass fuel exposure — presents reporting years of morning cough
+    with mucoid sputum that has been dismissed as "smoker's cough." Progressive
+    breathlessness on exertion has worsened over months to years; the patient can now
+    no longer climb stairs or walk uphill without stopping. There may be a history of
+    repeated acute chest illnesses each winter or in the cold-dry season. The patient
+    does not report fever with the chronic symptoms. On examination, breath sounds are
+    reduced with an end-expiratory wheeze; the chest may be hyperinflated. At primary
+    care in Kenya, the key decision is to distinguish COPD from active pulmonary
+    tuberculosis (both cause chronic cough and progressive dyspnoea) and to identify
+    acute exacerbations requiring referral.
+
+  differential_diagnoses: |
+    Asthma is the most important differential and the distinction has major management
+    implications. Asthma typically presents at a younger age, with episodic rather than
+    progressive symptoms, a significant bronchodilator response, and normalisation of
+    spirometry between episodes. COPD shows persistent airflow limitation that does not
+    fully reverse. Pulmonary tuberculosis must be excluded in any patient with chronic
+    cough in Kenya — particularly when haemoptysis, night sweats, weight loss, or
+    close TB contact is present; sputum smear or GeneXpert is mandatory before
+    attributing chronic cough to COPD. Acute decompensated heart failure may present
+    with dyspnoea and wheeze ("cardiac asthma"); orthopnoea, paroxysmal nocturnal
+    dyspnoea, fine basal crackles, and elevated JVP favour heart failure. Bronchiectasis
+    produces copious purulent sputum, clubbing, and coarse crackles — its features are
+    more florid than typical COPD. Lung cancer presents with haemoptysis, weight loss,
+    and clubbing and must be considered when COPD-like symptoms arise acutely or
+    change character, especially in a heavy smoker.
+
+  argues_against: |
+    Reversible airflow obstruction — a substantial bronchodilator response with near-
+    normalisation of FEV1/FVC — argues strongly against COPD and towards asthma.
+    Clubbing is not a feature of uncomplicated COPD; its presence argues against simple
+    COPD and raises suspicion for pulmonary tuberculosis, bronchiectasis, or malignancy.
+    Acute onset of symptoms within seven days argues against stable COPD, though an
+    acute exacerbation may precipitate in a known COPD patient. Fever accompanying
+    respiratory symptoms is not a feature of stable COPD; prominent fever should prompt
+    evaluation for pneumonia, TB, or another infection. Episodic symptom-free intervals
+    with complete resolution between attacks favour asthma over COPD.
+
+  red_flags: |
+    Cyanosis or oxygen saturation below 94% indicates severe hypoxaemia and requires
+    urgent referral. Signs of cor pulmonale — bilateral ankle oedema, elevated jugular
+    venous pulse, right-sided heart failure — indicate advanced COPD with pulmonary
+    hypertension and should prompt referral for specialist assessment. Haemoptysis in a
+    COPD patient is a red flag requiring sputum testing and chest imaging to exclude
+    concurrent pulmonary tuberculosis or lung malignancy. Acute exacerbation with
+    respiratory distress — use of accessory muscles, inability to complete sentences,
+    altered consciousness, or SpO₂ below 90% — requires urgent referral. Rapid clinical
+    deterioration or failure to improve with standard management at primary care level
+    warrants immediate escalation.
+
+  diagnostic_context: |
+    COPD diagnosis and pharmacological management is referred to a higher facility in
+    Kenya MOH Level 2–3 guidelines; primary care roles are recognition, risk factor
+    counselling, and timely referral. The single most impactful primary care intervention
+    is smoking cessation counselling. Biomass fuel reduction (improved cookstoves,
+    ventilation) is the equivalent intervention for non-smoking women. Before labelling
+    a patient with chronic cough as COPD, active pulmonary tuberculosis must be excluded
+    by sputum testing — the two conditions share presenting features and may coexist;
+    initiating COPD bronchodilator therapy without ruling out TB is a clinical governance
+    failure. Spirometry confirmation of diagnosis should be arranged at the next facility
+    level. In the cold-dry season in highland Kenya, COPD exacerbations cluster; clinicians
+    should maintain a lower threshold for identifying and referring exacerbations during
+    this period. HIV-positive patients with respiratory symptoms deserve COPD on the
+    differential even at younger ages and lower smoking burdens.
