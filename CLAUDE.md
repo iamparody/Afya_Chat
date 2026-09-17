@@ -325,12 +325,14 @@ Every step is a hard gate. Do not proceed to the next step until the current ste
   - `endemic_regions` — use controlled vocabulary only
   - `environmental_signals` — only include signals with meaningful clinical evidence; leave empty list if none
 
-**STEP 5 — Verify ICD codes at icd.who.int**
-- Open https://icd.who.int in a browser.
-- Search for `icd11` code. Confirm the listed condition name maps to this card.
-- Search for `icd10` code. Confirm it maps to the same condition.
-- Only after confirming both codes: change `icd_verified: false` → `icd_verified: true` in the card.
-- ⛔ STOP — the validator will ERROR on `icd_verified: false`. The pipeline cannot proceed until this step is done by a human at icd.who.int.
+**STEP 5 — Verify ICD-11 code via WHO API script**
+```bash
+python scripts/verify_icd.py corpus/<condition>/condition.yaml
+```
+- The script authenticates with the WHO ICD-11 API, finds the exact canonical match, and sets `icd_verified: true`, `icd_title`, and `icd_entity_uri` in the card automatically.
+- If the condition name does not match the WHO canonical title exactly, add `icd_search_term: "<exact WHO title>"` to the frontmatter and re-run.
+- Verify `icd10` manually at icd.who.int — the API only covers ICD-11. Confirm the ICD-10 code maps to the same condition.
+- ⛔ STOP — the validator will ERROR on `icd_verified: false`. Do not proceed until the script reports MATCH.
 
 **STEP 6 — Run the validator — must be 0 errors**
 ```bash
