@@ -127,6 +127,8 @@
 | maculopapular rash | dengue rash, erythematous maculopapular rash |
 | severe myalgia | break-bone fever pain, intense muscle pain |
 | photophobia | light sensitivity, light intolerance |
+| undulating fever | relapsing fever, intermittent fever, undulant fever, quotidian fever |
+| back pain | lumbar pain, low back pain, spinal pain, backache |
 
 ---
 
@@ -166,6 +168,9 @@
 | conjunctival suffusion | conjunctival injection without discharge (leptospirosis sign) |
 | calf muscle tenderness | gastrocnemius tenderness, calf tenderness on compression |
 | eschar | inoculation scab, tick bite eschar, inoculation site necrosis |
+| sacroiliitis | sacroiliac joint inflammation, sacroiliac pain, sacroiliac joint disease |
+| spondylitis | vertebral osteomyelitis, spinal brucellosis, vertebral infection, vertebral spondylitis |
+| orchitis | testicular inflammation, epididymo-orchitis, Brucella orchitis, epididymitis |
 
 ---
 
@@ -257,6 +262,7 @@
 | socioeconomic disadvantage | low socioeconomic status |
 | livestock exposure | livestock contact, animal husbandry contact |
 | tick exposure | tick bite, tick habitat exposure, tick contact |
+| unpasteurized dairy consumption | raw milk consumption, raw dairy consumption, unpasteurised milk drinking, raw milk drinking |
 | floodwater exposure | floodwater contact, flood water exposure |
 | ultra-processed food diet | ultra-processed food intake |
 | urbanisation | urban living |
@@ -314,6 +320,8 @@
 | clinical deterioration on treatment | failure to respond to treatment |
 | cholera-like rice-water diarrhoea | profuse watery diarrhoea |
 | diarrhoea beyond 14 days | persistent diarrhoea |
+| endocarditis | infective endocarditis, Brucella endocarditis, bacterial endocarditis |
+| pulmonary haemorrhage | lung haemorrhage, pulmonary hemorrhage, LPHS, leptospirosis pulmonary haemorrhage |
 | absent urine output | anuria |
 | obesity hypoventilation syndrome | Pickwickian syndrome |
 | rapid unexplained weight gain | |
@@ -508,3 +516,9 @@
 | dengue warning signs | dengue plasma leakage signs, dengue warning criteria, abdominal pain vomiting mucosal bleeding deterioration |
 | positive CHIKV RT-PCR | chikungunya RT-PCR positive, CHIKV PCR positive, chikungunya nucleic acid detected |
 | positive anti-CHIKV IgM | chikungunya serology positive, anti-chikungunya IgM, CHIKV IgM positive |
+| no livestock or dairy exposure | no animal contact, no livestock contact, no dairy exposure, no animal exposure history |
+| rapid antimalarial response | prompt response to antimalarials, rapid recovery with antimalarials, antimalarial treatment response |
+| positive Brucella serology | Brucella SAT positive, Rose Bengal test positive, Brucella agglutination positive |
+| no floodwater exposure | no flood contact, no water exposure, no floodwater contact history |
+| absence of calf muscle tenderness | calf tenderness absent, no gastrocnemius tenderness, negative calf compression |
+| positive Leptospira serology | MAT positive, Leptospira IgM positive, leptospiral serology positive |

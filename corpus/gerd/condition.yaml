@@ -1,12 +1,16 @@
 condition: Gastro-oesophageal reflux disease
-icd11: DA22
+icd11: DA22.Z
+icd_title: "Gastro-oesophageal reflux disease, unspecified"
+icd_entity_uri: "http://id.who.int/icd/release/11/2024-01/mms/1391387859/unspecified"
 icd10: K21
+icd_search_term: "Gastro-oesophageal reflux disease, unspecified"
 category: gastroenterological
 corpus_version: "1.0"
 schema_version: "2.2"
 review_status: draft
 reviewed_by:
 last_reviewed:
+icd_verified: true
 
 sources:
   - organization: British Society of Gastroenterology

@@ -1,12 +1,16 @@
 condition: Peptic ulcer disease
-icd11: DA62
+icd11: DA61
+icd_title: "Peptic ulcer, site unspecified"
+icd_entity_uri: "http://id.who.int/icd/release/11/2024-01/mms/1145813715"
 icd10: K27
+icd_search_term: "Peptic ulcer, site unspecified"
 category: gastroenterological
 corpus_version: "1.4"
 schema_version: "2.2"
 review_status: draft
 reviewed_by:
 last_reviewed:
+icd_verified: true
 
 sources:
   - organization: American College of Gastroenterology

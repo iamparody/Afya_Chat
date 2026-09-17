@@ -158,6 +158,7 @@ schema_version: "2.0"           # increment ONLY if frontmatter structure change
 review_status: draft            # draft | under_review | clinician_verified
 reviewed_by: ""
 last_reviewed: ""
+icd_verified: false             # MUST be set to true after verifying BOTH codes at icd.who.int
 sources:
   - organization: ""
     title: ""
@@ -292,26 +293,97 @@ Two methods are approved for creating new condition cards. Both require clinicia
 
 ---
 
-### Adding a New Condition Card
+### Adding a New Condition Card — Mandatory Gate Checklist
 
-1. Choose authoring method (A or B above) and document the source in `sources:` frontmatter
-2. Copy an existing card (e.g., `malaria.md`) as the template — it has all current fields including `environmental_signals`
-3. Fill all 9 clinical sections — no section may be omitted
-4. Set frontmatter:
-   - `review_status: draft`
-   - `reviewed_by:` (leave blank)
-   - `last_reviewed:` (leave blank)
-   - `corpus_version: 1.0`
-   - `schema_version: 2.1` (current schema version — do not change unless adding fields)
-   - `icd11` and `icd10` — verify both at icd.who.int; confirm they map to the same condition
-   - `endemic_regions` — use controlled vocabulary only
-   - `environmental_signals` — only include signals with meaningful clinical evidence; leave empty list if none
-5. Send to colleague for clinical review **before** running ingest
-6. After colleague sign-off: add to `symptoms_dictionary/index.md`, define new terms in `glossary.md`, update [[STATUS]]
-7. Run `python ingest.py` — confirm no chunk validation errors and no unknown graph terms
-8. Run `python chroma/chroma_loader.py` — re-embed ALL chunks into the vector store (required after any card change; without this the RAG pipeline uses stale embeddings)
-9. Run `python neo4j/neo4j_loader.py` — confirm condition loaded
-10. Test with a representative clinical case via the Streamlit app
+Every step is a hard gate. Do not proceed to the next step until the current step is complete. Do not commit until all steps are checked. No exceptions.
+
+**STEP 1 — Choose authoring method and source**
+- Choose Method A or B (see above). Document the source in `sources:` frontmatter before writing any prose.
+- If the primary source PDF is inaccessible or thin on differentials/argues-against, apply the two-source pattern (supplementary source covers those sections; document in `corpus/sources.yaml`).
+- ⛔ STOP if no qualifying source exists — do not author from memory or general knowledge alone.
+
+**STEP 2 — Add new graph terms to `symptom_vocabulary.md` first**
+- Before writing the card, identify all graph block terms you intend to use.
+- Grep `symptom_vocabulary.md` for each term. If any are missing, add them now — before writing the card.
+- ⛔ STOP if you would have to add vocabulary terms after the card is written — that means the card drove the vocabulary, not the other way around.
+
+**STEP 3 — Define new clinical terms in `glossary.md`**
+- Identify any condition-specific clinical terms or abbreviations introduced in the prose sections (e.g. disease-specific syndromes, diagnostic test names, clinical signs unique to this condition).
+- Add definitions to `glossary.md` before the card is written.
+- ⛔ STOP if a term appears in the card but has no glossary entry and no definition elsewhere in the corpus.
+
+**STEP 4 — Write the card**
+- Copy `corpus/brucellosis/condition.yaml` as template — it has all current fields at schema_version 2.2.
+- Fill all 9 clinical sections in fixed order. No section may be omitted or left blank.
+- Set frontmatter:
+  - `review_status: draft`
+  - `reviewed_by:` (leave blank)
+  - `last_reviewed:` (leave blank)
+  - `icd_verified: false` — this is the default; do NOT change to `true` until Step 5 is complete.
+  - `corpus_version: "1.0"`
+  - `schema_version: "2.2"` — do not change unless adding new schema fields
+  - `endemic_regions` — use controlled vocabulary only
+  - `environmental_signals` — only include signals with meaningful clinical evidence; leave empty list if none
+
+**STEP 5 — Verify ICD-11 code via WHO API script**
+```bash
+python scripts/verify_icd.py corpus/<condition>/condition.yaml
+```
+- The script authenticates with the WHO ICD-11 API, finds the exact canonical match, and sets `icd_verified: true`, `icd_title`, and `icd_entity_uri` in the card automatically.
+- If the condition name does not match the WHO canonical title exactly, add `icd_search_term: "<exact WHO title>"` to the frontmatter and re-run.
+- Verify `icd10` manually at icd.who.int — the API only covers ICD-11. Confirm the ICD-10 code maps to the same condition.
+- ⛔ STOP — the validator will ERROR on `icd_verified: false`. Do not proceed until the script reports MATCH.
+
+**STEP 6 — Run the validator — must be 0 errors**
+```bash
+python corpus_pipeline/validator.py corpus/<condition>/condition.yaml
+```
+- Fix every ERROR before proceeding. Warnings should be addressed but do not block.
+- ⛔ STOP if any ERROR remains. Do not proceed to ingest with a failing validator.
+
+**STEP 7 — Send to colleague for clinical review**
+- Send the card file to a clinician for review. Record their name and credential.
+- Clinical review is required before `review_status` changes from `draft`.
+- ⛔ Do not change `review_status: clinician_verified` until a named clinician has reviewed and approved.
+- (This step does not block the pipeline steps below — those proceed in parallel with the review process. The card is ingested as `draft` and blocked from production ingestion until clinician-verified.)
+
+**STEP 8 — Add to `corpus/sources.yaml` registry**
+- Add the condition entry to `corpus/sources.yaml` with `authority_tier`, `authority`, `title`, `year`, and `url`.
+- The validator checks for this entry. Step 6 already confirmed it passes.
+
+**STEP 9 — Ingest**
+```bash
+python corpus_pipeline/ingest_yaml.py corpus/<condition>/condition.yaml
+```
+- Confirm: 9 chunks, 0 unknown graph terms.
+
+**STEP 10 — Chroma reload**
+```bash
+python chroma/chroma_loader.py
+```
+- Confirm embeddings computed for the new card.
+
+**STEP 11 — Eval gate**
+```bash
+python phase5/evaluate.py
+```
+- Regression must be ≥7/8. If regression drops below 7, do not proceed.
+- Add a coverage case for the new condition to `COVERAGE_CASES` in `evaluate.py`.
+- Run the coverage case and confirm it passes.
+
+**STEP 12 — Neo4j load**
+```bash
+python neo4j/neo4j_loader.py
+```
+- Confirm condition loaded.
+
+**STEP 13 — Update `STATUS.md` and domain contract**
+- Add eval history line (date, regression score, condition count, coverage case).
+- Mark the condition as committed in the relevant domain contract.
+
+**STEP 14 — Commit**
+- Commit only after Steps 6 and 11 pass (0 validator errors, regression ≥7/8).
+- Commit message format: `feat(corpus): <Condition> card — <domain>, <source>`
 
 ### Clinical Review Workflow
 
@@ -396,7 +468,7 @@ See [[STATUS]] for granular task tracking.
 - Run `python neo4j/neo4j_loader.py` after ingest when graph fields changed
 - Check `review_status` in frontmatter before treating card content as production-ready
 - Use [[STATUS]] as the source of truth for what's built vs. planned
-- Verify ICD-11 codes at icd.who.int — confirm icd11 and icd10 map to the same condition
+- Verify ICD-11 codes at icd.who.int — confirm icd11 and icd10 map to the same condition; only then set `icd_verified: true` (the validator ERRORs on `false`)
 - Use only controlled vocabularies for `endemic_regions`, `environmental_signals`, `pathways`, `effect_type`, `evidence_type`, `exposure`
 - Send new condition cards to colleague for clinical review before ingesting
 - **Graph block terms must be short canonical forms** — max ~4 words, no conditional phrases, no conjunctions (`with`, `or`, `and`, `without`, age qualifiers appended). Clinical nuance belongs in prose sections, not graph fields. Examples: `new onset dyspepsia` ✓ / `age over 55 with new dyspepsia` ✗; `male UTI` ✓ / `UTI in man under 50 without precipitating factor` ✗; `severe dehydration` ✓ / `severe dehydration in child under five` ✗

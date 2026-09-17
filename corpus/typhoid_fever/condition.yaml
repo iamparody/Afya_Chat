@@ -1,12 +1,16 @@
 condition: Typhoid fever
-icd11: 1A07
+icd11: 1A07.Z
+icd_title: "Typhoid fever, unspecified"
+icd_entity_uri: "http://id.who.int/icd/release/11/2024-01/mms/1528414070/unspecified"
 icd10: A01.0
+icd_search_term: "Typhoid fever, unspecified"
 category: infectious
 corpus_version: "1.0"
 schema_version: "2.2"
 review_status: draft
 reviewed_by:
 last_reviewed:
+icd_verified: true
 
 sources:
   - organization: WHO

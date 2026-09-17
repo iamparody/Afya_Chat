@@ -116,8 +116,8 @@ Verified against Kenya source hierarchy (Pass 1 complete — 2026-09-14).
 | Meningitis (bacterial) | Acute Febrile Illness | Kenya MOH Clinical Guidelines Vol 2 — Level 2-3 Facilities (2025), Chapter: Meningitis | Kenya MOH STG | FNS; AUF | High | No | Not started |
 | Cholera | Acute Febrile Illness | WHO-AFRO Cholera Management Guidelines, 2023 Edition | WHO guideline | FGI | High | No | Not started |
 | Dengue fever | Acute Febrile Illness | WHO Guidelines for Clinical Management of Arboviral Diseases (2025) | WHO guideline | AUF; FRash | High | Yes | Validated |
-| Brucellosis | Acute Febrile Illness | KNPHI/ZDU Human Brucellosis Testing Guidelines (2024) — diagnostic only; ⚠ no Kenya MOH treatment protocol confirmed | Other ⚠ | AUF | Important | No | Not started |
-| Leptospirosis | Acute Febrile Illness | WHO Human Leptospirosis: Guidance for Diagnosis, Surveillance and Control (WHO/ILS, 2003) — ⚠ 22 years old; no updated source confirmed | WHO guideline ⚠ | AUF; FRash | Important | No | Not started |
+| Brucellosis | Acute Febrile Illness | WHO/FAO/OIE Brucellosis in Humans and Animals (2006) — joint WHO/FAO/OIE guideline; covers human disease, treatment, East Africa relevance. Supplementary source required if diagnostic/differential sections prove thin (apply same test as Cholera). | WHO guideline | AUF | Important | No | Not started — source adequacy check gates authoring |
+| Leptospirosis | Acute Febrile Illness | WHO Human Leptospirosis: Guidance for Diagnosis, Surveillance and Control (WHO/ILS, 2003) — accepted with explicit age-of-evidence caveat in frontmatter | WHO guideline | AUF; FRash | Important | No | **Committed 2026-09-17** |
 | Chikungunya | Acute Febrile Illness | WHO Guidelines for Clinical Management of Arboviral Diseases (2025) | WHO guideline | AUF; FRash | Important | Yes | Validated |
 | Rickettsial illness | Acute Febrile Illness | ⛔ No Kenya MOH guideline. No dedicated WHO guideline. CDC/IDSA guidance + East Africa peer literature only. See governance note below. | Other ⛔ | AUF; FRash | Important | No | Not started |
 | Pneumonia (CAP) | **Respiratory** ← cross-domain | Kenya MOH Clinical Guidelines Vol 2 — Level 2-3 Facilities (2025), Chapter: Pneumonia | Kenya MOH STG | FRS; AUF | High | Yes | Validated |
@@ -139,21 +139,21 @@ Verified against Kenya source hierarchy (Pass 1 complete — 2026-09-14).
 
 **Pneumonia (cross-domain):** Full chapter in both Vol 2 and Vol 3. Owned by the Respiratory domain. Existing validated card participates in AFI pathways (FRS, AUF) without requiring AFI domain ownership.
 
-**Brucellosis ⚠ source gap:** No dedicated clinical management chapter in any confirmed Kenya MOH guideline. The KNPHI/ZDU 2024 policy brief covers diagnostic testing only. The 2021–2040 national strategy is epidemiological, not clinical. For treatment protocols, no Kenya-level source has been confirmed — practitioners currently rely on WHO/international references (WHO Manual on Brucellosis, Corbel 2006; IDSA guidance). Card authoring for brucellosis requires a clinical governance decision on acceptable source before work begins.
+**Brucellosis — governance decision recorded (2026-09-16): A — Author under AFI.** Primary source: WHO/FAO/OIE *Brucellosis in Humans and Animals* (2006) — joint guideline that explicitly covers human disease, treatment, and notes importance in north/east Africa. This is a stronger source than the previously listed KNPHI/ZDU 2024 diagnostic policy brief. WHO fact sheet (current) supplements for epidemiological framing. No Kenya MOH clinical management chapter confirmed. Authoring gate: run source adequacy test on the WHO/FAO/OIE 2006 document before authoring — confirm it covers differentials and argues-against sections. If thin, identify a supplementary source (Ioannina Recommendations or equivalent) before writing those sections. Apply same two-source pattern established for Cholera.
 
-**Leptospirosis ⚠ outdated source:** The only formal WHO-level guidance is the 2003 WHO/ILS document, now 22 years old. No updated WHO guideline, no Kenya MOH protocol. The condition is documented as a significant cause of febrile illness in Kenya (zoonotic, leptospira borgpetersenii confirmed in Kenyan livestock populations) but lacks a current national or international management guideline. Card authoring requires a source decision — the 2003 document may be usable if the clinical content (diagnosis, treatment with doxycycline/penicillin) is verified against current clinical practice standards.
+**Leptospirosis — governance decision recorded (2026-09-16): A — Author under AFI.** WHO 2003 guidance accepted as primary source with explicit age-of-evidence caveat to be stated in card frontmatter. Clinical management content (doxycycline/penicillin treatment) remains consistent with current practice — the document's age does not invalidate the clinical content. WHO 2024 Leptospirosis Outbreak Toolbox still cites the 2003 document as the key reference. No Kenya MOH protocol exists; no updated WHO guideline has been issued. Frontmatter must note: source is WHO 2003 — age-of-evidence caveat applies; treatment verified as consistent with current practice.
 
 **Rickettsial illness ⛔ governance required:** No Kenya MOH guideline exists. No dedicated WHO guideline for rickettsial disease in East Africa exists. Multiple species are documented in Kenya (Rickettsia felis, spotted fever group, Q fever, scrub typhus) but national management protocols are absent. Available sources are: CDC/IDSA guidance (US-authored, not Kenya-specific); East Africa peer literature (Maina et al. 2012, Luce-Fedrow 2015). This falls below the source hierarchy floor. A governance decision is required before this condition can enter the card authoring pipeline: either accept CDC/IDSA as an explicitly labelled fallback source, or defer until a Kenya-relevant source is identified.
 
-### 2.5 Inventory governance decisions required before card authoring
+### 2.5 Inventory governance decisions
 
-The following decisions must be made before any new card is authored for these conditions. They do not block completion of Sections 3 and 4.
+Decisions recorded 2026-09-16. Source verification performed against Kenya MOH Vol 2 (2024) + WHO source search before calling each.
 
-| Condition | Decision required |
-|-----------|------------------|
-| Brucellosis | Accept WHO Manual on Brucellosis (Corbel 2006) or IDSA guidance as fallback source, explicitly labelled? Or defer card authoring? |
-| Leptospirosis | Accept WHO 2003 guidance as source with explicit age-of-evidence caveat in frontmatter? Or defer? |
-| Rickettsial illness | Accept CDC/IDSA guidance as fallback source with explicit non-Kenya label? Or defer until regional guideline exists? |
+| Condition | Decision | Source | Note |
+|-----------|----------|--------|------|
+| Brucellosis | **A — Author under AFI** | WHO/FAO/OIE *Brucellosis in Humans and Animals* (2006) + WHO fact sheet | Source adequacy check required before authoring — apply two-source pattern if differential/argues-against sections are thin |
+| Leptospirosis | **A — Author under AFI** | WHO *Human Leptospirosis: Guidance for Diagnosis, Surveillance and Control* (2003) | Age-of-evidence caveat required in frontmatter; clinical content verified as current |
+| Rickettsial illness | **C — Defer** | No qualifying source found | No WHO clinical guideline; no Kenya MOH chapter; Kenya-specific data thin; defer until a regional or WHO guideline is available |
 
 ---
 
@@ -975,8 +975,8 @@ The freeze creates a stable benchmark against which subsequent domain replicatio
 
 ## Known gaps at time of drafting
 
-- Section 2 inventory — Pass 1 complete (2026-09-14). Three governance decisions outstanding (Brucellosis, Leptospirosis, Rickettsial illness) before card authoring can begin for those conditions. Inventory is otherwise locked.
+- Section 2 inventory — Pass 1 complete (2026-09-14). Governance decisions recorded (2026-09-16): Brucellosis → A, Leptospirosis → A, Rickettsial illness → C (defer). Inventory locked.
 - Section 3 presentation map — complete (2026-09-14). 9 pathways, 17 candidates, cross-domain participants and exclusions documented.
-- Section 4 pairwise matrix — complete (2026-09-14). 17 pairs: 3 mandatory safety pairs + 14 required pairs. 5 pairs blocked on governance decisions (governance_pending conditions); 2 cross-domain pairs.
+- Section 4 pairwise matrix — complete (2026-09-14). 17 pairs: 3 mandatory safety pairs + 14 required pairs. RP-06 and RP-07 (Rickettsial illness pairs) remain blocked pending a future qualifying source. RP-05, RP-08, RP-09, RP-12 (Leptospirosis and Brucellosis pairs) unblocked — cards can now be authored.
 - Numerical thresholds for evaluation gates — not yet set; to be defined using current baselines (8/8 RAG, 4/5 disambiguation, 94% reasoning deterministic subset).
-- Effort estimate: 2 new AFI-owned cards required before governance decisions (Meningitis, Cholera); Dengue and Chikungunya cards already validated. Up to 5 additional if Brucellosis/Leptospirosis/Rickettsial are approved. 17 pairwise evaluation fixtures required; 5 blocked pending governance decisions.
+- Effort estimate: Brucellosis and Leptospirosis cards next (source adequacy check first for Brucellosis). Rickettsial illness deferred — RP-06 and RP-07 evaluation fixtures cannot be authored until that decision is revisited. 15 of 17 pairwise evaluation fixtures are now unblocked.

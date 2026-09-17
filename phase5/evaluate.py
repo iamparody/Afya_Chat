@@ -218,6 +218,28 @@ COVERAGE_CASES = [
         },
     },
     {
+        "id": "9",
+        "label": "Brucellosis — pastoral ASAL patient, subacute fever with back pain",
+        "presentation": (
+            "42M pastoralist from Marsabit county. 3 weeks of intermittent fever with "
+            "drenching night sweats and profound fatigue. Joint and back pain — can barely "
+            "walk. Was treated twice for malaria with no improvement. Family keeps goats and "
+            "cattle; drinks raw camel milk daily. Low-grade fever 38.2°C. Splenomegaly on "
+            "examination. No cough. No diarrhoea. No rash. Malaria RDT negative."
+        ),
+        "checks": {
+            "primary_contains":     ["brucellosis"],
+            "red_flags_contain":    [],
+            "missing_info_contain": ["serology", "culture", "rose bengal", "brucella", "SAT"],
+            "prohibited_strings":   ["brucellosis confirmed"],
+            "manual": [
+                "Livestock/dairy exposure explicitly cited as key epidemiological trigger",
+                "Failure to respond to antimalarials cited as argues-against malaria",
+                "Subacute 3-week course used to differentiate from acute-onset AFI",
+            ],
+        },
+    },
+    {
         "id": "8",
         "label": "Chikungunya — coastal Kenya, severe polyarthralgia",
         "presentation": (
@@ -236,6 +258,30 @@ COVERAGE_CASES = [
                 "Polyarthralgia severity and small-joint symmetric pattern cited as key discriminating feature vs dengue",
                 "Dengue exclusion explicitly addressed — retro-orbital pain, thrombocytopenia, or warning signs absent",
                 "Paracetamol preferred over NSAIDs until dengue excluded",
+            ],
+        },
+    },
+    {
+        "id": "10",
+        "label": "Leptospirosis — urban informal settlement, post-flooding fever with calf pain",
+        "presentation": (
+            "26M casual labourer from Mukuru informal settlement, Nairobi. 7 days after "
+            "wading through floodwater to reach work. Abrupt onset 3 days ago: high fever "
+            "39.8°C, intense headache, severe calf pain — cannot walk without limping. "
+            "Eyes look red and congested. Nausea and vomiting. No diarrhoea. No rash. "
+            "Malaria RDT negative. On exam: bilateral conjunctival suffusion without "
+            "discharge, marked gastrocnemius tenderness on compression bilaterally. "
+            "No focal respiratory signs. Urine output normal."
+        ),
+        "checks": {
+            "primary_contains":     ["leptospirosis"],
+            "red_flags_contain":    [],
+            "missing_info_contain": ["serology", "MAT", "IgM", "creatinine", "renal", "CPK"],
+            "prohibited_strings":   ["leptospirosis confirmed"],
+            "manual": [
+                "Floodwater exposure cited as key epidemiological trigger",
+                "Conjunctival suffusion and calf muscle tenderness cited as discriminating physical findings",
+                "Malaria negative result acknowledged and leptospirosis listed as primary candidate",
             ],
         },
     },

@@ -1,32 +1,21 @@
 """
 Step 1 — Card validation.
 
-Every condition card must have:
-- All required frontmatter keys
-- Valid review_status
-- All 9 sections in the body (exact header strings the parser depends on)
-- graph: block with all 7 required keys, each a non-empty list
+Delegates to corpus_pipeline/validator.py — the authoritative schema gate.
+Every condition.yaml in corpus/ must pass with 0 ERRORs.
+
+Run from cds/ root:
+  pytest phase5/tests/test_card_validation.py
 """
 
 import pytest
-import yaml
 
-from helpers import get_condition_cards
+from helpers import get_condition_cards, ROOT
+from corpus_pipeline.validator import validate_card, load_vocabularies, load_source_registry
+from corpus_pipeline.schema import load_card
 
-REQUIRED_FRONTMATTER_KEYS = ["condition", "icd11", "category", "review_status", "sources", "graph"]
-VALID_REVIEW_STATUSES     = {"draft", "under_review", "clinician_verified"}
-
-REQUIRED_SECTIONS = [
-    "Cardinal symptoms",
-    "Associated symptoms and signs",
-    "Diagnostic features",
-    "Predisposing factors",
-    "Typical presentation",
-    "Important differential diagnoses",
-    "Features that argue against this diagnosis",
-    "Red flags",
-    "Diagnostic context",
-]
+_vocab    = load_vocabularies()
+_registry = load_source_registry()
 
 REQUIRED_GRAPH_KEYS = [
     "cardinal_symptoms",
@@ -39,60 +28,34 @@ REQUIRED_GRAPH_KEYS = [
 ]
 
 
-def _parse(path):
-    text = path.read_text(encoding="utf-8")
-    if not text.startswith("---"):
-        return {}, text
-    close = text.index("---", 3)
-    meta = yaml.safe_load(text[3:close].strip())
-    body = text[close + 3:].strip()
-    return meta, body
-
-
-@pytest.mark.parametrize("card", get_condition_cards(), ids=lambda p: p.stem)
+@pytest.mark.parametrize("card_path", get_condition_cards(), ids=lambda p: p.parent.name)
 class TestCardValidation:
 
-    def test_frontmatter_keys_present(self, card):
-        meta, _ = _parse(card)
-        missing = [k for k in REQUIRED_FRONTMATTER_KEYS if k not in meta]
-        assert not missing, f"{card.name}: missing frontmatter keys {missing}"
+    def test_passes_validator_with_no_errors(self, card_path):
+        """validator.py must report 0 ERRORs — this is the hard gate before ingest."""
+        _, issues = validate_card(card_path, _vocab, _registry)
+        errors = [str(i) for i in issues if i.level == "ERROR"]
+        assert not errors, "\n".join(errors)
 
-    def test_condition_name_not_empty(self, card):
-        meta, _ = _parse(card)
-        assert meta.get("condition"), f"{card.name}: condition name is empty"
+    def test_icd_verified(self, card_path):
+        """icd_verified: true required — set by scripts/verify_icd.py (WHO API)."""
+        card = load_card(card_path)
+        assert card.icd_verified, \
+            f"{card_path.parent.name}: icd_verified is false — run scripts/verify_icd.py"
 
-    def test_icd11_not_empty(self, card):
-        meta, _ = _parse(card)
-        assert meta.get("icd11"), f"{card.name}: icd11 code is empty"
+    def test_cardinal_symptoms_not_empty(self, card_path):
+        """Cardinal symptoms must always be present — the primary retrieval signal."""
+        card = load_card(card_path)
+        assert card.graph.cardinal_symptoms, \
+            f"{card_path.parent.name}: graph.cardinal_symptoms is empty"
 
-    def test_review_status_valid(self, card):
-        meta, _ = _parse(card)
-        assert meta.get("review_status") in VALID_REVIEW_STATUSES, \
-            f"{card.name}: invalid review_status '{meta.get('review_status')}'"
-
-    def test_all_nine_sections_present(self, card):
-        _, body = _parse(card)
-        body_lower = body.lower()
-        missing = [s for s in REQUIRED_SECTIONS if s.lower() not in body_lower]
-        assert not missing, f"{card.name}: missing sections {missing}"
-
-    def test_graph_block_exists(self, card):
-        meta, _ = _parse(card)
-        assert "graph" in meta, f"{card.name}: no graph: block in frontmatter"
-
-    def test_graph_has_all_keys(self, card):
-        meta, _ = _parse(card)
-        graph = meta.get("graph", {})
-        missing = [k for k in REQUIRED_GRAPH_KEYS if k not in graph]
-        assert not missing, f"{card.name}: graph: missing keys {missing}"
-
-    def test_graph_keys_are_nonempty_lists(self, card):
-        meta, _ = _parse(card)
-        graph = meta.get("graph", {})
-        for key in REQUIRED_GRAPH_KEYS:
-            if key not in graph:
-                continue  # caught by test_graph_has_all_keys
-            assert isinstance(graph[key], list), \
-                f"{card.name}: graph['{key}'] is not a list"
-            assert len(graph[key]) > 0, \
-                f"{card.name}: graph['{key}'] is an empty list"
+    def test_all_nine_sections_non_empty(self, card_path):
+        """All 9 clinical sections must have content — enforced by ClinicalSections model."""
+        card = load_card(card_path)
+        for key in [
+            "cardinal_symptoms", "associated_symptoms", "diagnostic_features",
+            "predisposing_factors", "typical_presentation", "differential_diagnoses",
+            "argues_against", "red_flags", "diagnostic_context",
+        ]:
+            assert getattr(card.sections, key, "").strip(), \
+                f"{card_path.parent.name}: sections.{key} is empty"
