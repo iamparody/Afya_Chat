@@ -16,7 +16,7 @@ from helpers import ROOT, get_condition_names_from_graph
 
 CHROMA_DIR      = ROOT / "chroma" / "db"
 COLLECTION_NAME = "cds_conditions"
-EXPECTED_MIN_CHUNKS = 89
+EXPECTED_MIN_CHUNKS = 216  # 24 conditions × 9 sections
 REQUIRED_META_FIELDS = ["condition", "section", "review_status"]
 
 

@@ -5,8 +5,8 @@ import sys
 from pathlib import Path
 
 ROOT       = Path(__file__).parent.parent.parent  # cds/
-CORPUS_DIR = ROOT / "symptoms_dictionary"
-SKIP_FILES = {"index.md", "glossary.md", "symptom_vocabulary.md", "conditions_vocabulary.md"}
+CORPUS_DIR = ROOT / "corpus"
+INGEST_OUT = ROOT / "corpus_pipeline" / "output"
 
 # Make cds/ and phase5/ importable
 sys.path.insert(0, str(ROOT))
@@ -17,11 +17,13 @@ load_dotenv(ROOT / ".env")
 
 
 def get_condition_cards():
-    return sorted(f for f in CORPUS_DIR.glob("*.md") if f.name not in SKIP_FILES)
+    """Return all condition.yaml paths in corpus/, sorted."""
+    return sorted(CORPUS_DIR.rglob("condition.yaml"))
 
 
 def get_condition_names_from_graph():
-    jsonl = ROOT / "graph_entities.jsonl"
+    """Return condition names from corpus_pipeline/output/graph_entities.jsonl."""
+    jsonl = INGEST_OUT / "graph_entities.jsonl"
     if not jsonl.exists():
         return []
     return [

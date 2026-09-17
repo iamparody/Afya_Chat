@@ -1,21 +1,22 @@
 """
 Step 2 — Ingest output validation.
 
-Checks chunks.jsonl and graph_entities.jsonl produced by ingest.py.
-Run ingest.py before running these tests.
+Checks chunks.jsonl and graph_entities.jsonl produced by corpus_pipeline/ingest_yaml.py.
+Run before these tests:
+  python corpus_pipeline/ingest_yaml.py corpus/
 """
 
 import json
 import pytest
 from pathlib import Path
 
-from helpers import ROOT
+from helpers import ROOT, INGEST_OUT
 
-CHUNKS_JSONL      = ROOT / "chunks.jsonl"
-GRAPH_JSONL       = ROOT / "graph_entities.jsonl"
-EXPECTED_CARDS      = 10
+CHUNKS_JSONL      = INGEST_OUT / "chunks.jsonl"
+GRAPH_JSONL       = INGEST_OUT / "graph_entities.jsonl"
+EXPECTED_CARDS      = 24
 SECTIONS_PER_CARD   = 9
-KNOWN_CHUNK_COUNT   = 89  # validated baseline; 10×9=90 theoretical but one section parses as merged
+KNOWN_CHUNK_COUNT   = 216  # 24 conditions × 9 sections
 REQUIRED_CHUNK_META_FIELDS = ["condition", "section", "review_status", "icd11", "category"]
 REQUIRED_GRAPH_KEYS = [
     "cardinal_symptoms", "associated_symptoms", "risk_factors",
@@ -32,7 +33,8 @@ def _load_jsonl(path):
 class TestChunksOutput:
 
     def test_file_exists(self):
-        assert CHUNKS_JSONL.exists(), "chunks.jsonl missing — run python ingest.py first"
+        assert CHUNKS_JSONL.exists(), \
+            "chunks.jsonl missing — run: python corpus_pipeline/ingest_yaml.py corpus/"
 
     def test_minimum_chunk_count(self):
         chunks = _load_jsonl(CHUNKS_JSONL)
@@ -70,7 +72,7 @@ class TestChunksOutput:
                 assert not line.startswith("##"), \
                     f"Markdown '##' leaked: {meta.get('condition')} / {meta.get('section')}"
 
-    def test_all_ten_conditions_present(self):
+    def test_all_conditions_present(self):
         chunks = _load_jsonl(CHUNKS_JSONL)
         conditions = {c["metadata"]["condition"] for c in chunks}
         assert len(conditions) >= EXPECTED_CARDS, \
@@ -88,7 +90,8 @@ class TestChunksOutput:
 class TestGraphOutput:
 
     def test_file_exists(self):
-        assert GRAPH_JSONL.exists(), "graph_entities.jsonl missing — run python ingest.py first"
+        assert GRAPH_JSONL.exists(), \
+            "graph_entities.jsonl missing — run: python corpus_pipeline/ingest_yaml.py corpus/"
 
     def test_record_count(self):
         records = _load_jsonl(GRAPH_JSONL)
