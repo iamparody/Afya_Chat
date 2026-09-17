@@ -1,0 +1,302 @@
+condition: Leptospirosis
+icd11: 1C10
+icd10: A27.9
+category: infectious
+corpus_version: "1.0"
+schema_version: "2.2"
+review_status: draft
+reviewed_by:
+last_reviewed:
+
+sources:
+  - organization: "WHO"
+    title: "Human leptospirosis: guidance for diagnosis, surveillance and control"
+    year: "2003"  # age-of-evidence caveat: 2003 guideline; content verified against Medscape 2026 which cites this source
+  - organization: "Medscape / emedicine"
+    title: "Leptospirosis"
+    year: "2026"
+  - organization: "CDC"
+    title: "Clinical Overview of Leptospirosis"
+    year: "2026"
+
+endemic_regions:
+  - coast
+  - lake_basin
+  - urban_informal
+
+environmental_signals:
+  - signal: flooding
+    pathways:
+      - waterborne
+      - zoonotic
+    effect_type: transmission_opportunity
+    effect_direction: up
+    lag_weeks:
+      min: 1
+      max: 3
+    strength: strong
+    confidence: high
+    causal_distance: direct
+    evidence_type: regional_epidemiological_evidence
+    regions:
+      - coast
+      - lake_basin
+      - urban_informal
+    seasonal_basis: outbreak_associated
+    applicability:
+      requires_exposure:
+        - floodwater_contact
+      amplifiers:
+        - livestock_contact
+
+  - signal: post_long_rains
+    pathways:
+      - waterborne
+      - zoonotic
+    effect_type: transmission_opportunity
+    effect_direction: up
+    lag_weeks:
+      min: 2
+      max: 6
+    strength: moderate
+    confidence: moderate
+    causal_distance: direct
+    evidence_type: regional_epidemiological_evidence
+    regions:
+      - coast
+      - lake_basin
+      - urban_informal
+    seasonal_basis: typical_long_rains
+    applicability:
+      requires_exposure:
+        - floodwater_contact
+      amplifiers: []
+
+graph:
+  cardinal_symptoms:
+    - fever
+    - severe headache
+    - myalgia
+    - conjunctival suffusion
+    - calf muscle tenderness
+  associated_symptoms:
+    - nausea
+    - vomiting
+    - jaundice
+    - hepatomegaly
+    - splenomegaly
+    - thrombocytopenia
+    - petechiae
+  risk_factors:
+    - floodwater exposure
+    - livestock exposure
+  differentials:
+    - Malaria (unspecified)
+    - Dengue fever
+    - Typhoid fever
+    - Brucellosis
+    - Community-acquired pneumonia
+    - Acute viral hepatitis A
+    - Bacterial meningitis
+  argues_against:
+    - no floodwater exposure
+    - absence of calf muscle tenderness
+    - no livestock or dairy exposure
+  red_flags:
+    - pulmonary haemorrhage
+    - rapidly deteriorating renal function
+    - altered consciousness
+  confirms:
+    - positive Leptospira serology
+
+sections:
+  cardinal_symptoms: |
+    Leptospirosis presents with an abrupt onset of high fever, severe retro-orbital
+    headache, and intense muscle pain — the combination commonly described as the
+    "leptospirosis triad." The myalgia is characteristically severe and diffuse but
+    is most pronounced in the calves: exquisite tenderness on compression of the
+    gastrocnemius and paraspinal muscles is one of the most clinically distinctive
+    physical findings and should be specifically elicited in any febrile patient with
+    a plausible exposure history. Conjunctival suffusion — intense bilateral bulbar
+    conjunctival injection without inflammatory exudate or discharge — is among the
+    most diagnostically useful signs; it differs from conjunctivitis in the absence
+    of discharge and may co-occur with scleral icterus in icteric disease. The
+    incubation period is typically 5 to 14 days (range 2–30 days). Fever is typically
+    high-grade and may produce a biphasic pattern in anicteric cases: brief apparent
+    improvement over 1 to 3 days followed by recurrence of fever and headache,
+    marking the immune phase. Nausea, vomiting, and abdominal pain are common and
+    may dominate the early presentation, sometimes directing the clinician towards
+    a gastrointestinal diagnosis rather than a febrile zoonosis.
+
+  associated_symptoms: |
+    Hepatomegaly and less commonly splenomegaly may be palpable from the second week
+    of illness and may be tender. Jaundice indicates icteric leptospirosis (Weil
+    disease) and, when combined with acute kidney injury, constitutes a severe
+    presentation with significantly elevated mortality. The jaundice of leptospirosis
+    arises from disruption of hepatocellular junctions rather than massive hepatic
+    necrosis; transaminase elevations are typically modest relative to the degree of
+    jaundice, which helps distinguish leptospirosis from viral hepatitis. Thrombocytopenia
+    is a primary marker of disease severity and haemorrhagic risk; platelet counts may
+    fall markedly within the first week. Petechiae or purpura may accompany severe
+    thrombocytopenia. An erythematous pretibial or maculopapular rash is occasionally
+    seen but is non-specific. Signs of meningismus — nuchal rigidity, photophobia —
+    indicate immune-phase aseptic meningitis and are usually self-limiting. Markedly
+    elevated creatine phosphokinase (CPK) is a useful discriminating laboratory finding,
+    reflecting skeletal muscle involvement, and is disproportionately elevated compared
+    to other common causes of acute febrile illness in East Africa.
+
+  diagnostic_features: |
+    Leptospirosis diagnosis at primary care level is clinical and exposure-based —
+    laboratory confirmation typically arrives after empiric treatment has been initiated.
+    The clinical pattern that should raise suspicion is: (1) abrupt febrile illness
+    with severe myalgia, particularly calf tenderness; (2) conjunctival suffusion;
+    (3) plausible exposure history within the preceding 30 days (floodwater contact,
+    livestock or rodent contact, agricultural or sewer work). Laboratory studies at
+    Level 3 with diagnostic capacity: full blood count typically shows leukocytosis
+    with left shift and thrombocytopenia; elevated creatinine and blood urea nitrogen
+    signal renal involvement; bilirubin may be markedly elevated with only modest
+    transaminase rise. Confirmatory testing: serological testing via Microscopic
+    Agglutination Test (MAT) is the gold standard but is retrospective — a single
+    titre of ≥1:800 or fourfold rise between acute and convalescent sera confirms the
+    diagnosis. IgM ELISA serves as a screening tool from late in the first week and
+    is more accessible than MAT at regional hospitals; a positive result requires
+    MAT confirmation due to cross-reactivity. PCR on blood or urine during the first
+    week is the preferred early diagnostic tool where available. Rapid antigen tests
+    exist but have variable sensitivity in early illness and should not be used to
+    exclude the diagnosis. The combination of epidemiological exposure, characteristic
+    clinical features, and supportive laboratory findings (elevated CPK, thrombocytopenia,
+    modest transaminase elevation with marked bilirubin) is often sufficient for
+    presumptive diagnosis at Level 3.
+
+  predisposing_factors: |
+    Transmission requires contact with water, soil, or animal tissues contaminated
+    with Leptospira-infected urine from reservoir hosts — principally rodents, cattle,
+    dogs, and pigs. In Kenya, the highest-risk exposure scenarios are: contact with
+    floodwaters during or after heavy rainfall events, which disperse leptospires
+    from rodent and livestock reservoirs into the environment; occupational work in
+    agriculture (particularly rice and sugarcane farming where workers wade in standing
+    water), sewer maintenance, animal slaughtering, and veterinary work; and living
+    in informal urban settlements where rodent burdens are high, flooding is common,
+    and sanitation is limited. Fishing communities on Lake Victoria and the coast are
+    at elevated risk through freshwater and estuarine exposure. Male sex is associated
+    with higher incidence through occupational and recreational water exposure. Abraded,
+    softened, or cut skin dramatically increases the risk of leptospiral entry — any
+    skin wound represents a portal of infection in a contaminated water environment.
+    Entry also occurs via mucous membranes of the eyes, nose, and mouth. Children
+    playing in floodwater or around livestock are at risk from environmental exposure.
+    Person-to-person transmission is extremely rare; leptospirosis is essentially
+    always a zoonosis acquired from the environment or from animals.
+
+  typical_presentation: |
+    A young adult male farmer, fisherman, or urban informal settlement resident
+    presents 1 to 2 weeks after a flooding event or after wading in contaminated
+    water. Onset is abrupt: high fever (39–40 °C), severe generalised myalgia with
+    prominent calf pain and tenderness, intense retro-orbital headache, nausea, and
+    vomiting. On examination: fever, tachycardia, intense bilateral conjunctival
+    suffusion without discharge, marked gastrocnemius tenderness on compression.
+    The patient may not volunteer the exposure history unless directly asked; specific
+    questioning about floodwater contact, wading in irrigation channels, or animal
+    contact in the preceding 30 days is essential. In anicteric leptospirosis — the
+    majority of cases — illness resolves spontaneously over 1 to 3 weeks with
+    appropriate antibiotic treatment. In icteric presentations (Weil disease, 5–10%
+    of cases), jaundice appears by the end of the first week, accompanied by worsening
+    renal function, marked thrombocytopenia, and haemorrhagic complications; this
+    presentation carries substantial mortality and requires immediate referral. Fever
+    alone with severe myalgia after a flooding event, without an obvious focus of
+    infection and without diarrhoea, in a patient with occupational or environmental
+    water exposure, is the prototypical primary care presentation.
+
+  differential_diagnoses: |
+    Malaria is the most commonly confused diagnosis in East Africa — both produce
+    abrupt fever, severe myalgia, and constitutional symptoms. Discriminating features:
+    malaria may produce splenomegaly and anaemia but does not cause conjunctival
+    suffusion or calf muscle tenderness; a positive malaria RDT does not exclude
+    concurrent leptospirosis, and failure to respond to antimalarials after 48 hours
+    should prompt reassessment. Dengue fever — both produce abrupt high fever, severe
+    headache, myalgia, and thrombocytopenia; discriminating: dengue produces
+    characteristic retro-orbital pain without calf tenderness, a biphasic fever with
+    a dengue rash in the immune phase, and plasma leakage rather than renal failure
+    with jaundice; conjunctival suffusion is not a feature of dengue. Typhoid fever —
+    fever, headache, and abdominal pain overlap; discriminating: typhoid has a more
+    gradual onset (1–2 weeks), produces relative bradycardia, rose spots, a
+    predominantly abdominal and diarrhoeal syndrome, and does not cause jaundice
+    with renal failure or calf muscle tenderness. Brucellosis — both are zoonoses
+    with fever, myalgia, and hepatosplenomegaly; discriminating: brucellosis is
+    subacute (weeks), lacks conjunctival suffusion and calf tenderness, is linked to
+    livestock or dairy exposure rather than floodwater, and has a characteristic
+    musculoskeletal arthropathy (sacroiliitis, spondylitis) not seen in leptospirosis.
+    Community-acquired pneumonia — when leptospirosis presents with pulmonary
+    involvement (LPHS), it may be mistaken for severe CAP; discriminating: LPHS
+    produces diffuse bilateral alveolar haemorrhage rather than a lobar bacterial
+    consolidation, and the presence of renal involvement, jaundice, or calf tenderness
+    in a patient with pulmonary symptoms should always prompt leptospirosis testing.
+    Viral hepatitis A — when jaundice is prominent, hepatitis A enters the differential;
+    discriminating: hepatitis A has a prodromal period of 2–6 weeks before jaundice,
+    disproportionately elevated transaminases relative to bilirubin (opposite pattern
+    to leptospirosis), and no renal involvement or calf tenderness.
+
+  argues_against: |
+    The absence of any plausible exposure to contaminated water, soil, or animal
+    reservoirs significantly reduces the likelihood of leptospirosis — person-to-person
+    transmission is extremely rare, and virtually all human cases have a documented
+    zoonotic or environmental exposure within the preceding 30 days. In a patient with
+    no history of floodwater contact, no livestock or rodent exposure, no occupational
+    risk, and no freshwater recreational activity, leptospirosis should be deprioritised
+    in favour of other febrile diagnoses. The absence of calf muscle tenderness on
+    direct compression argues against leptospirosis specifically — gastrocnemius
+    tenderness is among the most discriminating physical findings in the acute phase
+    and is present in the majority of clinical cases. A subacute evolution over three
+    or more weeks without acute presentation argues against leptospirosis and towards
+    chronic infections such as brucellosis or tuberculosis; leptospirosis presents
+    acutely, typically within 2 weeks of exposure. The absence of jaundice, renal
+    impairment, or haemorrhagic features in a patient past the seventh day of illness
+    makes severe leptospirosis unlikely, though anicteric disease is common and does
+    not require these features. A sustained, dramatic response to antimalarial therapy
+    with complete defervescence within 24–48 hours argues against leptospirosis as
+    the primary diagnosis. Prominent respiratory symptoms as the initial presentation
+    without fever or myalgia — particularly in a patient without any water exposure —
+    are more consistent with a primary respiratory illness.
+
+  red_flags: |
+    Pulmonary involvement is the most immediately life-threatening complication:
+    any respiratory distress, haemoptysis, or blood-streaked sputum in a febrile
+    patient with suspected leptospirosis indicates leptospirosis-associated pulmonary
+    haemorrhagic syndrome (LPHS), which can progress from mild symptoms to massive
+    alveolar haemorrhage within 72 hours with mortality exceeding 50%; immediate
+    referral to a facility with intensive care capacity is required without waiting
+    for diagnostic confirmation. Rapidly deteriorating renal function — rising
+    creatinine, oliguria or anuria, peripheral oedema — combined with jaundice
+    constitutes Weil disease (icteric leptospirosis with hepatorenal syndrome) and
+    requires urgent Level 4 referral for dialysis consideration. Altered consciousness,
+    seizures, or focal neurological signs indicate leptospiral meningoencephalitis or
+    severe systemic hypoperfusion and require immediate escalation. Severe
+    thrombocytopenia with active bleeding — haematemesis, melaena, haemoptysis,
+    petechiae with mucosal bleeding — signals a haemorrhagic crisis requiring urgent
+    haematological support. Any leptospirosis patient who develops cardiac arrhythmia,
+    hypotension, or haemodynamic instability should be treated as a potential myocarditis
+    emergency. At primary care level: do not wait for laboratory confirmation before
+    initiating antibiotic therapy and arranging referral in any patient with suspected
+    leptospirosis who has evidence of organ involvement.
+
+  diagnostic_context: |
+    In Kenya primary care (Level 2–3), leptospirosis is significantly underdiagnosed —
+    it is often misclassified as malaria, typhoid, or an undifferentiated febrile
+    illness, particularly because malaria RDT positivity may coexist with leptospirosis
+    in endemic areas. Flooding events, particularly post-long-rains (May–June) and
+    post-short-rains (November–December) along the coast and Lake Victoria basin,
+    represent the highest-risk periods; outbreaks in informal urban settlements
+    following flooding are well documented. At Level 2: perform malaria RDT to exclude
+    concurrent malaria; take a detailed exposure history covering the preceding 30 days;
+    initiate empiric antibiotic therapy without waiting for laboratory confirmation
+    if clinical suspicion is high — doxycycline 100 mg twice daily for 7 days is
+    appropriate for mild-to-moderate leptospirosis at Level 2–3; penicillin G or
+    IV ampicillin is used for severe disease at referral level. WHO (2003) and CDC
+    (2026) recommend early empiric treatment — antibiotic efficacy is greatest in
+    the first 4 days of illness. At Level 3: request FBC (thrombocytopenia, leukocytosis),
+    renal function (creatinine, urea), liver function (bilirubin, transaminases — note
+    disproportionate bilirubin elevation), CPK (markedly elevated in leptospirosis vs.
+    modest in other AFI diagnoses), and leptospiral IgM ELISA or rapid antigen test
+    where available. Notify the district disease surveillance officer for any confirmed
+    or strongly suspected leptospirosis case — it is a notifiable zoonosis in Kenya.
+    The WHO 2003 guidance remains the primary reference; clinical details in this card
+    have been verified against Medscape (Gompf, 2026) which cites WHO 2003 and CDC 2026.

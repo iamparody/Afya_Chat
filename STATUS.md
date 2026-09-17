@@ -246,6 +246,8 @@ Independently (Phase 9 MVP):
 - 2026-09-14: 8/8 after comorbidity context engine (comorbidity_engine.py wired; Fixture A pregnancy alert confirmed)
 - 2026-09-14: 8/8 after YAML corpus pipeline batch migration complete (15/15 cards; production graph_entities.jsonl swapped; Fixture A + B confirmed)
 - 2026-09-15: 7/8 GATE PASS after AFI expansion (Bacterial meningitis + Chikungunya, 22 conditions/198 chunks). Case 2b remains known ceiling. Coverage 2/2 (Case 7 Appendicitis, Case 8 Chikungunya).
+- 2026-09-16: 8/8 GATE PASS after Brucellosis (23 conditions/207 chunks). Two-source pattern: WHO/FAO/OIE 2006 + PMC systematic review + Kenya pastoral data. Coverage 3/3 (Case 9 Brucellosis added).
+- 2026-09-17: 8/8 GATE PASS after Leptospirosis (24 conditions/216 chunks). WHO 2003 + Medscape 2026 (two-source pattern; age-of-evidence caveat in sources.yaml). Coverage 4/4 (Case 10 Leptospirosis added).
 
 ---
 
@@ -261,9 +263,9 @@ Independently (Phase 9 MVP):
 **AFI domain — in progress:**
 - [x] Bacterial meningitis — committed (MOH 2024; MSP-01 + MSP-02 closed)
 - [x] Chikungunya — committed (WHO 2025 fact sheet; RP-03 addressed)
-- [ ] Brucellosis — ⚠ governance decision required (see §2.5 of AFI domain contract)
-- [ ] Leptospirosis — ⚠ governance decision required
-- [ ] Rickettsial illness — ⛔ governance decision required (below source hierarchy floor)
+- [x] Brucellosis — committed (WHO/FAO/OIE 2006; two-source pattern; 2026-09-16)
+- [x] Leptospirosis — committed (WHO 2003 + Medscape 2026; age-of-evidence caveat in sources.yaml; 2026-09-17)
+- [ ] Rickettsial illness — governance decision: C (deferred — no qualifying source; RP-06/RP-07 blocked)
 
 **Excluded:**
 - Rift Valley fever — outbreak-only, not routine primary-care differential (AFI domain contract §3.4)
@@ -648,8 +650,8 @@ Clinician decision → Encounters DB → (future) feedback signal
 
 ## Open Questions
 
-- [ ] **Clinician review — 7 new cards** — schedule a second review pass for Cholera, Shigellosis, Helminthiasis, Appendicitis, Hepatitis A, Bacterial Meningitis, Chikungunya before production ingest
-- [ ] **AFI source governance** — Brucellosis / Leptospirosis / Rickettsial illness: accept fallback sources or defer? (see domain contract §2.5) — ⏳ awaiting decision
+- [ ] **Clinician review — 9 new cards** — schedule a second review pass for Cholera, Shigellosis, Helminthiasis, Appendicitis, Hepatitis A, Bacterial Meningitis, Chikungunya, Brucellosis, Leptospirosis before production ingest
+- [ ] **AFI source governance** — Brucellosis ✅ Leptospirosis ✅ committed. Rickettsial illness → deferred (no qualifying source; revisit when WHO or regional guideline available)
 - [ ] **Phase 9 historical baseline** — site/date range, years, storage format for ERA5-Land historical pull
 - [ ] **Coast dry-season** — CHIRPS directly (ClimateSERV) or ERA5-Land bias correction for coast Jan–Feb threshold calibration
 - [ ] **ICD code verification** — comorbidity-specific codes (Malaria in pregnancy combinations) flagged by reviewer; resolve before production ingest

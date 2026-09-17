@@ -206,6 +206,29 @@ sources:
         reason: "Kenya-specific clinical and diagnostic data — rapid test performance, exposure patterns, co-endemic febrile illness context"
 
   # ── Cholera — Gate 2 closure card ─────────────────────────────────────────────
+  - condition: Leptospirosis
+    authority_tier: who_global
+    authority: WHO
+    title: "Human leptospirosis: guidance for diagnosis, surveillance and control"
+    year: 2003
+    url: "https://www.who.int/publications/i/item/human-leptospirosis-guidance-for-diagnosis-surveillance-and-control"
+    supplementary_sources:
+      - authority: Medscape (Gompf / Bronze)
+        title: "Leptospirosis"
+        year: 2026
+        url: "https://emedicine.medscape.com/article/220563-overview"
+        sections_covered:
+          - cardinal_symptoms
+          - associated_symptoms
+          - diagnostic_features
+          - predisposing_factors
+          - typical_presentation
+          - differential_diagnoses
+          - argues_against
+          - red_flags
+          - diagnostic_context
+        reason: "Primary WHO 2003 guidance is 20+ years old; Medscape 2026 cites WHO 2003 and CDC 2026 and provides current clinical detail. Age-of-evidence caveat: WHO source retained as primary citation for governance purposes."
+
   - condition: Cholera
     authority_tier: who_afro
     authority: WHO Regional Office for Africa / Ministry of Health Kenya

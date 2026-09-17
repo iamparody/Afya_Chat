@@ -321,6 +321,7 @@
 | cholera-like rice-water diarrhoea | profuse watery diarrhoea |
 | diarrhoea beyond 14 days | persistent diarrhoea |
 | endocarditis | infective endocarditis, Brucella endocarditis, bacterial endocarditis |
+| pulmonary haemorrhage | lung haemorrhage, pulmonary hemorrhage, LPHS, leptospirosis pulmonary haemorrhage |
 | absent urine output | anuria |
 | obesity hypoventilation syndrome | Pickwickian syndrome |
 | rapid unexplained weight gain | |
@@ -518,3 +519,6 @@
 | no livestock or dairy exposure | no animal contact, no livestock contact, no dairy exposure, no animal exposure history |
 | rapid antimalarial response | prompt response to antimalarials, rapid recovery with antimalarials, antimalarial treatment response |
 | positive Brucella serology | Brucella SAT positive, Rose Bengal test positive, Brucella agglutination positive |
+| no floodwater exposure | no flood contact, no water exposure, no floodwater contact history |
+| absence of calf muscle tenderness | calf tenderness absent, no gastrocnemius tenderness, negative calf compression |
+| positive Leptospira serology | MAT positive, Leptospira IgM positive, leptospiral serology positive |

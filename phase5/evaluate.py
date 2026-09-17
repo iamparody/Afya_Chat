@@ -261,6 +261,30 @@ COVERAGE_CASES = [
             ],
         },
     },
+    {
+        "id": "10",
+        "label": "Leptospirosis — urban informal settlement, post-flooding fever with calf pain",
+        "presentation": (
+            "26M casual labourer from Mukuru informal settlement, Nairobi. 7 days after "
+            "wading through floodwater to reach work. Abrupt onset 3 days ago: high fever "
+            "39.8°C, intense headache, severe calf pain — cannot walk without limping. "
+            "Eyes look red and congested. Nausea and vomiting. No diarrhoea. No rash. "
+            "Malaria RDT negative. On exam: bilateral conjunctival suffusion without "
+            "discharge, marked gastrocnemius tenderness on compression bilaterally. "
+            "No focal respiratory signs. Urine output normal."
+        ),
+        "checks": {
+            "primary_contains":     ["leptospirosis"],
+            "red_flags_contain":    [],
+            "missing_info_contain": ["serology", "MAT", "IgM", "creatinine", "renal", "CPK"],
+            "prohibited_strings":   ["leptospirosis confirmed"],
+            "manual": [
+                "Floodwater exposure cited as key epidemiological trigger",
+                "Conjunctival suffusion and calf muscle tenderness cited as discriminating physical findings",
+                "Malaria negative result acknowledged and leptospirosis listed as primary candidate",
+            ],
+        },
+    },
 ]
 
 
