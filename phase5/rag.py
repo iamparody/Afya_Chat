@@ -12,6 +12,7 @@ This file orchestrates only.
 """
 
 import json
+import logging
 import os
 import sys
 from datetime import datetime
@@ -21,6 +22,14 @@ from dotenv import load_dotenv
 import chromadb
 import jsonschema
 from neo4j import GraphDatabase
+
+_LOG = logging.getLogger("cds.rag.decision")
+
+
+def _log(stage: str, payload: dict) -> None:
+    """Emit one structured decision-path log line. No behaviour change."""
+    if _LOG.isEnabledFor(logging.DEBUG):
+        _LOG.debug("%s %s", stage, json.dumps(payload, ensure_ascii=False, default=str))
 
 ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(ROOT))   # ensures phase7 package is importable from any calling context
@@ -236,6 +245,11 @@ def _enforce_arguing_against_ranking(data: dict) -> dict:
             continue
         cand_conf = _CONF_ORDER.get(cand.get("confidence_level", "low"), 0)
         if cand_conf >= lead_conf:
+            _log("ARGUES_AGAINST_SWAP", {
+                "swapped_out": leading.get("diagnosis"),
+                "swapped_in":  cand.get("diagnosis"),
+                "reason":      "leading had arguing_against match; replacement has none at >= confidence",
+            })
             candidates[0], candidates[i] = candidates[i], candidates[0]
             data["leading_candidate"] = candidates[0]["diagnosis"]
             return data
@@ -319,6 +333,14 @@ def run(
         router = RetrievalRouter(embedder, col)
         router_candidates = router.get_candidates(presentation, query_embedding=query_embedding)
 
+        _log("VECTOR_CANDIDATES", {
+            "count": len(router_candidates),
+            "ranked": [
+                {"rank": i, "condition": rc["condition"], "source": rc["source"]}
+                for i, rc in enumerate(router_candidates)
+            ],
+        })
+
         # Step 2 — Graph: symptom profiles + argues_against per candidate
         presentation_lower = presentation.lower()
         candidates = []
@@ -335,6 +357,20 @@ def run(
                     "matched_symptoms": matched,
                     "argues_against":   argues_against,
                 })
+
+        _log("GRAPH_PROFILES", {
+            "candidates": [
+                {
+                    "rank":             i,
+                    "condition":        c["condition"],
+                    "source":           c["source"],
+                    "matched_count":    c["matched_count"],
+                    "matched_symptoms": c["matched_symptoms"],
+                    "argues_against":   c["argues_against"],
+                }
+                for i, c in enumerate(candidates)
+            ],
+        })
 
         # Do not sort by matched_count — vector order is the primary semantic ranking.
         # Graph data (matched_symptoms, argues_against) is supplemental evidence for the LLM to use.
@@ -371,6 +407,22 @@ def run(
 
         # Step 5 — Validate (fail closed)
         result = validate(raw)
+
+        _log("LLM_DECISION", {
+            "leading_candidate": result.get("leading_candidate"),
+            "candidates": [
+                {
+                    "rank":            i,
+                    "diagnosis":       c.get("diagnosis"),
+                    "confidence_level": c.get("confidence_level"),
+                    "arguing_against": c.get("arguing_against", []),
+                    "missing_information": c.get("missing_information", []),
+                }
+                for i, c in enumerate(result.get("candidates", []))
+            ],
+            "disambiguation_current_logic": result.get("candidates", [{}])[0].get("confidence_level") != "high"
+            if result.get("candidates") else None,
+        })
 
         # Step 6 — Enrich output candidates with retrieval provenance
         # source_map keyed on lowercase condition name; LLM diagnosis field may differ in

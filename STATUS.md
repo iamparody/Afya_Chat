@@ -332,7 +332,7 @@ Independently (Phase 9 MVP):
 
 ---
 
-## Decision Layer Fix — NEXT TASK
+## Decision Layer Fix — IN PROGRESS
 > Clinical testing of all 10 new conditions (Cholera → COPD) revealed systematic failures: 10/10 HIGH confidence returned, disambiguation gate never fires, argues-against shows "None documented" even when Neo4j graph evidence exists.
 >
 > **Asana:** GID 1218579291213545 — "CDS — Fix decision layer: confidence calibration, disambiguation gate, CandidateDecisionContext"
@@ -340,14 +340,14 @@ Independently (Phase 9 MVP):
 **Root cause:** Confidence is LLM-generated from absolute evidence strength, not from score gap between candidate #1 and #2. The disambiguation gate (`is_ambiguous()` in `phase8/disambiguate.py`) checks LLM confidence — so it never fires. Argues-against is also LLM-generated, not grounded from Neo4j `ARGUES_AGAINST` relationships.
 
 **Work order:**
-- [ ] Step 1 — Instrument decision path in `rag.py` (logging only — no behaviour change; establish score distributions before touching logic)
-- [ ] Step 2 — Build deterministic candidate ranking: normalise vector + graph scores → single comparable ranking score; compute margin between #1 and #2
-- [ ] Step 3 — Decouple confidence from ambiguity: confidence = strength of leading candidate evidence (keep LLM-generated); ambiguity = score margin (deterministic Python); these must be independent variables
-- [ ] Step 4 — Wire `CandidateDecisionContext`: pass Neo4j `ARGUES_AGAINST` relationships as typed structured input to LLM — makes "None documented" structurally impossible when graph evidence exists
-- [ ] Step 5 — Fix rendering / grounding: red flag `documented` vs `check_for` labels; no regional priors or endemic framing unless quoted from retrieved evidence; explanation grounding boundaries
+- [x] Step 1 — Instrument `rag.py`: log vector rank, graph score, fused position, supporting evidence, ARGUES_AGAINST, LLM confidence, disambiguation fired, final candidate — no behaviour change ✅ 2026-09-17
+- [ ] Step 2 — Deterministic ranking: normalise vector + graph scores → single comparable score; compute margin between #1 and #2; thresholds derived from Step 1 distributions, not invented 🔄 NEXT
+- [ ] Step 3 — Decouple confidence from ambiguity: confidence = evidence strength of #1; ambiguity = score margin (deterministic Python); HIGH + ambiguous is a valid state; disambiguation = ambiguity AND pairwise discriminator exists
+- [ ] Step 4 — Wire `CandidateDecisionContext`: Neo4j `ARGUES_AGAINST` → typed structured input → LLM explanation only; "None documented" structurally impossible when graph evidence exists
+- [ ] Step 5 — Rendering + grounding: red flag `documented` vs `check_for` labels; no regional priors or species names unless quoted from retrieved evidence
 
 **Files:** `phase5/rag.py`, `phase5/prompts.py`, `phase8/disambiguate.py`
-**Gate:** all 10 new conditions return calibrated confidence + disambiguation fires on genuinely ambiguous presentations
+**Gate:** confidence is auditable; ambiguity is independently determined; HIGH + ambiguous supported; appropriate cases trigger disambiguation; graph ARGUES_AGAINST evidence reaches final candidate; 8-case baseline ≥7/8
 
 ---
 
