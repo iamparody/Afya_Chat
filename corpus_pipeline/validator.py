@@ -84,6 +84,20 @@ def load_vocabularies() -> dict[str, set[str]]:
     }
 
 
+# ── ICD verification gate ─────────────────────────────────────────────────────
+
+def _check_icd_verified(card: ConditionCard) -> list[Issue]:
+    """Error if author has not confirmed ICD codes at icd.who.int."""
+    if not card.icd_verified:
+        return [Issue(
+            "ERROR", "icd_verified",
+            f"icd_verified: false — visit https://icd.who.int and confirm "
+            f"'{card.icd11}' (ICD-11) and '{card.icd10}' (ICD-10) both map to "
+            f"'{card.condition}', then set icd_verified: true",
+        )]
+    return []
+
+
 # ── ICD format ────────────────────────────────────────────────────────────────
 
 _ICD11_RE = re.compile(r"^[A-Z0-9]{2,8}(\.[A-Z0-9]+)?$")
@@ -277,6 +291,7 @@ def validate_card(
         issues.append(Issue("ERROR", "load", str(exc)))
         return None, issues
 
+    issues.extend(_check_icd_verified(card))
     issues.extend(_check_icd(card))
     issues.extend(_check_corpus_version(card))
     issues.extend(_check_sources(card))

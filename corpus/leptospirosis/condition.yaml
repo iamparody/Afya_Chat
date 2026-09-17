@@ -7,6 +7,7 @@ schema_version: "2.2"
 review_status: draft
 reviewed_by:
 last_reviewed:
+icd_verified: false
 
 sources:
   - organization: "WHO"

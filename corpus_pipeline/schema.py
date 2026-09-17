@@ -302,6 +302,7 @@ class ConditionCard(BaseModel):
     review_status: str
     reviewed_by: Optional[str] = None
     last_reviewed: Optional[str] = None
+    icd_verified: bool = False
     sources: list[Source] = []
 
     # ── Location ──────────────────────────────────────────────────────────────
