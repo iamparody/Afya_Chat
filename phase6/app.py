@@ -187,9 +187,15 @@ def _render_presentation_collapsed(text: str):
     )
 
 
+_MALFORMED_FLAG_RE = re.compile(
+    r"^(documented|check\s+for)\s*[—\-]+\s*(none|n/a|not\s+applicable|unknown)[\s.]*$",
+    re.IGNORECASE,
+)
+
+
 def _render_red_flags(result: dict):
     flags = result.get("red_flags", [])
-    flags = [f for f in flags if not re.match(r"documented\s*[—\-]+\s*none", f, re.IGNORECASE)]
+    flags = [f for f in flags if f and not _MALFORMED_FLAG_RE.match(f.strip())]
     if not flags:
         return
     items_html = ""

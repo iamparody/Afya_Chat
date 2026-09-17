@@ -212,6 +212,49 @@ class RetrievalRouter:
         return result
 
 
+# ── Deterministic scoring ─────────────────────────────────────────────────────
+
+# Fusion weights — calibrate from Step 1 log distributions once 10-case run is done.
+_VECTOR_WEIGHT = 0.7
+_GRAPH_WEIGHT  = 0.3
+
+# Ambiguity threshold — margin below this value means candidates #1 and #2 are
+# genuinely competing. Calibrate from Step 1 log distributions.
+AMBIGUITY_MARGIN_THRESHOLD = 0.15
+
+
+def _compute_fused_scores(candidates: list) -> tuple:
+    """
+    Compute a normalised fused score per candidate and the margin between #1 and #2.
+
+    vector_score : inverted normalised rank — 1.0 for rank 0, decreasing.
+    graph_score  : normalised matched_count — 1.0 for the candidate with the most matches.
+    fused_score  : weighted sum (vector 70 %, graph 30 %).
+
+    Candidates are NOT re-sorted — vector rank remains the primary ordering passed
+    to the LLM. Scores are attached in-place for logging and margin computation only.
+
+    Returns (candidates_with_scores, margin).
+    """
+    n = len(candidates)
+    if n == 0:
+        return candidates, 1.0
+
+    max_matched = max((c["matched_count"] for c in candidates), default=0) or 1
+
+    for i, c in enumerate(candidates):
+        c["vector_score"] = 1.0 - (i / n)
+        c["graph_score"]  = c["matched_count"] / max_matched
+        c["fused_score"]  = _VECTOR_WEIGHT * c["vector_score"] + _GRAPH_WEIGHT * c["graph_score"]
+
+    margin = (
+        candidates[0]["fused_score"] - candidates[1]["fused_score"]
+        if n >= 2 else 1.0
+    )
+
+    return candidates, margin
+
+
 # ── Validation ────────────────────────────────────────────────────────────────
 
 _CONF_ORDER = {"low": 0, "moderate": 1, "high": 2}
@@ -375,6 +418,23 @@ def run(
         # Do not sort by matched_count — vector order is the primary semantic ranking.
         # Graph data (matched_symptoms, argues_against) is supplemental evidence for the LLM to use.
 
+        # Step 2b — Deterministic fused scores + margin (no re-sort; scores attached in-place)
+        candidates, score_margin = _compute_fused_scores(candidates)
+        _log("FUSED_SCORES", {
+            "score_margin": round(score_margin, 4),
+            "ambiguity_threshold": AMBIGUITY_MARGIN_THRESHOLD,
+            "is_ambiguous_deterministic": score_margin < AMBIGUITY_MARGIN_THRESHOLD,
+            "candidates": [
+                {
+                    "condition":     c["condition"],
+                    "vector_score":  round(c["vector_score"], 4),
+                    "graph_score":   round(c["graph_score"], 4),
+                    "fused_score":   round(c["fused_score"], 4),
+                }
+                for c in candidates
+            ],
+        })
+
         # Step 3 — Vector: prose passages filtered to candidates only
         top_conditions = [c["condition"] for c in candidates]
         passages = get_filtered_passages(embedder, col, presentation, top_conditions, query_embedding=query_embedding)
@@ -423,6 +483,9 @@ def run(
             "disambiguation_current_logic": result.get("candidates", [{}])[0].get("confidence_level") != "high"
             if result.get("candidates") else None,
         })
+
+        # Attach score margin for disambiguation gate (not part of LLM schema)
+        result["_score_margin"] = score_margin
 
         # Step 6 — Enrich output candidates with retrieval provenance
         # source_map keyed on lowercase condition name; LLM diagnosis field may differ in

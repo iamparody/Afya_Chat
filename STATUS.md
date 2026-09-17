@@ -341,10 +341,10 @@ Independently (Phase 9 MVP):
 
 **Work order:**
 - [x] Step 1 — Instrument `rag.py`: log vector rank, graph score, fused position, supporting evidence, ARGUES_AGAINST, LLM confidence, disambiguation fired, final candidate — no behaviour change ✅ 2026-09-17
-- [ ] Step 2 — Deterministic ranking: normalise vector + graph scores → single comparable score; compute margin between #1 and #2; thresholds derived from Step 1 distributions, not invented 🔄 NEXT
-- [ ] Step 3 — Decouple confidence from ambiguity: confidence = evidence strength of #1; ambiguity = score margin (deterministic Python); HIGH + ambiguous is a valid state; disambiguation = ambiguity AND pairwise discriminator exists
-- [ ] Step 4 — Wire `CandidateDecisionContext`: Neo4j `ARGUES_AGAINST` → typed structured input → LLM explanation only; "None documented" structurally impossible when graph evidence exists
-- [ ] Step 5 — Rendering + grounding: red flag `documented` vs `check_for` labels; no regional priors or species names unless quoted from retrieved evidence
+- [ ] Step 2 — Deterministic ranking: normalise vector + graph scores → single comparable score; compute margin between #1 and #2; thresholds derived from Step 1 distributions, not invented ✅ 2026-09-17
+- [ ] Step 3 — Decouple confidence from ambiguity: confidence = evidence strength of #1; ambiguity = score margin (deterministic Python); HIGH + ambiguous is a valid state; disambiguation = ambiguity AND pairwise discriminator exists ✅ 2026-09-17
+- [ ] Step 4 — Wire `CandidateDecisionContext`: Neo4j `ARGUES_AGAINST` → typed structured input → LLM explanation only; "None documented" structurally impossible when graph evidence exists ✅ 2026-09-17
+- [ ] Step 5 — Rendering + grounding: red flag `documented` vs `check_for` labels; no regional priors or species names unless quoted from retrieved evidence ✅ 2026-09-17
 
 **Files:** `phase5/rag.py`, `phase5/prompts.py`, `phase8/disambiguate.py`
 **Gate:** confidence is auditable; ambiguity is independently determined; HIGH + ambiguous supported; appropriate cases trigger disambiguation; graph ARGUES_AGAINST evidence reaches final candidate; 8-case baseline ≥7/8
