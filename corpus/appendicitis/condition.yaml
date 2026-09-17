@@ -1,6 +1,9 @@
 condition: Appendicitis
-icd11: DC92
+icd11: DB10.0
+icd_title: "Acute appendicitis"
+icd_entity_uri: "http://id.who.int/icd/release/11/2024-01/mms/40398753"
 icd10: K37
+icd_search_term: "Acute appendicitis"
 category: gastroenterological
 corpus_version: "1.0"
 schema_version: "2.2"

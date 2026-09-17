@@ -1,6 +1,9 @@
 condition: Urinary tract infection
-icd11: GC08
+icd11: GC08.Z
+icd_title: "Urinary tract infection, site and agent not specified"
+icd_entity_uri: "http://id.who.int/icd/release/11/2024-01/mms/1848472780/unspecified"
 icd10: N39.0
+icd_search_term: "Urinary tract infection, site and agent not specified"
 category: urological
 corpus_version: "1.6"
 schema_version: "2.2"

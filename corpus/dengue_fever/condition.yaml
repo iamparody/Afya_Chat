@@ -1,6 +1,9 @@
 condition: Dengue fever
 icd11: 1D2Z
+icd_title: "Dengue fever, unspecified"
+icd_entity_uri: "http://id.who.int/icd/release/11/2024-01/mms/1959883044/unspecified"
 icd10: A90
+icd_search_term: "Dengue fever, unspecified"
 category: infectious
 corpus_version: "1.0"
 schema_version: "2.2"

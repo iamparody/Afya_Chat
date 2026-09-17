@@ -1,5 +1,7 @@
 condition: Leptospirosis
-icd11: 1C10
+icd11: 1B91
+icd_title: "Leptospirosis"
+icd_entity_uri: "http://id.who.int/icd/release/11/2024-01/mms/751399056"
 icd10: A27.9
 category: infectious
 corpus_version: "1.0"
@@ -7,7 +9,7 @@ schema_version: "2.2"
 review_status: draft
 reviewed_by:
 last_reviewed:
-icd_verified: false
+icd_verified: true
 
 sources:
   - organization: "WHO"

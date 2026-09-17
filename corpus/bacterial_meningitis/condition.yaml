@@ -1,6 +1,9 @@
 condition: Bacterial meningitis
-icd11: 1C1Z
+icd11: 1D01.0Z
+icd_title: "Bacterial meningitis, unspecified"
+icd_entity_uri: "http://id.who.int/icd/release/11/2024-01/mms/684930313/unspecified"
 icd10: G00.9
+icd_search_term: "Bacterial meningitis, unspecified"
 category: infectious
 corpus_version: "1.0"
 schema_version: "2.2"

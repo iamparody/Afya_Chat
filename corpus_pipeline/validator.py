@@ -87,15 +87,21 @@ def load_vocabularies() -> dict[str, set[str]]:
 # ── ICD verification gate ─────────────────────────────────────────────────────
 
 def _check_icd_verified(card: ConditionCard) -> list[Issue]:
-    """Error if author has not confirmed ICD codes at icd.who.int."""
+    """Error if ICD codes have not been verified by scripts/verify_icd.py."""
+    issues: list[Issue] = []
     if not card.icd_verified:
-        return [Issue(
+        issues.append(Issue(
             "ERROR", "icd_verified",
-            f"icd_verified: false — visit https://icd.who.int and confirm "
-            f"'{card.icd11}' (ICD-11) and '{card.icd10}' (ICD-10) both map to "
-            f"'{card.condition}', then set icd_verified: true",
-        )]
-    return []
+            f"icd_verified: false — run: python scripts/verify_icd.py <card_path>  "
+            f"(WHO ICD-11 API sets this automatically)",
+        ))
+    elif not card.icd_title or not card.icd_entity_uri:
+        issues.append(Issue(
+            "ERROR", "icd_verified",
+            "icd_verified: true but icd_title/icd_entity_uri missing — "
+            "re-run scripts/verify_icd.py to populate WHO API fields",
+        ))
+    return issues
 
 
 # ── ICD format ────────────────────────────────────────────────────────────────

@@ -1,6 +1,9 @@
 condition: Chikungunya
-icd11: 1D67
+icd11: 1D40
+icd_title: "Chikungunya virus disease"
+icd_entity_uri: "http://id.who.int/icd/release/11/2024-01/mms/900389391"
 icd10: A92.0
+icd_search_term: "Chikungunya virus disease"
 category: infectious
 corpus_version: "1.0"
 schema_version: "2.2"

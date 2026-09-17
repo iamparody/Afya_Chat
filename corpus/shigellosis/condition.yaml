@@ -1,6 +1,9 @@
 condition: Shigellosis (acute dysentery)
-icd11: 1A03
+icd11: 1A02
+icd_title: "Intestinal infections due to Shigella"
+icd_entity_uri: "http://id.who.int/icd/release/11/2024-01/mms/2080365623"
 icd10: A03.9
+icd_search_term: "Intestinal infections due to Shigella"
 category: infectious
 corpus_version: "1.0"
 schema_version: "2.2"

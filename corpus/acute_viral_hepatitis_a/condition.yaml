@@ -1,6 +1,9 @@
 condition: Acute viral hepatitis A
 icd11: 1E50.0
+icd_title: "Acute hepatitis A"
+icd_entity_uri: "http://id.who.int/icd/release/11/2024-01/mms/991455762"
 icd10: B15.9
+icd_search_term: "Acute hepatitis A"
 category: infectious
 corpus_version: "1.0"
 schema_version: "2.2"
