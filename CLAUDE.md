@@ -384,6 +384,7 @@ python neo4j/neo4j_loader.py
 **STEP 14 — Commit**
 - Commit only after Steps 6 and 11 pass (0 validator errors, regression ≥7/8).
 - Commit message format: `feat(corpus): <Condition> card — <domain>, <source>`
+- Do NOT add Co-Authored-By trailers to any commit message.
 
 ### Clinical Review Workflow
 
@@ -486,6 +487,7 @@ See [[STATUS]] for granular task tracking.
 - Do not let the context engine (or the LLM) make a diagnosis based on season alone — context adjusts priors, clinical evidence decides
 - Do not use `effect_direction: up` as the only direction — signals can be neutral or down
 - Do not use compound graph block terms with conjunctions or conditional clauses — break into shortest canonical matchable units
+- Do not add Co-Authored-By trailers to any commit message
 
 ### Orientation (when new to session)
 1. Read this file (`CLAUDE.md`) — especially Frontmatter Schema and Controlled Vocabularies

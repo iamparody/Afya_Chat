@@ -522,3 +522,12 @@
 | no floodwater exposure | no flood contact, no water exposure, no floodwater contact history |
 | absence of calf muscle tenderness | calf tenderness absent, no gastrocnemius tenderness, negative calf compression |
 | positive Leptospira serology | MAT positive, Leptospira IgM positive, leptospiral serology positive |
+| chronic productive cough | chronic cough with sputum, persistent productive cough |
+| progressive dyspnoea | gradually worsening breathlessness, progressive breathlessness, slowly progressive dyspnoea |
+| barrel chest | hyperinflated chest, increased AP diameter, chest hyperinflation |
+| reduced breath sounds | decreased breath sounds, diminished air entry |
+| ankle oedema | pedal oedema, leg oedema, bilateral ankle swelling |
+| accessory muscle use | accessory muscles of respiration, neck muscle use during breathing |
+| clubbing | digital clubbing, finger clubbing, nail clubbing |
+| cor pulmonale | right heart failure from lung disease, chronic cor pulmonale |
+| irreversible airflow obstruction | fixed airflow obstruction, non-reversible obstruction, persistent airflow limitation |
