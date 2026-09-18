@@ -309,6 +309,31 @@ COVERAGE_CASES = [
             ],
         },
     },
+    {
+        "id": "12",
+        "label": "Acute pyelonephritis — upper vs lower urinary tract",
+        "presentation": (
+            "28-year-old woman, 3 days of dysuria, urinary frequency and urgency, followed "
+            "by fever 38.8°C with rigors and constant right loin pain. Nausea with two "
+            "episodes of vomiting, but able to tolerate oral fluids. Not pregnant. On exam: "
+            "right costovertebral angle tenderness, no abdominal guarding, no rebound "
+            "tenderness. Urine dipstick: leukocytes positive, nitrites positive, blood "
+            "positive, protein trace. No urinary catheter, no known structural abnormality, "
+            "not diabetic, not immunosuppressed."
+        ),
+        "checks": {
+            "primary_contains":     ["pyelonephritis", "upper urinary"],
+            "red_flags_contain":    [],
+            "missing_info_contain": ["culture", "sensitivity", "creatinine"],
+            "prohibited_strings":   ["pyelonephritis confirmed", "cystitis confirmed"],
+            "manual": [
+                "Loin pain and costovertebral angle tenderness cited as the discriminating upper-tract features",
+                "Lower UTI (cystitis) listed as differential, with absence of fever and loin pain as the discriminator",
+                "Uncomplicated vs complicated classification addressed — no complicating factor present in this patient",
+                "Urine culture and sensitivity before empirical antibiotics recommended",
+            ],
+        },
+    },
 ]
 
 

@@ -461,6 +461,8 @@
 | normal upper GI endoscopy during symptoms | negative endoscopy |
 | sterile pyuria | pyuria without bacterial growth |
 | complete absence of fever | afebrile |
+| absence of loin pain | no flank pain, no loin pain |
+| absent costovertebral angle tenderness | negative CVA tenderness |
 | single elevated reading only | isolated BP elevation |
 | consistently normal ambulatory readings | normal 24h BP monitoring |
 | no endemic area exposure | no malaria exposure |

@@ -107,7 +107,7 @@ G1 lower urinary tract symptoms · G2 fever + flank pain · G3 haematuria · G4 
 | Condition | ICD-11 | Primary source | Supplementary | Pathways | Safety | Card status |
 |-----------|--------|----------------|---------------|----------|--------|-------------|
 | Urinary tract infection (lower / cystitis) | `GC08.Z` | Vol 2 §15.1 | EAU | G1, G3 | Important | **Exists** (`uti`) — enrich only |
-| Acute pyelonephritis | `GB51` | Vol 2 §15.2.1 | EAU | G2, G1, G3 | High | Not started |
+| Acute pyelonephritis | `GB51` | Vol 2 §15.2.1 | EAU | G2, G1, G3 | High | **Committed 2026-09-18** |
 | Acute bacterial prostatitis | see §2.4 | Vol 2 §15.4.1 | EAU | G7, G1, G2 | High | Not started |
 | Acute glomerulonephritis (acute nephritic syndrome) | `GB40` | Vol 2 §15.5 + §15.7.1 | KDIGO | G3, G4 | High | Not started |
 | Nephrotic syndrome | `GB41` | Vol 2 §15.6 | KDIGO | G4 | High | Not started |
@@ -123,7 +123,7 @@ G1 lower urinary tract symptoms · G2 fever + flank pain · G3 haematuria · G4 
 | §15.4.2 | Hyperkalaemia | Red flag on AKI and CKD cards |
 | §15.4.3 | Hypokalaemia | Red flag on CKD card |
 | §15.4.4 | Abdominally palpable renal masses | Red flag — immediate referral |
-| — | Nephrolithiasis | `differentials` term on the pyelonephritis, AKI and CKD cards (named in Vol 2 §15.3.1, §15.8.1, §15.8.2 as a cause of haematuria, post-renal AKI and CKD) |
+| — | Nephrolithiasis | `differentials` term on the pyelonephritis, AKI and CKD cards (named in Vol 2 §15.3.1, §15.8.1, §15.8.2 as a cause of haematuria, post-renal AKI and CKD). **Use the canonical form `renal colic`** — "nephrolithiasis" is a Do-Not-Use synonym in `conditions_vocabulary.md` |
 
 ### 2.4 Authoring notes
 
