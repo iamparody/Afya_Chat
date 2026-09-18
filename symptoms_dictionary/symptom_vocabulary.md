@@ -88,6 +88,8 @@
 | dysuria | painful urination, burning urination |
 | urinary frequency | |
 | urinary urgency | |
+| no dysuria | absence of dysuria, denies dysuria, no burning on urination |
+| no urinary frequency | absence of urinary frequency, denies frequency |
 | suprapubic discomfort | lower abdominal pain |
 | loin pain | flank pain |
 | haematuria | blood in urine |

@@ -87,6 +87,8 @@ graph:
     - external dysuria with vaginal discharge
     - normal urinalysis and negative culture
     - male sex
+    - no dysuria
+    - no urinary frequency
   red_flags:
     - urosepsis
     - hypotension
