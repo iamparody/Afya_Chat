@@ -1,6 +1,6 @@
 ---
 type: glossary
-corpus_version: "1.3"
+corpus_version: "1.4"
 purpose: shared definitions of clinical terms used across condition cards
 ---
 
@@ -79,5 +79,11 @@ Shared definitions for terms used consistently across condition cards. Maintaine
 **Mid-stream urine (MSU)** — A urine specimen collected after the initial stream has been discarded, so that periurethral and distal-urethral flora are flushed away before collection. Reduces contamination and is the standard specimen for urine culture. A contaminated specimen (mixed growth, epithelial cells on microscopy) cannot be interpreted and should be repeated rather than treated.
 
 **Nitrite (urinary dipstick)** — Dietary nitrate reduced to nitrite by bacterial nitrate reductase. A positive dipstick nitrite is highly specific for urinary tract infection (approximately 95–98%) but poorly sensitive. Two common causes of a false negative: the organism does not produce nitrate reductase — *Enterococcus*, *Staphylococcus saprophyticus*, *Pseudomonas* — and insufficient bladder dwell time, since conversion requires urine to remain in the bladder for roughly four hours. **A negative nitrite does not exclude urinary tract infection.**
+
+**Digital rectal examination (DRE)** — Palpation of the prostate through the anterior rectal wall with a gloved lubricated finger, assessing size, consistency, symmetry and tenderness. In acute bacterial prostatitis the prostate is characteristically soft, swollen, tense, and severely tender to light pressure. ⛔ **Prostate massage must not be performed when acute bacterial prostatitis is suspected** — it is intensely painful and can force bacteria into the bloodstream, precipitating bacteraemia and sepsis. Gentle palpation to establish tenderness is sufficient; vigorous or repeated examination adds risk without adding information.
+
+**Prostatitis categories** — Prostatitis is classified into four categories: **I** acute bacterial prostatitis; **II** chronic bacterial prostatitis; **III** chronic prostatitis / chronic pelvic pain syndrome, subdivided into inflammatory (IIIa) and non-inflammatory (IIIb); **IV** asymptomatic inflammatory prostatitis. Only category I is an acute febrile illness requiring urgent recognition and referral. Categories II–IV are chronic presentations managed on a different pathway, and conflating them with category I risks under-treating a septic patient.
+
+**Acute urinary retention** — Sudden inability to pass urine despite a full bladder, typically with suprapubic pain and a palpable distended bladder. A urological emergency requiring prompt catheterisation and referral. In the context of suspected acute bacterial prostatitis it indicates prostatic swelling obstructing the urethra. Distinguish from anuria, in which no urine is being produced and the bladder is empty — the two have opposite causes and opposite management.
 
 **Proteinuria** — Protein detectable in urine. A dipstick result of ≥1+ warrants quantification and repeat testing. Transient proteinuria may follow fever, exercise, or upright posture and does not indicate renal disease. Persistent proteinuria indicates glomerular or tubulointerstitial pathology and requires investigation. Nephrotic-range proteinuria in adults is ≥3.5 g per 24 hours and, together with hypoalbuminaemia, is an indispensable prerequisite for the diagnosis of nephrotic syndrome. Proteinuria accompanying pyuria and haematuria suggests parenchymal renal disease rather than simple urinary tract infection.

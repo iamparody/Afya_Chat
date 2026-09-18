@@ -5,7 +5,7 @@ icd_entity_uri: "http://id.who.int/icd/release/11/2024-01/mms/1848472780/unspeci
 icd10: N39.0
 icd_search_term: "Urinary tract infection, site and agent not specified"
 category: urological
-corpus_version: "1.7"
+corpus_version: "1.9"
 schema_version: "2.2"
 review_status: draft
 reviewed_by:
@@ -84,12 +84,13 @@ graph:
     - vaginitis
     - bladder stone
     - overactive bladder syndrome
-    - prostatitis
+    - Acute bacterial prostatitis
   argues_against:
-    - negative nitrite and negative leukocyte esterase on dipstick
+    - negative urine dipstick
     - sterile pyuria
-    - external dysuria with vaginal discharge
-    - normal urinalysis and negative culture
+    - vaginal discharge
+    - normal urinalysis
+    - negative urine culture
     - male sex
   red_flags:
     - urosepsis

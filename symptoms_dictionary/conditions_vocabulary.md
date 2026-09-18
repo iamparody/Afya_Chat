@@ -81,6 +81,7 @@
 | bladder stone | vesical calculus |
 | overactive bladder syndrome | OAB |
 | prostatitis | |
+| Acute bacterial prostatitis | acute prostatitis, category I prostatitis |
 | cholera | Vibrio cholerae infection |
 | brucellosis | undulant fever, Brucella infection |
 | rickettsial illness | spotted fever, rickettsia infection, tick typhus |

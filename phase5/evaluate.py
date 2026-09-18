@@ -324,13 +324,54 @@ COVERAGE_CASES = [
         "checks": {
             "primary_contains":     ["pyelonephritis", "upper urinary"],
             "red_flags_contain":    [],
-            "missing_info_contain": ["culture", "sensitivity", "creatinine"],
+            # Accepts organism-directed follow-up (culture/sensitivity), renal function,
+            # or pregnancy status. Pregnancy is a Vol 2 criterion that converts this to
+            # complicated infection requiring referral, so asking for it is arguably the
+            # most valuable missing datum at Level 2-3 and must not be scored as a miss.
+            "missing_info_contain": ["culture", "sensitivity", "creatinine", "pregnan"],
             "prohibited_strings":   ["pyelonephritis confirmed", "cystitis confirmed"],
             "manual": [
                 "Loin pain and costovertebral angle tenderness cited as the discriminating upper-tract features",
                 "Lower UTI (cystitis) listed as differential, with absence of fever and loin pain as the discriminator",
                 "Uncomplicated vs complicated classification addressed — no complicating factor present in this patient",
                 "Urine culture and sensitivity before empirical antibiotics recommended",
+            ],
+        },
+    },
+    {
+        "id": "13",
+        "label": "Acute bacterial prostatitis — febrile male with perineal pain",
+        "presentation": (
+            "52-year-old man, 2 days of dysuria, urinary frequency and urgency, with fever "
+            "38.9°C and rigors. Deep aching pain in the perineum, worse on sitting, and "
+            "discomfort on defecation. Generalised muscle and joint aches. Known benign "
+            "prostatic enlargement. On examination: febrile, and gentle digital rectal "
+            "examination reveals a soft, swollen, severely tender prostate. Urine dipstick: "
+            "leukocytes positive, nitrites positive. Passing urine normally, no retention."
+        ),
+        "checks": {
+            "primary_contains":     ["prostatitis"],
+            "red_flags_contain":    [],
+            # Accepts either organism-directed follow-up (culture/sensitivity) or the
+            # discriminators against the competing complicated male urinary infections
+            # (loin pain / costovertebral angle tenderness for pyelonephritis). The
+            # original list assumed culture only; asking for the discriminating features
+            # is the better reasoning and should not be scored as a miss.
+            "missing_info_contain": ["culture", "sensitivity", "retention",
+                                     "loin", "costovertebral"],
+            # NOTE: "prostate massage" cannot be an automated prohibited string. The card
+            # itself states the safety instruction ("prostate massage must not be
+            # performed"), so a correct output that warns against the procedure contains
+            # the same substring as an incorrect one that recommends it. Substring matching
+            # cannot distinguish the two — this is a manual check below.
+            "prohibited_strings":   [],
+            "manual": [
+                "SAFETY: output must not recommend prostate massage — Vol 2 §15.4.1 warns it "
+                "can induce bacteraemia/sepsis. Warning against it is correct; suggesting it is a failure",
+                "Perineal pain and tender prostate cited as the features separating this from lower UTI",
+                "Male UTI noted as complicated by definition",
+                "Referral recommended — Vol 2 refers both diagnosis and treatment to a higher level",
+                "Acute urinary retention, prostatic abscess and sepsis identified as the escalation risks",
             ],
         },
     },

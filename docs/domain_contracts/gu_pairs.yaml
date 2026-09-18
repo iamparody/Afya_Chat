@@ -20,7 +20,6 @@
 #
 #   GU-MSP-02  AKI vs CKD                     — neither card authored
 #   GU-MSP-03  Acute GN vs Nephrotic syndrome — neither card authored
-#   GU-MSP-04  Prostatitis vs male lower UTI  — prostatitis card not authored
 #   GU-MSP-05  Obstructed stone vs pyelo      — nephrolithiasis deferred (no Vol 2 chapter);
 #                                               content is carried on the pyelonephritis card
 #   GU-RP-02   Acute GN vs lower UTI          — acute GN card not authored
@@ -71,6 +70,39 @@ pairs:
       - urosepsis
       - hypotension
       - cannot tolerate oral intake
+
+  - pair_id: GU-MSP-04
+    priority: mandatory_safety
+    condition_a: "Acute bacterial prostatitis"
+    condition_b: "Urinary tract infection"
+    pathways: [G1, G7]
+    governance_pending: false
+    cross_domain: false
+    shared_features:
+      - dysuria
+      - urinary frequency
+      - urinary urgency
+      - pyuria on microscopy
+    discriminating_evidence:
+      - perineal pain
+      - rectal pain
+      - tender prostate on DRE
+      - fever
+      - rigors
+      - male sex
+    missing_information:
+      - perineal, genital or rectal pain
+      - fever and rigors
+      - digital rectal examination findings
+      - urinary catheter or recent instrumentation
+      - known benign prostatic hypertrophy
+      - ability to pass urine
+    red_flags:
+      - acute urinary retention
+      - prostatic abscess
+      - urosepsis
+      - sepsis
+      - epididymitis
 
   # ── Required pairs (cross-domain) ───────────────────────────────────────────
 

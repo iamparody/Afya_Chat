@@ -1,0 +1,246 @@
+condition: Acute bacterial prostatitis
+icd11: GA91.Y
+icd_title: "Other specified inflammatory and other diseases of prostate"
+icd_entity_uri: "http://id.who.int/icd/release/11/2024-01/mms/1594247995/other"
+icd10: N41.0
+icd_search_term: "Other specified inflammatory and other diseases of prostate"
+category: urological
+corpus_version: "1.0"
+schema_version: "2.2"
+review_status: draft
+reviewed_by:
+last_reviewed:
+icd_verified: true
+
+sources:
+  - organization: "Kenya Ministry of Health"
+    title: "Clinical Management and Referral Guidelines Vol. 2: Clinical Guidelines for Management of Conditions at Level 2–3 Health Facilities, Chapter 15.4.1"
+    year: "2024"
+  - organization: "European Association of Urology (EAU)"
+    title: "EAU Guidelines on Urological Infections"
+    year: "2026"
+
+endemic_regions:
+  - nationwide
+
+environmental_signals: []
+
+graph:
+  cardinal_symptoms:
+    - fever
+    - perineal pain
+    - dysuria
+    - urinary frequency
+    - urinary urgency
+  associated_symptoms:
+    - rectal pain
+    - genital pain
+    - chills
+    - rigors
+    - myalgia
+    - arthralgia
+    - tender prostate on DRE
+  risk_factors:
+    - urinary catheter
+    - benign prostatic hypertrophy
+    - male sex
+    - diabetes mellitus
+    - immunocompromise
+  differentials:
+    - Urinary tract infection
+    - Acute pyelonephritis
+    - prostatitis
+    - renal colic
+  argues_against:
+    - female sex
+    - complete absence of fever
+    - loin pain
+  red_flags:
+    - acute urinary retention
+    - prostatic abscess
+    - urosepsis
+    - septic shock
+    - sepsis
+    - epididymitis
+    - hypotension
+  confirms:
+    - tender prostate on DRE
+    - pyuria on microscopy
+    - positive urine dipstick nitrites and leukocyte esterase
+    - MSU culture ≥10⁵ CFU/mL
+
+sections:
+  cardinal_symptoms: |
+    Acute bacterial prostatitis is inflammation of the prostate gland due to bacterial
+    infection. It is category I of the four prostatitis categories and is the only one
+    that presents as an acute febrile illness requiring urgent recognition and referral.
+
+    The presentation combines three symptom groups that occur together, and it is their
+    combination rather than any one alone that identifies the condition. First, lower
+    urinary tract symptoms — dysuria, urinary frequency and urgency — which on their own
+    would suggest simple cystitis. Second, symptoms localising to the prostate — perineal
+    pain, genital pain, painful urination, and rectal pain. Third, systemic features of
+    bacteraemia — fever, chills, joint pain and muscle pain.
+
+    Perineal pain is the feature that most reliably separates this from lower urinary
+    tract infection. A man presenting with urinary symptoms and fever should be asked
+    directly about pain between the scrotum and the anus, because patients frequently do
+    not volunteer it and may describe it only as vague pelvic or rectal discomfort.
+
+  associated_symptoms: |
+    Rectal pain and pain on defecation are common and may dominate the history, sometimes
+    directing attention towards a gastrointestinal or anorectal cause. Genital and
+    scrotal discomfort may be reported. Chills and rigors indicate bacteraemia. Myalgia
+    and arthralgia accompany the systemic response and can make the illness resemble a
+    non-specific febrile illness in its early hours.
+
+    On digital rectal examination the prostate is characteristically soft, swollen and
+    tense, with severe pressure pain on light palpation. This finding, in a man with
+    fever and urinary symptoms, is close to diagnostic at primary care level.
+
+    Difficulty passing urine, a poor stream, or complete inability to void may develop as
+    the swollen prostate obstructs the urethra. Acute urinary retention is a complication
+    rather than an associated symptom and is addressed under Red flags.
+
+  diagnostic_features: |
+    Diagnosis at primary care level is clinical. The triad of lower urinary tract
+    symptoms, perineal or rectal pain, and systemic features of bacteraemia in a male
+    patient, together with a tender prostate on digital rectal examination, establishes
+    a working diagnosis sufficient to refer.
+
+    Urinalysis typically shows pyuria, and dipstick nitrite and leukocyte esterase are
+    commonly positive. Mid-stream urine should be sent for culture and sensitivity before
+    antibiotics are started where laboratory access allows, since the organism and its
+    resistance pattern determine definitive treatment and the course is prolonged.
+
+    The causative organisms are Escherichia coli, Pseudomonas aeruginosa and Enterococci.
+
+    Digital rectal examination should be performed gently and once. Prostate massage must
+    not be performed — it is intensely painful in the acutely inflamed gland and can force
+    bacteria into the bloodstream, precipitating bacteraemia and sepsis. Palpation
+    sufficient to establish tenderness is all that is required; repeated or vigorous
+    examination adds risk without adding information.
+
+    Vol 2 refers both diagnosis and treatment of this condition to a higher facility
+    level. The primary-care task is recognition, safe examination, and referral.
+
+  predisposing_factors: |
+    Male sex is a prerequisite. Urinary tract catheterisation and benign prostatic
+    hypertrophy are the two risk factors named in the Kenya MOH guideline. Recent
+    urological instrumentation, transrectal prostate biopsy, and urethral stricture also
+    predispose, as do diabetes mellitus and immunocompromise, which additionally raise
+    the risk of abscess formation and a complicated course.
+
+    Any urinary tract infection in a male is classified as complicated, so a man
+    presenting with urinary symptoms already sits outside the uncomplicated-cystitis
+    pathway before prostatitis is specifically considered. Age is not itself
+    protective — acute bacterial prostatitis occurs across adult age groups, and while
+    benign prostatic hypertrophy raises risk in older men, a younger man with urinary
+    symptoms and fever should not have the diagnosis dismissed on the grounds of age.
+
+  typical_presentation: |
+    A man presents with one to three days of dysuria, urinary frequency and urgency,
+    together with fever and rigors. He describes a deep, poorly localised ache in the
+    perineum, and discomfort on sitting or on defecation. He feels systemically unwell
+    with generalised muscle and joint aching. There may be a history of urinary
+    catheterisation, recent instrumentation, or known prostatic enlargement.
+
+    On examination he is febrile, and digital rectal examination reveals a soft, swollen,
+    exquisitely tender prostate. Urinalysis shows pyuria with positive nitrites.
+
+    The presentation is frequently mistaken for uncomplicated urinary tract infection
+    because the urinary symptoms are prominent and the perineal pain is not volunteered.
+    The systemic features — fever, rigors, myalgia — are what should prompt the
+    examination that reveals the diagnosis. In an older man with benign prostatic
+    hypertrophy the first presentation may instead be acute urinary retention with fever.
+
+  differential_diagnoses: |
+    Lower urinary tract infection shares dysuria, frequency, urgency and pyuria.
+    Discriminating features: cystitis does not produce fever, rigors, perineal or rectal
+    pain, or prostatic tenderness. Because urinary tract infection in a male is
+    complicated by definition, a man with these symptoms warrants examination for
+    prostatic involvement rather than empirical treatment as cystitis.
+
+    Acute pyelonephritis shares fever, rigors, dysuria, frequency and urgency, and both
+    are complicated urinary infections in a male. Discriminating features: pyelonephritis
+    produces loin pain and costovertebral angle tenderness with pain located in the
+    flank, whereas prostatitis produces perineal and rectal pain with a tender prostate.
+    The site of pain and the rectal examination separate them.
+
+    Chronic prostatitis and chronic pelvic pain syndrome — categories II to IV — share
+    perineal and pelvic pain. Discriminating features: the chronic categories evolve over
+    months and are not febrile; acute bacterial prostatitis is an acute illness with
+    systemic upset. This distinction matters because the chronic categories are managed
+    on an entirely different pathway and do not require urgent referral, while category I
+    may progress to sepsis.
+
+    Renal colic may produce urinary symptoms and severe pain in a man. Discriminating
+    features: stone pain is colicky and radiates from loin to groin with the patient
+    restless and unable to lie still; it is not associated with fever unless there is
+    coexisting infection, and the prostate is not tender.
+
+  argues_against: |
+    Female sex excludes the diagnosis absolutely — there is no prostate. This is the
+    single strongest argument against, and a presentation of dysuria, frequency and
+    perineal discomfort in a woman must be assessed as urinary tract infection,
+    vaginitis, or a gynaecological cause.
+
+    Complete absence of fever and of systemic upset argues against acute bacterial
+    prostatitis and towards one of the chronic prostatitis categories or simple lower
+    urinary tract infection. Category I is defined by its acute febrile character; a man
+    with months of perineal discomfort and no fever has a chronic syndrome, not this
+    condition.
+
+    Loin pain with costovertebral angle tenderness, rather than perineal pain, points to
+    acute pyelonephritis rather than prostatitis — the two are both complicated male
+    urinary infections and the site of pain is the discriminator.
+
+    A non-tender prostate on careful digital rectal examination substantially reduces the
+    likelihood of acute bacterial prostatitis, though examination findings should be
+    weighed alongside the systemic picture rather than relied on alone.
+
+  red_flags: |
+    Acute urinary retention. Prostatic swelling may obstruct the urethra, producing
+    sudden inability to pass urine with suprapubic pain and a palpable distended bladder.
+    This is a urological emergency requiring prompt bladder drainage and referral.
+
+    Prostatic abscess. Persistent fever despite appropriate antibiotic therapy, or
+    fluctuance on digital rectal examination, suggests abscess formation, which requires
+    imaging and drainage. Diabetes and immunocompromise raise the risk.
+
+    Sepsis, urosepsis and septic shock. Hypotension, tachycardia, altered consciousness
+    or reduced urine output indicate systemic sepsis. The prostate is a highly vascular
+    organ and acute bacterial prostatitis can progress to bacteraemia rapidly.
+
+    Epididymitis. Unilateral scrotal pain and swelling developing alongside prostatic
+    symptoms indicates spread of infection and requires referral.
+
+    ⛔ Prostate massage must not be performed. In the acutely inflamed gland it is
+    intensely painful and carries a risk of inducing bacteraemia and sepsis. This is an
+    explicit safety instruction in the Kenya MOH guideline and it applies at the moment of
+    examination, before any diagnosis is confirmed.
+
+  diagnostic_context: |
+    In Kenya primary care (Level 2-3), Vol 2 refers both the diagnosis and the treatment
+    of acute bacterial prostatitis to a higher facility. The clinical task here is
+    recognition, safe examination, and timely referral — not management.
+
+    Three practical points shape that task. First, the condition is easily mistaken for
+    uncomplicated urinary tract infection, because the urinary symptoms are prominent and
+    patients rarely volunteer perineal pain; asking about it directly, and performing a
+    gentle digital rectal examination in a febrile man with urinary symptoms, is what
+    makes the diagnosis. Second, all urinary tract infection in males is complicated, so
+    the referral threshold in a man is lower than the corresponding presentation in a
+    woman. Third, the examination itself carries a specific hazard — prostate massage can
+    precipitate sepsis and must be avoided.
+
+    Send mid-stream urine for culture and sensitivity before antibiotics where laboratory
+    access allows, as treatment is prolonged and organism-directed. Refer promptly, and
+    refer urgently in the presence of acute urinary retention, suspected abscess, or any
+    feature of sepsis.
+
+    A note on coding. ICD-11 has no entity for acute prostatitis. The GA91 block codes
+    chronic prostatitis (GA91.0) and abscess of prostate (GA91.1) specifically, but the
+    acute bacterial form maps only to GA91.Y, "Other specified inflammatory and other
+    diseases of prostate". ICD-10 is more precise here, coding acute prostatitis as N41.0.
+    The imprecision is in the classification, not in the diagnosis.

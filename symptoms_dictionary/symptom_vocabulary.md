@@ -91,10 +91,14 @@
 | suprapubic discomfort | lower abdominal pain |
 | loin pain | flank pain |
 | colicky pain | waves of pain, spasmodic pain, cramping loin pain |
+| perineal pain | pain between scrotum and anus, perineal discomfort |
+| rectal pain | pain on defecation, anorectal pain |
+| genital pain | scrotal pain, testicular discomfort |
 | restlessness | unable to lie still, writhing, agitated with pain |
 | haematuria | blood in urine |
 | cloudy urine | turbid urine |
 | offensive-smelling urine | |
+| vaginal discharge | per vaginam discharge |
 | pica | |
 | koilonychia | spoon-shaped nails |
 | glossitis | |
@@ -145,6 +149,7 @@
 | leukopenia | low white cell count, leucopenia |
 | prolonged expiratory phase | prolonged expiration, obstructive expiratory pattern |
 | costovertebral angle tenderness | renal angle tenderness |
+| tender prostate on DRE | boggy prostate, swollen tender prostate |
 | splenomegaly | enlarged spleen |
 | hepatomegaly | enlarged liver |
 | cervical lymphadenopathy | neck lymph nodes |
@@ -252,6 +257,7 @@
 | institutional contact | close institutional contact |
 | antibiotic use | recent antibiotic use |
 | urinary catheter | indwelling catheter, catheterisation |
+| benign prostatic hypertrophy | BPH, enlarged prostate, prostatic enlargement |
 | urinary tract structural abnormality | structural urological abnormality |
 | kidney transplant | renal transplant, post-transplant state |
 | urinary stones | renal calculi, kidney stones |
@@ -307,6 +313,9 @@
 | severe bleeding | haemorrhagic manifestations, spontaneous haemorrhage |
 | intestinal perforation | bowel perforation, typhoid perforation |
 | urosepsis | urological sepsis |
+| acute urinary retention | inability to pass urine, painful retention |
+| prostatic abscess | prostate abscess |
+| epididymitis | epididymo-orchitis |
 | pyelonephritis | upper UTI, renal infection |
 | male UTI | UTI in men |
 | macroscopic haematuria | visible haematuria, frank haematuria |
@@ -460,6 +469,9 @@
 | normal chest X-ray | normal CXR |
 | normal upper GI endoscopy during symptoms | negative endoscopy |
 | sterile pyuria | pyuria without bacterial growth |
+| normal urinalysis | urinalysis within normal limits |
+| negative urine culture | no bacterial growth on culture |
+| negative urine dipstick | negative nitrite and leukocyte esterase |
 | complete absence of fever | afebrile |
 | absence of loin pain | no flank pain, no loin pain |
 | absent costovertebral angle tenderness | negative CVA tenderness |

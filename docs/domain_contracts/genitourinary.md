@@ -106,9 +106,9 @@ G1 lower urinary tract symptoms · G2 fever + flank pain · G3 haematuria · G4 
 
 | Condition | ICD-11 | Primary source | Supplementary | Pathways | Safety | Card status |
 |-----------|--------|----------------|---------------|----------|--------|-------------|
-| Urinary tract infection (lower / cystitis) | `GC08.Z` | Vol 2 §15.1 | EAU | G1, G3 | Important | **Enriched 2026-09-18** (`uti`, v1.7) |
+| Urinary tract infection (lower / cystitis) | `GC08.Z` | Vol 2 §15.1 | EAU | G1, G3 | Important | **Enriched 2026-09-18** (`uti`, v1.9) |
 | Acute pyelonephritis | `GB51` | Vol 2 §15.2.1 | EAU | G2, G1, G3 | High | **Committed 2026-09-18** |
-| Acute bacterial prostatitis | see §2.4 | Vol 2 §15.4.1 | EAU | G7, G1, G2 | High | Not started |
+| Acute bacterial prostatitis | `GA91.Y` see §2.4 | Vol 2 §15.4.1 | EAU | G7, G1, G2 | High | **Committed 2026-09-18** |
 | Acute glomerulonephritis (acute nephritic syndrome) | `GB40` | Vol 2 §15.5 + §15.7.1 | KDIGO | G3, G4 | High | Not started |
 | Nephrotic syndrome | `GB41` | Vol 2 §15.6 | KDIGO | G4 | High | Not started |
 | Acute kidney injury | see §2.4 | Vol 2 §15.8.1 | KDIGO | G5, G2, G6 | High | Not started |
