@@ -92,6 +92,7 @@
 | ovarian cyst | ruptured ovarian cyst, twisted ovarian cyst, ovarian torsion |
 | mesenteric adenitis | mesenteric lymphadenitis |
 | renal colic | ureteric colic, nephrolithiasis colic |
+| Acute pyelonephritis | acute upper urinary tract infection |
 | Mittelschmerz | mid-cycle pain, ovulation pain |
 | Bacterial meningitis | pyogenic meningitis, purulent meningitis, bacterial meningoencephalitis, acute bacterial meningitis |
 | viral encephalitis | aseptic meningitis, viral meningitis, viral meningoencephalitis |

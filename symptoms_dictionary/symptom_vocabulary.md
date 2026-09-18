@@ -90,6 +90,8 @@
 | urinary urgency | |
 | suprapubic discomfort | lower abdominal pain |
 | loin pain | flank pain |
+| colicky pain | waves of pain, spasmodic pain, cramping loin pain |
+| restlessness | unable to lie still, writhing, agitated with pain |
 | haematuria | blood in urine |
 | cloudy urine | turbid urine |
 | offensive-smelling urine | |
@@ -251,6 +253,7 @@
 | antibiotic use | recent antibiotic use |
 | urinary catheter | indwelling catheter, catheterisation |
 | urinary tract structural abnormality | structural urological abnormality |
+| kidney transplant | renal transplant, post-transplant state |
 | urinary stones | renal calculi, kidney stones |
 | sexual intercourse | recent sexual intercourse |
 | silicosis | |
@@ -282,6 +285,8 @@
 | hypoglycaemia | low blood glucose, low blood sugar |
 | haemoglobinuria | blackwater urine |
 | prostration | inability to sit or stand |
+| renal abscess | perinephric abscess, intrarenal abscess |
+| cannot tolerate oral intake | unable to take oral fluids, oral intake failure |
 | vomiting preventing oral medications | intractable vomiting |
 | diabetic ketoacidosis | DKA |
 | hyperosmolar hyperglycaemic state | HHS, hyperosmolar non-ketotic coma |
@@ -383,6 +388,9 @@
 | positive urine dipstick nitrites and leukocyte esterase | |
 | pyuria on microscopy | ≥10 WBC per mm³ |
 | MSU culture ≥10⁵ CFU/mL | UTI gold standard |
+| proteinuria | protein in urine, albuminuria |
+| microscopic haematuria | non-visible haematuria, dipstick haematuria |
+| raised serum creatinine | elevated creatinine, creatinine rise |
 | haemoglobin below WHO thresholds | Hb <13 men, <12 women, <11 pregnant |
 | low MCV <80 fL | microcytosis |
 | low MCH <27 pg | hypochromia |

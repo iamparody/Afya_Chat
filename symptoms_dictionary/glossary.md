@@ -1,6 +1,6 @@
 ---
 type: glossary
-corpus_version: "1.2"
+corpus_version: "1.3"
 purpose: shared definitions of clinical terms used across condition cards
 ---
 
@@ -69,3 +69,15 @@ Shared definitions for terms used consistently across condition cards. Maintaine
 **FEV1/FVC ratio** — The ratio of Forced Expiratory Volume in 1 second (FEV1) to Forced Vital Capacity (FVC), measured by spirometry. A post-bronchodilator FEV1/FVC ratio below 0.70 confirms persistent airflow limitation and is the GOLD-standard spirometric criterion for diagnosing COPD. In asthma, this ratio typically normalises (or substantially improves) after bronchodilator administration — its persistence after bronchodilator administration distinguishes COPD from asthma. Spirometry is usually unavailable at Kenya primary care level; a clinical diagnosis is made from history and examination, with definitive confirmation referred to a higher facility.
 
 **Tachypnoea** — Respiratory rate >20 breaths per minute in adults. In children: >50 in infants aged 2–12 months; >40 in children aged 12 months to 5 years; >30 in children over 5 years. Tachypnoea is a reliable early sign of lower respiratory tract infection, metabolic acidosis, pulmonary embolism, and severe dehydration. It is one of the most sensitive early indicators of deterioration in hospitalised patients.
+
+**Bacteriuria** — Bacteria present in urine. Significant bacteriuria is conventionally defined as ≥10⁵ colony-forming units per mL on a mid-stream urine culture, though lower counts may be significant in symptomatic women or in specimens obtained by catheterisation. Asymptomatic bacteriuria (significant bacteriuria without urinary symptoms) is common in older adults and in patients with indwelling catheters, and is generally **not** treated — the exceptions are pregnancy and before urological procedures. Treating asymptomatic bacteriuria otherwise drives antimicrobial resistance without clinical benefit.
+
+**Complicated urinary tract infection** — A urinary tract infection occurring in the presence of a structural or functional abnormality of the urinary tract, or of a host comorbidity that increases the risk of treatment failure. Recognised complicating factors include pregnancy, diabetes mellitus, immunocompromise, kidney transplant, urinary catheter, urinary stones, renal failure, and hospital-acquired infection. **Urinary tract infection in a male is considered complicated by definition.** The distinction matters at primary-care level because complicated infection changes the referral threshold rather than only the antibiotic choice.
+
+**Cystitis** — Infection and inflammation confined to the bladder and associated structures; synonymous with lower urinary tract infection. Presents with dysuria, urinary frequency, urgency, and suprapubic discomfort. Fever, loin pain, costovertebral angle tenderness, nausea or vomiting indicate that infection has ascended to the upper tract and the presentation should be reassessed as pyelonephritis rather than cystitis.
+
+**Mid-stream urine (MSU)** — A urine specimen collected after the initial stream has been discarded, so that periurethral and distal-urethral flora are flushed away before collection. Reduces contamination and is the standard specimen for urine culture. A contaminated specimen (mixed growth, epithelial cells on microscopy) cannot be interpreted and should be repeated rather than treated.
+
+**Nitrite (urinary dipstick)** — Dietary nitrate reduced to nitrite by bacterial nitrate reductase. A positive dipstick nitrite is highly specific for urinary tract infection (approximately 95–98%) but poorly sensitive. Two common causes of a false negative: the organism does not produce nitrate reductase — *Enterococcus*, *Staphylococcus saprophyticus*, *Pseudomonas* — and insufficient bladder dwell time, since conversion requires urine to remain in the bladder for roughly four hours. **A negative nitrite does not exclude urinary tract infection.**
+
+**Proteinuria** — Protein detectable in urine. A dipstick result of ≥1+ warrants quantification and repeat testing. Transient proteinuria may follow fever, exercise, or upright posture and does not indicate renal disease. Persistent proteinuria indicates glomerular or tubulointerstitial pathology and requires investigation. Nephrotic-range proteinuria in adults is ≥3.5 g per 24 hours and, together with hypoalbuminaemia, is an indispensable prerequisite for the diagnosis of nephrotic syndrome. Proteinuria accompanying pyuria and haematuria suggests parenchymal renal disease rather than simple urinary tract infection.
