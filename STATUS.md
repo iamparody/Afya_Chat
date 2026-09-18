@@ -419,6 +419,18 @@ Independently (Phase 9 MVP):
 
 ---
 
+## Outstanding — AFI pairwise condition name mismatch (found 2026-09-18)
+
+- [ ] **`afi_pairs.yaml` references `"Meningitis (bacterial)"`, but the corpus card is named `"Bacterial meningitis"`.** The two names appear in `MSP-01.condition_b` and `MSP-02.condition_a` — **both mandatory safety pairs**, the highest-priority clinical content in the AFI domain.
+
+  Currently latent, not yet realised: Neo4j has 0 nodes named `Meningitis (bacterial)` and 1 node named `Bacterial meningitis` (icd11 `1D01.0Z`), so the AFI pairs have not been loaded since the meningitis card was authored. The moment anyone runs `pairwise_loader.py` (AFI is the default) or `--all`, the loader will `MERGE` a minimal orphan node under the wrong name and bind both mandatory safety pairs to it, while the real card sits unlinked beside it. Nothing in the graph would show the mismatch.
+
+  `afi_pairs.yaml` is AFI-domain-owned, so the two-line rename has been left to that owner rather than made here. A generic guard was added instead — `pairwise_loader.py` now warns on any pair condition that has no matching card, and suggests the likely intended name. It distinguishes this case from a legitimately unauthored condition (`Rickettsial illness`, correctly warned without a suggestion). Run `python neo4j/pairwise_loader.py --dry-run` to see it.
+
+  Note the AFI pairs remain unloaded in the shared graph — 4 `DIFFERENTIATED_FROM` edges exist, all Genitourinary. Fixing the names and loading AFI's 17 is an AFI-domain task.
+
+---
+
 ## Outstanding RAG Quality Issues
 > Tracked separately from corpus expansion — these are retrieval/prompt quality items.
 

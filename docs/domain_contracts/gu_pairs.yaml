@@ -1,0 +1,162 @@
+# Genitourinary Domain — Pairwise Disambiguation Pairs
+# Source of truth: docs/domain_contracts/genitourinary.md §4
+#
+# Pathways are derived from §3 presentation matrix — do not curate independently.
+# Condition names must match the `condition:` frontmatter field of the corpus card exactly.
+# Terms in shared_features, discriminating_evidence and red_flags must exist in
+# symptoms_dictionary/symptom_vocabulary.md before use.
+#
+# Pair IDs are namespaced GU- to stay unique against afi_pairs.yaml — pair_id is the
+# MERGE key in Neo4j and must be globally unique across domains.
+#
+# Load with:
+#   python neo4j/pairwise_loader.py --pairs-file docs/domain_contracts/gu_pairs.yaml
+#
+# SCOPE — only pairs whose BOTH conditions have authored cards appear here.
+# Per genitourinary.md §4.4, a pair is specified as its second condition card is
+# completed, so that no pair specification precedes the evidence base for both of
+# its conditions. The contract defines 15 pairs; the 4 below are those currently
+# loadable. Not yet present, and why:
+#
+#   GU-MSP-02  AKI vs CKD                     — neither card authored
+#   GU-MSP-03  Acute GN vs Nephrotic syndrome — neither card authored
+#   GU-MSP-04  Prostatitis vs male lower UTI  — prostatitis card not authored
+#   GU-MSP-05  Obstructed stone vs pyelo      — nephrolithiasis deferred (no Vol 2 chapter);
+#                                               content is carried on the pyelonephritis card
+#   GU-RP-02   Acute GN vs lower UTI          — acute GN card not authored
+#   GU-RP-03   Nephrolithiasis vs lower UTI   — nephrolithiasis deferred
+#   GU-RP-04   Nephrotic syndrome vs CKD      — neither card authored
+#   GU-RP-05   AKI vs nephrolithiasis         — neither available
+#   GU-RP-06   CKD vs Anaemia                 — CKD card not authored
+#   GU-RP-08   Acute GN vs Essential hypertension — acute GN card not authored
+#   GU-RP-09   Lower UTI vs Genitourinary TB  — WITHHELD ON CLINICAL GROUNDS, not
+#              availability. The corpus card is "Pulmonary tuberculosis", a different
+#              clinical entity from genitourinary TB. Sterile pyuria points to GU TB
+#              specifically (Vol 2 §15.3.2). Encoding UTI–pulmonary TB as a
+#              DIFFERENTIATED_FROM edge would assert a discrimination the cards do not
+#              support. Revisit if a genitourinary TB card is authored.
+
+pairs:
+
+  # ── Mandatory safety pairs ──────────────────────────────────────────────────
+
+  - pair_id: GU-MSP-01
+    priority: mandatory_safety
+    condition_a: "Acute pyelonephritis"
+    condition_b: "Urinary tract infection"
+    pathways: [G1, G2]
+    governance_pending: false
+    cross_domain: false
+    shared_features:
+      - dysuria
+      - urinary frequency
+      - urinary urgency
+      - pyuria on microscopy
+    discriminating_evidence:
+      - fever
+      - loin pain
+      - costovertebral angle tenderness
+      - vomiting
+      - suprapubic discomfort
+    missing_information:
+      - measured temperature
+      - loin pain and costovertebral angle tenderness on examination
+      - vomiting or inability to tolerate oral intake
+      - patient sex
+      - pregnancy status
+      - urinary catheter, structural abnormality or kidney transplant
+      - diabetes or immunocompromise
+    red_flags:
+      - septic shock
+      - urosepsis
+      - hypotension
+      - cannot tolerate oral intake
+
+  # ── Required pairs (cross-domain) ───────────────────────────────────────────
+
+  - pair_id: GU-RP-01
+    priority: required
+    condition_a: "Acute pyelonephritis"
+    condition_b: "Malaria (unspecified)"
+    pathways: [G2]
+    governance_pending: false
+    cross_domain: true
+    shared_features:
+      - fever
+      - rigors
+      - nausea
+      - vomiting
+      - prostration
+    discriminating_evidence:
+      - loin pain
+      - costovertebral angle tenderness
+      - dysuria
+      - pyuria on microscopy
+      - positive malaria RDT
+    missing_information:
+      - malaria RDT result
+      - urinalysis result
+      - loin pain and costovertebral angle tenderness on examination
+      - presence of any urinary symptoms
+    red_flags:
+      - septic shock
+      - altered consciousness
+      - hypotension
+
+  - pair_id: GU-RP-07
+    priority: required
+    condition_a: "Acute pyelonephritis"
+    condition_b: "Appendicitis"
+    pathways: [G2, G6]
+    governance_pending: false
+    cross_domain: true
+    shared_features:
+      - fever
+      - nausea
+      - vomiting
+    discriminating_evidence:
+      - loin pain
+      - costovertebral angle tenderness
+      - periumbilical pain migrating to RLQ
+      - RLQ tenderness at McBurney's point
+      - rebound tenderness
+      - pyuria on microscopy
+    missing_information:
+      - site of pain and whether it migrated
+      - rebound tenderness and guarding on examination
+      - urinalysis result
+      - loin pain and costovertebral angle tenderness on examination
+    red_flags:
+      - rebound tenderness
+      - abdominal guarding
+      - septic shock
+
+  - pair_id: GU-RP-10
+    priority: required
+    condition_a: "Acute pyelonephritis"
+    condition_b: "Typhoid fever"
+    pathways: [G2]
+    governance_pending: false
+    cross_domain: true
+    shared_features:
+      - fever
+      - nausea
+      - vomiting
+      - headache
+    discriminating_evidence:
+      - loin pain
+      - costovertebral angle tenderness
+      - dysuria
+      - pyuria on microscopy
+      - relative bradycardia
+      - rose spots
+    missing_information:
+      - fever onset pattern — abrupt versus step-wise over five to seven days
+      - pulse rate relative to temperature
+      - urinalysis result
+      - presence of any urinary symptoms
+      - blood culture access
+    red_flags:
+      - septic shock
+      - hypotension
+      - altered consciousness
