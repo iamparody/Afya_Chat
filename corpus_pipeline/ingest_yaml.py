@@ -177,6 +177,44 @@ def _find_yaml_files(target: Path) -> list[Path]:
     return sorted(target.rglob("condition.yaml"))
 
 
+# ── Integrity gate ────────────────────────────────────────────────────────────
+
+def _integrity_check(incoming_yaml_files: list[Path], chunks_path: Path) -> None:
+    """Fail fast if ingest would silently drop conditions that are currently indexed.
+
+    Compares incoming source condition names against the existing chunks.jsonl.
+    Validates by name, not count — a deleted condition plus a new one still equals
+    the same count but is still a data-loss event.
+    """
+    if not chunks_path.exists():
+        return  # no prior index — first run, nothing to protect
+
+    indexed: set[str] = set()
+    for line in chunks_path.read_text(encoding="utf-8").splitlines():
+        if line.strip():
+            indexed.add(json.loads(line)["metadata"]["condition"])
+
+    incoming: set[str] = set()
+    for yaml_path in incoming_yaml_files:
+        try:
+            card = load_card(yaml_path)
+            incoming.add(card.condition)
+        except Exception:
+            pass  # load errors are reported in the main loop
+
+    would_lose = indexed - incoming
+    if would_lose:
+        print("\n" + "=" * 60, file=sys.stderr)
+        print("INTEGRITY ERROR — ingest aborted.", file=sys.stderr)
+        print("The following conditions are indexed but missing from source:", file=sys.stderr)
+        for name in sorted(would_lose):
+            print(f"  - {name}", file=sys.stderr)
+        print("\nLikely cause: wrong git branch. Verify corpus/ matches the", file=sys.stderr)
+        print("currently deployed index before re-running ingest.", file=sys.stderr)
+        print("=" * 60 + "\n", file=sys.stderr)
+        sys.exit(1)
+
+
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 def main() -> int:
@@ -196,15 +234,22 @@ def main() -> int:
         print(f"No condition.yaml files found under {target}", file=sys.stderr)
         return 1
 
+    OUTPUT_DIR.mkdir(exist_ok=True)
+    chunks_path = OUTPUT_DIR / "chunks.jsonl"
+    graph_path  = OUTPUT_DIR / "graph_entities.jsonl"
+
+    # ── Integrity gate ───────────────────────────────────────────────────────
+    # Prevent silent data loss: if the current indexed output contains conditions
+    # not present in the incoming source files, hard-fail before writing anything.
+    # This catches wrong-branch ingests (e.g. resetting a branch removes a card
+    # but the previously indexed output still has it).
+    _integrity_check(yaml_files, chunks_path)
+
     symptom_vocab    = load_vocabulary(VOCAB_PATH)
     conditions_vocab = load_vocabulary(CONDITIONS_VOCAB_PATH)
     vocabularies     = {"symptom": symptom_vocab, "condition": conditions_vocab}
     print(f"Symptom vocabulary:    {len(symptom_vocab)} terms")
     print(f"Conditions vocabulary: {len(conditions_vocab)} terms\n")
-
-    OUTPUT_DIR.mkdir(exist_ok=True)
-    chunks_path = OUTPUT_DIR / "chunks.jsonl"
-    graph_path  = OUTPUT_DIR / "graph_entities.jsonl"
 
     # ── Prose chunks ────────────────────────────────────────────────────────
     print("-- Prose chunks ------------------------------------------")

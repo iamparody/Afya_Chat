@@ -12,6 +12,7 @@ This file orchestrates only.
 """
 
 import json
+import logging
 import os
 import sys
 from datetime import datetime
@@ -21,6 +22,14 @@ from dotenv import load_dotenv
 import chromadb
 import jsonschema
 from neo4j import GraphDatabase
+
+_LOG = logging.getLogger("cds.rag.decision")
+
+
+def _log(stage: str, payload: dict) -> None:
+    """Emit one structured decision-path log line. No behaviour change."""
+    if _LOG.isEnabledFor(logging.DEBUG):
+        _LOG.debug("%s %s", stage, json.dumps(payload, ensure_ascii=False, default=str))
 
 ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(ROOT))   # ensures phase7 package is importable from any calling context
@@ -203,6 +212,49 @@ class RetrievalRouter:
         return result
 
 
+# ── Deterministic scoring ─────────────────────────────────────────────────────
+
+# Fusion weights — calibrate from Step 1 log distributions once 10-case run is done.
+_VECTOR_WEIGHT = 0.7
+_GRAPH_WEIGHT  = 0.3
+
+# Ambiguity threshold — margin below this value means candidates #1 and #2 are
+# genuinely competing. Calibrate from Step 1 log distributions.
+AMBIGUITY_MARGIN_THRESHOLD = 0.15
+
+
+def _compute_fused_scores(candidates: list) -> tuple:
+    """
+    Compute a normalised fused score per candidate and the margin between #1 and #2.
+
+    vector_score : inverted normalised rank — 1.0 for rank 0, decreasing.
+    graph_score  : normalised matched_count — 1.0 for the candidate with the most matches.
+    fused_score  : weighted sum (vector 70 %, graph 30 %).
+
+    Candidates are NOT re-sorted — vector rank remains the primary ordering passed
+    to the LLM. Scores are attached in-place for logging and margin computation only.
+
+    Returns (candidates_with_scores, margin).
+    """
+    n = len(candidates)
+    if n == 0:
+        return candidates, 1.0
+
+    max_matched = max((c["matched_count"] for c in candidates), default=0) or 1
+
+    for i, c in enumerate(candidates):
+        c["vector_score"] = 1.0 - (i / n)
+        c["graph_score"]  = c["matched_count"] / max_matched
+        c["fused_score"]  = _VECTOR_WEIGHT * c["vector_score"] + _GRAPH_WEIGHT * c["graph_score"]
+
+    margin = (
+        candidates[0]["fused_score"] - candidates[1]["fused_score"]
+        if n >= 2 else 1.0
+    )
+
+    return candidates, margin
+
+
 # ── Validation ────────────────────────────────────────────────────────────────
 
 _CONF_ORDER = {"low": 0, "moderate": 1, "high": 2}
@@ -236,6 +288,11 @@ def _enforce_arguing_against_ranking(data: dict) -> dict:
             continue
         cand_conf = _CONF_ORDER.get(cand.get("confidence_level", "low"), 0)
         if cand_conf >= lead_conf:
+            _log("ARGUES_AGAINST_SWAP", {
+                "swapped_out": leading.get("diagnosis"),
+                "swapped_in":  cand.get("diagnosis"),
+                "reason":      "leading had arguing_against match; replacement has none at >= confidence",
+            })
             candidates[0], candidates[i] = candidates[i], candidates[0]
             data["leading_candidate"] = candidates[0]["diagnosis"]
             return data
@@ -319,6 +376,14 @@ def run(
         router = RetrievalRouter(embedder, col)
         router_candidates = router.get_candidates(presentation, query_embedding=query_embedding)
 
+        _log("VECTOR_CANDIDATES", {
+            "count": len(router_candidates),
+            "ranked": [
+                {"rank": i, "condition": rc["condition"], "source": rc["source"]}
+                for i, rc in enumerate(router_candidates)
+            ],
+        })
+
         # Step 2 — Graph: symptom profiles + argues_against per candidate
         presentation_lower = presentation.lower()
         candidates = []
@@ -336,8 +401,39 @@ def run(
                     "argues_against":   argues_against,
                 })
 
+        _log("GRAPH_PROFILES", {
+            "candidates": [
+                {
+                    "rank":             i,
+                    "condition":        c["condition"],
+                    "source":           c["source"],
+                    "matched_count":    c["matched_count"],
+                    "matched_symptoms": c["matched_symptoms"],
+                    "argues_against":   c["argues_against"],
+                }
+                for i, c in enumerate(candidates)
+            ],
+        })
+
         # Do not sort by matched_count — vector order is the primary semantic ranking.
         # Graph data (matched_symptoms, argues_against) is supplemental evidence for the LLM to use.
+
+        # Step 2b — Deterministic fused scores + margin (no re-sort; scores attached in-place)
+        candidates, score_margin = _compute_fused_scores(candidates)
+        _log("FUSED_SCORES", {
+            "score_margin": round(score_margin, 4),
+            "ambiguity_threshold": AMBIGUITY_MARGIN_THRESHOLD,
+            "is_ambiguous_deterministic": score_margin < AMBIGUITY_MARGIN_THRESHOLD,
+            "candidates": [
+                {
+                    "condition":     c["condition"],
+                    "vector_score":  round(c["vector_score"], 4),
+                    "graph_score":   round(c["graph_score"], 4),
+                    "fused_score":   round(c["fused_score"], 4),
+                }
+                for c in candidates
+            ],
+        })
 
         # Step 3 — Vector: prose passages filtered to candidates only
         top_conditions = [c["condition"] for c in candidates]
@@ -371,6 +467,25 @@ def run(
 
         # Step 5 — Validate (fail closed)
         result = validate(raw)
+
+        _log("LLM_DECISION", {
+            "leading_candidate": result.get("leading_candidate"),
+            "candidates": [
+                {
+                    "rank":            i,
+                    "diagnosis":       c.get("diagnosis"),
+                    "confidence_level": c.get("confidence_level"),
+                    "arguing_against": c.get("arguing_against", []),
+                    "missing_information": c.get("missing_information", []),
+                }
+                for i, c in enumerate(result.get("candidates", []))
+            ],
+            "disambiguation_current_logic": result.get("candidates", [{}])[0].get("confidence_level") != "high"
+            if result.get("candidates") else None,
+        })
+
+        # Attach score margin for disambiguation gate (not part of LLM schema)
+        result["_score_margin"] = score_margin
 
         # Step 6 — Enrich output candidates with retrieval provenance
         # source_map keyed on lowercase condition name; LLM diagnosis field may differ in

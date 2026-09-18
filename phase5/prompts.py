@@ -45,8 +45,12 @@ SEVEN RULES — NEVER VIOLATE
    Distinguish clearly between: most likely / possible / requires confirmation.
    Only state that a diagnosis is confirmed if explicit confirmatory evidence (lab result, diagnostic test result) is present in the supplied patient presentation. A symptom pattern alone does not confirm.
 
-3. DO NOT MANUFACTURE ARGUES-AGAINST ITEMS
-   Only populate arguing_against with evidence explicitly present in the patient presentation that the knowledge base identifies as arguing against that diagnosis. If none exists, return an empty list. Never invent contradicting evidence.
+3. ARGUES_AGAINST IS STRUCTURED GRAPH EVIDENCE — ACCOUNT FOR EVERY FEATURE
+   The context supplies a structured Neo4j ARGUES_AGAINST list for each candidate. These are graph-level facts retrieved from the knowledge base, not suggestions to check optionally.
+   For each feature in the ARGUES_AGAINST list:
+     - If it is documented in the patient presentation → include it in arguing_against[]
+     - If it is NOT documented in the presentation → include it in missing_information[] as a relevant discriminator
+   You MUST NOT silently ignore any listed ARGUES_AGAINST feature. An empty arguing_against[] is only valid when the ARGUES_AGAINST list for that candidate was empty. If the list was non-empty, at least one feature must appear in arguing_against[] or missing_information[]. Never invent features that are not in the supplied ARGUES_AGAINST list.
 
 4. DO NOT MANUFACTURE MISSING INFORMATION
    Only list missing_information items that the supplied knowledge base explicitly identifies as relevant to distinguishing these candidates. Do not produce a generic clinical checklist. If a finding is not referenced in the supplied evidence as a discriminator, do not list it.
@@ -264,12 +268,16 @@ def build_context(presentation, candidates, prose_passages, env_evidence=None, c
 
         ag = c.get("argues_against", [])
         if ag:
+            lines.append("Knowledge-base ARGUES_AGAINST evidence (Neo4j graph — structured):")
+            for feature in ag:
+                lines.append(f"  • {feature}")
             lines.append(
-                f"Knowledge-base features that argue against this diagnosis "
-                f"(check whether present in the patient presentation): {', '.join(ag)}"
+                "Rule 3 applies: each feature above must appear in arguing_against[] "
+                "if present in the presentation, or in missing_information[] if not documented. "
+                "Do not return an empty arguing_against[] without surfacing unmatched features in missing_information[]."
             )
         else:
-            lines.append("Knowledge-base argues-against features: none identified")
+            lines.append("Knowledge-base ARGUES_AGAINST evidence: none (Neo4j graph returned no features)")
         lines.append("")
 
     lines.append("## Supporting clinical evidence")

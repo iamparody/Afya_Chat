@@ -248,6 +248,7 @@ Independently (Phase 9 MVP):
 - 2026-09-15: 7/8 GATE PASS after AFI expansion (Bacterial meningitis + Chikungunya, 22 conditions/198 chunks). Case 2b remains known ceiling. Coverage 2/2 (Case 7 Appendicitis, Case 8 Chikungunya).
 - 2026-09-16: 8/8 GATE PASS after Brucellosis (23 conditions/207 chunks). Two-source pattern: WHO/FAO/OIE 2006 + PMC systematic review + Kenya pastoral data. Coverage 3/3 (Case 9 Brucellosis added).
 - 2026-09-17: 8/8 GATE PASS after Leptospirosis (24 conditions/216 chunks). WHO 2003 + Medscape 2026 (two-source pattern; age-of-evidence caveat in sources.yaml). Coverage 4/4 (Case 10 Leptospirosis added).
+- 2026-09-17: 7/8 GATE PASS after COPD (25 conditions/225 chunks). MOH Vol 2 2024 + Medscape 2025 (two-source pattern). Coverage 5/5 (Case 11 COPD added). Integrity gate implemented in corpus_pipeline/ingest_yaml.py (feat/corpus-integrity-gate, pending merge).
 
 ---
 
@@ -266,6 +267,9 @@ Independently (Phase 9 MVP):
 - [x] Brucellosis — committed (WHO/FAO/OIE 2006; two-source pattern; 2026-09-16)
 - [x] Leptospirosis — committed (WHO 2003 + Medscape 2026; age-of-evidence caveat in sources.yaml; 2026-09-17)
 - [ ] Rickettsial illness — governance decision: C (deferred — no qualifying source; RP-06/RP-07 blocked)
+
+**Respiratory domain — COMPLETE (2026-09-17):**
+- [x] COPD — committed (MOH Vol 2 2024 + Medscape 2025; two-source pattern; 2026-09-17)
 
 **Excluded:**
 - Rift Valley fever — outbreak-only, not routine primary-care differential (AFI domain contract §3.4)
@@ -325,6 +329,25 @@ Independently (Phase 9 MVP):
 - confidence_consistency: 10/10 — no intervention needed
 
 **Deferred:** arguing_against positive-construction wording — next prompt experiment when eval set expands.
+
+---
+
+## Decision Layer Fix — IN PROGRESS
+> Clinical testing of all 10 new conditions (Cholera → COPD) revealed systematic failures: 10/10 HIGH confidence returned, disambiguation gate never fires, argues-against shows "None documented" even when Neo4j graph evidence exists.
+>
+> **Asana:** GID 1218579291213545 — "CDS — Fix decision layer: confidence calibration, disambiguation gate, CandidateDecisionContext"
+
+**Root cause:** Confidence is LLM-generated from absolute evidence strength, not from score gap between candidate #1 and #2. The disambiguation gate (`is_ambiguous()` in `phase8/disambiguate.py`) checks LLM confidence — so it never fires. Argues-against is also LLM-generated, not grounded from Neo4j `ARGUES_AGAINST` relationships.
+
+**Work order:**
+- [x] Step 1 — Instrument `rag.py`: log vector rank, graph score, fused position, supporting evidence, ARGUES_AGAINST, LLM confidence, disambiguation fired, final candidate — no behaviour change ✅ 2026-09-17
+- [ ] Step 2 — Deterministic ranking: normalise vector + graph scores → single comparable score; compute margin between #1 and #2; thresholds derived from Step 1 distributions, not invented ✅ 2026-09-17
+- [ ] Step 3 — Decouple confidence from ambiguity: confidence = evidence strength of #1; ambiguity = score margin (deterministic Python); HIGH + ambiguous is a valid state; disambiguation = ambiguity AND pairwise discriminator exists ✅ 2026-09-17
+- [ ] Step 4 — Wire `CandidateDecisionContext`: Neo4j `ARGUES_AGAINST` → typed structured input → LLM explanation only; "None documented" structurally impossible when graph evidence exists ✅ 2026-09-17
+- [ ] Step 5 — Rendering + grounding: red flag `documented` vs `check_for` labels; no regional priors or species names unless quoted from retrieved evidence ✅ 2026-09-17
+
+**Files:** `phase5/rag.py`, `phase5/prompts.py`, `phase8/disambiguate.py`
+**Gate:** confidence is auditable; ambiguity is independently determined; HIGH + ambiguous supported; appropriate cases trigger disambiguation; graph ARGUES_AGAINST evidence reaches final candidate; 8-case baseline ≥7/8
 
 ---
 
@@ -415,10 +438,13 @@ Independently (Phase 9 MVP):
 | acute_viral_hepatitis_a | 1E50.0 | B15.9 | infectious | 🟡 draft | — | — |
 | bacterial_meningitis | 1C1Z | G00.9 | infectious | 🟡 draft | — | — |
 | chikungunya | 1D67 | A92.0 | infectious | 🟡 draft | — | — |
+| brucellosis | 1B96 | A23 | infectious | 🟡 draft | — | — |
+| leptospirosis | 1C10 | A27.9 | infectious | 🟡 draft | — | — |
+| copd | CA22 | J44 | respiratory | 🟡 draft | — | — |
 
 **Legend:** 🟡 draft · 🔵 under_review · ✅ clinician_verified
 
-**Production gate:** 15/22 cards clinician_verified. 7 cards authored after the 2026-09-14 review are draft — blocked from production ingest until a second review pass.
+**Production gate:** 15/25 cards clinician_verified. 10 cards authored after the 2026-09-14 review are draft — blocked from production ingest until a second review pass.
 Outstanding: ICD code verification for comorbidity-specific codes (e.g. Malaria in pregnancy combinations) — flagged by reviewer.
 
 ---
@@ -650,7 +676,7 @@ Clinician decision → Encounters DB → (future) feedback signal
 
 ## Open Questions
 
-- [ ] **Clinician review — 9 new cards** — schedule a second review pass for Cholera, Shigellosis, Helminthiasis, Appendicitis, Hepatitis A, Bacterial Meningitis, Chikungunya, Brucellosis, Leptospirosis before production ingest
+- [ ] **Clinician review — 10 new cards** — schedule a second review pass for Cholera, Shigellosis, Helminthiasis, Appendicitis, Hepatitis A, Bacterial Meningitis, Chikungunya, Brucellosis, Leptospirosis, COPD before production ingest
 - [ ] **AFI source governance** — Brucellosis ✅ Leptospirosis ✅ committed. Rickettsial illness → deferred (no qualifying source; revisit when WHO or regional guideline available)
 - [ ] **Phase 9 historical baseline** — site/date range, years, storage format for ERA5-Land historical pull
 - [ ] **Coast dry-season** — CHIRPS directly (ClimateSERV) or ERA5-Land bias correction for coast Jan–Feb threshold calibration
