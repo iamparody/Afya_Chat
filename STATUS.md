@@ -249,6 +249,7 @@ Independently (Phase 9 MVP):
 - 2026-09-16: 8/8 GATE PASS after Brucellosis (23 conditions/207 chunks). Two-source pattern: WHO/FAO/OIE 2006 + PMC systematic review + Kenya pastoral data. Coverage 3/3 (Case 9 Brucellosis added).
 - 2026-09-17: 8/8 GATE PASS after Leptospirosis (24 conditions/216 chunks). WHO 2003 + Medscape 2026 (two-source pattern; age-of-evidence caveat in sources.yaml). Coverage 4/4 (Case 10 Leptospirosis added).
 - 2026-09-17: 7/8 GATE PASS after COPD (25 conditions/225 chunks). MOH Vol 2 2024 + Medscape 2025 (two-source pattern). Coverage 5/5 (Case 11 COPD added). Integrity gate implemented in corpus_pipeline/ingest_yaml.py (feat/corpus-integrity-gate, pending merge).
+- 2026-09-21: 7/8 GATE PASS after fix/ui-bugs (UI-only: red flag empty state, malaria dedup normalization, PUD ICD-11 DA62→DA61). No pipeline changes. Case 2a corpus-growth ceiling confirmed pre-existing. Chroma reloaded (225 chunks). Smoke test: argues-against routing confirmed, PUD DA61 confirmed, malaria dedup single question confirmed.
 
 ---
 
