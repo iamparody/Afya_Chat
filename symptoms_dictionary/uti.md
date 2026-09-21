@@ -45,7 +45,7 @@ graph:
   associated_symptoms: [haematuria, cloudy urine, offensive-smelling urine, rigors, nausea, vomiting, confusion]
   risk_factors: [female sex, sexual intercourse, urinary catheter, urinary tract structural abnormality, urinary stones, diabetes mellitus, pregnancy, immunocompromise, HIV infection]
   differentials: [chlamydia urethritis, gonorrhoea urethritis, vaginitis, bladder stone, overactive bladder syndrome, prostatitis]
-  argues_against: [negative nitrite and negative leukocyte esterase on dipstick, sterile pyuria, external dysuria with vaginal discharge, normal urinalysis and negative culture, male sex]
+  argues_against: [negative nitrite and negative leukocyte esterase on dipstick, sterile pyuria, external dysuria with vaginal discharge, normal urinalysis and negative culture, male sex, no dysuria, no urinary frequency]
   red_flags: [urosepsis, hypotension, altered consciousness, pyelonephritis, male UTI, macroscopic haematuria]
   confirms: [positive urine dipstick nitrites and leukocyte esterase, pyuria on microscopy, MSU culture ≥10⁵ CFU/mL, costovertebral angle tenderness]
 ---

@@ -394,6 +394,24 @@ def flatten_text(result: dict) -> str:
     return " ".join(parts).lower()
 
 
+def _assertion_text(result: dict) -> str:
+    """
+    Text for prohibited-string checks — excludes missing_information fields.
+    KB feature names legitimately appear in missing_information as undocumented
+    discriminators; prohibitions should only detect model assertions about patient facts.
+    """
+    parts = []
+    for c in result.get("candidates", []):
+        parts.append(c.get("diagnosis", ""))
+        parts.append(c.get("why_considered", ""))
+        parts.extend(c.get("supporting_features", []))
+        parts.extend(c.get("arguing_against", []))
+    parts.append(result.get("leading_candidate", ""))
+    parts.extend(result.get("red_flags", []))
+    parts.extend(result.get("relevant_comorbidities_or_context", []))
+    return " ".join(parts).lower()
+
+
 def all_missing_info(result: dict) -> str:
     """All missing_information text across all candidates, lowercased."""
     parts = []
@@ -438,7 +456,7 @@ def score(case: dict, result: dict) -> dict:
     passed  = 0
     failed  = 0
 
-    full_text   = flatten_text(result)
+    assertion_text = _assertion_text(result)
     missing_txt = all_missing_info(result)
     red_txt     = all_red_flags(result)
     against_txt = all_argues_against(result)
@@ -509,9 +527,9 @@ def score(case: dict, result: dict) -> dict:
         else:
             record("TB argues_against", False, "TB not found in candidates")
 
-    # Prohibited strings
+    # Prohibited strings — checked against assertion fields only, not missing_information
     for phrase in checks.get("prohibited_strings", []):
-        ok = phrase.lower() not in full_text
+        ok = phrase.lower() not in assertion_text
         record(f"Prohibited: '{phrase}'", ok, "" if ok else f"FOUND in output")
 
     return {

@@ -92,6 +92,8 @@ graph:
     - normal urinalysis
     - negative urine culture
     - male sex
+    - no dysuria
+    - no urinary frequency
   red_flags:
     - urosepsis
     - hypotension

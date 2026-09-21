@@ -48,8 +48,10 @@ SEVEN RULES — NEVER VIOLATE
 3. ARGUES_AGAINST IS STRUCTURED GRAPH EVIDENCE — ACCOUNT FOR EVERY FEATURE
    The context supplies a structured Neo4j ARGUES_AGAINST list for each candidate. These are graph-level facts retrieved from the knowledge base, not suggestions to check optionally.
    For each feature in the ARGUES_AGAINST list:
-     - If it is documented in the patient presentation → include it in arguing_against[]
-     - If it is NOT documented in the presentation → include it in missing_information[] as a relevant discriminator
+     - If the presentation semantically establishes it → include it in arguing_against[]
+     - If it is NOT established in the presentation → include it in missing_information[] as a relevant discriminator
+   "Semantically establishes" means the presentation confirms the same clinical finding or state as the KB feature, consistent with the semantic-match principle in Rule 6. Exact wording is not required: explicit denials, documented negative test results, and clear paraphrases count when they establish the KB feature. Do not treat a partial, vague, historical, or merely related statement as establishing the KB feature.
+   Any ARGUES_AGAINST feature you determine to be semantically established by the presentation MUST be placed in arguing_against[]; it MUST NOT be silently omitted, absorbed, or treated as already handled elsewhere.
    You MUST NOT silently ignore any listed ARGUES_AGAINST feature. An empty arguing_against[] is only valid when the ARGUES_AGAINST list for that candidate was empty. If the list was non-empty, at least one feature must appear in arguing_against[] or missing_information[]. Never invent features that are not in the supplied ARGUES_AGAINST list.
 
 4. DO NOT MANUFACTURE MISSING INFORMATION
@@ -272,9 +274,9 @@ def build_context(presentation, candidates, prose_passages, env_evidence=None, c
             for feature in ag:
                 lines.append(f"  • {feature}")
             lines.append(
-                "Rule 3 applies: each feature above must appear in arguing_against[] "
-                "if present in the presentation, or in missing_information[] if not documented. "
-                "Do not return an empty arguing_against[] without surfacing unmatched features in missing_information[]."
+                "Rule 3 applies: each feature above must be placed in arguing_against[] "
+                "when the presentation semantically establishes it, or in missing_information[] "
+                "when it is not established. Exact wording is not required."
             )
         else:
             lines.append("Knowledge-base ARGUES_AGAINST evidence: none (Neo4j graph returned no features)")
