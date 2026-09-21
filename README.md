@@ -8,10 +8,10 @@ Symptom-driven diagnostic RAG system for East Africa / Kenya primary care. Given
 
 | Phase | Description | Status |
 |-------|-------------|--------|
-| 1 | Corpus — 22 condition cards (YAML) | ✅ Done |
-| 2 | Clinician review — 15 original cards verified | ✅ Done (7 new cards remain draft) |
+| 1 | Corpus — 25 condition cards (YAML) | ✅ Done |
+| 2 | Clinician review — 15 original cards verified | ✅ Done (10 new cards remain draft) |
 | 3 | Ingestion pipeline → Chroma vector store | ✅ Done |
-| 4 | Neo4j knowledge graph — 22 conditions | ✅ Done |
+| 4 | Neo4j knowledge graph — 25 conditions | ✅ Done |
 | 5 | RAG pipeline — Gemini + SEVEN RULES prompt | ✅ Done |
 | 6 | Streamlit MVP + approval workflow + SQLite | ✅ Done |
 | 7 | Environmental context layer — static calendar + ENSO + exposure gating | ✅ Done |
@@ -19,9 +19,9 @@ Symptom-driven diagnostic RAG system for East Africa / Kenya primary care. Given
 | 8b | Reasoning evaluation harness — 10-dim rubric + CI | ✅ Done (87/96, 90%) |
 | 9 | Live rainfall — Open-Meteo provider + source validation | 🟡 Partial |
 
-**Eval:** Regression 7/8 GATE PASS · Coverage 2/2 · 87/96 (90%) reasoning · 4/5 disambiguation.
+**Eval:** Regression 7/8 GATE PASS · Coverage 5/5 · 87/96 (90%) reasoning · 4/5 disambiguation.
 
-**Production gate:** 15 original cards `clinician_verified`. 7 cards added post-review are `draft`. All `draft` cards are blocked from production ingestion.
+**Production gate:** 15 original cards `clinician_verified`. 10 cards added post-review are `draft`. All `draft` cards are blocked from production ingestion.
 
 ---
 
@@ -187,7 +187,7 @@ Confidence levels: `high` / `moderate` / `low`. No numerical probabilities.
 
 ---
 
-## Corpus (22 conditions)
+## Corpus (25 conditions)
 
 | Condition | ICD-11 | ICD-10 | Review |
 |-----------|--------|--------|--------|
@@ -199,7 +199,7 @@ Confidence levels: `high` / `moderate` / `low`. No numerical probabilities.
 | Community-Acquired Pneumonia | CA40 | J18 | ✅ verified |
 | Urinary Tract Infection | GC08 | N39.0 | ✅ verified |
 | Iron Deficiency Anaemia | 3A00 | D50 | ✅ verified |
-| Peptic Ulcer Disease | DA62 | K27 | ✅ verified |
+| Peptic Ulcer Disease | DA61 | K27 | ✅ verified |
 | Acute Gastroenteritis (Infectious) | 1A09 | A09 | ✅ verified |
 | Typhoid Fever | 1A07 | A01.0 | ✅ verified |
 | Functional Dyspepsia | DA94 | K30 | ✅ verified |
@@ -213,6 +213,9 @@ Confidence levels: `high` / `moderate` / `low`. No numerical probabilities.
 | Acute Viral Hepatitis A | 1E50.0 | B15.9 | 🟡 draft |
 | Bacterial Meningitis | 1C1Z | G00.9 | 🟡 draft |
 | Chikungunya | 1D67 | A92.0 | 🟡 draft |
+| Brucellosis | 1B95 | A23.9 | 🟡 draft |
+| Leptospirosis | 1B91 | A27.9 | 🟡 draft |
+| Chronic Obstructive Pulmonary Disease | CA22.Z | J44.1 | 🟡 draft |
 
 ---
 

@@ -446,15 +446,16 @@ python ingest.py
 
 | Phase | Description | Status |
 |-------|-------------|--------|
-| 1 | Corpus build — 10 condition cards | ✅ Complete (all draft) |
-| 2 | Clinician review — all 10 cards | 🔴 Not started |
+| 1 | Corpus build — 25 condition cards | ✅ Complete (15 verified, 10 draft) |
+| 2 | Clinician review — 15 original cards | ✅ Complete (10 post-review cards remain draft) |
 | 3 | Ingestion → Cohere embed → Chroma vector store | ✅ Complete |
 | 4 | Neo4j knowledge graph | ✅ Complete |
-| 5 | RAG interface — Gemini + FIVE RULES prompt (7/8 eval) | ✅ Complete |
+| 5 | RAG interface — Gemini + SEVEN RULES prompt (7/8 eval) | ✅ Complete |
 | 6 | Streamlit MVP + approval workflow + SQLite | ✅ Complete |
-| 7 | Corpus expansion + environmental context layer | 🟡 In design |
-| 8 | Interactive disambiguation loop (follow-up questions) | 🔴 Not started — needs ≥15 conditions |
-| 9 | Live environmental feeds + empirical calibration | 🔴 Not started — needs Phase 8 validated |
+| 7 | Corpus expansion + environmental context layer | ✅ Complete |
+| 8 | Interactive disambiguation loop (follow-up questions) | ✅ Complete (4/5 gate) |
+| 8b | Reasoning evaluation harness — 10-dim rubric + CI | ✅ Complete (87/96, 90%) |
+| 9 | Live environmental feeds + empirical calibration | 🟡 Partial (Open-Meteo provider committed) |
 
 See [[STATUS]] for granular task tracking.
 
