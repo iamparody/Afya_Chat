@@ -86,11 +86,10 @@ graph:
     - overactive bladder syndrome
     - Acute bacterial prostatitis
   argues_against:
-    - negative urine dipstick
+    - negative nitrite and negative leukocyte esterase on dipstick
     - sterile pyuria
-    - vaginal discharge
-    - normal urinalysis
-    - negative urine culture
+    - external dysuria with vaginal discharge
+    - normal urinalysis and negative culture
     - male sex
     - no dysuria
     - no urinary frequency
@@ -181,11 +180,7 @@ sections:
     cystitis; internal dysuria with urethral burning is the more specific symptom of
     cystitis. Normal urinalysis and negative culture in a symptomatic patient should
     prompt consideration of overactive bladder, vulvodynia, or pelvic floor
-    dysfunction. Urinary tract infection in a male is classified as complicated in all
-    cases, regardless of age and regardless of whether a precipitating factor is
-    identified; a presentation in a man should therefore not be assessed as
-    uncomplicated cystitis. Male sex without a urinary catheter, recent urological
-    procedure, or
+    dysfunction. Male sex without a urinary catheter, recent urological procedure, or
     documented structural abnormality argues against uncomplicated lower UTI — UTI in
     a man under 50 without a precipitating factor is atypical and should prompt
     consideration of prostatitis, epididymo-orchitis, or urological investigation

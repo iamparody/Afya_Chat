@@ -107,7 +107,6 @@
 | haematuria | blood in urine |
 | cloudy urine | turbid urine |
 | offensive-smelling urine | |
-| vaginal discharge | per vaginam discharge |
 | pica | |
 | koilonychia | spoon-shaped nails |
 | glossitis | |
@@ -497,8 +496,6 @@
 | normal upper GI endoscopy during symptoms | negative endoscopy |
 | sterile pyuria | pyuria without bacterial growth |
 | normal urinalysis | urinalysis within normal limits |
-| negative urine culture | no bacterial growth on culture |
-| negative urine dipstick | negative nitrite and leukocyte esterase |
 | complete absence of fever | afebrile |
 | absence of loin pain | no flank pain, no loin pain |
 | absent costovertebral angle tenderness | negative CVA tenderness |
