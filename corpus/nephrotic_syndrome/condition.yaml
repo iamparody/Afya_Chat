@@ -230,8 +230,7 @@ sections:
 
     Note on the source. The Kenya MOH Vol 2 clinical features section for this condition
     opens with a line describing symptoms of bacteraemia — fever, chills, joint pain and
-    muscle pain. That line is a duplicate of the corresponding line in the acute bacterial
+    muscle pain. That line duplicates the corresponding line in the acute bacterial
     prostatitis section of the same chapter and is a transcription artefact, not a feature
-    of nephrotic syndrome. It has deliberately not been encoded on this card. Fever in a
-    nephrotic patient should prompt a search for infection as a complication, which is
-    covered under Red flags.
+    of nephrotic syndrome. Fever in a nephrotic patient should prompt a search for
+    infection as a complication, which is covered under Red flags.

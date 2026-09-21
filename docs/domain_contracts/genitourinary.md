@@ -492,7 +492,10 @@ This differs from AFI, where most conditions carry a primary-care treatment path
 
 To be set at inventory completion. Current baselines: 8/8 RAG regression gate (≥7/8 required per PR), 4/5 disambiguation, 90% reasoning deterministic gate.
 
-> ⚠ The regression harness has scored 6/8, 7/8 and 5/8 on identical code. Until that instability is resolved, a failing gate on this domain's PRs cannot be distinguished from harness noise. Settle before Stage 5.
+> ⚠ The regression harness is stochastic. Measured over 9 runs on an unchanged corpus: 3, 6, 6, 6, 6, 7, 7, 7, 7.
+> The variance originates in generation, not retrieval — with retrieval held byte-identical over 8 runs, one case
+> returned three different leading diagnoses. A single run therefore cannot distinguish a real regression from a
+> draw from this distribution. Set this domain's thresholds as k-of-N per case, not single-run.
 
 ---
 

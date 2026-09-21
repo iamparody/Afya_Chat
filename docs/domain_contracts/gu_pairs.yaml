@@ -22,9 +22,9 @@
 #                                               content is carried on the pyelonephritis card
 #   GU-RP-03   Nephrolithiasis vs lower UTI   — nephrolithiasis deferred
 #   GU-RP-05   AKI vs nephrolithiasis         — nephrolithiasis deferred
-#   GU-MSP-02  AKI vs CKD                     — CKD card held back from this PR
-#   GU-RP-04   Nephrotic syndrome vs CKD      — CKD card held back
-#   GU-RP-06   CKD vs Iron deficiency anaemia — CKD card held back
+#   GU-MSP-02  AKI vs CKD                     — CKD card not yet authored
+#   GU-RP-04   Nephrotic syndrome vs CKD      — CKD card not yet authored
+#   GU-RP-06   CKD vs Iron deficiency anaemia — CKD card not yet authored
 #   GU-RP-09   Lower UTI vs Genitourinary TB  — WITHHELD ON CLINICAL GROUNDS, not
 #              availability. The corpus card is "Pulmonary tuberculosis", a different
 #              clinical entity from genitourinary TB. Sterile pyuria points to GU TB

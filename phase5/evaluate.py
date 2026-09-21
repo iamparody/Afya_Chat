@@ -324,10 +324,9 @@ COVERAGE_CASES = [
         "checks": {
             "primary_contains":     ["pyelonephritis", "upper urinary"],
             "red_flags_contain":    [],
-            # Accepts organism-directed follow-up (culture/sensitivity), renal function,
-            # or pregnancy status. Pregnancy is a Vol 2 criterion that converts this to
-            # complicated infection requiring referral, so asking for it is arguably the
-            # most valuable missing datum at Level 2-3 and must not be scored as a miss.
+            # Pregnancy status is a Vol 2 criterion converting pyelonephritis to
+            # complicated infection requiring referral — as valid a gap to identify as
+            # culture or renal function.
             "missing_info_contain": ["culture", "sensitivity", "creatinine", "pregnan"],
             "prohibited_strings":   ["pyelonephritis confirmed", "cystitis confirmed"],
             "manual": [
@@ -352,18 +351,14 @@ COVERAGE_CASES = [
         "checks": {
             "primary_contains":     ["prostatitis"],
             "red_flags_contain":    [],
-            # Accepts either organism-directed follow-up (culture/sensitivity) or the
-            # discriminators against the competing complicated male urinary infections
-            # (loin pain / costovertebral angle tenderness for pyelonephritis). The
-            # original list assumed culture only; asking for the discriminating features
-            # is the better reasoning and should not be scored as a miss.
+            # Accepts organism-directed follow-up (culture/sensitivity) or the
+            # discriminators against the competing complicated male urinary infection
+            # (loin pain / costovertebral angle tenderness for pyelonephritis).
             "missing_info_contain": ["culture", "sensitivity", "retention",
                                      "loin", "costovertebral"],
-            # NOTE: "prostate massage" cannot be an automated prohibited string. The card
-            # itself states the safety instruction ("prostate massage must not be
-            # performed"), so a correct output that warns against the procedure contains
-            # the same substring as an incorrect one that recommends it. Substring matching
-            # cannot distinguish the two — this is a manual check below.
+            # "prostate massage" cannot be an automated prohibited string: the card
+            # carries the safety instruction, so an output correctly warning against the
+            # procedure contains the same substring as one recommending it. Manual check.
             "prohibited_strings":   [],
             "manual": [
                 "SAFETY: output must not recommend prostate massage — Vol 2 §15.4.1 warns it "

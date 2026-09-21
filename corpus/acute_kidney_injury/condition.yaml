@@ -266,7 +266,6 @@ sections:
     because a raised creatinine attributed to chronic disease without a prior baseline may
     represent a reversible acute injury.
 
-    A note on the source. The Kenya MOH Vol 2 text states the KDIGO creatinine threshold
-    as "26.5mmol/l". The KDIGO criterion is 26.5 micromoles per litre (0.3 mg/dL); the
-    millimolar figure is a transcription error in the source and would be biologically
-    implausible. The correct unit is used on this card.
+    Note on units. Kenya MOH Vol 2 prints the KDIGO creatinine threshold as "26.5mmol/l".
+    The KDIGO criterion is 26.5 micromoles per litre (0.3 mg/dL) — the millimolar figure
+    is a transcription error and would be biologically implausible.
