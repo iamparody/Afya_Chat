@@ -60,7 +60,7 @@ _ICD = {
     "community-acquired pneumonia":       ("CA40",  "J18"),
     "urinary tract infection":            ("GC08",  "N39.0"),
     "iron deficiency anaemia":            ("3A00",  "D50"),
-    "peptic ulcer disease":               ("DA62",  "K27"),
+    "peptic ulcer disease":               ("DA61",  "K27"),
     "acute gastroenteritis (infectious)": ("1A09",  "A09"),
     "typhoid fever":                      ("1A07",  "A01.0"),
     "functional dyspepsia":               ("DA94",  "K30"),
@@ -197,6 +197,15 @@ def _render_red_flags(result: dict):
     flags = result.get("red_flags", [])
     flags = [f for f in flags if f and not _MALFORMED_FLAG_RE.match(f.strip())]
     if not flags:
+        st.markdown(
+            f'<div class="cds-rf">'
+            f'<div class="cds-sec urgent">'
+            f'{ph("warning", 10, COLORS["urgent"])} &nbsp;Red Flags'
+            f'</div>'
+            f'<div class="cds-rf-none">None flagged</div>'
+            f'</div>',
+            unsafe_allow_html=True,
+        )
         return
     items_html = ""
     for flag in flags:

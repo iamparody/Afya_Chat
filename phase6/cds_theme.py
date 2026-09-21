@@ -241,6 +241,7 @@ button[data-testid="stBaseButton-headerNoPadding"] { display: none !important; }
     border-left-color: var(--c-urgent);
     background: #FEE2E2;
 }
+.cds-rf-none { font-size: 12px; color: var(--c-text-3); font-style: italic; padding: 4px 0; }
 
 /* ── Confidence badges ────────────────────────────────────────────────────── */
 .cds-badge {

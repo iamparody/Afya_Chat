@@ -27,8 +27,16 @@ MAX_ROUNDS = 3
 
 _STOPWORDS = frozenset({"or", "and", "the", "a", "an", "of", "for", "with", "in", "is", "are", "has", "no", "not"})
 
+# Normalise near-synonym malaria test names before keyword extraction so that
+# "malaria RDT result" and "malaria blood film result" collapse to the same token set.
+_MALARIA_TEST_RE = re.compile(
+    r"\b(?:rdt|rapid\s+diagnostic\s+test|blood\s+(?:film|smear|microscopy)|thick\s+film)\b",
+    re.IGNORECASE,
+)
+
 
 def _key_words(s: str) -> frozenset:
+    s = _MALARIA_TEST_RE.sub("malariatest", s)
     tokens = re.sub(r"[^\w\s]", "", s.lower()).split()
     return frozenset(t.rstrip("s") for t in tokens if t not in _STOPWORDS)
 
