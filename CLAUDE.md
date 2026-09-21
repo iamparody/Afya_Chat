@@ -473,6 +473,7 @@ See [[STATUS]] for granular task tracking.
 - Use only controlled vocabularies for `endemic_regions`, `environmental_signals`, `pathways`, `effect_type`, `evidence_type`, `exposure`
 - Send new condition cards to colleague for clinical review before ingesting
 - **Graph block terms must be short canonical forms** — max ~4 words, no conditional phrases, no conjunctions (`with`, `or`, `and`, `without`, age qualifiers appended). Clinical nuance belongs in prose sections, not graph fields. Examples: `new onset dyspepsia` ✓ / `age over 55 with new dyspepsia` ✗; `male UTI` ✓ / `UTI in man under 50 without precipitating factor` ✗; `severe dehydration` ✓ / `severe dehydration in child under five` ✗
+- **`argues_against` features must be specific and individually matchable** — each feature must be establishable by a single, direct clinical finding or explicit denial. Do not use compound criteria joined by `and` (e.g. `negative RDT and negative blood film`) or umbrella absence categories (e.g. `no urinary symptoms`). Split compound features into separate entries; use the specific term the presentation can directly deny (e.g. `no dysuria`, `no urinary frequency`).
 - Add new graph terms to `symptom_vocabulary.md` **before** using them in a card — prevents unknown-term warnings at ingest
 
 ### Don't
