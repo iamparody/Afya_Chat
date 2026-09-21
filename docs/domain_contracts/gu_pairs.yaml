@@ -15,19 +15,16 @@
 # SCOPE — only pairs whose BOTH conditions have authored cards appear here.
 # Per genitourinary.md §4.4, a pair is specified as its second condition card is
 # completed, so that no pair specification precedes the evidence base for both of
-# its conditions. The contract defines 15 pairs; the 4 below are those currently
+# its conditions. The contract defines 15 pairs; the 8 below are those currently
 # loadable. Not yet present, and why:
 #
-#   GU-MSP-02  AKI vs CKD                     — neither card authored
-#   GU-MSP-03  Acute GN vs Nephrotic syndrome — neither card authored
 #   GU-MSP-05  Obstructed stone vs pyelo      — nephrolithiasis deferred (no Vol 2 chapter);
 #                                               content is carried on the pyelonephritis card
-#   GU-RP-02   Acute GN vs lower UTI          — acute GN card not authored
 #   GU-RP-03   Nephrolithiasis vs lower UTI   — nephrolithiasis deferred
-#   GU-RP-04   Nephrotic syndrome vs CKD      — neither card authored
-#   GU-RP-05   AKI vs nephrolithiasis         — neither available
-#   GU-RP-06   CKD vs Anaemia                 — CKD card not authored
-#   GU-RP-08   Acute GN vs Essential hypertension — acute GN card not authored
+#   GU-RP-05   AKI vs nephrolithiasis         — nephrolithiasis deferred
+#   GU-MSP-02  AKI vs CKD                     — CKD card held back from this PR
+#   GU-RP-04   Nephrotic syndrome vs CKD      — CKD card held back
+#   GU-RP-06   CKD vs Iron deficiency anaemia — CKD card held back
 #   GU-RP-09   Lower UTI vs Genitourinary TB  — WITHHELD ON CLINICAL GROUNDS, not
 #              availability. The corpus card is "Pulmonary tuberculosis", a different
 #              clinical entity from genitourinary TB. Sterile pyuria points to GU TB
@@ -102,7 +99,7 @@ pairs:
       - prostatic abscess
       - urosepsis
       - sepsis
-      - epididymitis
+      - orchitis
 
   # ── Required pairs (cross-domain) ───────────────────────────────────────────
 
@@ -192,3 +189,97 @@ pairs:
       - septic shock
       - hypotension
       - altered consciousness
+
+  - pair_id: GU-MSP-03
+    priority: mandatory_safety
+    condition_a: "Acute glomerulonephritis"
+    condition_b: "Nephrotic syndrome"
+    pathways: [G3, G4]
+    governance_pending: false
+    cross_domain: false
+    shared_features:
+      - periorbital oedema
+      - peripheral oedema
+      - proteinuria
+      - raised serum creatinine
+    discriminating_evidence:
+      - haematuria
+      - RBC casts
+      - elevated blood pressure
+      - heavy proteinuria
+      - hypoalbuminaemia
+      - anasarca
+      - recent sore throat
+    missing_information:
+      - urine colour and whether blood is visible
+      - urinalysis protein quantification
+      - serum albumin
+      - recent sore throat or skin infection and its timing
+      - blood pressure
+      - oedema distribution and whether worse in the morning
+    red_flags:
+      - seizures
+      - encephalopathy
+      - acute pulmonary oedema
+      - venous thromboembolism
+      - absent urine output
+
+  - pair_id: GU-RP-02
+    priority: required
+    condition_a: "Acute glomerulonephritis"
+    condition_b: "Urinary tract infection"
+    pathways: [G3]
+    governance_pending: false
+    cross_domain: false
+    shared_features:
+      - haematuria
+      - proteinuria
+    discriminating_evidence:
+      - RBC casts
+      - periorbital oedema
+      - elevated blood pressure
+      - dysuria
+      - urinary frequency
+      - pyuria on microscopy
+      - recent sore throat
+    missing_information:
+      - presence of dysuria, frequency or urgency
+      - urine microscopy for red cell casts
+      - blood pressure
+      - facial or leg swelling
+      - recent sore throat or skin infection
+    red_flags:
+      - seizures
+      - encephalopathy
+      - acute pulmonary oedema
+      - urosepsis
+
+  - pair_id: GU-RP-08
+    priority: required
+    condition_a: "Acute glomerulonephritis"
+    condition_b: "Essential hypertension"
+    pathways: [G4]
+    governance_pending: false
+    cross_domain: true
+    shared_features:
+      - elevated blood pressure
+      - headache
+      - visual disturbance
+    discriminating_evidence:
+      - haematuria
+      - RBC casts
+      - periorbital oedema
+      - proteinuria
+      - raised serum creatinine
+      - recent sore throat
+    missing_information:
+      - urinalysis for blood and protein
+      - urine colour
+      - facial swelling, particularly in the morning
+      - recent sore throat or skin infection
+      - patient age and any previous blood pressure readings
+    red_flags:
+      - seizures
+      - encephalopathy
+      - acute pulmonary oedema
+      - visual disturbance

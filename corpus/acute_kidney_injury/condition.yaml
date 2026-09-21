@@ -1,0 +1,272 @@
+condition: Acute kidney injury
+icd11: GB60.Z
+icd_title: "Acute kidney failure, stage unspecified"
+icd_entity_uri: "http://id.who.int/icd/release/11/2024-01/mms/476391827/unspecified"
+icd10: N17.9
+icd_search_term: "Acute kidney failure, stage unspecified"
+category: urological
+corpus_version: "1.0"
+schema_version: "2.2"
+review_status: draft
+reviewed_by:
+last_reviewed:
+icd_verified: true
+
+sources:
+  - organization: "Kenya Ministry of Health"
+    title: "Clinical Management and Referral Guidelines Vol. 2: Clinical Guidelines for Management of Conditions at Level 2–3 Health Facilities, Chapter 15.8.1"
+    year: "2024"
+  - organization: "KDIGO (Kidney Disease Improving Global Outcomes)"
+    title: "KDIGO 2012 Clinical Practice Guideline for Acute Kidney Injury"
+    year: "2012"
+
+endemic_regions:
+  - nationwide
+
+environmental_signals: []
+
+graph:
+  cardinal_symptoms:
+    - oliguria
+    - absent urine output
+    - raised serum creatinine
+    - reduced eGFR
+  associated_symptoms:
+    - nausea
+    - vomiting
+    - fatigue
+    - confusion
+    - peripheral oedema
+    - dehydration
+  risk_factors:
+    - nephrotoxic drug exposure
+    - dehydration
+    - sepsis
+    - diabetes mellitus
+    - benign prostatic hypertrophy
+    - urinary stones
+    - elderly
+    - Chronic kidney disease
+  differentials:
+    - Chronic kidney disease
+    - Acute glomerulonephritis
+    - renal colic
+    - Acute pyelonephritis
+  argues_against:
+    - anaemia
+    - skin darkening
+    - nocturia
+    - bone pain
+  red_flags:
+    - hyperkalaemia
+    - absent urine output
+    - fluid overload
+    - acute pulmonary oedema
+    - pericarditis
+    - encephalopathy
+    - seizures
+  confirms:
+    - raised serum creatinine
+    - reduced eGFR
+    - muddy brown casts
+    - sterile pyuria
+    - proteinuria
+
+sections:
+  cardinal_symptoms: |
+    Acute kidney injury is a sudden and often reversible reduction in kidney function, in
+    which the glomerular filtration rate declines abruptly over hours to days. The term
+    has replaced acute renal failure because it covers the entire clinical spectrum, from
+    a mild rise in serum creatinine to overt renal failure.
+
+    It is defined by any one of three criteria: a rise in serum creatinine of 26.5 µmol/L
+    (0.3 mg/dL) or more within 48 hours; a rise in serum creatinine to 1.5 times baseline
+    or more within the preceding seven days; or a urine volume below 0.5 mL/kg/hour for at
+    least six hours.
+
+    The cardinal clinical sign at primary care level is reduced urine output — oliguria,
+    or in severe cases anuria. Because the biochemical criteria require laboratory access
+    that may not be available at Level 2-3, urine output and the clinical context often
+    carry the diagnosis.
+
+    Acute kidney injury is frequently silent in its early stages. It should be actively
+    considered in any acutely unwell patient with a plausible precipitant rather than
+    waited for.
+
+  associated_symptoms: |
+    Nausea, vomiting and fatigue accompany the accumulation of nitrogenous waste.
+    Confusion may develop as uraemia advances. Peripheral oedema appears where salt and
+    water are retained.
+
+    Signs of the underlying cause are often more informative than the renal features
+    themselves, and examination should be directed at establishing that cause. Assess
+    volume status through pulse, blood pressure and jugular venous pulse, and look for
+    dehydration. Look for features of vasculitis — livedo reticularis, digital ischaemia,
+    a butterfly rash, purpura. Look for features of liver disease, for signs of diabetes
+    mellitus, for signs of hypertension, and for atheroemboli on fundoscopy. Keratitis,
+    iritis and uveitis suggest autoimmune vasculitis. Hearing loss raises Alport disease.
+
+    In post-renal causes the bladder may be palpable, and in men prostatic enlargement may
+    be found on rectal examination.
+
+  diagnostic_features: |
+    The history and physical examination should focus on determining the aetiology of the
+    injury and on differentiating acute kidney injury from chronic kidney disease. That
+    distinction is the central diagnostic task and is addressed under Features that argue
+    against this diagnosis.
+
+    Causes fall into three groups, and separating them changes management. Pre-renal
+    causes account for about 60 per cent and reflect reduced blood flow to the kidney:
+    hypovolaemia from vomiting, diarrhoea, severe burns, haemorrhage or over-diuresis;
+    hypotension from reduced cardiac output in cardiogenic shock, massive pulmonary
+    embolism, acute coronary syndrome or congestive cardiac failure; hypotension from
+    systemic vasodilation in septic shock, anaphylaxis or anaesthesia; renal
+    vasoconstriction from NSAIDs, iodinated contrast or amphotericin B; and efferent
+    arteriolar vasodilation from ACE inhibitors and angiotensin receptor blockers.
+
+    Intrinsic renal causes account for about 35 per cent: acute tubular necrosis from
+    prolonged pre-renal injury, aminoglycosides, vancomycin, rhabdomyolysis or
+    intravascular haemolysis; acute interstitial nephritis from beta-lactam antibiotics,
+    NSAIDs, proton pump inhibitors, infections or autoimmune disease; and
+    glomerulonephritis.
+
+    Post-renal obstructive causes account for about 5 per cent: benign prostatic
+    hypertrophy, an improperly placed catheter, bladder, prostate or cervical cancer,
+    retroperitoneal fibrosis, and intrarenal obstruction from stones, blood clots or
+    papillary necrosis. A unilateral obstruction may not present as acute kidney injury
+    where the other kidney functions normally.
+
+    Investigations at this level: full blood count for infection and anaemia; urinalysis
+    for proteinuria; and urine microscopy, where muddy brown granular casts indicate acute
+    tubular necrosis and sterile pyuria indicates acute interstitial nephritis. Refer for
+    further investigation.
+
+  predisposing_factors: |
+    Nephrotoxic drug exposure is the most modifiable risk factor and the one most often
+    encountered in primary care: NSAIDs, aminoglycosides, and iodinated contrast.
+    ACE inhibitors and angiotensin receptor blockers predispose in the context of
+    volume depletion.
+
+    Any cause of volume depletion predisposes — vomiting, diarrhoea, haemorrhage, burns,
+    and over-diuresis. In the Kenyan setting, severe diarrhoeal illness and its attendant
+    dehydration is a common route into pre-renal injury, which makes acute kidney injury a
+    relevant consideration in any patient with severe gastroenteritis or cholera.
+
+    Sepsis from any source predisposes through systemic vasodilation.
+
+    Obstruction predisposes, so benign prostatic hypertrophy and urinary stones are risk
+    factors. Diabetes mellitus, advanced age, and pre-existing chronic kidney disease all
+    increase susceptibility, and acute-on-chronic kidney disease is explicitly recognised
+    as a third category alongside the acute and chronic forms.
+
+  typical_presentation: |
+    A patient who has been acutely unwell — with severe diarrhoea and vomiting, a
+    febrile illness with sepsis, or significant blood loss — is noted to be passing very
+    little urine. There may be a recent course of NSAIDs or an aminoglycoside antibiotic.
+    On examination there are signs of volume depletion: dry mucous membranes, reduced skin
+    turgor, tachycardia, low blood pressure and a low jugular venous pulse.
+
+    Serum creatinine, where it can be measured, is raised against a previous value or
+    against the expected range.
+
+    A contrasting presentation is the older man with known prostatic enlargement who has
+    not passed urine for a day and has a palpable bladder — post-renal obstruction, which
+    is relieved by catheterisation and is the most immediately reversible of the causes.
+
+    The absence of anaemia, pruritus, skin darkening and nocturia in a patient with a
+    raised creatinine and an identifiable acute precipitant points towards an acute rather
+    than chronic process.
+
+  differential_diagnoses: |
+    Chronic kidney disease is the most important differential and the distinction Vol 2
+    names explicitly. Discriminating features: chronic disease develops over months, with
+    anaemia from erythropoietin deficiency, pruritus, skin darkening, nocturia and bone
+    pain, and small shrunken kidneys on ultrasound. Acute kidney injury develops over
+    hours to days, usually with an identifiable precipitant, and without those chronic
+    features. A previous creatinine result is the single most useful discriminator, and
+    its absence is itself the key missing information. Acute-on-chronic disease occurs and
+    should be considered where chronic features coexist with an acute deterioration.
+
+    Acute glomerulonephritis is one of the intrinsic renal causes rather than an
+    alternative. Discriminating features: it produces haematuria with red cell casts,
+    periorbital oedema, hypertension and often a preceding streptococcal infection.
+
+    Obstructive urinary stone disease produces post-renal injury. Discriminating features:
+    colicky loin-to-groin pain with restlessness, and haematuria. Obstruction is
+    reversible and must be identified because decompression rather than fluid management
+    is the treatment.
+
+    Acute pyelonephritis may cause acute kidney injury and shares systemic upset.
+    Discriminating features: fever, loin pain, costovertebral angle tenderness and pyuria
+    with positive nitrite.
+
+  argues_against: |
+    Anaemia in a patient with impaired renal function argues against a purely acute
+    process and towards chronic kidney disease, in which erythropoietin deficiency
+    develops over months. A normal haemoglobin supports an acute picture.
+
+    Skin darkening and pruritus are features of chronic uraemia and are not expected in
+    acute kidney injury of hours to days duration.
+
+    Nocturia indicates a long-standing loss of urinary concentrating ability and points to
+    chronic disease.
+
+    Bone pain suggests renal bone disease, which is a consequence of sustained mineral and
+    bone disorder in chronic kidney disease and does not arise acutely.
+
+    The presence of these four together in a patient with a raised creatinine should shift
+    the assessment towards chronic kidney disease, or towards acute-on-chronic disease
+    where there is also a clear acute precipitant.
+
+  red_flags: |
+    Vol 2 gives explicit referral criteria, and any one of them requires referral as soon
+    as possible.
+
+    Anuria present for more than 24 hours, or oliguria for more than 48 hours.
+
+    Hyperkalaemia not responding to medical treatment. Serum potassium above 5.5 mmol/L is
+    hyperkalaemia; clinical consequences usually begin above 6 mmol/L and include muscle
+    weakness, abdominal distension, tingling of the face, hands and feet, an irregular
+    pulse, heart block, and increased T-wave amplitude on the ECG. Emergency management
+    while arranging referral: 10 units of soluble insulin with 50 mL of 50 per cent
+    dextrose; 10 to 30 mL of 10 per cent calcium gluconate over 10 to 20 minutes with
+    continuous ECG monitoring for QRS widening, loss of the P wave or arrhythmia;
+    nebulised salbutamol; and a loop diuretic to promote potassium excretion.
+
+    Fluid overload with acute pulmonary oedema and dyspnoea.
+
+    Uraemic pericarditis, indicated by chest pain and a pericardial rub.
+
+    Uraemic encephalopathy — confusion, altered consciousness or convulsions.
+
+    Suspected obstruction with fever indicates an obstructed infected system and is a
+    urological emergency requiring decompression rather than antibiotics alone.
+
+  diagnostic_context: |
+    In Kenya primary care (Level 2-3), acute kidney injury is recognised and stabilised
+    here and investigated at referral level. Vol 2 specifies what may be done before
+    transfer and names the criteria that make transfer urgent.
+
+    Management at this level: a fluid challenge with close monitoring of urine output and
+    of urea, electrolytes and creatinine; avoidance of nephrotoxic drugs including
+    aminoglycosides, NSAIDs and contrast media; loop diuretics such as furosemide 1 to
+    5 mg/kg where fluid overload is present and in the oliguric phase of acute tubular
+    necrosis; restriction of dietary potassium and phosphate; and active management of
+    hyperkalaemia where present.
+
+    The practical constraint at this level is that serum creatinine and electrolytes are
+    often unavailable, so the diagnosis rests on urine output, volume assessment and the
+    clinical context. A patient who is acutely unwell, volume depleted and passing little
+    urine should be treated as having acute kidney injury without waiting for biochemical
+    confirmation.
+
+    Three decisions matter most here: identify and reverse the precipitant, particularly
+    volume depletion and nephrotoxic drugs; exclude obstruction, which is reversible and
+    is missed if the bladder is not examined; and distinguish acute from chronic disease,
+    because a raised creatinine attributed to chronic disease without a prior baseline may
+    represent a reversible acute injury.
+
+    A note on the source. The Kenya MOH Vol 2 text states the KDIGO creatinine threshold
+    as "26.5mmol/l". The KDIGO criterion is 26.5 micromoles per litre (0.3 mg/dL); the
+    millimolar figure is a transcription error in the source and would be biologically
+    implausible. The correct unit is used on this card.

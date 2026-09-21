@@ -1,6 +1,6 @@
 ---
 type: glossary
-corpus_version: "1.4"
+corpus_version: "1.5"
 purpose: shared definitions of clinical terms used across condition cards
 ---
 
@@ -79,6 +79,12 @@ Shared definitions for terms used consistently across condition cards. Maintaine
 **Mid-stream urine (MSU)** — A urine specimen collected after the initial stream has been discarded, so that periurethral and distal-urethral flora are flushed away before collection. Reduces contamination and is the standard specimen for urine culture. A contaminated specimen (mixed growth, epithelial cells on microscopy) cannot be interpreted and should be repeated rather than treated.
 
 **Nitrite (urinary dipstick)** — Dietary nitrate reduced to nitrite by bacterial nitrate reductase. A positive dipstick nitrite is highly specific for urinary tract infection (approximately 95–98%) but poorly sensitive. Two common causes of a false negative: the organism does not produce nitrate reductase — *Enterococcus*, *Staphylococcus saprophyticus*, *Pseudomonas* — and insufficient bladder dwell time, since conversion requires urine to remain in the bladder for roughly four hours. **A negative nitrite does not exclude urinary tract infection.**
+
+**Nephritic vs nephrotic syndrome** — Two distinct glomerular syndromes. **Nephritic**: haematuria with red cell casts, sub-nephrotic proteinuria, hypertension, oliguria, and oedema that is periorbital and seldom severe — inflammation is the dominant process. **Nephrotic**: heavy proteinuria (≥3.5 g/day) with hypoalbuminaemia, progressive oedema advancing from eyelids to limbs, sacrum and ultimately anasarca, with dyslipidaemia — increased glomerular permeability is the dominant process. Haematuria and hypertension favour nephritic; heavy proteinuria and hypoalbuminaemia favour nephrotic. The two may coexist as nephritic nephrotic syndrome.
+
+**eGFR (estimated glomerular filtration rate)** — Calculated estimate of renal filtration, expressed in mL/min/1.73 m². A value below 60 sustained for three months or more defines chronic kidney disease. Calculation requires a laboratory serum creatinine, so eGFR is generally unavailable at Level 2-3 and staging is performed at referral level.
+
+**Anasarca** — Severe generalised oedema involving the whole body, with ascites and pleural or pericardial effusion. Represents the advanced end of the nephrotic oedema spectrum, which begins periorbitally and progresses to the lower limbs and sacrum before becoming generalised.
 
 **Digital rectal examination (DRE)** — Palpation of the prostate through the anterior rectal wall with a gloved lubricated finger, assessing size, consistency, symmetry and tenderness. In acute bacterial prostatitis the prostate is characteristically soft, swollen, tense, and severely tender to light pressure. ⛔ **Prostate massage must not be performed when acute bacterial prostatitis is suspected** — it is intensely painful and can force bacteria into the bloodstream, precipitating bacteraemia and sepsis. Gentle palpation to establish tenderness is sufficient; vigorous or repeated examination adds risk without adding information.
 

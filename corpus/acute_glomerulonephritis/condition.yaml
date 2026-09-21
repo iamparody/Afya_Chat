@@ -1,0 +1,239 @@
+condition: Acute glomerulonephritis
+icd11: GB40
+icd_title: "Nephritic syndrome"
+icd_entity_uri: "http://id.who.int/icd/release/11/2024-01/mms/1783829886"
+icd10: N00.9
+icd_search_term: "Nephritic syndrome"
+category: urological
+corpus_version: "1.0"
+schema_version: "2.2"
+review_status: draft
+reviewed_by:
+last_reviewed:
+icd_verified: true
+
+sources:
+  - organization: "Kenya Ministry of Health"
+    title: "Clinical Management and Referral Guidelines Vol. 2: Clinical Guidelines for Management of Conditions at Level 2–3 Health Facilities, Chapters 15.5 and 15.7.1"
+    year: "2024"
+  - organization: "KDIGO (Kidney Disease Improving Global Outcomes)"
+    title: "KDIGO 2021 Clinical Practice Guideline for the Management of Glomerular Diseases"
+    year: "2021"
+
+endemic_regions:
+  - nationwide
+
+environmental_signals: []
+
+graph:
+  cardinal_symptoms:
+    - haematuria
+    - dark urine
+    - periorbital oedema
+    - elevated blood pressure
+    - oliguria
+  associated_symptoms:
+    - back pain
+    - headache
+    - visual disturbance
+    - vomiting
+    - peripheral oedema
+    - recent sore throat
+  risk_factors:
+    - recent sore throat
+    - impetigo
+  differentials:
+    - Nephrotic syndrome
+    - Acute kidney injury
+    - Urinary tract infection
+    - Acute pyelonephritis
+    - Essential hypertension
+  argues_against:
+    - heavy proteinuria
+    - anasarca
+    - normal urinalysis
+  red_flags:
+    - seizures
+    - altered consciousness
+    - acute pulmonary oedema
+    - encephalopathy
+    - absent urine output
+    - visual disturbance
+  confirms:
+    - RBC casts
+    - haematuria
+    - proteinuria
+    - raised serum creatinine
+    - elevated blood pressure
+
+sections:
+  cardinal_symptoms: |
+    Acute glomerulonephritis is an inflammatory renal disease that commonly follows
+    streptococcal infection of the throat or skin. It presents as the acute nephritic
+    syndrome: haematuria, oedema, hypertension, and reduced urine output occurring
+    together.
+
+    Haematuria is the cardinal feature. The urine may be visibly discoloured — described
+    as tea-coloured, cola-coloured or smoky — or the blood may be detectable only on
+    urinalysis. Oedema is characteristically periorbital, with puffiness of the eyes that
+    is more noticeable in the morning, and it is seldom severe or generalised. Blood
+    pressure is commonly elevated.
+
+    Urine output is altered. There may be an oliguric phase followed by a diuretic phase
+    as the illness resolves.
+
+  associated_symptoms: |
+    Hypertension frequently dominates the presentation and produces its own symptoms:
+    headache, visual disturbance and vomiting. In severe cases it may cause pulmonary
+    oedema with dyspnoea, or convulsions and coma from hypertensive encephalopathy.
+    These are addressed under Red flags.
+
+    Back pain may be reported. Peripheral oedema may accompany the periorbital swelling
+    but is usually mild.
+
+    Evidence of the preceding streptococcal infection should be sought: most often an
+    acute follicular tonsillitis with cervical adenitis, and less often skin sepsis or
+    impetigo. The infection typically precedes the renal illness by 7 to 10 days when the
+    site was the throat, and by 2 to 3 weeks when the site was the skin.
+
+  diagnostic_features: |
+    Urinalysis is the key investigation available at primary care level. Dysmorphic red
+    blood cells and red blood cell casts are pathognomonic of glomerular inflammation and
+    distinguish glomerular bleeding from bleeding anywhere else in the urinary tract.
+    Proteinuria is usually present but is typically sub-nephrotic.
+
+    Blood pressure must be measured — hypertension is both a diagnostic feature and the
+    source of the most dangerous complications.
+
+    Urea, creatinine and electrolytes should be checked where available; a raised serum
+    creatinine indicates impaired excretory function.
+
+    The underlying types differ by age and by extrarenal features, and this matters
+    because it determines urgency at referral. Post-streptococcal glomerulonephritis
+    affects children aged 2 to 12 and follows a documented throat or skin infection, with
+    low complement C3 and a positive ASOT. IgA nephropathy presents around 20 to 30 years
+    with normal complement. Henoch-Schönlein purpura occurs under 20 years with a purpuric
+    rash on the legs, arthritis and abdominal pain. Lupus nephritis affects 20 to 30 year
+    olds, more often women, with arthritis, photosensitive malar rash, pleurisy and
+    pericarditis. Granulomatosis with polyangiitis affects older adults with weight loss,
+    malaise and upper and lower respiratory involvement.
+
+    Rapidly progressive glomerulonephritis may arise on the background of any of these and
+    presents with sudden severe acute renal failure.
+
+  predisposing_factors: |
+    A preceding streptococcal infection is the dominant risk factor in the Kenyan primary
+    care setting — acute follicular tonsillitis, or skin sepsis and impetigo. Children
+    aged 2 to 12 are the group most affected by the post-streptococcal form.
+
+    Secondary causes carry their own risk profiles: systemic lupus erythematosus,
+    small-vessel vasculitis, Henoch-Schönlein purpura, and hepatitis C infection.
+
+    Untreated or inadequately treated streptococcal throat and skin infection is the
+    modifiable factor. Early antibiotic treatment of streptococcal infection reduces both
+    the severity and the incidence of glomerulonephritis, which makes recognition and
+    treatment of streptococcal sore throat and impetigo a preventive measure for this
+    condition.
+
+  typical_presentation: |
+    A child or young person presents with visibly discoloured urine — described as
+    tea-coloured or like cola — together with puffiness around the eyes that is worst on
+    waking and settles somewhat during the day. There is a history of a sore throat about
+    a week to ten days earlier, or of an impetiginous skin infection two to three weeks
+    earlier, which may have resolved by the time the renal illness appears.
+
+    On examination the blood pressure is raised and there is periorbital oedema. The legs
+    may be mildly swollen but there is no ascites and no gross generalised swelling.
+    Urinalysis shows blood and protein.
+
+    The parents may report that the child is passing less urine than usual. Headache and
+    vomiting, if present, reflect the hypertension rather than a gastrointestinal illness.
+
+  differential_diagnoses: |
+    Nephrotic syndrome shares oedema, proteinuria and referral-terminal status.
+    Discriminating features: nephrotic syndrome is defined by heavy proteinuria of
+    3.5 g per day or more together with hypoalbuminaemia, and its oedema progresses from
+    the eyelids to the limbs and sacrum and becomes generalised with ascites and effusions.
+    Acute glomerulonephritis produces haematuria as a cardinal feature, sub-nephrotic
+    proteinuria, and oedema that is seldom severe or generalised. Hypertension is
+    prominent in the nephritic picture. The two may coexist, which Vol 2 terms nephritic
+    nephrotic syndrome.
+
+    Acute kidney injury shares reduced urine output and raised creatinine. Discriminating
+    features: acute glomerulonephritis is a specific glomerular cause with haematuria and
+    red cell casts and a preceding streptococcal illness, whereas acute kidney injury is a
+    syndrome with pre-renal, renal and post-renal causes. Glomerulonephritis is one of the
+    intrinsic renal causes of acute kidney injury rather than an alternative to it.
+
+    Urinary tract infection shares haematuria. Discriminating features: infection produces
+    dysuria, frequency, urgency and pyuria with positive nitrite, and does not produce red
+    cell casts, periorbital oedema or hypertension.
+
+    Acute pyelonephritis shares haematuria and systemic upset. Discriminating features:
+    pyelonephritis produces fever with loin pain and costovertebral angle tenderness;
+    acute glomerulonephritis is not primarily a febrile illness and produces oedema and
+    hypertension instead.
+
+    Essential hypertension may be the presenting finding if blood pressure is measured
+    first. Discriminating features: essential hypertension does not produce haematuria,
+    red cell casts, periorbital oedema or an acute rise in creatinine, and it does not
+    follow a streptococcal infection. A first presentation of hypertension in a child or
+    young person should prompt urinalysis before the label is applied.
+
+  argues_against: |
+    Heavy proteinuria at nephrotic range, particularly with hypoalbuminaemia, argues
+    against acute glomerulonephritis as the sole diagnosis and towards nephrotic syndrome.
+    Both heavy proteinuria and low serum albumin are indispensable prerequisites for the
+    nephrotic diagnosis and are not features of the uncomplicated nephritic picture.
+
+    Generalised oedema with ascites or pleural effusion — anasarca — argues against acute
+    glomerulonephritis, in which oedema is characteristically periorbital and seldom severe
+    or generalised.
+
+    A completely normal urinalysis argues strongly against the diagnosis. Acute
+    glomerulonephritis without haematuria is not the expected presentation, and an
+    alternative explanation for oedema or hypertension should be sought.
+
+    Absence of any preceding throat or skin infection reduces the likelihood of the
+    post-streptococcal form specifically, though it does not exclude the other causes of
+    acute nephritic syndrome, which have no such prodrome.
+
+  red_flags: |
+    Hypertensive encephalopathy. Convulsions, altered consciousness or coma in a patient
+    with acute glomerulonephritis indicate hypertensive encephalopathy. This is an
+    emergency requiring immediate referral.
+
+    Visual disturbance and severe headache with raised blood pressure indicate the same
+    process at an earlier stage and should be treated with equal urgency.
+
+    Acute pulmonary oedema. Dyspnoea with fluid overload indicates that the circulation
+    cannot accommodate the retained salt and water. Refer immediately.
+
+    Anuria or persistent oliguria indicates severe impairment of excretory function and
+    may signal rapidly progressive glomerulonephritis, which produces sudden severe acute
+    renal failure and carries a risk of permanent renal loss without prompt specialist
+    treatment.
+
+    Any child with acute glomerulonephritis and a rapidly rising blood pressure should be
+    referred without waiting for further investigation.
+
+  diagnostic_context: |
+    In Kenya primary care (Level 2-3), Vol 2 terminates acute glomerulonephritis at
+    referral — "refer to higher level for appropriate management". The clinical task here
+    is recognition, blood pressure measurement, urinalysis, and timely referral.
+
+    Three points shape that task. First, the diagnosis is frequently missed because the
+    presenting complaint may be puffy eyes or a headache rather than anything urinary;
+    asking about urine colour and testing the urine is what reveals it. Second, the
+    preceding streptococcal infection may have resolved and will not be volunteered unless
+    asked about specifically, with attention to both throat and skin. Third, the danger in
+    this condition is hypertensive rather than infective — blood pressure must be measured
+    in any patient with oedema and discoloured urine.
+
+    Definitive management is undertaken in consultation with a physician or nephrologist
+    and includes salt and fluid restriction, loop diuretics, antihypertensives, and
+    corticosteroids where indicated. Antibiotics are indicated for post-streptococcal
+    disease with evidence of streptococcal infection — penicillin, or erythromycin in
+    penicillin allergy. Early antibiotic treatment of streptococcal infection reduces the
+    severity and incidence of glomerulonephritis, which is the preventive argument for
+    treating streptococcal sore throat and impetigo promptly at primary care level.
