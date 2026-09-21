@@ -1,0 +1,249 @@
+condition: Hypertensive Crisis
+icd11: BA03
+icd_title: "Hypertensive crisis"
+icd_entity_uri: "http://id.who.int/icd/release/11/2024-01/mms/1002963291"
+icd10: I10
+icd_search_term: "Hypertensive crisis"
+category: cardiovascular
+corpus_version: "1.0"
+schema_version: "2.2"
+review_status: draft
+reviewed_by:
+last_reviewed:
+icd_verified: true
+
+sources:
+  - organization: "Kenya Ministry of Health"
+    title: "Clinical Guidelines for Level 2 Dispensaries, Medical Clinics, Level 3 Health Centres, Nursing Homes Vol 2"
+    year: "2024"
+  - organization: "WHO"
+    title: "Hypertension Key Facts"
+    year: "2023"
+  - organization: "Medscape"
+    title: "Hypertensive Emergencies"
+    year: "2024"
+
+endemic_regions:
+  - nationwide
+
+environmental_signals: []
+
+graph:
+  cardinal_symptoms:
+    - severe headache
+    - visual disturbance
+    - confusion
+    - chest pain
+    - dyspnoea
+  associated_symptoms:
+    - nausea
+    - vomiting
+    - palpitations
+    - epistaxis
+    - papilloedema
+    - fundoscopic changes
+    - tachycardia
+  risk_factors:
+    - known hypertension
+    - medication non-compliance
+    - chronic kidney disease
+    - diabetes mellitus
+    - pregnancy
+    - obesity
+  argues_against:
+    - single elevated reading only
+    - consistently normal ambulatory readings
+    - no visual disturbance
+    - no neurological features
+    - BP below crisis threshold
+  red_flags:
+    - hypertensive encephalopathy
+    - acute pulmonary oedema
+    - haemorrhagic stroke
+    - aortic dissection
+    - seizures
+    - altered consciousness
+    - papilloedema
+  differentials:
+    - Bacterial meningitis
+    - haemorrhagic stroke
+    - ischaemic stroke
+    - subarachnoid haemorrhage
+    - Acute myocardial infarction
+    - pre-eclampsia
+  confirms:
+    - BP ≥180/120 with end-organ damage
+
+sections:
+  cardinal_symptoms: |
+    Hypertensive crisis presents as an acute elevation in blood pressure — typically systolic
+    ≥180 mmHg or diastolic ≥120 mmHg — accompanied by symptoms of target organ involvement.
+    The cardinal feature is a severe, typically occipital or diffuse headache of acute or
+    subacute onset, which may be throbbing or constant; this headache is caused by cerebral
+    autoregulatory failure and raised intracranial pressure from hypertensive encephalopathy.
+    Visual disturbance occurs in up to 50% of presentations: blurring, diplopia, or visual
+    field loss indicate retinal or optic nerve involvement from hypertensive retinopathy or
+    papilloedema. Confusion, disorientation, or altered level of consciousness signal
+    hypertensive encephalopathy — failure of cerebral pressure autoregulation leading to
+    cerebral oedema. Chest pain, which may be crushing, burning, or pressure-like, indicates
+    cardiac involvement (myocardial ischaemia) or aortic involvement (dissection). Dyspnoea —
+    particularly orthopnoea and paroxysmal nocturnal dyspnoea — indicates acute left
+    ventricular failure with pulmonary congestion. The combination of markedly elevated blood
+    pressure with any of these symptoms constitutes a hypertensive emergency requiring urgent
+    management and referral; the clinical priority is confirming target organ involvement, not
+    achieving maximal blood pressure reduction.
+
+  associated_symptoms: |
+    Nausea and vomiting accompany hypertensive encephalopathy and raised intracranial pressure;
+    projectile vomiting in the context of severe headache and visual disturbance should prompt
+    fundoscopic examination for papilloedema. Epistaxis may occur from rupture of small nasal
+    vessels under extreme pressure but is rarely the sole or dominant symptom. Palpitations may
+    be present, reflecting compensatory tachycardia from haemodynamic stress or underlying
+    cardiac arrhythmia precipitated by hypertensive crisis. On examination, papilloedema — disc
+    swelling visible on fundoscopy — is a hallmark of hypertensive emergency and indicates
+    cerebral oedema from elevated intracranial pressure; its presence confirms end-organ
+    involvement. Fundoscopic changes including arteriovenous nicking, flame haemorrhages, and
+    cotton-wool spots indicate established hypertensive retinopathy and may precede papilloedema.
+    Tachycardia is common, reflecting heightened sympathetic tone; a forceful or irregular pulse
+    may indicate concurrent cardiac involvement. A hypertensive patient presenting with acute
+    dyspnoea and tachycardia should be assessed for pulmonary oedema — bilateral basal crackles
+    on auscultation with raised JVP indicate acute left ventricular failure.
+
+  diagnostic_features: |
+    Diagnosis of hypertensive crisis at primary care level is clinical: sustained BP ≥180 mmHg
+    systolic or ≥120 mmHg diastolic on two readings taken 5–10 minutes apart, combined with
+    symptoms or signs of target organ involvement. The MOH definition of hypertensive crisis
+    requires diastolic BP >120 mmHg with papilloedema, progressive decrease in renal function,
+    and evidence of neurological dysfunction. The critical distinction within hypertensive crisis
+    is between emergency (with end-organ damage) and urgency (without end-organ damage): emergency
+    requires urgent treatment within 1 hour to prevent permanent organ damage and immediate
+    referral; urgency requires blood pressure reduction over 24–48 hours and urgent same-day
+    referral. End-organ targets to assess at the bedside: neurological (headache, GCS, focal
+    deficit), visual (visual acuity, fundoscopy if available), cardiac (chest pain, dyspnoea,
+    peripheral oedema), and renal (oliguria, haematuria on dipstick). Where fundoscopy is
+    unavailable, severe headache with confusion or visual disturbance in the setting of BP
+    >180/120 is sufficient to treat as hypertensive emergency. ECG may show left ventricular
+    hypertrophy, ischaemic changes, or strain pattern where available. Urinalysis may reveal
+    proteinuria or haematuria indicating renal involvement.
+
+  predisposing_factors: |
+    Known treated or untreated hypertension is the primary predisposing factor — most
+    hypertensive crises occur in patients with established hypertension who have stopped or
+    reduced medications, are non-compliant, or have inadequately controlled disease. Medication
+    non-compliance — deliberate cessation, missed doses, or inability to afford antihypertensives
+    — is the most common precipitant of hypertensive crisis in Kenya primary care; abrupt
+    cessation of beta-blockers or clonidine can trigger rebound hypertension. Chronic kidney
+    disease is both a cause of secondary hypertension and a target organ for hypertensive injury;
+    patients with CKD and hypertension are at substantially higher risk of crisis. Diabetes
+    mellitus compounds cardiovascular risk and is associated with more severe target organ
+    involvement at a given blood pressure. Secondary causes of hypertension — renal artery
+    stenosis, primary hyperaldosteronism, phaeochromocytoma — should be considered in young
+    patients without clear primary hypertension history or in cases refractory to standard
+    treatment. Pregnancy and the postpartum period: gestational hypertension and pre-eclampsia
+    or eclampsia may present as hypertensive crisis. Stimulant drug use — khat, amphetamines,
+    cocaine — can precipitate acute severe blood pressure elevation. Obesity contributes to
+    poorly controlled hypertension.
+
+  typical_presentation: |
+    A patient aged 40–70 years with a known history of hypertension — often treated, sometimes
+    not — presents to the clinic or casualty with an acute onset of severe occipital headache,
+    visual blurring, and nausea. They report having run out of antihypertensives two to three
+    weeks ago, or describe erratic medication use. Blood pressure on arrival is 210/130 mmHg.
+    They appear distressed and agitated. Fundoscopy reveals disc swelling (papilloedema) if
+    available. This is a hypertensive emergency — referral to Level 4 for IV antihypertensive
+    therapy and inpatient monitoring is required. An alternative presentation is a woman in
+    the third trimester of pregnancy presenting with headache and visual disturbance — here
+    the differential is pre-eclampsia or eclampsia and the management priority is immediate
+    referral, magnesium sulphate if eclamptic, and urgent obstetric care. A third pattern is
+    the incidental finding of very high blood pressure in a patient presenting for another reason
+    — if symptoms of end-organ damage are absent and BP is 180/110–120 without symptoms, this
+    may represent hypertensive urgency; arrange same-day assessment and initiate or intensify
+    oral antihypertensive therapy without attempting emergency intravenous reduction.
+
+  differential_diagnoses: |
+    Bacterial meningitis is the most critical differential: severe headache with photophobia,
+    fever, and progressive confusion may mimic hypertensive encephalopathy; discriminating
+    features — meningism (neck stiffness, Kernig's and Brudzinski's signs), fever as the
+    dominant presenting symptom rather than hypertension, normal or only moderately elevated
+    blood pressure in most meningitis cases; hypertensive crisis rarely produces meningism.
+    A patient with headache, high blood pressure, and no fever or neck stiffness argues
+    strongly for hypertensive crisis. Haemorrhagic stroke: acute focal neurological deficit
+    (limb weakness, speech disturbance, hemianopia) with severe headache and high blood
+    pressure — hypertensive emergency may cause or accompany intracerebral haemorrhage; the
+    presence of focal neurological signs shifts the diagnosis towards stroke. Ischaemic stroke
+    also presents with acute focal deficit and may be associated with blood pressure elevation;
+    the mechanism is different and blood pressure management in ischaemic stroke is more
+    conservative — do not aggressively lower BP without specialist guidance. Subarachnoid
+    haemorrhage: thunderclap headache (maximal at onset, "worst headache of life") in a patient
+    with blood pressure elevation is a critical differential — the character of the headache
+    (instantaneous peak, thunderclap quality) is the key distinguishing feature requiring
+    urgent CT. Acute myocardial infarction: chest pain with dyspnoea and hypertension may
+    represent hypertensive emergency with cardiac involvement, or a concurrent AMI triggering
+    sympathetic surge — both require urgent referral without diagnostic delay. Pre-eclampsia
+    or eclampsia: in a pregnant or recently postpartum woman, hypertension with headache,
+    visual disturbance, and proteinuria is pre-eclampsia until proven otherwise; eclampsia
+    with seizures is a life-threatening emergency requiring magnesium sulphate and immediate
+    obstetric referral.
+
+  argues_against: |
+    Blood pressure below the crisis threshold — systolic below 180 mmHg and diastolic below
+    120 mmHg — argues strongly against hypertensive crisis; a BP reading such as 168/102 mmHg,
+    though elevated and requiring treatment, does not meet the emergency threshold and should
+    be managed as Essential Hypertension or hypertensive urgency, not as a hypertensive
+    emergency. A single elevated blood pressure reading in a clinic setting without prior
+    documented hypertension, without symptoms, and in the context of pain, anxiety, or
+    discomfort may represent a situational or white-coat elevation rather than a true
+    hypertensive crisis; a second reading after rest and reassurance, and comparison with home
+    or ambulatory readings, is appropriate before diagnosing hypertensive crisis. Consistently
+    normal blood pressure recordings on ambulatory monitoring or repeated clinic visits argue
+    strongly against hypertensive crisis as the explanation for the current presentation.
+    The absence of visual disturbance (no visual changes, normal acuity) in a hypertensive
+    patient argues against hypertensive retinopathy and papilloedema — important features of
+    established end-organ involvement. The absence of neurological features — no confusion,
+    no focal deficit, no altered consciousness, no neurological symptoms — argues against
+    hypertensive encephalopathy as a diagnosis; encephalopathy is a defining feature of the
+    severe end of hypertensive crisis. Gradual onset of symptoms over days to weeks is more
+    consistent with chronic hypertensive target organ damage than an acute crisis.
+
+  red_flags: |
+    Hypertensive encephalopathy — confusion, disorientation, altered level of consciousness,
+    or new seizures in a patient with severely elevated blood pressure — is an end-organ
+    emergency requiring immediate IV antihypertensive therapy; refer without delay and protect
+    the airway. Acute pulmonary oedema with respiratory distress, pink frothy sputum, and
+    inability to lie flat indicates acute left ventricular failure precipitated by hypertensive
+    crisis — administer oxygen, sit the patient upright, give IV furosemide if available,
+    and refer urgently. Haemorrhagic stroke with new focal neurological deficit (limb weakness,
+    speech disturbance, sudden visual loss) and severe hypertension indicates hypertensive
+    cerebrovascular catastrophe; blood pressure should not be aggressively lowered in suspected
+    ischaemic stroke without specialist guidance — urgent imaging and specialist assessment
+    are required. Aortic dissection presenting as tearing or ripping chest or back pain of
+    sudden maximal onset radiating to the scapula, with pulse deficit or unequal limb blood
+    pressures, is a surgical emergency; refer immediately. Papilloedema on fundoscopy in a
+    hypertensive patient confirms elevated intracranial pressure and obligates immediate
+    referral; the treatment aim is controlled blood pressure reduction — not normalisation —
+    to prevent cerebral hypoperfusion. Seizures in the context of hypertension must be
+    distinguished from eclampsia (pregnant patient) and hypertensive encephalopathy (non-
+    pregnant patient); both require anticonvulsant treatment and immediate referral. Altered
+    consciousness in any patient with a blood pressure crisis is a transfer emergency.
+
+  diagnostic_context: |
+    Hypertensive crisis is underrecognised at Kenya primary care (Level 2–3) because blood
+    pressure measurement is inconsistent and patients often present only when symptoms are
+    severe. The most important clinical role at Level 2–3 is: (1) confirm severely elevated
+    blood pressure on two readings; (2) assess for target organ involvement using clinical
+    signs — neurological status, visual acuity, chest auscultation, urine dipstick;
+    (3) differentiate emergency from urgency; (4) initiate controlled blood pressure reduction
+    and refer the emergency immediately, or arrange urgent same-day review for urgency. The
+    MOH target for diastolic reduction is 100–110 mmHg — not normal — within 1 hour for
+    emergency; rapid normalisation risks cerebral hypoperfusion and watershed infarction,
+    particularly in patients whose cerebral autoregulation is adapted to chronically high
+    pressures. At Level 2–3, pharmacological management should be limited to initiating or
+    reinstating oral antihypertensives (amlodipine 5–10 mg or hydrochlorothiazide 12.5–25 mg)
+    for urgency, and referring all emergencies for IV therapy. Sublingual nifedipine is no
+    longer recommended due to risk of unpredictable rapid blood pressure drop and stroke.
+    Hypertension in pregnancy requires referral without oral antihypertensive initiation at
+    Level 2 unless the clinician is trained in obstetric emergencies and magnesium sulphate
+    is available. The clinical officer's primary contribution is pattern recognition, blood
+    pressure measurement, organ assessment, and appropriate escalation — not IV titration.
+    Record the blood pressure at presentation, the clinical features of organ involvement
+    identified, and the time of referral in the encounter record.

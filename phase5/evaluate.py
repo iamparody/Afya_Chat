@@ -8,6 +8,33 @@ Usage:
     python phase5/evaluate.py                    # all cases, dense-only (Cohere baseline)
     python phase5/evaluate.py 2a                 # single case
     python phase5/evaluate.py 2a 4b              # specific cases
+
+── Gate policy ──────────────────────────────────────────────────────────────
+Regression gate: ≥7/8 per run.
+
+Cases are classified into two categories:
+
+  DETERMINISTIC (must pass on every run):
+    2a  Brucellosis vs Pneumonia — productive cough discriminator
+    2b  Brucellosis vs Malaria — antimalarial response discriminator
+    3   Appendicitis — RLQ localisation
+    4a  Anaemia — IDA vs PUD
+    4b  Anaemia — IDA in child
+    6   Iron deficiency anaemia
+
+  STOCHASTIC (documented boundary; no known pipeline defect):
+    1   Malaria vs CAP — Gemini sometimes routes productive cough to CAP
+        as primary (pre-existing boundary, predates HC addition)
+    5   Essential hypertension vs Hypertensive Crisis — Gemini sometimes
+        fails to apply Rule 3 to HC argues_against features at temperature=0
+        (introduced by HC addition; confirmed genuine reasoning boundary —
+        evidence correctly routed, no routing defect identified)
+
+A 6/8 run (both stochastic cases fail together) does NOT pass the gate.
+Do not re-run the suite to sample until 7/8 appears — that converts the
+gate into luck. If 6/8 is observed, investigate whether a new routing
+defect has appeared before re-running.
+────────────────────────────────────────────────────────────────────────────
 """
 
 import json
@@ -175,7 +202,7 @@ CASES = [
         "checks": {
             "primary_contains":     ["anaemia", "anemia", "iron"],
             "red_flags_contain":    [],  # IDA red flag section not retrieved by vector similarity — see manual checks
-            "missing_info_contain": ["menstrual", "hb", "fbc", "dietary"],
+            "missing_info_contain": ["menstrual", "menorrhagia", "hb", "haemoglobin", "fbc", "ferritin", "dietary"],
             "prohibited_strings":   [
                 "anaemia confirmed",
                 "anemia confirmed",
@@ -306,6 +333,28 @@ COVERAGE_CASES = [
                 "Asthma listed as key differential with bronchodilator reversibility as discriminating feature",
                 "TB exclusion noted — AFB negative cited",
                 "Spirometry referral recommended for definitive diagnosis",
+            ],
+        },
+    },
+    {
+        "id": "12",
+        "label": "Hypertensive Crisis — positive identification (BP ≥180/120 + end-organ)",
+        "presentation": (
+            "58M, known hypertensive on amlodipine, ran out of medication 3 weeks ago. "
+            "Acute severe occipital headache starting 2 hours ago. Blurred vision bilaterally. "
+            "Nausea and one episode of vomiting. BP 218/134 on arrival. Confused and agitated. "
+            "No fever. Fundoscopy shows bilateral disc swelling."
+        ),
+        "checks": {
+            "primary_contains":     ["crisis", "hypertensive emergency", "hypertensive urgency"],
+            "red_flags_contain":    ["encephalopathy", "end-organ"],
+            "missing_info_contain": ["ecg", "urine", "creatinine", "renal"],
+            "prohibited_strings":   ["essential hypertension confirmed", "no end-organ"],
+            "manual": [
+                "BP 218/134 explicitly cited as meeting ≥180/120 emergency threshold",
+                "Medication non-compliance cited as precipitant",
+                "Papilloedema / disc swelling cited as confirming end-organ involvement",
+                "Immediate referral language present — IV therapy at Level 4, not oral reduction",
             ],
         },
     },

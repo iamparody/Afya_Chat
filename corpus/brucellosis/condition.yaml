@@ -4,7 +4,7 @@ icd_title: "Brucellosis"
 icd_entity_uri: "http://id.who.int/icd/release/11/2024-01/mms/730510331"
 icd10: A23.9
 category: infectious
-corpus_version: "1.0"
+corpus_version: "1.1"
 schema_version: "2.2"
 review_status: draft
 reviewed_by:
@@ -61,6 +61,7 @@ graph:
     - no livestock or dairy exposure
     - acute onset under 7 days
     - rapid antimalarial response
+    - productive cough
   red_flags:
     - altered consciousness
     - endocarditis

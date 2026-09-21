@@ -98,6 +98,10 @@
 | TB meningitis | tuberculous meningitis, TBM, tubercular meningitis |
 | cryptococcal meningitis | crypto meningitis, Cryptococcus neoformans meningitis, fungal meningitis |
 | subarachnoid haemorrhage | SAH, subarachnoid bleed, subarachnoid hemorrhage |
+| haemorrhagic stroke | intracerebral haemorrhage, ICH, intracranial haemorrhage, haemorrhagic CVA |
+| ischaemic stroke | cerebral infarction, thrombotic stroke, embolic stroke, cerebrovascular accident |
+| Acute myocardial infarction | AMI, heart attack, myocardial infarction, STEMI, NSTEMI |
+| aortic dissection | dissecting aortic aneurysm, dissecting aneurysm, aortic tear |
 | Acute viral hepatitis A | hepatitis A, HAV infection, hepatitis A virus infection, acute hepatitis A |
 | hepatitis E | HEV infection, hepatitis E virus infection, acute hepatitis E |
 | acute hepatitis B | HBV infection, hepatitis B virus infection, hepatitis B acute |

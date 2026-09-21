@@ -232,6 +232,8 @@
 | post-gastrectomy | after gastrectomy, post-gastric surgery |
 | proton pump inhibitor use | PPI use |
 | corticosteroid use | steroid use, glucocorticoid use |
+| known hypertension | pre-existing hypertension, previously diagnosed hypertension, established hypertension |
+| medication non-compliance | antihypertensive non-compliance, missed antihypertensives, stopped medication, drug non-adherence |
 | NSAID use | non-steroidal anti-inflammatory drug use |
 | aspirin use | low-dose aspirin |
 | antipsychotic use | antipsychotic medication |
@@ -457,6 +459,9 @@
 | complete absence of fever | afebrile |
 | single elevated reading only | isolated BP elevation |
 | consistently normal ambulatory readings | normal 24h BP monitoring |
+| no visual disturbance | visual changes absent, no visual changes, vision unaffected, no blurring, visual acuity normal |
+| no neurological features | no focal deficit, neurologically intact, no neurological symptoms, no confusion, no disorientation, no altered sensorium |
+| BP below crisis threshold | systolic BP below 180 mmHg, diastolic BP below 120 mmHg, BP not meeting crisis criteria, blood pressure below hypertensive emergency threshold |
 | no endemic area exposure | no malaria exposure |
 | onset more than 30 days after leaving endemic area | |
 | absence of epigastric pain | no epigastric pain |

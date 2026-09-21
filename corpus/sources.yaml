@@ -17,6 +17,36 @@
 
 sources:
 
+  - condition: Hypertensive Crisis
+    authority_tier: kenya_moh
+    authority: Kenya Ministry of Health
+    title: "Clinical Guidelines for Level 2 Dispensaries, Medical Clinics, Level 3 Health Centres, Nursing Homes Vol 2"
+    year: 2024
+    url: ""
+    supplementary_sources:
+      - authority: WHO
+        title: "Hypertension Key Facts"
+        year: 2023
+        url: "https://www.who.int/news-room/fact-sheets/detail/hypertension"
+        sections_covered:
+          - predisposing_factors
+          - diagnostic_context
+        reason: "Primary source (Kenya MOH 2024) §3.2 covers management protocol only (6 lines); WHO fact sheet provides epidemiological context and risk factor evidence base"
+      - authority: Medscape
+        title: "Hypertensive Emergencies"
+        year: 2024
+        url: "https://emedicine.medscape.com/article/1952052-overview"
+        sections_covered:
+          - cardinal_symptoms
+          - associated_symptoms
+          - diagnostic_features
+          - typical_presentation
+          - differential_diagnoses
+          - argues_against
+          - red_flags
+          - diagnostic_context
+        reason: "Primary source is thin on clinical detail; Medscape provides emergency vs urgency distinction, target organ assessment criteria, differential diagnosis content, and argues-against clinical features"
+
   - condition: Acute gastroenteritis (infectious)
     authority_tier: who_global
     authority: WHO
