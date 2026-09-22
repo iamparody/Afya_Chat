@@ -112,7 +112,7 @@ G1 lower urinary tract symptoms · G2 fever + flank pain · G3 haematuria · G4 
 | Acute glomerulonephritis (acute nephritic syndrome) | `GB40` | Vol 2 §15.5 + §15.7.1 | KDIGO | G3, G4 | High | Not started |
 | Nephrotic syndrome | `GB41` | Vol 2 §15.6 | KDIGO | G4 | High | Not started |
 | Acute kidney injury | see §2.4 | Vol 2 §15.8.1 | KDIGO | G5, G2, G6 | High | Not started |
-| Chronic kidney disease | see §2.4 | Vol 2 §15.8.2 | KDIGO | G8, G4, G5 | Important | Not started |
+| Chronic kidney disease | `GB61.Z` | Vol 2 §15.8.2 | KDIGO | G8, G4, G5 | Important | **Committed 2026-09-22** |
 
 **Not authored as condition cards** — findings, syndromes and biochemical states, modelled as pathway triggers, red flags or `graph.confirms` terms on parent cards:
 

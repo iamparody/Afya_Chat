@@ -1,0 +1,293 @@
+condition: Chronic kidney disease
+icd11: GB61.Z
+icd_title: "Chronic kidney disease, stage unspecified"
+icd_entity_uri: "http://id.who.int/icd/release/11/2024-01/mms/412389819/unspecified"
+icd10: N18.9
+icd_search_term: "Chronic kidney disease, stage unspecified"
+category: urological
+corpus_version: "1.0"
+schema_version: "2.2"
+review_status: draft
+reviewed_by:
+last_reviewed:
+icd_verified: true
+
+sources:
+  - organization: "Kenya Ministry of Health"
+    title: "Clinical Management and Referral Guidelines Vol. 2: Clinical Guidelines for Management of Conditions at Level 2–3 Health Facilities, Chapter 15.8.2"
+    year: "2024"
+  - organization: "KDIGO (Kidney Disease Improving Global Outcomes)"
+    title: "KDIGO 2024 Clinical Practice Guideline for the Evaluation and Management of Chronic Kidney Disease"
+    year: "2024"
+
+endemic_regions:
+  - nationwide
+
+environmental_signals: []
+
+graph:
+  cardinal_symptoms:
+    - reduced eGFR
+    - raised serum creatinine
+    - proteinuria
+  associated_symptoms:
+    - fatigue
+    - nocturia
+    - pruritus
+    - anaemia
+    - pallor
+    - skin darkening
+    - peripheral oedema
+    - nausea
+    - anorexia
+    - bone pain
+    - peripheral neuropathy
+    - elevated blood pressure
+  risk_factors:
+    - hypertension
+    - diabetes mellitus
+    - proteinuria
+    - Obesity
+    - smoking
+    - dyslipidaemia
+    - elderly
+    - male sex
+  differentials:
+    - Acute kidney injury
+    - Type 2 diabetes mellitus
+    - Nephrotic syndrome
+    - Iron deficiency anaemia
+    - Essential hypertension
+  argues_against:
+    - polydipsia
+    - blurred vision
+    - acute onset under 7 days
+    - normal urinalysis
+  red_flags:
+    - hyperkalaemia
+    - acute pulmonary oedema
+    - pericarditis
+    - encephalopathy
+    - seizures
+    - fluid overload
+    - absent urine output
+  confirms:
+    - reduced eGFR
+    - raised serum creatinine
+    - proteinuria
+    - anaemia
+
+sections:
+  cardinal_symptoms: |
+    Chronic kidney disease is a persistent impairment of kidney function. It is defined by
+    a serum creatinine that remains abnormally elevated for three months or more, with an
+    estimated glomerular filtration rate below 60 mL/min/1.73 m².
+
+    The duration criterion is what distinguishes it from acute kidney injury, and it is
+    the reason a single raised creatinine cannot establish the diagnosis.
+
+    Early disease is largely asymptomatic and is detected through screening rather than
+    through symptoms. The cardinal features are therefore laboratory findings, not
+    complaints: a persistently raised serum creatinine, a sustained eGFR below 60, and
+    proteinuria on urinalysis.
+
+    This matters for recognition. Symptoms, when they eventually appear, are non-specific
+    and shared with many other conditions, so they cannot carry the diagnosis on their
+    own. A patient reporting tiredness and a change in urinary pattern has not thereby
+    demonstrated chronic kidney disease; the diagnosis requires the biochemical
+    abnormality, and it requires that abnormality to have persisted for three months or
+    more. Symptomatic features are set out under Associated symptoms and signs.
+
+  associated_symptoms: |
+    Vol 2 groups the clinical features of established disease by system, and this is the
+    most useful way to recognise advanced disease at primary care level.
+
+    Biochemical: acidosis, hyperkalaemia, elevated blood urea and elevated serum
+    creatinine.
+
+    Cardiovascular: hypertension, pulmonary oedema, pericarditis and cardiac tamponade,
+    and heart failure.
+
+    Skeletal: bone pain, and fractures, which are rare.
+
+    Nervous system: encephalopathy with confusion and convulsions, and peripheral
+    neuropathy.
+
+    Haematological: anaemia, and excessive bleeding from the gums, skin or nose.
+
+    Skin: pruritus, and darkening of the skin.
+
+    Anaemia and pallor deserve particular emphasis because anaemia of chronic kidney
+    disease arises from erythropoietin deficiency and develops over months. Together with
+    pruritus, skin darkening, nocturia and bone pain it forms the cluster that
+    distinguishes chronic from acute disease.
+
+  diagnostic_features: |
+    Diagnosis requires two elements: evidence of impaired function, and evidence that the
+    impairment is sustained. A serum creatinine that has been elevated for three months or
+    more, with an eGFR below 60, establishes it. Proteinuria supports the diagnosis and is
+    independently a marker of progression.
+
+    Where a previous creatinine result exists it should be sought, because it establishes
+    chronicity and simultaneously distinguishes the condition from acute kidney injury.
+    Where no previous result exists, the supporting features — anaemia, pruritus, skin
+    darkening, nocturia, bone pain — carry the assessment.
+
+    Staging is by eGFR and albuminuria. The staging criteria must be taken from the KDIGO
+    guideline directly: the corresponding table in the Kenya MOH Vol 2 text
+    (Table 15.5, "Criteria for Chronic Kidney Disease") is empty in the published
+    extraction, and only its KDIGO citation survives. Staging is performed at referral
+    level in any case, since eGFR calculation requires laboratory creatinine.
+
+    Investigations beyond urinalysis are referred. Vol 2 states this directly:
+    "Investigations: refer to higher level facility."
+
+  predisposing_factors: |
+    Vol 2 names the risk factors for chronic kidney disease as hypertension, diabetes
+    mellitus, proteinuria, obesity, smoking, dyslipidaemia, genetic factors, older age,
+    male gender, and a previous episode of acute kidney injury.
+
+    Of these, raised blood pressure and impaired glucose control are the most prevalent in
+    this setting, and patients carrying them are the group in whom screening has the
+    highest yield.
+
+    The aetiological groups are broader. Glomerular disease from diabetes, autoimmune
+    conditions or drugs. Vascular disease from hypertension, atherosclerosis, vasculitis
+    or ischaemia. Tubulo-interstitial disease from recurrent urinary tract infection,
+    nephrolithiasis, obstruction or drug toxicity. Structural abnormality from polycystic
+    kidneys, hydronephrosis due to obstruction, vesicoureteral reflux, renal masses,
+    infiltrative disease or renal artery stenosis. Renal tubular disorders such as renal
+    tubular acidosis and cystinuria.
+
+    Recurrent urinary tract infection and untreated obstruction are the modifiable
+    urological contributors, which links this condition to the rest of this domain.
+
+  typical_presentation: |
+    The defining picture is a creatinine that has been raised for months rather than days,
+    accompanied by the cluster that only develops with time: pallor from anaemia, itching,
+    a sallow or darkened skin, waking at night to pass urine, and mild ankle oedema.
+    Urinalysis shows proteinuria. Review of previous records shows the creatinine was
+    already raised on earlier occasions.
+
+    It is that duration, and that cluster, which identify the condition. A single raised
+    creatinine in an acutely unwell patient is not this diagnosis.
+
+    A second common route to diagnosis is incidental: a raised creatinine found during
+    investigation of something else, in a patient with no renal symptoms at all. This is
+    the more favourable presentation because it is earlier.
+
+    The presentation that must not be missed is the patient with advanced disease —
+    breathlessness from fluid overload, confusion from uraemia, or a pericardial rub —
+    which is an emergency rather than a chronic review.
+
+  differential_diagnoses: |
+    Acute kidney injury is the principal differential and the distinction determines
+    urgency and reversibility. Discriminating features: acute injury develops over hours
+    to days with an identifiable precipitant — volume loss, sepsis, nephrotoxic drugs,
+    obstruction — and without anaemia, pruritus, skin darkening or nocturia. Chronic
+    disease requires impairment sustained over three months and carries those features.
+    A previous creatinine result settles it. Acute-on-chronic disease occurs and should be
+    suspected where an established chronic patient deteriorates abruptly.
+
+    Type 2 diabetes mellitus shares fatigue and increased urinary volume, and the overlap
+    is easily missed because diabetes is also the leading cause of chronic kidney disease.
+    Discriminating features: in diabetes the increased urine output is osmotic diuresis
+    driven by hyperglycaemia and is accompanied by marked thirst and by blurred vision;
+    in chronic kidney disease the urinary change is nocturia from loss of concentrating
+    ability, without thirst and without visual symptoms. Polydipsia and blurred vision in
+    a patient with months of fatigue and polyuria point to uncontrolled diabetes rather
+    than to uraemia, and blood glucose should be checked before renal impairment is
+    assumed. The two frequently coexist, and a diabetic patient with proteinuria may have
+    both — but the acute treatable problem in that situation is the glycaemic control.
+
+    Nephrotic syndrome shares oedema and proteinuria. Discriminating features: nephrotic
+    syndrome is defined by heavy proteinuria of 3.5 g per day or more with
+    hypoalbuminaemia, and may occur with preserved renal function. Chronic kidney disease
+    is defined by sustained reduction in filtration. Heavy proteinuria is, however, a
+    driver of progression to chronic kidney disease, so the two are linked rather than
+    mutually exclusive.
+
+    Iron deficiency anaemia shares fatigue and pallor. Discriminating features: iron
+    deficiency produces microcytic hypochromic indices with low ferritin, and is not
+    accompanied by raised creatinine, pruritus, skin darkening or nocturia. Anaemia of
+    chronic kidney disease is normocytic and arises from erythropoietin deficiency.
+    The two may coexist.
+
+    Essential hypertension shares raised blood pressure and is both a cause and a
+    consequence of chronic kidney disease. Discriminating features: uncomplicated
+    essential hypertension does not produce proteinuria, a reduced eGFR, anaemia or the
+    uraemic features. New or worsening hypertension with proteinuria should prompt
+    assessment of renal function rather than escalation of antihypertensive therapy alone.
+
+  argues_against: |
+    Thirst and visual symptoms are not features of uraemia. Where either accompanies the
+    urinary change, check blood glucose before attributing the picture to renal
+    impairment — the nocturia of chronic kidney disease reflects lost concentrating
+    ability alone.
+
+    An acute onset over less than seven days, with an identifiable precipitant, argues
+    against chronic kidney disease and towards acute kidney injury. The three-month
+    duration requirement is definitional, and a single raised creatinine in an acutely
+    unwell patient must not be labelled chronic.
+
+    A completely normal urinalysis with normal renal function argues against the
+    diagnosis. Proteinuria is the most accessible marker at primary care level, and its
+    absence in a patient with normal creatinine makes chronic kidney disease unlikely,
+    though it does not exclude early disease detectable only on eGFR.
+
+    Absence of the chronic cluster — no anaemia, no pruritus, no skin darkening, no
+    nocturia, no bone pain — in a patient with a newly raised creatinine should shift the
+    assessment towards an acute and potentially reversible process.
+
+    Normal kidney size and architecture on ultrasound argues against established chronic
+    disease, in which the kidneys are characteristically small and shrunken. This is a
+    referral-level investigation.
+
+  red_flags: |
+    Hyperkalaemia. Serum potassium above 5.5 mmol/L, with clinical consequences usually
+    from 6 mmol/L: muscle weakness, abdominal distension, tingling of the face, hands and
+    feet, an irregular pulse, heart block, and increased T-wave amplitude on the ECG.
+    Requires emergency treatment and referral.
+
+    Fluid overload with acute pulmonary oedema and dyspnoea.
+
+    Uraemic pericarditis, indicated by chest pain and a pericardial rub, which may progress
+    to cardiac tamponade.
+
+    Uraemic encephalopathy — confusion, altered consciousness or convulsions.
+
+    A sudden fall in urine output or anuria in a patient with known chronic kidney disease
+    indicates acute-on-chronic deterioration and requires urgent referral, not routine
+    review.
+
+    Hypokalaemia is also recognised in this population, arising from diuretics, vomiting,
+    diarrhoea or dialysis, and produces muscle weakness, tetany, polyuria, paralytic ileus
+    and cardiac arrhythmias.
+
+    Severe anaemia with cardiovascular compromise requires urgent assessment.
+
+  diagnostic_context: |
+    In Kenya primary care (Level 2-3), Vol 2 refers investigation of chronic kidney disease
+    to a higher facility. The tasks retained here are screening, recognition, risk-factor
+    control, avoidance of further renal insult, and referral.
+
+    Screening is the highest-value activity at this level, because the patients at
+    greatest risk already attend regularly for review of their other conditions. Blood
+    pressure measurement and dipstick urinalysis for proteinuria are available here and
+    identify renal disease years before symptoms appear.
+
+    Vol 2 specifies the management that belongs at this level, and it is largely
+    protective: avoid nephrotoxic drugs and contrast media; stop smoking; reduce alcohol
+    intake; maintain a healthy BMI between 20 and 25 kg/m²; take physical activity of
+    30 minutes five times a week; restrict salt intake below 2 g per day; and take
+    dietary advice on potassium and phosphate. Refer to a higher level facility for
+    further management.
+
+    Two cautions apply at this level. First, do not attribute a raised creatinine to
+    chronic kidney disease without evidence of chronicity — the acute alternative is
+    reversible and the label closes off that possibility. Second, NSAIDs are widely
+    available and are a common avoidable cause of deterioration in this population;
+    counselling against their use is a concrete intervention available at primary care.
+
+    Staging criteria must be taken from KDIGO directly, as the corresponding table in the
+    Vol 2 source is empty in the published extraction.

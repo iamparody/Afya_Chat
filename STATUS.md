@@ -249,6 +249,12 @@ Independently (Phase 9 MVP):
 - 2026-09-16: 8/8 GATE PASS after Brucellosis (23 conditions/207 chunks). Two-source pattern: WHO/FAO/OIE 2006 + PMC systematic review + Kenya pastoral data. Coverage 3/3 (Case 9 Brucellosis added).
 - 2026-09-17: 8/8 GATE PASS after Leptospirosis (24 conditions/216 chunks). WHO 2003 + Medscape 2026 (two-source pattern; age-of-evidence caveat in sources.yaml). Coverage 4/4 (Case 10 Leptospirosis added).
 - 2026-09-17: 7/8 GATE PASS after COPD (25 conditions/225 chunks). MOH Vol 2 2024 + Medscape 2025 (two-source pattern). Coverage 5/5 (Case 11 COPD added). Integrity gate implemented in corpus_pipeline/ingest_yaml.py (feat/corpus-integrity-gate, pending merge).
+- 2026-09-22: Chronic kidney disease added (31 conditions/279 chunks); 11 GU pairwise edges (4 mandatory safety). Genitourinary inventory complete except nephrolithiasis. Full suite 343/343.
+  - **Authoring register affects retrieval rank materially.** Card prose written as pathophysiology retrieves poorly against patient presentations. `type_2_diabetes` cardinal_symptoms read "Polyuria results from osmotic diuresis driven by glucosuria when the renal glucose threshold is exceeded…" and ranked **9th of 9** on eval Case 4a — its own textbook presentation — leaving no headroom. Adding any 31st condition that outranked it pushed it out of `TOP_N_CANDIDATES=9` entirely, making Case 4a a deterministic failure.
+  - Rewritten to lead with how the patient presents, retaining the mechanism text after it: **rank 9 → 1**. Verified three ways — isolated cosine distance 0.46 → 0.36; temporary in-place chunk swap rank 10 → 1; committed card rank 9 → 1 with CKD present. `corpus_version` 1.3 → 1.4.
+  - Gate effect: CKD alone 6,6,4,4,6,5 (mean 5.2). CKD + register fix 7,6,7,7,6,4 (mean 6.2) against a master baseline of 3,6,6,6,6,7,7,7,7 (mean 6.1) — parity restored.
+  - **Applies corpus-wide.** The ten original cards are written in explanatory register; cards authored since read as presentations. Worth auditing the remaining nine — queries are always presentations, so cards should describe how the patient presents before explaining why.
+
 - 2026-09-21: Genitourinary domain — 6 cards (30 conditions/270 chunks). MOH Vol 2 Ch 15 + EAU 2026 / KDIGO. Coverage 7/7 (Cases 12, 13 added). Full suite 335/335 including integration. Neo4j: 8 GU pairwise edges (2 mandatory safety).
   - **Gate variance measured.** n=9 runs on this corpus: 3, 6, 6, 6, 6, 7, 7, 7, 7 (median 6). `origin/master` on the same clean index: 6, 7. Same distribution — the new cards are score-neutral.
   - **The variance is in generation, not retrieval.** With retrieval held byte-identical across 8 runs, Case 4a returns Type 2 diabetes 8/8, while Case 3 returns Malaria 4/8, Typhoid 2/8, Acute gastroenteritis 2/8. `temperature=0.0` does not make generation deterministic, and no seed is set.
@@ -282,7 +288,7 @@ Independently (Phase 9 MVP):
 - [x] Acute glomerulonephritis — Vol 2 §15.5 + §15.7.1 + KDIGO 2021; ICD-11 GB40 (canonical title "Nephritic syndrome")
 - [x] Nephrotic syndrome — Vol 2 §15.6 + KDIGO 2021; ICD-11 GB41. Vol 2 §15.6 clinical features open with a verbatim duplicate of the §15.4.1 prostatitis bacteraemia line — a source transcription artefact; not encoded
 - [x] Acute kidney injury — Vol 2 §15.8.1 + KDIGO 2012; ICD-11 GB60.Z. KDIGO 2026 AKI/AKD is a public review draft and not citable. Vol 2 prints the creatinine threshold as "26.5mmol/l"; the correct unit is µmol/L
-- [ ] Chronic kidney disease — Vol 2 §15.8.2 + KDIGO 2024; ICD-11 GB61.Z. Vol 2 Table 15.5 (CKD criteria) is empty in the extraction — take staging from KDIGO. Authored on `wip/genitourinary-ckd`, not merged
+- [x] Chronic kidney disease — Vol 2 §15.8.2 + KDIGO 2024; ICD-11 GB61.Z. Vol 2 Table 15.5 (CKD criteria) is empty in the extraction — staging taken from KDIGO
 - [ ] Nephrolithiasis — deferred: no Vol 2 chapter. Retained as a `differentials` term on the pyelonephritis and AKI cards. Pathway G6 (acute flank colic) therefore has no owned card, and GU-MSP-05 / GU-RP-03 / GU-RP-05 have no evaluation fixtures
 
 **Excluded:**
