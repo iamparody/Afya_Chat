@@ -81,6 +81,7 @@
 | bladder stone | vesical calculus |
 | overactive bladder syndrome | OAB |
 | prostatitis | |
+| Acute bacterial prostatitis | acute prostatitis, category I prostatitis |
 | cholera | Vibrio cholerae infection |
 | brucellosis | undulant fever, Brucella infection |
 | rickettsial illness | spotted fever, rickettsia infection, tick typhus |
@@ -92,6 +93,11 @@
 | ovarian cyst | ruptured ovarian cyst, twisted ovarian cyst, ovarian torsion |
 | mesenteric adenitis | mesenteric lymphadenitis |
 | renal colic | ureteric colic, nephrolithiasis colic |
+| Acute pyelonephritis | acute upper urinary tract infection |
+| Acute glomerulonephritis | acute nephritic syndrome, post-streptococcal glomerulonephritis |
+| Nephrotic syndrome | nephrosis |
+| Acute kidney injury | AKI, acute renal failure |
+| Chronic kidney disease | CKD, chronic renal failure |
 | Mittelschmerz | mid-cycle pain, ovulation pain |
 | Bacterial meningitis | pyogenic meningitis, purulent meningitis, bacterial meningoencephalitis, acute bacterial meningitis |
 | viral encephalitis | aseptic meningitis, viral meningitis, viral meningoencephalitis |

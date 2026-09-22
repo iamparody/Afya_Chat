@@ -249,7 +249,10 @@ Independently (Phase 9 MVP):
 - 2026-09-16: 8/8 GATE PASS after Brucellosis (23 conditions/207 chunks). Two-source pattern: WHO/FAO/OIE 2006 + PMC systematic review + Kenya pastoral data. Coverage 3/3 (Case 9 Brucellosis added).
 - 2026-09-17: 8/8 GATE PASS after Leptospirosis (24 conditions/216 chunks). WHO 2003 + Medscape 2026 (two-source pattern; age-of-evidence caveat in sources.yaml). Coverage 4/4 (Case 10 Leptospirosis added).
 - 2026-09-17: 7/8 GATE PASS after COPD (25 conditions/225 chunks). MOH Vol 2 2024 + Medscape 2025 (two-source pattern). Coverage 5/5 (Case 11 COPD added). Integrity gate implemented in corpus_pipeline/ingest_yaml.py (feat/corpus-integrity-gate, pending merge).
-
+- 2026-09-21: Genitourinary domain — 6 cards (30 conditions/270 chunks). MOH Vol 2 Ch 15 + EAU 2026 / KDIGO. Coverage 7/7 (Cases 12, 13 added). Full suite 335/335 including integration. Neo4j: 8 GU pairwise edges (2 mandatory safety).
+  - **Gate variance measured.** n=9 runs on this corpus: 3, 6, 6, 6, 6, 7, 7, 7, 7 (median 6). `origin/master` on the same clean index: 6, 7. Same distribution — the new cards are score-neutral.
+  - **The variance is in generation, not retrieval.** With retrieval held byte-identical across 8 runs, Case 4a returns Type 2 diabetes 8/8, while Case 3 returns Malaria 4/8, Typhoid 2/8, Acute gastroenteritis 2/8. `temperature=0.0` does not make generation deterministic, and no seed is set.
+  - **Case 3's grading is self-contradictory.** Its manual check requires UTI and AGE as co-equal candidates; `primary_contains` grades on which single candidate leads. It passes ~25% of the time and accounts for most of the swing. A ≥7/8 single-run gate cannot distinguish a pass from a fail drawn from this distribution — consider k-of-N per case.
 ---
 
 ### 7f — New condition cards (Tier 1)
@@ -270,6 +273,17 @@ Independently (Phase 9 MVP):
 
 **Respiratory domain — COMPLETE (2026-09-17):**
 - [x] COPD — committed (MOH Vol 2 2024 + Medscape 2025; two-source pattern; 2026-09-17)
+
+**Genitourinary domain — in progress (contract: `docs/domain_contracts/genitourinary.md`):**
+> MOH Vol 2 Chapter 15 only. Vol 3 (Level 4-6) excluded — mixed-tier authoring surfaces investigations unavailable at the target level of care. Neither volume carries differentials or argues-against for Ch 15, so every card uses the two-source pattern: EAU (infective/urological), KDIGO (renal).
+- [x] Urinary tract infection — enrichment only, v1.6 → v1.9 (Vol 2 §15.1 referral trigger in red_flags; pyelonephritis and prostatitis added to differentials; Vol 2 2024 source)
+- [x] Acute pyelonephritis — Vol 2 §15.2.1 + EAU 2026; ICD-11 GB51
+- [x] Acute bacterial prostatitis — Vol 2 §15.4.1 + EAU 2026; ICD-11 GA91.Y. ICD-11 has no acute prostatitis entity: GA91 codes chronic prostatitis (GA91.0) and prostatic abscess (GA91.1), so the acute form maps only to GA91.Y "Other specified". ICD-10 N41.0 is the more precise code; `icd_search_term` pins the override
+- [x] Acute glomerulonephritis — Vol 2 §15.5 + §15.7.1 + KDIGO 2021; ICD-11 GB40 (canonical title "Nephritic syndrome")
+- [x] Nephrotic syndrome — Vol 2 §15.6 + KDIGO 2021; ICD-11 GB41. Vol 2 §15.6 clinical features open with a verbatim duplicate of the §15.4.1 prostatitis bacteraemia line — a source transcription artefact; not encoded
+- [x] Acute kidney injury — Vol 2 §15.8.1 + KDIGO 2012; ICD-11 GB60.Z. KDIGO 2026 AKI/AKD is a public review draft and not citable. Vol 2 prints the creatinine threshold as "26.5mmol/l"; the correct unit is µmol/L
+- [ ] Chronic kidney disease — Vol 2 §15.8.2 + KDIGO 2024; ICD-11 GB61.Z. Vol 2 Table 15.5 (CKD criteria) is empty in the extraction — take staging from KDIGO. Authored on `wip/genitourinary-ckd`, not merged
+- [ ] Nephrolithiasis — deferred: no Vol 2 chapter. Retained as a `differentials` term on the pyelonephritis and AKI cards. Pathway G6 (acute flank colic) therefore has no owned card, and GU-MSP-05 / GU-RP-03 / GU-RP-05 have no evaluation fixtures
 
 **Excluded:**
 - Rift Valley fever — outbreak-only, not routine primary-care differential (AFI domain contract §3.4)
@@ -399,6 +413,16 @@ Independently (Phase 9 MVP):
 - [ ] **anaemia.md — WHO Hb threshold update:** card cites WHO 2011 haemoglobin cutoff document; WHO published revised guidance in 2024. Reconcile thresholds before clinical validation. Ref: WHO 2024 haemoglobin cutoffs publication.
 - [ ] **anaemia.md — ferritin language:** `serum ferritin <30 μg/L` as uncomplicated threshold is too broad. WHO 2020 guidance explicitly changes ferritin interpretation in inflammation/infection, including higher deficiency thresholds. Card wording must distinguish uncomplicated from inflammatory states before ingestion. Ref: WHO 2020 ferritin guideline.
 - [ ] **type_2_diabetes.md — ethnicity risk factor:** `East African ethnicity` in `risk_factors` is too broad a population category for individual diagnostic reasoning. Replace with specific, evidence-based risk factors (e.g. higher T2DM prevalence in urban East African populations, dietary pattern associations) before clinical validation. Colleague flagged risk of becoming an inappropriate diagnostic shortcut.
+
+---
+
+## Outstanding — AFI pairwise condition name mismatch
+
+- [ ] `afi_pairs.yaml` references `"Meningitis (bacterial)"`; the corpus card is `"Bacterial meningitis"`. The mismatch is in `MSP-01.condition_b` and `MSP-02.condition_a` — both mandatory safety pairs.
+
+  Latent so far: Neo4j has 0 nodes under the wrong name and 1 under the correct one, so the AFI pairs have not been loaded since the meningitis card was authored. The next `pairwise_loader.py` run (AFI is the default) will MERGE an orphan node under the wrong name and bind both mandatory safety pairs to it, leaving the real card unlinked. Nothing in the graph would surface the mismatch.
+
+  `afi_pairs.yaml` is AFI-owned, so the rename is left to that owner. `pairwise_loader.py` now warns on any pair condition with no matching card and suggests the likely intended name — `python neo4j/pairwise_loader.py --dry-run` shows it. AFI's 17 pairs remain unloaded; the 8 loaded edges are all Genitourinary.
 
 ---
 

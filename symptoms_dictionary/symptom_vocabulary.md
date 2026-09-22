@@ -92,6 +92,18 @@
 | no urinary frequency | absence of urinary frequency, denies frequency |
 | suprapubic discomfort | lower abdominal pain |
 | loin pain | flank pain |
+| colicky pain | waves of pain, spasmodic pain, cramping loin pain |
+| oliguria | reduced urine output, passing little urine |
+| nocturia | waking at night to pass urine |
+| periorbital oedema | puffy eyes, facial puffiness, morning eye swelling |
+| peripheral oedema | leg swelling, ankle swelling, pedal oedema |
+| frothy urine | foamy urine, bubbly urine |
+| bone pain | skeletal pain, aching bones |
+| recent sore throat | preceding pharyngitis, recent tonsillitis |
+| perineal pain | pain between scrotum and anus, perineal discomfort |
+| rectal pain | pain on defecation, anorectal pain |
+| genital pain | scrotal pain, testicular discomfort |
+| restlessness | unable to lie still, writhing, agitated with pain |
 | haematuria | blood in urine |
 | cloudy urine | turbid urine |
 | offensive-smelling urine | |
@@ -145,6 +157,12 @@
 | leukopenia | low white cell count, leucopenia |
 | prolonged expiratory phase | prolonged expiration, obstructive expiratory pattern |
 | costovertebral angle tenderness | renal angle tenderness |
+| tender prostate on DRE | boggy prostate, swollen tender prostate |
+| ascites | abdominal fluid, free peritoneal fluid |
+| anasarca | generalised oedema, whole body swelling |
+| pleural effusion | fluid on the chest |
+| skin darkening | hyperpigmentation, sallow complexion |
+| elevated blood pressure | raised BP, high blood pressure reading |
 | splenomegaly | enlarged spleen |
 | hepatomegaly | enlarged liver |
 | cervical lymphadenopathy | neck lymph nodes |
@@ -252,7 +270,12 @@
 | institutional contact | close institutional contact |
 | antibiotic use | recent antibiotic use |
 | urinary catheter | indwelling catheter, catheterisation |
+| benign prostatic hypertrophy | BPH, enlarged prostate, prostatic enlargement |
+| hypertension | HTN, hypertensive disease |
 | urinary tract structural abnormality | structural urological abnormality |
+| kidney transplant | renal transplant, post-transplant state |
+| nephrotoxic drug exposure | aminoglycoside exposure, contrast nephropathy exposure |
+| impetigo | skin sepsis, streptococcal skin infection |
 | urinary stones | renal calculi, kidney stones |
 | sexual intercourse | recent sexual intercourse |
 | silicosis | |
@@ -284,6 +307,13 @@
 | hypoglycaemia | low blood glucose, low blood sugar |
 | haemoglobinuria | blackwater urine |
 | prostration | inability to sit or stand |
+| renal abscess | perinephric abscess, intrarenal abscess |
+| hyperkalaemia | raised potassium, high serum potassium |
+| fluid overload | volume overload, fluid retention |
+| pericarditis | pericardial rub, uraemic pericarditis |
+| encephalopathy | uraemic encephalopathy |
+| venous thromboembolism | DVT, pulmonary embolism, thromboembolic event |
+| cannot tolerate oral intake | unable to take oral fluids, oral intake failure |
 | vomiting preventing oral medications | intractable vomiting |
 | diabetic ketoacidosis | DKA |
 | hyperosmolar hyperglycaemic state | HHS, hyperosmolar non-ketotic coma |
@@ -304,6 +334,8 @@
 | severe bleeding | haemorrhagic manifestations, spontaneous haemorrhage |
 | intestinal perforation | bowel perforation, typhoid perforation |
 | urosepsis | urological sepsis |
+| acute urinary retention | inability to pass urine, painful retention |
+| prostatic abscess | prostate abscess |
 | pyelonephritis | upper UTI, renal infection |
 | male UTI | UTI in men |
 | macroscopic haematuria | visible haematuria, frank haematuria |
@@ -385,6 +417,15 @@
 | positive urine dipstick nitrites and leukocyte esterase | |
 | pyuria on microscopy | ≥10 WBC per mm³ |
 | MSU culture ≥10⁵ CFU/mL | UTI gold standard |
+| proteinuria | protein in urine, albuminuria |
+| microscopic haematuria | non-visible haematuria, dipstick haematuria |
+| raised serum creatinine | elevated creatinine, creatinine rise |
+| RBC casts | red cell casts, dysmorphic red cells |
+| muddy brown casts | granular casts |
+| hypoalbuminaemia | low serum albumin |
+| heavy proteinuria | nephrotic range proteinuria, proteinuria above 3.5g |
+| dyslipidaemia | raised LDL cholesterol, hyperlipidaemia |
+| reduced eGFR | eGFR below 60, reduced glomerular filtration rate |
 | haemoglobin below WHO thresholds | Hb <13 men, <12 women, <11 pregnant |
 | low MCV <80 fL | microcytosis |
 | low MCH <27 pg | hypochromia |
@@ -454,7 +495,10 @@
 | normal chest X-ray | normal CXR |
 | normal upper GI endoscopy during symptoms | negative endoscopy |
 | sterile pyuria | pyuria without bacterial growth |
+| normal urinalysis | urinalysis within normal limits |
 | complete absence of fever | afebrile |
+| absence of loin pain | no flank pain, no loin pain |
+| absent costovertebral angle tenderness | negative CVA tenderness |
 | single elevated reading only | isolated BP elevation |
 | consistently normal ambulatory readings | normal 24h BP monitoring |
 | no endemic area exposure | no malaria exposure |

@@ -1,0 +1,305 @@
+condition: Acute pyelonephritis
+icd11: GB51
+icd_title: "Acute pyelonephritis"
+icd_entity_uri: "http://id.who.int/icd/release/11/2024-01/mms/441183088"
+icd10: N10
+category: urological
+corpus_version: "1.0"
+schema_version: "2.2"
+review_status: draft
+reviewed_by:
+last_reviewed:
+icd_verified: true
+
+sources:
+  - organization: "Kenya Ministry of Health"
+    title: "Clinical Management and Referral Guidelines Vol. 2: Clinical Guidelines for Management of Conditions at Level 2–3 Health Facilities, Chapter 15.2.1"
+    year: "2024"
+  - organization: "European Association of Urology (EAU)"
+    title: "EAU Guidelines on Urological Infections"
+    year: "2026"
+
+endemic_regions:
+  - nationwide
+
+environmental_signals: []
+
+graph:
+  cardinal_symptoms:
+    - fever
+    - loin pain
+    - dysuria
+    - urinary frequency
+    - urinary urgency
+  associated_symptoms:
+    - nausea
+    - vomiting
+    - costovertebral angle tenderness
+    - rigors
+  risk_factors:
+    - pregnancy
+    - kidney transplant
+    - urinary tract structural abnormality
+    - immunocompromise
+    - diabetes mellitus
+    - urinary catheter
+    - urinary stones
+  differentials:
+    - Urinary tract infection
+    - prostatitis
+    - renal colic
+    - appendicitis
+    - Malaria (unspecified)
+    - Typhoid fever
+  argues_against:
+    - absence of loin pain
+    - absent costovertebral angle tenderness
+    - colicky pain
+    - restlessness
+    - complete absence of fever
+    - periumbilical pain migrating to RLQ
+    - rebound tenderness
+  red_flags:
+    - septic shock
+    - urosepsis
+    - renal abscess
+    - cannot tolerate oral intake
+    - hypotension
+  confirms:
+    - pyuria on microscopy
+    - positive urine dipstick nitrites and leukocyte esterase
+    - microscopic haematuria
+    - proteinuria
+    - MSU culture ≥10⁵ CFU/mL
+    - costovertebral angle tenderness
+    - raised serum creatinine
+
+sections:
+  cardinal_symptoms: |
+    Acute pyelonephritis is a bacterial infection causing inflammation of the kidney, also
+    referred to as upper urinary tract infection. The cardinal presentation combines fever
+    with loin (flank) pain and lower urinary tract symptoms — dysuria, increased urinary
+    frequency, and urgency. Fever is usually ≥38 °C and may be accompanied by rigors.
+    Loin pain is characteristically constant and dull rather than colicky, and is usually
+    unilateral, corresponding to the affected kidney. The combination of fever and loin
+    pain in a patient with urinary symptoms is the primary diagnostic signature at primary
+    care level and should be treated as upper tract disease until shown otherwise.
+
+    Lower urinary tract symptoms may precede the systemic features by one to several days,
+    reflecting the usual pathogenesis — ascending infection from the bladder. Some patients,
+    particularly the elderly, may present without prominent urinary symptoms, with fever,
+    confusion, or general deterioration as the leading complaint; the absence of dysuria
+    does not exclude pyelonephritis in an older patient. Conversely, a minority of cases
+    arise from haematogenous spread rather than ascending infection — this is less common
+    and occurs particularly in those with ureteric obstruction, immunocompromise, or
+    debilitating illness.
+
+  associated_symptoms: |
+    Nausea and vomiting are common and are clinically important beyond their diagnostic
+    value: vomiting that prevents oral intake is one of the criteria that converts
+    outpatient management into a referral decision. Costovertebral angle tenderness —
+    pain elicited by firm percussion at the angle formed by the 12th rib and the
+    paravertebral muscles — is the characteristic examination finding and is usually
+    unilateral; a bilateral finding should raise the possibility of an alternative
+    diagnosis or bilateral disease.
+
+    Rigors indicate bacteraemia and raise the urgency of the presentation. General
+    malaise, anorexia, and prostration are common. Some patients report a preceding
+    episode of untreated or partially treated cystitis. Haematuria, when present, is
+    usually microscopic rather than visible.
+
+    Pain in acute pyelonephritis is characteristically located in the loin or flank, not
+    in the lower abdomen. A patient whose pain is confined to the lower abdomen or
+    suprapubic region, without loin pain or costovertebral angle tenderness, is more
+    likely to have lower urinary tract infection or a non-urinary cause, and should not
+    be assessed as pyelonephritis on the basis of fever and abdominal pain alone.
+
+  diagnostic_features: |
+    Diagnosis at primary care level rests on history and physical examination supported
+    by urinalysis. Urinalysis typically shows pyuria; the presence of nitrite suggests
+    infection with a nitrate-reducing organism such as Escherichia coli. Proteinuria and
+    microscopic haematuria are commonly found. A negative dipstick nitrite does not exclude
+    infection — several relevant organisms do not produce nitrate reductase, and conversion
+    requires adequate bladder dwell time.
+
+    Mid-stream urine should be obtained for culture and sensitivity before antibiotics are
+    started wherever laboratory access allows, because empirical therapy must subsequently
+    be adjusted to the culture result and because local resistance patterns vary. Total
+    blood count and renal function tests should be performed where available; a raised
+    serum creatinine indicates renal impairment and changes the management pathway.
+
+    The causative organisms are mostly gram-negative bacteria originating from faecal
+    flora — Escherichia coli predominantly, and also Proteus mirabilis, Klebsiella
+    pneumoniae, Enterococcus faecalis, and Enterobacter species. Imaging is not
+    required routinely. It is indicated where complicated pyelonephritis is suspected,
+    in which case renal, ureteric and bladder ultrasound is the appropriate first
+    investigation; a negative ultrasound does not exclude the pathology. Where imaging
+    is indicated, refer — it is not available at Level 2-3.
+
+  predisposing_factors: |
+    Acute pyelonephritis usually occurs as a complication of ascending urinary tract
+    infection from the bladder, so the risk factors for lower urinary tract infection
+    apply — female sex, sexual intercourse, urinary catheterisation, and recent
+    antibiotic use among them.
+
+    A defined group of factors classifies the infection as complicated, which changes
+    the management pathway rather than only the choice of antibiotic. These are:
+    pregnancy; kidney transplant; anatomical abnormality of the urinary tract; renal
+    failure; immunocompromise; and hospital-acquired infection. Poorly controlled
+    diabetes mellitus, extremes of age, and urinary stones also predispose to upper
+    tract infection and to a complicated course. Urinary stones are of particular
+    importance because obstruction combined with infection constitutes a urological
+    emergency rather than a routine infection.
+
+    In Kenya, pyelonephritis occurs nationwide with no established regional or seasonal
+    pattern. The principal access consideration is that urine culture and imaging are
+    frequently unavailable at Level 2-3, so empirical decisions must often be made on
+    clinical grounds and urinalysis alone.
+
+  typical_presentation: |
+    The defining sequence is lower urinary tract symptoms that ascend. Dysuria, urinary
+    frequency and urgency come first, and are then followed by fever with rigors and by
+    constant unilateral loin pain. Nausea and vomiting may accompany the systemic phase.
+    On examination there is fever and unilateral costovertebral angle tenderness, with no
+    abdominal guarding or rebound. Urinalysis shows pyuria with positive nitrite, often
+    with microscopic haematuria and trace proteinuria.
+
+    It is the loin pain and the costovertebral angle tenderness that make the diagnosis.
+    Fever with abdominal symptoms alone, in the absence of those two findings and of any
+    urinary symptoms, is not this presentation.
+
+    Where the patient is otherwise healthy, not pregnant, able to tolerate oral fluids,
+    haemodynamically stable, and has no structural abnormality or comorbidity, the
+    infection is uncomplicated and may be managed as an outpatient at primary care level.
+
+    The contrasting presentation is a patient with any complicating factor — pregnancy,
+    diabetes, immunocompromise, kidney transplant, known structural abnormality, a
+    urinary catheter, or advanced age — or who is vomiting and unable to keep fluids
+    down, or who is hypotensive. This is complicated pyelonephritis and requires referral.
+    In older patients the presentation may be less specific, with confusion, falls, or
+    general deterioration and fever, and without prominent urinary symptoms.
+
+  differential_diagnoses: |
+    Lower urinary tract infection (cystitis) shares dysuria, frequency, urgency and
+    pyuria. Discriminating features: cystitis does not usually produce fever, loin pain,
+    costovertebral angle tenderness, or systemic upset. The presence of any of these
+    should reclassify the presentation as upper tract disease. Suprapubic discomfort as
+    the dominant localising symptom favours cystitis.
+
+    Renal colic (urinary stone disease) shares loin pain, dysuria and haematuria, and
+    may co-exist with infection. Discriminating features: stone pain is sudden in onset,
+    colicky, and radiates from loin to groin; the patient is characteristically restless
+    and unable to lie still, whereas the patient with pyelonephritis usually prefers to
+    lie still. Fever is not a feature of uncomplicated stone disease. Where fever and
+    obstruction coexist, the combination suggests an obstructed infected kidney — see
+    Red flags.
+
+    Acute bacterial prostatitis shares fever, dysuria, frequency and urgency in male
+    patients. Discriminating features: perineal, genital or rectal pain, and a soft,
+    swollen, tense and severely tender prostate on digital rectal examination. Any urinary
+    tract infection in a male is considered complicated, so this differential does not
+    change the referral decision, but it does change the examination performed.
+
+    Appendicitis may mimic right-sided pyelonephritis, particularly where the appendix
+    is retrocaecal and produces right flank pain. Discriminating features: appendicitis
+    typically produces migratory pain beginning periumbilically and localising to the right
+    iliac fossa, with guarding, rebound tenderness and anorexia; urinalysis is usually
+    normal or shows only mild pyuria from ureteric irritation.
+
+    Malaria must be considered in any febrile patient in Kenya. Discriminating features:
+    malaria does not produce dysuria, loin pain or costovertebral angle tenderness, and
+    urinalysis is not purulent. A positive malaria test does not exclude concurrent
+    pyelonephritis where urinary features and loin pain are present.
+
+    Typhoid fever shares fever, malaise and abdominal symptoms. Discriminating features:
+    typhoid has an insidious step-wise fever over five to seven days, may produce relative
+    bradycardia and rose spots, and does not produce dysuria or costovertebral angle
+    tenderness.
+
+  argues_against: |
+    Pain that is colicky in character, coming in waves and radiating from the loin towards
+    the groin, argues against pyelonephritis and towards urinary stone disease — particularly
+    when the patient is restless and unable to find a comfortable position, in contrast to
+    the patient with pyelonephritis who usually prefers to lie still. The combination of
+    colicky pain with restlessness in an afebrile patient should shift the leading diagnosis
+    away from pyelonephritis.
+
+    The absence of loin pain argues against acute pyelonephritis more strongly than any
+    other single feature. Fever with lower abdominal or suprapubic pain, but without loin
+    pain and without costovertebral angle tenderness, is not a pyelonephritis presentation
+    — it should direct assessment towards lower urinary tract infection, gastroenteritis,
+    or a gynaecological or other intra-abdominal cause. Absence of costovertebral angle
+    tenderness on careful examination reduces, though it does not exclude, the likelihood
+    of pyelonephritis; the sign may be absent early in the illness, so it should be
+    weighed alongside the site of pain rather than relied on alone.
+
+    A completely normal urinalysis with a negative culture argues strongly against acute
+    pyelonephritis and should prompt a search for an alternative cause of fever and loin
+    pain. Absence of fever in a patient with only lower urinary tract symptoms argues for
+    cystitis rather than upper tract disease.
+
+    Migratory pain localising to the right iliac fossa with guarding and rebound tenderness
+    argues against pyelonephritis and towards appendicitis. Perineal or rectal pain in a
+    male patient argues towards prostatitis. A dominant diarrhoeal syndrome, or a fever
+    with no urinary symptoms and a clean urinalysis, is not consistent with acute
+    pyelonephritis and should redirect the assessment towards an alternative febrile
+    illness.
+
+  red_flags: |
+    Obstructed and infected kidney. Fever with loin pain in a patient who has a known
+    or suspected urinary stone, or who has become anuric, may indicate an obstructed
+    infected kidney. This is a urological emergency requiring decompression, not antibiotics
+    alone, and it may be clinically indistinguishable from uncomplicated pyelonephritis
+    without imaging. Any suspicion of obstruction with fever warrants same-day referral
+    regardless of how well the patient appears.
+
+    Sepsis and septic shock. Hypotension, tachycardia with a narrow pulse pressure,
+    cold peripheries, altered consciousness, or reduced urine output indicate urosepsis
+    or septic shock. Untreated acute pyelonephritis may progress to septic shock, and
+    this is the principal cause of death in this condition.
+
+    Renal or perinephric abscess. Persistent fever despite 48 to 72 hours of
+    appropriate antibiotic therapy suggests abscess formation and requires referral for
+    imaging.
+
+    Inability to tolerate oral intake. Vomiting that prevents oral fluids or oral
+    antibiotics removes outpatient management as an option and is itself a referral
+    criterion.
+
+    Pregnancy. Acute pyelonephritis in pregnancy is always complicated and carries
+    risk to both mother and fetus, including preterm labour. Refer.
+
+    Rising serum creatinine or reduced urine output indicates renal impairment and
+    requires referral.
+
+    Vol 2 states the primary-care referral trigger directly: complicated pyelonephritis
+    with fever, flank pain and vomiting should be referred to a higher level for care.
+
+  diagnostic_context: |
+    In Kenya primary care (Level 2-3), uncomplicated acute pyelonephritis is one of the few
+    conditions in MOH Chapter 15 that carries a full primary-care treatment pathway rather
+    than terminating at referral. The clinical task is therefore twofold: recognise upper
+    tract disease and distinguish uncomplicated from complicated infection, because that
+    distinction determines whether the patient is treated here or referred.
+
+    Healthy, young, non-pregnant women with uncomplicated infection may be managed as
+    outpatients over 7 to 14 days. The following should be managed as inpatients and
+    therefore referred: the very young; the elderly; the immunocompromised; those with
+    poorly controlled diabetes; post-renal-transplant patients; pregnant women; those
+    with structural abnormalities; and those who cannot tolerate oral intake.
+
+    Empirical antibiotic treatment should be based on local resistance patterns and then
+    adjusted once urine culture and sensitivity results are available. Vol 2 lists for
+    outpatient oral management: fluoroquinolones — ciprofloxacin 500 mg twice daily,
+    ciprofloxacin sustained release 1000 mg once daily, or levofloxacin 500 mg or 750 mg
+    once daily for 7 days; cotrimoxazole 960 mg twice daily for 14 days; or second- and
+    third-generation cephalosporins — cefixime 400 mg once daily, or cefpodoxime 100 mg
+    twice daily. Analgesics and antipyretics are given alongside.
+
+    Practical constraints at Level 2-3 shape the decision: urine culture is often
+    unavailable, so empirical treatment is commonly started on clinical grounds and
+    urinalysis; imaging is not available and its indication is itself a reason to refer;
+    and renal function testing may not be accessible. Where any doubt exists about
+    whether the infection is complicated, refer — the cost of referring an uncomplicated
+    case is low, and the cost of managing an obstructed infected kidney as outpatient
+    cystitis is high.
