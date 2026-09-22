@@ -15,16 +15,13 @@
 # SCOPE — only pairs whose BOTH conditions have authored cards appear here.
 # Per genitourinary.md §4.4, a pair is specified as its second condition card is
 # completed, so that no pair specification precedes the evidence base for both of
-# its conditions. The contract defines 15 pairs; the 8 below are those currently
+# its conditions. The contract defines 15 pairs; the 11 below are those currently
 # loadable. Not yet present, and why:
 #
 #   GU-MSP-05  Obstructed stone vs pyelo      — nephrolithiasis deferred (no Vol 2 chapter);
 #                                               content is carried on the pyelonephritis card
 #   GU-RP-03   Nephrolithiasis vs lower UTI   — nephrolithiasis deferred
 #   GU-RP-05   AKI vs nephrolithiasis         — nephrolithiasis deferred
-#   GU-MSP-02  AKI vs CKD                     — CKD card not yet authored
-#   GU-RP-04   Nephrotic syndrome vs CKD      — CKD card not yet authored
-#   GU-RP-06   CKD vs Iron deficiency anaemia — CKD card not yet authored
 #   GU-RP-09   Lower UTI vs Genitourinary TB  — WITHHELD ON CLINICAL GROUNDS, not
 #              availability. The corpus card is "Pulmonary tuberculosis", a different
 #              clinical entity from genitourinary TB. Sterile pyuria points to GU TB
@@ -100,6 +97,41 @@ pairs:
       - urosepsis
       - sepsis
       - orchitis
+
+  - pair_id: GU-MSP-02
+    priority: mandatory_safety
+    condition_a: "Acute kidney injury"
+    condition_b: "Chronic kidney disease"
+    pathways: [G5, G8]
+    governance_pending: false
+    cross_domain: false
+    shared_features:
+      - raised serum creatinine
+      - reduced eGFR
+      - peripheral oedema
+      - fatigue
+      - nausea
+    discriminating_evidence:
+      - anaemia
+      - skin darkening
+      - nocturia
+      - bone pain
+      - nephrotoxic drug exposure
+      - dehydration
+    missing_information:
+      - any previous creatinine or eGFR result
+      - duration of symptoms — days versus months
+      - known diabetes or hypertension and for how long
+      - recent NSAID, aminoglycoside or contrast exposure
+      - recent volume loss, bleeding or sepsis
+      - urine output over the past 24 to 48 hours
+    red_flags:
+      - hyperkalaemia
+      - absent urine output
+      - fluid overload
+      - acute pulmonary oedema
+      - pericarditis
+      - encephalopathy
 
   # ── Required pairs (cross-domain) ───────────────────────────────────────────
 
@@ -283,3 +315,66 @@ pairs:
       - encephalopathy
       - acute pulmonary oedema
       - visual disturbance
+
+  - pair_id: GU-RP-04
+    priority: required
+    condition_a: "Nephrotic syndrome"
+    condition_b: "Chronic kidney disease"
+    pathways: [G4, G8]
+    governance_pending: false
+    cross_domain: false
+    shared_features:
+      - peripheral oedema
+      - proteinuria
+      - fatigue
+      - raised serum creatinine
+    discriminating_evidence:
+      - heavy proteinuria
+      - hypoalbuminaemia
+      - anasarca
+      - anaemia
+      - skin darkening
+      - nocturia
+      - reduced eGFR
+    missing_information:
+      - urinalysis protein quantification
+      - serum albumin
+      - duration of swelling
+      - any previous creatinine or eGFR result
+      - presence of anaemia, itching or skin darkening
+    red_flags:
+      - venous thromboembolism
+      - acute pulmonary oedema
+      - hyperkalaemia
+      - sepsis
+
+  - pair_id: GU-RP-06
+    priority: required
+    condition_a: "Chronic kidney disease"
+    condition_b: "Iron deficiency anaemia"
+    pathways: [G8]
+    governance_pending: false
+    cross_domain: true
+    shared_features:
+      - anaemia
+      - pallor
+      - fatigue
+      - reduced exercise tolerance
+    discriminating_evidence:
+      - raised serum creatinine
+      - reduced eGFR
+      - proteinuria
+      - pruritus
+      - skin darkening
+      - nocturia
+      - low MCV <80 fL
+    missing_information:
+      - serum creatinine and eGFR
+      - urinalysis for proteinuria
+      - full blood count indices and ferritin
+      - presence of itching, skin darkening or nocturia
+      - known diabetes or hypertension
+    red_flags:
+      - hyperkalaemia
+      - acute pulmonary oedema
+      - severe anaemia
