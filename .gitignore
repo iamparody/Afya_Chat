@@ -34,3 +34,11 @@ env/
 # OS
 .DS_Store
 Thumbs.db
+
+# Third-party AI tool configs — personal tooling, not project files
+.codex/
+opencode.json
+AGENTS.md
+
+# Source PDFs — large binaries, not source-controlled
+*.pdf
