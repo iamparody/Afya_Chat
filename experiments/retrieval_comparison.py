@@ -345,6 +345,103 @@ def run_comparison(chunks: list[dict], embedder, collection, label: str = "", ba
     return ranks_by_mode["dense"], ranks_by_mode["bm25"], ranks_by_mode["rrf"]
 
 
+# ── RRF k sweep ───────────────────────────────────────────────────────────────
+
+def run_k_sweep(chunks: list[dict], embedder, collection, ks: list = None):
+    """Sweep RRF k over [30, 60, 120]. For each k: MRR, Recall@9, per-case rank."""
+    if ks is None:
+        ks = [30, 60, 120]
+
+    bm25_index = build_bm25_index(chunks)
+
+    W = 88
+    print(f"\n{'=' * W}")
+    print("RRF k SWEEP — Phase 5b-4 calibration")
+    print(f"Corpus: {len(chunks)} chunks | {len(set(c['metadata']['condition'] for c in chunks))} conditions")
+    print(f"{'=' * W}")
+
+    # Pre-compute dense and BM25 candidate lists once (k-independent)
+    dense_lists = []
+    bm25_lists  = []
+    for case in EVAL_CASES:
+        dense_lists.append(dense_candidates(embedder, collection, case["presentation"], n=TOP_N))
+        bm25_lists.append(bm25_candidates(bm25_index, chunks, case["presentation"], n=TOP_N))
+
+    # Per-k results: {k: [ranks]}
+    results = {}
+    for k in ks:
+        ranks = []
+        for i, case in enumerate(EVAL_CASES):
+            r_cands = rrf_candidates(dense_lists[i], bm25_lists[i], n=TOP_N, k=k)
+            ranks.append(rank_of(case["expected_terms"], r_cands))
+        results[k] = ranks
+
+    # Header
+    case_ids = [c["id"] for c in EVAL_CASES]
+    id_header = "  ".join(f"{cid:>4}" for cid in case_ids)
+    print(f"\n{'k':>5}  {'MRR':>6}  {'R@9':>5}  {id_header}")
+    print("-" * W)
+
+    for k in ks:
+        ranks = results[k]
+        k_mrr = mrr(ranks)
+        k_r9  = recall_at_k(ranks, TOP_N)
+
+        def fmt(r):
+            return f"{r:>4}" if r is not None else "   —"
+
+        rank_cells = "  ".join(fmt(r) for r in ranks)
+        marker = " ◀ current" if k == RRF_K else ""
+        print(f"{k:>5}  {k_mrr:>6.3f}  {k_r9:>5.2f}  {rank_cells}{marker}")
+
+    # Cases where rank changes across k values
+    print(f"\n{'─' * W}")
+    print("Cases where RRF rank changes across k values:")
+    changed = False
+    for i, case in enumerate(EVAL_CASES):
+        ranks_across_k = [results[k][i] for k in ks]
+        if len(set(str(r) for r in ranks_across_k)) > 1:
+            changed = True
+            cells = "  ".join(
+                f"k={k}→{r if r is not None else '—'}" for k, r in zip(ks, ranks_across_k)
+            )
+            print(f"  Case {case['id']:>3} ({case['label']:<30}): {cells}")
+    if not changed:
+        print("  None — rank is stable across all k values.")
+
+    # Per-k candidate lists for changed cases only
+    print(f"\n{'─' * W}")
+    print("Candidate lists for rank-sensitive cases (top 9):")
+    for i, case in enumerate(EVAL_CASES):
+        ranks_across_k = [results[k][i] for k in ks]
+        if len(set(str(r) for r in ranks_across_k)) > 1:
+            print(f"\n  Case {case['id']} — {case['label']}")
+            print(f"    Dense:  {dense_lists[i]}")
+            print(f"    BM25:   {bm25_lists[i]}")
+            for k in ks:
+                r_cands = rrf_candidates(dense_lists[i], bm25_lists[i], n=TOP_N, k=k)
+                print(f"    RRF k={k}: {r_cands}")
+
+    # Score margin distribution at each k (between ranks 0 and 1)
+    print(f"\n{'─' * W}")
+    print("RRF score margin between rank-0 and rank-1 (higher k = softer top-2 separation):")
+    print(f"{'k':>5}  {'Case':>5}  {'Rank-0':>30}  {'Rank-1':>30}  {'Margin':>8}")
+    print("-" * W)
+    for k in ks:
+        for i, case in enumerate(EVAL_CASES):
+            scores: dict = {}
+            for rank, cond in enumerate(dense_lists[i]):
+                scores[cond] = scores.get(cond, 0.0) + 1.0 / (k + rank)
+            for rank, cond in enumerate(bm25_lists[i]):
+                scores[cond] = scores.get(cond, 0.0) + 1.0 / (k + rank)
+            ranked = sorted(scores, key=lambda c: -scores[c])
+            if len(ranked) >= 2:
+                margin = scores[ranked[0]] - scores[ranked[1]]
+                print(
+                    f"{k:>5}  {case['id']:>5}  {ranked[0][:30]:>30}  {ranked[1][:30]:>30}  {margin:>8.5f}"
+                )
+
+
 # ── Growth comparison ─────────────────────────────────────────────────────────
 
 def run_growth_test(embedder, collection):
@@ -397,6 +494,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--growth",    action="store_true", help="Run corpus-growth stability test")
     parser.add_argument("--baseline",  action="store_true", help="27-condition retrieval baseline: Recall@9/30/50 + MRR + provenance")
+    parser.add_argument("--sweep",     action="store_true", help="RRF k sweep: k=30/60/120 — MRR + per-case rank + rank-change table")
     args = parser.parse_args()
 
     from dotenv import load_dotenv
@@ -417,6 +515,8 @@ def main():
         print("\n27-CONDITION RETRIEVAL BASELINE — Phase 5b-1")
         print(f"Corpus: {len(chunks)} chunks | RRF_K={RRF_K} | TOP_N={TOP_N}")
         run_comparison(chunks, embedder, collection, label="27-CONDITION CORPUS", baseline=True)
+    elif args.sweep:
+        run_k_sweep(chunks, embedder, collection)
     else:
         run_comparison(chunks, embedder, collection, label="CURRENT CORPUS")
 
