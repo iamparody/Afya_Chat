@@ -78,9 +78,10 @@ def build_bm25_index(chunks: list[dict]):
 def dense_candidates(embedder, collection, presentation: str, n: int = TOP_N) -> list[str]:
     """Return top-N unique conditions by Chroma cosine rank."""
     emb = embedder.embed_query(presentation)
+    pool = min(max(DENSE_POOL, n * 10), collection.count())
     results = collection.query(
         query_embeddings=[emb],
-        n_results=min(DENSE_POOL, collection.count()),
+        n_results=pool,
         include=["metadatas"],
     )
     seen: dict[str, bool] = {}
@@ -223,91 +224,125 @@ EVAL_CASES = [
         ),
         "expected_terms": ["anaemia", "anemia", "iron"],
     },
+    {
+        "id": "13",
+        "label": "DVT — post-partum calf swelling",
+        "presentation": (
+            "28F, 10 days post-partum after caesarean section. Right calf swelling and "
+            "tenderness for 3 days, worse on walking. Right calf circumference 3cm larger "
+            "than left. No fever. No chest pain or breathlessness."
+        ),
+        "expected_terms": ["thrombosis", "dvt", "deep vein"],
+    },
 ]
+
+
+# ── Metrics helpers ───────────────────────────────────────────────────────────
+
+def recall_at_k(ranks: list, k: int) -> float:
+    return sum(1 for r in ranks if r is not None and r < k) / len(ranks)
 
 
 # ── Runner ────────────────────────────────────────────────────────────────────
 
-def run_comparison(chunks: list[dict], embedder, collection, label: str = ""):
+def run_comparison(chunks: list[dict], embedder, collection, label: str = "", baseline: bool = False):
     bm25_index = build_bm25_index(chunks)
+    cases = EVAL_CASES
 
-    print(f"\n{'=' * 72}")
+    W = 80
+    print(f"\n{'=' * W}")
     if label:
         print(f"  CORPUS: {label}")
     print(f"  {len(chunks)} chunks | {len(set(c['metadata']['condition'] for c in chunks))} conditions")
-    print(f"{'=' * 72}")
-    print(f"{'ID':<4} {'Label':<32} {'Dense':>6} {'BM25':>6} {'RRF':>6}  BM25-only  Dense-only")
-    print("-" * 72)
+    print(f"{'=' * W}")
 
-    dense_ranks, bm25_ranks, rrf_ranks = [], [], []
+    # At baseline we also measure Recall@30 and Recall@50 — need larger candidate pools
+    ks = [9, 30, 50] if baseline else [9]
+    n_main = ks[-1] if baseline else TOP_N   # retrieve up to the largest k needed
+
+    hdr = f"{'ID':<5} {'Label':<30} {'Dense':>6} {'BM25':>6} {'RRF':>6}  {'Provenance':<14}"
+    print(hdr)
+    print("-" * W)
+
+    ranks_by_mode: dict = {"dense": [], "bm25": [], "rrf": []}
     per_case_detail = []
 
-    for case in EVAL_CASES:
-        d_cands = dense_candidates(embedder, collection, case["presentation"])
-        b_cands = bm25_candidates(bm25_index, chunks, case["presentation"])
-        r_cands = rrf_candidates(d_cands, b_cands)
+    for case in cases:
+        d_cands = dense_candidates(embedder, collection, case["presentation"], n=n_main)
+        b_cands = bm25_candidates(bm25_index, chunks, case["presentation"], n=n_main)
+        r_cands = rrf_candidates(d_cands, b_cands, n=n_main)
 
         d_rank = rank_of(case["expected_terms"], d_cands)
         b_rank = rank_of(case["expected_terms"], b_cands)
         r_rank = rank_of(case["expected_terms"], r_cands)
 
-        dense_ranks.append(d_rank)
-        bm25_ranks.append(b_rank)
-        rrf_ranks.append(r_rank)
+        ranks_by_mode["dense"].append(d_rank)
+        ranks_by_mode["bm25"].append(b_rank)
+        ranks_by_mode["rrf"].append(r_rank)
 
-        d_set = set(d_cands)
-        b_set = set(b_cands)
-        bm25_only = b_set - d_set
-        dense_only = d_set - b_set
+        # Provenance at TOP_N=9 (the live retrieval window)
+        d9 = set(d_cands[:TOP_N])
+        b9 = set(b_cands[:TOP_N])
+        in_d = case["expected_terms"] and any(
+            t in c.lower() for c in d9 for t in case["expected_terms"]
+        )
+        in_b = case["expected_terms"] and any(
+            t in c.lower() for c in b9 for t in case["expected_terms"]
+        )
+        if in_d and in_b:
+            prov = "Both"
+        elif in_d:
+            prov = "Dense-only"
+        elif in_b:
+            prov = "BM25-only"
+        else:
+            prov = "Neither@9"
 
         def fmt_rank(r):
             return str(r) if r is not None else "—"
 
         print(
-            f"{case['id']:<4} {case['label']:<32} "
-            f"{fmt_rank(d_rank):>6} {fmt_rank(b_rank):>6} {fmt_rank(r_rank):>6}  "
-            f"{len(bm25_only):>9}  {len(dense_only):>10}"
+            f"{case['id']:<5} {case['label']:<30} "
+            f"{fmt_rank(d_rank):>6} {fmt_rank(b_rank):>6} {fmt_rank(r_rank):>6}  {prov:<14}"
         )
 
         per_case_detail.append({
             "id": case["id"],
-            "d_cands": d_cands,
-            "b_cands": b_cands,
-            "r_cands": r_cands,
-            "bm25_only": sorted(bm25_only),
-            "dense_only": sorted(dense_only),
+            "d_cands": d_cands[:TOP_N],
+            "b_cands": b_cands[:TOP_N],
+            "r_cands": r_cands[:TOP_N],
+            "bm25_only": sorted(set(b_cands[:TOP_N]) - set(d_cands[:TOP_N])),
+            "dense_only": sorted(set(d_cands[:TOP_N]) - set(b_cands[:TOP_N])),
         })
 
-    print("-" * 72)
+    print("-" * W)
 
-    def recall_at_9(ranks):
-        return sum(1 for r in ranks if r is not None) / len(ranks)
+    # Summary metrics
+    for k in ks:
+        dr = recall_at_k(ranks_by_mode["dense"], k)
+        br = recall_at_k(ranks_by_mode["bm25"], k)
+        rr = recall_at_k(ranks_by_mode["rrf"], k)
+        print(f"Recall@{k:<3}: Dense={dr:.2f}  BM25={br:.2f}  RRF={rr:.2f}")
 
-    print(f"\nRecall@{TOP_N}:  Dense={recall_at_9(dense_ranks):.2f}  BM25={recall_at_9(bm25_ranks):.2f}  RRF={recall_at_9(rrf_ranks):.2f}")
-    print(f"MRR:        Dense={mrr(dense_ranks):.3f}  BM25={mrr(bm25_ranks):.3f}  RRF={mrr(rrf_ranks):.3f}")
-
-    # BM25-only and dense-only candidates across all cases
-    all_bm25_only = set()
-    all_dense_only = set()
-    for d in per_case_detail:
-        all_bm25_only.update(d["bm25_only"])
-        all_dense_only.update(d["dense_only"])
-
-    if all_bm25_only:
-        print(f"\nConditions found by BM25 but not Dense (any case): {sorted(all_bm25_only)}")
-    if all_dense_only:
-        print(f"Conditions found by Dense but not BM25 (any case): {sorted(all_dense_only)}")
+    dmrr = mrr(ranks_by_mode["dense"])
+    bmrr = mrr(ranks_by_mode["bm25"])
+    rmrr = mrr(ranks_by_mode["rrf"])
+    print(f"MRR:        Dense={dmrr:.3f}  BM25={bmrr:.3f}  RRF={rmrr:.3f}")
 
     # Per-case candidate lists (verbose)
-    print(f"\n{'─' * 72}")
-    print("Per-case candidate lists:")
+    print(f"\n{'─' * W}")
+    print("Per-case candidate lists (top 9):")
     for d in per_case_detail:
         print(f"\n  Case {d['id']}:")
         print(f"    Dense: {d['d_cands']}")
         print(f"    BM25:  {d['b_cands']}")
         print(f"    RRF:   {d['r_cands']}")
+        if d["bm25_only"]:
+            print(f"    BM25-only: {d['bm25_only']}")
+        if d["dense_only"]:
+            print(f"    Dense-only: {d['dense_only']}")
 
-    return dense_ranks, bm25_ranks, rrf_ranks
+    return ranks_by_mode["dense"], ranks_by_mode["bm25"], ranks_by_mode["rrf"]
 
 
 # ── Growth comparison ─────────────────────────────────────────────────────────
@@ -360,7 +395,8 @@ def run_growth_test(embedder, collection):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--growth", action="store_true", help="Run corpus-growth stability test")
+    parser.add_argument("--growth",    action="store_true", help="Run corpus-growth stability test")
+    parser.add_argument("--baseline",  action="store_true", help="27-condition retrieval baseline: Recall@9/30/50 + MRR + provenance")
     args = parser.parse_args()
 
     from dotenv import load_dotenv
@@ -377,6 +413,10 @@ def main():
 
     if args.growth:
         run_growth_test(embedder, collection)
+    elif args.baseline:
+        print("\n27-CONDITION RETRIEVAL BASELINE — Phase 5b-1")
+        print(f"Corpus: {len(chunks)} chunks | RRF_K={RRF_K} | TOP_N={TOP_N}")
+        run_comparison(chunks, embedder, collection, label="27-CONDITION CORPUS", baseline=True)
     else:
         run_comparison(chunks, embedder, collection, label="CURRENT CORPUS")
 
