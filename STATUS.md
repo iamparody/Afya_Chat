@@ -628,6 +628,50 @@ See Phase 8b section above.
 - [x] 6. Comorbidity context engine — `phase7/comorbidity_engine.py`; `ComorbidityAlert` dataclass; `get_comorbidity_alerts()` reads YAML-pipeline output (schema 2.2); injected via `build_context()` as `## Comorbidity and clinical context alerts`; Fixture A verified: Malaria `missing_information` now includes pregnancy status (2026-09-14, 8/8 eval preserved)
 - [ ] Future components (BM25, cross-encoder reranker, query expansion) — added only when a measured retrieval failure justifies them; corpus size alone is not a trigger
 
+## Phase 5b — Hybrid Retrieval (BM25 + RRF)
+
+> Triggered by: 27-condition corpus growth + offline experiment showing BM25 MRR 0.713 vs Dense 0.605.
+> Engineering principle: diagnose failure boundary → smallest systemic fix → test → regression → commit → stop.
+
+**Context — previous BM25 attempt (Phase 5c, ~15 conditions):**
+BM25 was previously integrated and rejected: hybrid 7/8 but introduced 4a→4b T2DM confidence regression (paired comparison failure). Infrastructure preserved in phase5/bm25_index.py. The new integration uses RRF fusion with per-case provenance tracking, not hybrid candidate generation. Re-run under controlled conditions at 27 conditions.
+
+### 5b-1 — 27-condition retrieval baseline (do first, before adding any new card)
+
+- [ ] Run `python experiments/retrieval_comparison.py` — capture Recall@9/30/50 + MRR + per-case Dense/BM25/RRF ranks + candidate provenance
+- [ ] Record baseline in this file: Dense MRR=0.605, BM25 MRR=0.713, RRF MRR=0.713 at current corpus (from session run)
+- [ ] Verify per-case: did BM25/RRF rescue cases Dense struggled with, or just improve aggregate ranking?
+
+### 5b-2 — BM25 + RRF live integration
+
+- [ ] Integrate BM25 into `RetrievalRouter.get_candidates()` — Dense + BM25 → RRF → graph
+- [ ] Singleton BM25 index keyed by `hashlib.md5(chunks.jsonl bytes)` — rebuild only when corpus changes
+- [ ] `@st.cache_resource` (or process-level singleton) to avoid rebuild per Streamlit interaction
+- [ ] Candidate provenance: add `bm25_rank` and `rrf_score` to candidate dict for audit logging
+- [ ] Do NOT sort candidates by fused score — vector rank order preserved as before
+
+### 5b-3 — Regression + growth test
+
+- [ ] Run `python phase5/evaluate.py` — gate ≥7/8
+- [ ] Monitor 4a→4b T2DM confidence paired comparison specifically (previous BM25 failure point)
+- [ ] Run `python experiments/retrieval_comparison.py` — compare Dense-only vs Dense+BM25+RRF per case
+- [ ] Run growth test (new baseline vs current) once post-BM25 corpus is stable
+
+### 5b-4 — Fusion calibration (post-integration, not blocking)
+
+- [ ] RRF k sweep: k=30 / k=60 (current) / k=120 — measure MRR impact
+- [ ] Graph weight experiment: 70/30 → 50/50 → 40/60 — measure MRR + paired comparisons
+- [ ] Near-tie threshold re-examination: `AMBIGUITY_MARGIN_THRESHOLD=0.15` was calibrated on dense-only scores; re-verify margin distribution after RRF changes score gaps
+
+### 5b-5 — Recall@k scaling diagnostic (ongoing as corpus grows)
+
+- [ ] Add Recall@30 and Recall@50 columns to `retrieval_comparison.py` output
+- [ ] Run after every 5-condition batch to track whether rank dilution is occurring
+- [ ] If Recall@9 falls but Recall@30/50 holds: ranking problem → reranker is next experiment
+- [ ] If Recall@50 falls: retrieval coverage problem → investigate cause before adding domain routing
+
+---
+
 **Target retrieval stack:**
 ```
 Presentation

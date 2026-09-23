@@ -11,9 +11,11 @@ Clinical logic lives in prompts.py. Provider logic lives in providers.py.
 This file orchestrates only.
 """
 
+import hashlib
 import json
 import logging
 import os
+import re
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -44,8 +46,79 @@ from providers import get_provider
 from presentation_map import classify as _map_classify, get_map_candidates as _map_get_candidates
 
 CHROMA_DIR       = ROOT / "chroma" / "db"
+CHUNKS_PATH      = ROOT / "corpus_pipeline" / "output" / "chunks.jsonl"
 TOP_N_CANDIDATES = 9
 TOP_N_PASSAGES   = 5  # per candidate — wider window to ensure red flag + diagnostic sections are included
+RRF_K            = 60  # Cormack et al. 2009 standard default — swept in Phase 5b calibration
+
+
+# ── BM25 tokeniser + singleton ────────────────────────────────────────────────
+
+_STOPWORDS = frozenset({
+    # general
+    "the", "and", "with", "for", "this", "that", "from", "may", "can",
+    "are", "has", "have", "been", "will", "its", "also", "such", "due",
+    "more", "both", "into", "than", "often", "most", "other", "which",
+    "when", "does",
+    # corpus boilerplate (section headers, card metadata)
+    "symptoms", "features", "diagnosis", "diagnostic", "patient", "clinical",
+    "associated", "common", "typically", "present", "usually", "include",
+    "condition",
+})
+
+def _tokenize(text: str) -> list:
+    tokens = re.findall(r"[a-z0-9][a-z0-9'/\-]*", text.lower())
+    return [t for t in tokens if t not in _STOPWORDS and len(t) > 2]
+
+
+_bm25_cache: dict = {}   # {"hash": str, "index": BM25Okapi, "chunks": list}
+
+def _get_bm25():
+    """Return cached BM25 index, rebuilding if chunks.jsonl has changed."""
+    from rank_bm25 import BM25Okapi
+    raw = CHUNKS_PATH.read_bytes()
+    h = hashlib.md5(raw).hexdigest()
+    if _bm25_cache.get("hash") == h:
+        return _bm25_cache["index"], _bm25_cache["chunks"]
+    chunks = [json.loads(line) for line in raw.decode("utf-8").splitlines() if line.strip()]
+    corpus = [_tokenize(c["text"]) for c in chunks]
+    index = BM25Okapi(corpus)
+    _bm25_cache.update({"hash": h, "index": index, "chunks": chunks})
+    return index, chunks
+
+
+# ── Retrieval: BM25 + RRF ─────────────────────────────────────────────────────
+
+def _bm25_candidates(presentation: str, n: int = TOP_N_CANDIDATES) -> list:
+    """Return top-n condition names by BM25 score."""
+    index, chunks = _get_bm25()
+    tokens = _tokenize(presentation)
+    scores = index.get_scores(tokens)
+    ranked = sorted(enumerate(scores), key=lambda x: -x[1])
+    seen: dict = {}
+    for idx, _score in ranked:
+        cond = chunks[idx]["metadata"]["condition"]
+        if cond not in seen:
+            seen[cond] = True
+        if len(seen) >= n:
+            break
+    return list(seen.keys())
+
+
+def _rrf_candidates(
+    dense_list: list,
+    bm25_list: list,
+    n: int = TOP_N_CANDIDATES,
+    k: int = RRF_K,
+) -> list:
+    """Reciprocal Rank Fusion of dense and BM25 candidate lists."""
+    scores: dict = {}
+    for rank, cond in enumerate(dense_list):
+        scores[cond] = scores.get(cond, 0.0) + 1.0 / (k + rank)
+    for rank, cond in enumerate(bm25_list):
+        scores[cond] = scores.get(cond, 0.0) + 1.0 / (k + rank)
+    ranked = sorted(scores, key=lambda c: -scores[c])
+    return ranked[:n]
 
 
 # ── Retrieval: vector candidate generation ────────────────────────────────────
@@ -162,13 +235,13 @@ def get_filtered_passages(embedder, collection, presentation, conditions, query_
 
 class RetrievalRouter:
     """
-    Candidate generation seam. Currently: dense-only (Chroma vector search).
+    Candidate generation seam. Phase 5b: dense vector + BM25 fused via RRF.
     Returns candidates with provenance labels.
 
     Provenance values:
-        "retrieval"      — dense vector only (current)
-        "map+retrieval"  — map-confirmed + vector (step 2, presentation map boost)
-        "map"            — map-only, not found by vector (step 2)
+        "retrieval"      — RRF output (dense only — BM25 agreed but contributed no new candidates)
+        "map+retrieval"  — RRF output confirmed by presentation map
+        "map-only"       — map candidate not found by RRF (has a corpus card)
     """
 
     def __init__(self, embedder, collection):
@@ -179,20 +252,22 @@ class RetrievalRouter:
         """
         Return [{condition, source}, ...].
 
-        Dense retrieval candidates are listed first (preserving vector rank).
+        RRF candidates are listed first (preserving RRF rank as the vector rank signal).
         Map-only candidates are appended at the end.
 
         source values:
-            "retrieval"      — dense vector only
-            "map+retrieval"  — present in both map and dense vector
-            "map-only"       — map candidate not found by dense vector (has a corpus card)
+            "retrieval"      — RRF (dense + BM25)
+            "map+retrieval"  — RRF output also confirmed by presentation map
+            "map-only"       — map candidate not in RRF output
 
         query_embedding: optional precomputed embedding of `presentation` — see
         get_vector_candidates(). Computed here if not supplied.
         """
-        retrieval_conditions = get_vector_candidates(
+        dense_conditions    = get_vector_candidates(
             self.embedder, self.collection, presentation, n, query_embedding=query_embedding
         )
+        bm25_conditions     = _bm25_candidates(presentation, n)
+        retrieval_conditions = _rrf_candidates(dense_conditions, bm25_conditions, n)
         retrieval_set = set(retrieval_conditions)
 
         pathway_ids = _map_classify(presentation)
