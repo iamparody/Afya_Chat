@@ -32,6 +32,11 @@ Think of it as: the retrieval system found the candidates — you weigh the evid
 
 ASSESSMENT SCOPE: You MUST include ALL retrieved candidates in candidates[]. Every condition the retrieval system identified must appear in your output — rank it confidence_level "low" if the evidence is weak, but do not omit it. The only exception is Rule 5 (confirmed prior diagnosis). A condition may not be dropped simply because it is unlikely — a ranked differential always covers the full candidate list.
 
+DIAGNOSTIC RANKING HIERARCHY:
+- Explicit defining criteria and quantitative thresholds take precedence over non-specific symptom associations.
+- A non-specific symptom (e.g. headache) that is compatible with multiple conditions MUST NOT cause an emergency diagnosis to outrank a non-emergency diagnosis if the patient fails the emergency condition's defining threshold.
+- Distinguish "compatible with" from "establishes": elevated BP is compatible with Hypertensive Crisis, but without meeting BP >= 180/120 or showing acute end-organ damage, it does not establish it.
+
 ---
 
 SEVEN RULES — NEVER VIOLATE
@@ -65,16 +70,22 @@ SEVEN RULES — NEVER VIOLATE
    If a condition is explicitly documented in the patient presentation as a PRIOR, ESTABLISHED diagnosis already being managed or treated — indicated only by phrases such as "known [condition]", "diagnosed with [condition]", "on [medication] for [condition]", or "history of [condition]" — do not include it in candidates[]. Place it in relevant_comorbidities_or_context instead.
    CRITICAL: This rule applies ONLY to conditions the patient is stated to already have. It does NOT apply to conditions that may be the diagnosis for the current presenting complaint. If the presentation contains findings (e.g. an elevated BP reading, new symptom constellation, or abnormal measurement) that suggest a condition that is NOT explicitly stated as a prior diagnosis, that condition MUST remain in candidates[]. When in doubt, keep it in candidates[].
 
+6. ARGUING_AGAINST AND THRESHOLD RANKING — MANDATORY PRE-OUTPUT CHECK
+   Before writing leading_candidate, evaluate the nature of arguing_against[] features:
+
+   A. HARD THRESHOLD VIOLATIONS OVERRIDE PROCEDURAL CAVEATS:
+      Differentiate between a hard defining threshold violation (e.g. BP below emergency threshold, duration outside diagnostic window) and a procedural caveat (e.g. single measurement requiring repeat confirmation).
+      A candidate with a hard defining threshold violation MUST NOT be ranked as leading_candidate over a candidate that merely has procedural caveats.
+
+   B. ARGUING_AGAINST SWAP:
+      If the candidate you intend to set as leading_candidate has an arguing_against match representing a hard threshold violation, you MUST rank a candidate with fewer or less severe contradictions ahead of it.
+
 7. EVIDENCE BOUNDARIES — ARGUING_AGAINST AND MISSING_INFORMATION
    Only denied or absent findings belong in arguing_against; missing_information must identify what would resolve the distinction between tied candidates, not merely confirm the leading diagnosis.
 
-6. ARGUING_AGAINST RANKING — MANDATORY PRE-OUTPUT CHECK
-   Before writing leading_candidate, apply this two-step check:
-   Step A — For each candidate, decide whether any item in its arguing_against[] is semantically matched by the patient presentation. Semantic match means the patient's documented facts satisfy the criterion, even if the wording differs. Example: if arguing_against says "acute onset under 7 days" and the presentation says "cough 3 days", that IS a match (3 < 7). If arguing_against says "no endemic area exposure" and the patient lives in Kisumu (a malaria-endemic lakeside city), that is NOT a match.
-   Step B — If the candidate you intend to set as leading_candidate has one or more arguing_against semantic matches AND another candidate in candidates[] has NO arguing_against semantic matches, you MUST make the other candidate the leading_candidate instead. There is no exception. Do not justify keeping the argued-against candidate first.
-
+8. RETRIEVAL NOTE — NEAR-TIE CONSTRAINT
+   When the context contains a ## Retrieval note section, the retrieval pipeline has determined that the top candidates are closely scored and the available clinical features do not clearly separate them. In that case, you must preserve the competing diagnoses as co-equal — do not resolve the ambiguity using generic symptom overlap alone. Identify the specific discriminating information that is absent and surface it in missing_information for each tied candidate.
 ---
-
 CONFIDENCE LEVELS
 
 Assign one of three values per candidate:
@@ -220,7 +231,15 @@ OUTPUT_SCHEMA = {
 
 # ── Context template ──────────────────────────────────────────────────────────
 
-def build_context(presentation, candidates, prose_passages, env_evidence=None, comorbidity_alerts=None):
+def build_context(
+    presentation,
+    candidates,
+    prose_passages,
+    env_evidence=None,
+    comorbidity_alerts=None,
+    score_margin=None,
+    near_tie=False,
+):
     """
     Assemble the per-query context block sent to the LLM.
 
@@ -245,8 +264,27 @@ def build_context(presentation, candidates, prose_passages, env_evidence=None, c
         When non-empty, a comorbidity alerts section is appended. Each alert carries a
         missing_info_prompt the LLM should surface in missing_information. These are
         context signals, NOT diagnosis assertions — the clinician must confirm.
+
+    score_margin: float — fused score gap between candidates #1 and #2, computed by
+        _compute_fused_scores(). Injected into the retrieval note when near_tie is True.
+
+    near_tie: bool — True when score_margin < AMBIGUITY_MARGIN_THRESHOLD. Triggers
+        injection of a ## Retrieval note section before the candidate list, signalling
+        to the LLM that the retrieval pipeline cannot separate the top candidates and
+        ambiguity must be preserved rather than resolved by generic overlap.
     """
     lines = []
+
+    if near_tie and score_margin is not None:
+        lines.append("## Retrieval note")
+        lines.append(
+            f"Candidate scores are closely tied (margin {score_margin:.2f}). "
+            "The available clinical features do not clearly separate the top candidates. "
+            "Preserve competing diagnoses as co-equal — do not resolve this tie using "
+            "generic symptom overlap alone. Identify the specific discriminating "
+            "information that is absent and surface it in missing_information."
+        )
+        lines.append("")
 
     lines.append("## Patient presentation")
     lines.append(presentation.strip())

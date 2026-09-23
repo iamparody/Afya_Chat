@@ -538,3 +538,20 @@
 | clubbing | digital clubbing, finger clubbing, nail clubbing |
 | cor pulmonale | right heart failure from lung disease, chronic cor pulmonale |
 | irreversible airflow obstruction | fixed airflow obstruction, non-reversible obstruction, persistent airflow limitation |
+| unilateral leg swelling | unilateral lower limb swelling, one leg swollen, single leg oedema |
+| unilateral limb erythema | leg redness, limb erythema, unilateral leg erythema |
+| limb warmth | limb warm to touch, local limb warmth, leg warm |
+| pitting oedema | pitting leg oedema, pitting swelling |
+| prolonged immobility | immobilisation, bed rest prolonged, prolonged bed rest |
+| recent surgery | post-operative state, recent operative procedure |
+| oral contraceptive use | OCP use, combined oral contraceptive, hormonal contraceptive use |
+| pulmonary embolism | PE, thromboembolic event, venous thromboembolism PE |
+| bilateral leg swelling | bilateral lower limb oedema, both legs swollen |
+| D-dimer elevation | raised D-dimer, elevated D-dimer, D-dimer positive |
+| compression duplex ultrasound | venous duplex ultrasound, DVT ultrasound, lower limb venous USS |
+| Wells score | DVT Wells criteria, Wells clinical prediction score |
+| no unilateral leg swelling | bilateral swelling only, swelling not unilateral, no asymmetric limb swelling |
+| bilateral symmetrical swelling | symmetrical bilateral leg swelling, equal bilateral oedema |
+| recent long-haul travel | long-haul flight, prolonged travel, extended travel immobility |
+| leg pain | lower limb pain, limb pain, leg ache |
+| previous DVT | prior deep vein thrombosis, history of DVT, past DVT |

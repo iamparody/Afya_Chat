@@ -85,7 +85,7 @@ Where sources conflict, the higher-ranked Kenyan source takes precedence.
 |-----------|-----------------|----------------|-------------|------------------|-----------------------|----------------|-------------|-----------|
 | Essential hypertension | Cardiovascular | WHO HEARTS Technical Package (2023) | WHO guideline | Original corpus | BP | Routine | Draft | Yes — original card |
 | Hypertensive Crisis | Cardiovascular | Kenya MOH Clinical Guidelines Vol 2 §3.2 (2024) | Kenya MOH STG | Method A (two-source: MOH §3.2 + Medscape 2024) | BP; SYN; DYS | High (safety) | Draft | Yes — 2026-09-21 |
-| Deep vein thrombosis (DVT) | Cardiovascular | Kenya MOH Clinical Guidelines Vol 2 §3.x (2024) — verify chapter | Kenya MOH STG ⚠ verify | Method A | SWL; CP | Important | Not started | No |
+| Deep vein thrombosis (DVT) | Cardiovascular | Kenya MOH Clinical Guidelines Vol 2 §3.3 (2024) + Medscape 2024 (two-source) | Kenya MOH STG | Method A | SWL; CP | Important | Draft | Yes — 2026-09-23 |
 | Pulmonary embolism (PE) | Cardiovascular | Kenya MOH Clinical Guidelines Vol 2 §3.x (2024) — verify chapter | Kenya MOH STG ⚠ verify | Method A | DYS; CP; SYN | High (safety) | Not started | No |
 | Heart Failure | Cardiovascular | Kenya MOH Clinical Guidelines Vol 2 §3.x (2024) — verify chapter | Kenya MOH STG ⚠ verify | Method A | DYS; PED; PAL | High (safety) | Not started | No |
 | Acute pulmonary oedema | Cardiovascular | Kenya MOH Clinical Guidelines Vol 2 §3.x (2024) — verify chapter | Kenya MOH STG ⚠ verify | Method A | DYS; CP | High (safety) | Not started | No |
@@ -102,7 +102,9 @@ Where sources conflict, the higher-ranked Kenyan source takes precedence.
 
 **Hypertensive Crisis:** Kenya MOH Vol 2 §3.2 confirmed as primary source (accessed via PDF search). Section is thin (6 lines — management protocol only). Medscape 2024 used as supplementary source for clinical detail (emergency vs urgency distinction, target organ assessment criteria, differentials, argues-against). WHO 2023 Hypertension Fact Sheet used for epidemiological context. Two-source pattern documented in `corpus/sources.yaml`.
 
-**DVT, PE, Heart Failure, Acute Pulmonary Oedema, AMI, ARF, RHD ⚠ verify:** Kenya MOH Clinical Guidelines Vol 2 (2024) Section 3 is the target source — chapter numbers require verification before authoring begins. If a chapter is absent or thin on clinical detail, the two-source pattern applies (MOH primary + Medscape supplementary). Verify chapter existence before opening an authoring branch.
+**DVT:** Kenya MOH Clinical Guidelines Vol 2 §3.3 confirmed as primary source. Section thin on clinical discriminators — Medscape 2024 used as supplementary (two-source pattern). Both documented in `corpus/sources.yaml`. Card committed 2026-09-23.
+
+**PE, Heart Failure, Acute Pulmonary Oedema, AMI, ARF, RHD ⚠ verify:** Kenya MOH Clinical Guidelines Vol 2 (2024) Section 3 is the target source — chapter numbers require verification before authoring begins. If a chapter is absent or thin on clinical detail, the two-source pattern applies (MOH primary + Medscape supplementary). Verify chapter existence before opening an authoring branch.
 
 ### 2.4 Inventory governance decisions
 
@@ -176,7 +178,7 @@ Full pairwise DIFFERENTIATED_FROM Neo4j relationships for the cardiovascular dom
 |-------|-----------|--------|----|-----------|
 | 1 | Essential hypertension | original corpus | — | ✓ |
 | 2 | Hypertensive Crisis | feat/cardiovascular-hypertensive-crisis | Open | ✓ 2026-09-21 |
-| 3 | Deep vein thrombosis | feat/cardiovascular-dvt | Not opened | — |
+| 3 | Deep vein thrombosis | feat/cardiovascular | — | ✓ 2026-09-23 |
 | 4 | Pulmonary embolism | feat/cardiovascular-pe | Not opened | — |
 | 5 | Heart Failure | feat/cardiovascular-heart-failure | Not opened | — |
 | 6 | Acute pulmonary oedema | feat/cardiovascular-pulmonary-oedema | Not opened | — |

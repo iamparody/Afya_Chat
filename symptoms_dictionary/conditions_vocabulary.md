@@ -113,3 +113,6 @@
 | Zika virus infection | Zika fever, Zika virus disease, ZIKV infection |
 | Reactive arthritis | post-infectious arthritis, Reiter's syndrome, post-infectious reactive arthropathy |
 | Rheumatic fever | acute rheumatic fever, ARF, streptococcal arthritis, post-streptococcal arthritis |
+| Cellulitis | skin cellulitis, lower limb cellulitis |
+| Heart failure | cardiac failure, congestive heart failure, CCF |
+| Superficial thrombophlebitis | superficial vein thrombosis, phlebitis |

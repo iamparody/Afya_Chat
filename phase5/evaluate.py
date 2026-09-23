@@ -337,6 +337,29 @@ COVERAGE_CASES = [
         },
     },
     {
+        "id": "13",
+        "label": "DVT — post-partum unilateral calf swelling with precipitant",
+        "presentation": (
+            "28F, 10 days post-partum after caesarean section. Right calf swollen and "
+            "painful for 2 days — noticeably larger than the left. Warmth and redness over "
+            "the right calf on examination. Cannot walk without limping. No fever. No cough "
+            "or chest pain. No bilateral swelling. Calf diameter difference approximately "
+            "3 cm measured from tibial tuberosity."
+        ),
+        "checks": {
+            "primary_contains":     ["thrombosis", "dvt", "deep vein"],
+            "red_flags_contain":    [],
+            "missing_info_contain": ["duplex", "ultrasound", "wells", "d-dimer", "anticoag"],
+            "prohibited_strings":   ["dvt confirmed", "thrombosis confirmed"],
+            "manual": [
+                "Post-partum status and recent caesarean section cited as precipitating risk factors",
+                "Unilateral asymmetric swelling with measurable diameter difference cited as key discriminating feature",
+                "Pulmonary embolism listed as red flag or complication to monitor",
+                "Referral language present — duplex ultrasound and anticoagulation at higher-level facility",
+            ],
+        },
+    },
+    {
         "id": "12",
         "label": "Hypertensive Crisis — positive identification (BP ≥180/120 + end-organ)",
         "presentation": (

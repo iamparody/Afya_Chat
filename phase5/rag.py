@@ -231,8 +231,11 @@ def _compute_fused_scores(candidates: list) -> tuple:
     graph_score  : normalised matched_count — 1.0 for the candidate with the most matches.
     fused_score  : weighted sum (vector 70 %, graph 30 %).
 
-    Candidates are NOT re-sorted — vector rank remains the primary ordering passed
-    to the LLM. Scores are attached in-place for logging and margin computation only.
+    Candidates retain vector rank order — fused score is computed for margin
+    and audit purposes only. Sorting by fused score demotes strong graph
+    matches (e.g. Malaria) that have moderate vector rank, causing LLM
+    positional bias toward vector-dominant candidates. Reorder only after
+    weight calibration against the full regression suite.
 
     Returns (candidates_with_scores, margin).
     """
@@ -435,9 +438,30 @@ def run(
             ],
         })
 
-        # Step 3 — Vector: prose passages filtered to candidates only
+
+    # Step 3 — Vector: prose passages filtered to candidates only
         top_conditions = [c["condition"] for c in candidates]
         passages = get_filtered_passages(embedder, col, presentation, top_conditions, query_embedding=query_embedding)
+
+        # --- DEBUG LOGGING: COMPACT RETRIEVED EVIDENCE --- (gate: CDS_DEBUG=1)
+        if os.environ.get("CDS_DEBUG"):
+            print("\n" + "=" * 70)
+            print("DEBUG: RETRIEVED EVIDENCE SUMMARY")
+            print("=" * 70)
+            for i, item in enumerate(passages, 1):
+                print(f"\n--- #{i} ({item.get('condition', 'Unknown')} - {item.get('section', 'Unknown')}) ---")
+                print(str(item.get('text', ''))[:1000].replace("\n", " ") + "...")
+
+        # # Step 3 — Vector: prose passages filtered to candidates only
+        # top_conditions = [c["condition"] for c in candidates]
+        # passages = get_filtered_passages(embedder, col, presentation, top_conditions, query_embedding=query_embedding)
+
+        # print("\n" + "=" * 70)
+        # print("DEBUG: RETRIEVED EVIDENCE")
+        # print("=" * 70)
+        # for i, item in enumerate(passages, 1):
+        #     print(f"\n--- Retrieved #{i} ---")
+        #     print(item)
 
         # Step 3b — Environmental context (optional; no-op when no location/signals match)
         _enc = encounter_date or datetime.now()
@@ -455,15 +479,44 @@ def run(
         # Step 3c — Comorbidity context (deterministic; no-op when no triggers match)
         comorbidity_alerts = get_comorbidity_alerts(top_conditions, presentation)
 
-        # Step 4 — Build context and call LLM
+        # # Step 4 — Build context and call LLM
         context = build_context(
             presentation, candidates, passages,
             env_evidence=env_evidence,
             comorbidity_alerts=comorbidity_alerts,
+            score_margin=score_margin,
+            near_tie=score_margin < AMBIGUITY_MARGIN_THRESHOLD,
         )
         if hasattr(provider, "set_schema"):
             provider.set_schema(OUTPUT_SCHEMA)
+
+        # --- DEBUG LOGGING: FINAL GEMINI PROMPT --- (gate: CDS_DEBUG=1)
+        if os.environ.get("CDS_DEBUG"):
+            print("\n" + "=" * 70)
+            print("DEBUG: FINAL GEMINI PROMPT")
+            print("=" * 70)
+            print(f"SYSTEM PROMPT:\n{SYSTEM_PROMPT}\n\nUSER CONTEXT:\n{context}")
+            print("=" * 70)
+
         raw     = provider.generate(SYSTEM_PROMPT, context)
+
+        # --- DEBUG LOGGING: FULL GEMINI RESPONSE --- (gate: CDS_DEBUG=1)
+        if os.environ.get("CDS_DEBUG"):
+            print("\n" + "=" * 70)
+            print("DEBUG: FULL GEMINI RESPONSE")
+            print("=" * 70)
+            print(raw)
+            print("=" * 70)
+
+        # Step 4 — Build context and call LLM
+        # context = build_context(
+        #     presentation, candidates, passages,
+        #     env_evidence=env_evidence,
+        #     comorbidity_alerts=comorbidity_alerts,
+        # )
+        # if hasattr(provider, "set_schema"):
+        #     provider.set_schema(OUTPUT_SCHEMA)
+        # raw     = provider.generate(SYSTEM_PROMPT, context)
 
         # Step 5 — Validate (fail closed)
         result = validate(raw)

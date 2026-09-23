@@ -48,7 +48,10 @@ class GeminiProvider(LLMProvider):
                 )
                 return response.text
             except ServerError as e:
-                if e.status_code != 503 or attempt == len(delays):
+                if attempt == len(delays):
+                    raise
+                msg = str(e).lower()
+                if "503" not in msg and "unavailable" not in msg and "high demand" not in msg:
                     raise
                 print(f"Gemini 503 — attempt {attempt}/{len(delays)}, retrying in {delay}s...", flush=True)
                 time.sleep(delay)

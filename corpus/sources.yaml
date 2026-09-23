@@ -275,6 +275,25 @@ sources:
           - argues_against
         reason: "Primary source (Kenya MOH outbreak guide) does not contain differential diagnosis or argues-against content — supplemented with Medscape clinical reference"
 
+  - condition: Deep vein thrombosis
+    authority_tier: kenya_moh
+    authority: Kenya Ministry of Health
+    title: "Clinical Guidelines for Level 2 Dispensaries, Medical Clinics, Level 3 Health Centres, Nursing Homes Vol 2"
+    year: 2024
+    url: ""
+    section: "§3.3 Deep Vein Thrombosis"
+    supplementary_sources:
+      - authority: Medscape
+        title: "Deep Venous Thrombosis (DVT)"
+        year: 2024
+        url: "https://emedicine.medscape.com/article/1911303-overview"
+        sections_covered:
+          - differential_diagnoses
+          - argues_against
+          - diagnostic_features
+          - red_flags
+        reason: "MOH Vol 2 §3.3 is thin (2 paragraphs — clinical features and general management only). No differentials or argues-against content. Medscape used as supplementary clinical reference."
+
   - condition: Chronic obstructive pulmonary disease
     authority_tier: kenya_moh
     authority: Kenya Ministry of Health
