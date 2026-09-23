@@ -295,7 +295,7 @@ _GRAPH_WEIGHT  = 0.3
 
 # Ambiguity threshold — margin below this value means candidates #1 and #2 are
 # genuinely competing. Calibrate from Step 1 log distributions.
-AMBIGUITY_MARGIN_THRESHOLD = 0.15
+AMBIGUITY_MARGIN_THRESHOLD = 0.20
 
 
 def _compute_fused_scores(candidates: list) -> tuple:
