@@ -98,7 +98,16 @@ CASES = [
             "No urinary symptoms mentioned."
         ),
         "checks": {
-            "primary_contains":     ["uti", "urinary", "gastroenteritis"],
+            # This presentation is deliberately incomplete — "no urinary symptoms
+            # mentioned" means not asked, not denied. Fever + nausea + lower abdominal
+            # pain in a 26F genuinely admits several readings, so grading on which
+            # candidate leads scores model ambiguity rather than model behaviour.
+            # What the case actually tests is that UTI and AGE are both carried forward
+            # and neither is committed to, so it is graded on that.
+            "candidates_include_all": [
+                ["uti", "urinary tract infection"],
+                ["gastroenteritis"],
+            ],
             "red_flags_contain":    [],  # Red flags scope limited to leading+same-confidence; AGE/malaria red flag content varies
             "missing_info_contain": ["dysuria", "frequency", "urine", "dipstick"],
             "prohibited_strings":   ["no uti because", "no dysuria", "dysuria present", "dysuria is absent"],
@@ -491,6 +500,18 @@ def score(case: dict, result: dict) -> dict:
             ok,
             f"candidates={candidates} | expected one of {checks['secondary_contains']}",
         )
+
+    # Co-equal candidates — every listed group must be represented among candidates.
+    # Use where the presentation is deliberately ambiguous and the test is whether both
+    # diagnoses are carried forward, not which one happens to lead.
+    if "candidates_include_all" in checks:
+        for group in checks["candidates_include_all"]:
+            ok = any(any(h in diag for h in group) for diag in candidates)
+            record(
+                f"Candidate present: {'/'.join(group)}",
+                ok,
+                f"candidates={candidates}" if not ok else "",
+            )
 
     # Red flags
     for term in checks.get("red_flags_contain", []):

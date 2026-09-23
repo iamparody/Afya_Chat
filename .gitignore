@@ -34,3 +34,6 @@ env/
 # OS
 .DS_Store
 Thumbs.db
+
+# Local review notes
+code_review_2026-09.md
