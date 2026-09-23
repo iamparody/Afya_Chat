@@ -5,11 +5,11 @@ icd_entity_uri: "http://id.who.int/icd/release/11/2024-01/mms/1002963291"
 icd10: I10
 icd_search_term: "Hypertensive crisis"
 category: cardiovascular
-corpus_version: "1.0"
+corpus_version: "1.1"
 schema_version: "2.2"
-review_status: draft
-reviewed_by:
-last_reviewed:
+review_status: clinician_verified
+reviewed_by: Colleague
+last_reviewed: "2026-09-21"
 icd_verified: true
 
 sources:
