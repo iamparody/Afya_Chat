@@ -8,33 +8,6 @@ Usage:
     python phase5/evaluate.py                    # all cases, dense-only (Cohere baseline)
     python phase5/evaluate.py 2a                 # single case
     python phase5/evaluate.py 2a 4b              # specific cases
-
-── Gate policy ──────────────────────────────────────────────────────────────
-Regression gate: ≥7/8 per run.
-
-Cases are classified into two categories:
-
-  DETERMINISTIC (must pass on every run):
-    2a  Brucellosis vs Pneumonia — productive cough discriminator
-    2b  Brucellosis vs Malaria — antimalarial response discriminator
-    3   Appendicitis — RLQ localisation
-    4a  Anaemia — IDA vs PUD
-    4b  Anaemia — IDA in child
-    6   Iron deficiency anaemia
-
-  STOCHASTIC (documented boundary; no known pipeline defect):
-    1   Malaria vs CAP — Gemini sometimes routes productive cough to CAP
-        as primary (pre-existing boundary, predates HC addition)
-    5   Essential hypertension vs Hypertensive Crisis — Gemini sometimes
-        fails to apply Rule 3 to HC argues_against features at temperature=0
-        (introduced by HC addition; confirmed genuine reasoning boundary —
-        evidence correctly routed, no routing defect identified)
-
-A 6/8 run (both stochastic cases fail together) does NOT pass the gate.
-Do not re-run the suite to sample until 7/8 appears — that converts the
-gate into luck. If 6/8 is observed, investigate whether a new routing
-defect has appeared before re-running.
-────────────────────────────────────────────────────────────────────────────
 """
 
 import json
@@ -202,7 +175,7 @@ CASES = [
         "checks": {
             "primary_contains":     ["anaemia", "anemia", "iron"],
             "red_flags_contain":    [],  # IDA red flag section not retrieved by vector similarity — see manual checks
-            "missing_info_contain": ["menstrual", "menorrhagia", "hb", "haemoglobin", "fbc", "ferritin", "dietary"],
+            "missing_info_contain": ["menstrual", "hb", "fbc", "dietary"],
             "prohibited_strings":   [
                 "anaemia confirmed",
                 "anemia confirmed",
@@ -337,69 +310,63 @@ COVERAGE_CASES = [
         },
     },
     {
-        "id": "13",
-        "label": "DVT — post-partum unilateral calf swelling with precipitant",
-        "presentation": (
-            "28F, 10 days post-partum after caesarean section. Right calf swollen and "
-            "painful for 2 days — noticeably larger than the left. Warmth and redness over "
-            "the right calf on examination. Cannot walk without limping. No fever. No cough "
-            "or chest pain. No bilateral swelling. Calf diameter difference approximately "
-            "3 cm measured from tibial tuberosity."
-        ),
-        "checks": {
-            "primary_contains":     ["thrombosis", "dvt", "deep vein"],
-            "red_flags_contain":    [],
-            "missing_info_contain": ["duplex", "ultrasound", "wells", "d-dimer", "anticoag"],
-            "prohibited_strings":   ["dvt confirmed", "thrombosis confirmed"],
-            "manual": [
-                "Post-partum status and recent caesarean section cited as precipitating risk factors",
-                "Unilateral asymmetric swelling with measurable diameter difference cited as key discriminating feature",
-                "Pulmonary embolism listed as red flag or complication to monitor",
-                "Referral language present — duplex ultrasound and anticoagulation at higher-level facility",
-            ],
-        },
-    },
-    {
         "id": "12",
-        "label": "Hypertensive Crisis — positive identification (BP ≥180/120 + end-organ)",
+        "label": "Acute pyelonephritis — upper vs lower urinary tract",
         "presentation": (
-            "58M, known hypertensive on amlodipine, ran out of medication 3 weeks ago. "
-            "Acute severe occipital headache starting 2 hours ago. Blurred vision bilaterally. "
-            "Nausea and one episode of vomiting. BP 218/134 on arrival. Confused and agitated. "
-            "No fever. Fundoscopy shows bilateral disc swelling."
+            "28-year-old woman, 3 days of dysuria, urinary frequency and urgency, followed "
+            "by fever 38.8°C with rigors and constant right loin pain. Nausea with two "
+            "episodes of vomiting, but able to tolerate oral fluids. Not pregnant. On exam: "
+            "right costovertebral angle tenderness, no abdominal guarding, no rebound "
+            "tenderness. Urine dipstick: leukocytes positive, nitrites positive, blood "
+            "positive, protein trace. No urinary catheter, no known structural abnormality, "
+            "not diabetic, not immunosuppressed."
         ),
         "checks": {
-            "primary_contains":     ["crisis", "hypertensive emergency", "hypertensive urgency"],
-            "red_flags_contain":    ["encephalopathy", "end-organ"],
-            "missing_info_contain": ["ecg", "urine", "creatinine", "renal"],
-            "prohibited_strings":   ["essential hypertension confirmed", "no end-organ"],
+            "primary_contains":     ["pyelonephritis", "upper urinary"],
+            "red_flags_contain":    [],
+            # Pregnancy status is a Vol 2 criterion converting pyelonephritis to
+            # complicated infection requiring referral — as valid a gap to identify as
+            # culture or renal function.
+            "missing_info_contain": ["culture", "sensitivity", "creatinine", "pregnan"],
+            "prohibited_strings":   ["pyelonephritis confirmed", "cystitis confirmed"],
             "manual": [
-                "BP 218/134 explicitly cited as meeting ≥180/120 emergency threshold",
-                "Medication non-compliance cited as precipitant",
-                "Papilloedema / disc swelling cited as confirming end-organ involvement",
-                "Immediate referral language present — IV therapy at Level 4, not oral reduction",
+                "Loin pain and costovertebral angle tenderness cited as the discriminating upper-tract features",
+                "Lower UTI (cystitis) listed as differential, with absence of fever and loin pain as the discriminator",
+                "Uncomplicated vs complicated classification addressed — no complicating factor present in this patient",
+                "Urine culture and sensitivity before empirical antibiotics recommended",
             ],
         },
     },
     {
-        "id": "14",
-        "label": "Pulmonary embolism — post-partum sudden dyspnoea with risk factors",
+        "id": "13",
+        "label": "Acute bacterial prostatitis — febrile male with perineal pain",
         "presentation": (
-            "26F, 8 days post-partum after normal vaginal delivery. Sudden onset of breathlessness "
-            "starting 1 hour ago. Right-sided pleuritic chest pain. No cough or fever. No sputum. "
-            "Tachycardia — pulse 118 bpm. Respiratory rate 24 per minute. Oxygen saturation 91% on "
-            "air. No bilateral leg swelling. Right calf mildly tender on palpation. No focal chest signs."
+            "52-year-old man, 2 days of dysuria, urinary frequency and urgency, with fever "
+            "38.9°C and rigors. Deep aching pain in the perineum, worse on sitting, and "
+            "discomfort on defecation. Generalised muscle and joint aches. Known benign "
+            "prostatic enlargement. On examination: febrile, and gentle digital rectal "
+            "examination reveals a soft, swollen, severely tender prostate. Urine dipstick: "
+            "leukocytes positive, nitrites positive. Passing urine normally, no retention."
         ),
         "checks": {
-            "primary_contains":     ["pulmonary embolism", "pulmonary embol", "pe"],
-            "red_flags_contain":    ["haemodynamic", "oxygen", "referral"],
-            "missing_info_contain": ["ctpa", "d-dimer", "wells", "anticoag"],
-            "prohibited_strings":   ["pe confirmed", "pulmonary embolism confirmed"],
+            "primary_contains":     ["prostatitis"],
+            "red_flags_contain":    [],
+            # Accepts organism-directed follow-up (culture/sensitivity) or the
+            # discriminators against the competing complicated male urinary infection
+            # (loin pain / costovertebral angle tenderness for pyelonephritis).
+            "missing_info_contain": ["culture", "sensitivity", "retention",
+                                     "loin", "costovertebral"],
+            # "prostate massage" cannot be an automated prohibited string: the card
+            # carries the safety instruction, so an output correctly warning against the
+            # procedure contains the same substring as one recommending it. Manual check.
+            "prohibited_strings":   [],
             "manual": [
-                "Post-partum state and immobility cited as VTE risk factors",
-                "Sudden onset dyspnoea + pleuritic chest pain + tachycardia triad noted",
-                "Right calf tenderness noted as raising suspicion of concurrent DVT",
-                "Urgent referral to Level 4/5 for CTPA language present",
+                "SAFETY: output must not recommend prostate massage — Vol 2 §15.4.1 warns it "
+                "can induce bacteraemia/sepsis. Warning against it is correct; suggesting it is a failure",
+                "Perineal pain and tender prostate cited as the features separating this from lower UTI",
+                "Male UTI noted as complicated by definition",
+                "Referral recommended — Vol 2 refers both diagnosis and treatment to a higher level",
+                "Acute urinary retention, prostatic abscess and sepsis identified as the escalation risks",
             ],
         },
     },

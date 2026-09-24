@@ -1,19 +1,27 @@
 """
-Neo4j pairwise disambiguation loader for the AFI domain.
+Neo4j pairwise disambiguation loader.
 
-Reads docs/domain_contracts/afi_pairs.yaml and MERGEs all DIFFERENTIATED_FROM
-relationships into Neo4j. Idempotent — keyed on pair_id; safe to re-run.
+Reads a domain's <domain>_pairs.yaml from docs/domain_contracts/ and MERGEs all
+DIFFERENTIATED_FROM relationships into Neo4j. Idempotent — keyed on pair_id;
+safe to re-run.
 
 If a Condition node for a not-yet-authored card does not exist, it is created as
 a minimal node (name only). neo4j_loader.py will populate all properties when the
 card is authored and ingested.
 
 Run from the cds/ directory:
-    python neo4j/pairwise_loader.py
+    python neo4j/pairwise_loader.py                      # AFI domain (default)
+    python neo4j/pairwise_loader.py --pairs-file docs/domain_contracts/gu_pairs.yaml
+    python neo4j/pairwise_loader.py --all                # every *_pairs.yaml
 
 Optional flags:
-    --dry-run   Print pairs that would be loaded; make no graph changes.
+    --dry-run             Print pairs that would be loaded; make no graph changes.
     --pair MSP-01 RP-01   Load only the specified pair IDs.
+    --pairs-file PATH     Load a specific pairs file (default: afi_pairs.yaml).
+    --all                 Load every *_pairs.yaml in docs/domain_contracts/.
+
+Pair IDs are namespaced per domain (AFI uses MSP-01/RP-01, Genitourinary uses
+GU-MSP-01/GU-RP-01), so --pair works unambiguously across domains.
 """
 
 import argparse
@@ -45,8 +53,9 @@ URI      = os.environ["NEO4J_URI"]
 USERNAME = os.environ["NEO4J_USERNAME"]
 PASSWORD = os.environ["NEO4J_PASSWORD"]
 
-PAIRS_YAML = ROOT / "docs" / "domain_contracts" / "afi_pairs.yaml"
-MIGRATION  = ROOT / "neo4j" / "migrations" / "002_pairwise_schema.cypher"
+CONTRACTS_DIR = ROOT / "docs" / "domain_contracts"
+PAIRS_YAML    = CONTRACTS_DIR / "afi_pairs.yaml"   # default — preserves prior behaviour
+MIGRATION     = ROOT / "neo4j" / "migrations" / "002_pairwise_schema.cypher"
 
 
 # ── Schema ────────────────────────────────────────────────────────────────────
@@ -111,6 +120,47 @@ def load_pair(session, pair: dict):
 
 # ── Validation ────────────────────────────────────────────────────────────────
 
+def load_card_names() -> set[str]:
+    """Return the set of `condition:` values across all corpus cards."""
+    names = set()
+    for path in (ROOT / "corpus").glob("*/condition.yaml"):
+        try:
+            with path.open(encoding="utf-8") as f:
+                data = yaml.safe_load(f) or {}
+            if data.get("condition"):
+                names.add(data["condition"])
+        except Exception:
+            continue
+    return names
+
+
+def check_condition_names(pairs: list[dict], card_names: set[str]) -> list[str]:
+    """
+    Warn where a pair references a condition with no matching card.
+
+    A pair legitimately may reference a not-yet-authored condition — the loader
+    creates a minimal node for it. The danger is a NAME MISMATCH against a card
+    that does exist under a different string: the pair then binds to an empty
+    orphan node while the real card sits unlinked beside it, and the mismatch is
+    invisible in the graph. Surfaced as a warning rather than an error so that
+    genuinely unauthored conditions do not block a load.
+    """
+    warnings = []
+    for pair in pairs:
+        for side in ("condition_a", "condition_b"):
+            name = pair.get(side)
+            if not name or name in card_names:
+                continue
+            near = [c for c in card_names
+                    if set(c.lower().replace("(", " ").replace(")", " ").split())
+                    & set(name.lower().replace("(", " ").replace(")", " ").split())]
+            hint = f" — did you mean {near[0]!r}?" if len(near) == 1 else ""
+            warnings.append(
+                f"{pair.get('pair_id', '?')}.{side}: no card named {name!r}{hint}"
+            )
+    return warnings
+
+
 def validate_pair(pair: dict) -> list[str]:
     """Return a list of validation error strings (empty = valid)."""
     errors = []
@@ -130,20 +180,47 @@ def validate_pair(pair: dict) -> list[str]:
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 def main():
-    parser = argparse.ArgumentParser(description="Load AFI pairwise pairs into Neo4j")
+    parser = argparse.ArgumentParser(description="Load pairwise disambiguation pairs into Neo4j")
     parser.add_argument("--dry-run", action="store_true",
                         help="Print pairs without making graph changes")
     parser.add_argument("--pair", nargs="+", metavar="PAIR_ID",
-                        help="Load only these pair IDs (e.g. MSP-01 RP-03)")
+                        help="Load only these pair IDs (e.g. MSP-01 GU-RP-03)")
+    parser.add_argument("--pairs-file", metavar="PATH", default=None,
+                        help="Pairs YAML to load (default: docs/domain_contracts/afi_pairs.yaml)")
+    parser.add_argument("--all", action="store_true",
+                        help="Load every *_pairs.yaml in docs/domain_contracts/")
     args = parser.parse_args()
 
-    if not PAIRS_YAML.exists():
-        raise SystemExit(f"Pairs file not found: {PAIRS_YAML}")
+    if args.all and args.pairs_file:
+        raise SystemExit("--all and --pairs-file are mutually exclusive")
 
-    with PAIRS_YAML.open(encoding="utf-8") as f:
-        data = yaml.safe_load(f)
+    if args.all:
+        pairs_files = sorted(CONTRACTS_DIR.glob("*_pairs.yaml"))
+        if not pairs_files:
+            raise SystemExit(f"No *_pairs.yaml found in {CONTRACTS_DIR}")
+    else:
+        pairs_files = [Path(args.pairs_file) if args.pairs_file else PAIRS_YAML]
 
-    pairs = data.get("pairs", [])
+    pairs = []
+    for pf in pairs_files:
+        if not pf.exists():
+            raise SystemExit(f"Pairs file not found: {pf}")
+        with pf.open(encoding="utf-8") as f:
+            data = yaml.safe_load(f) or {}
+        found = data.get("pairs", []) or []
+        print(f"  {pf.name}: {len(found)} pairs")
+        pairs.extend(found)
+
+    # pair_id must be unique across all loaded files — the MERGE key depends on it
+    seen = {}
+    for p in pairs:
+        pid = p.get("pair_id")
+        if pid in seen:
+            raise SystemExit(
+                f"Duplicate pair_id '{pid}' across pairs files — pair IDs are the MERGE "
+                f"key and must be unique. Namespace them per domain (e.g. GU-RP-01)."
+            )
+        seen[pid] = True
 
     if args.pair:
         requested = set(args.pair)
@@ -160,6 +237,14 @@ def main():
         for err in all_errors:
             print(f"VALIDATION ERROR: {err}", file=sys.stderr)
         raise SystemExit("Fix validation errors before loading.")
+
+    # Name-mismatch check — warns, does not block (see check_condition_names docstring)
+    name_warnings = check_condition_names(pairs, load_card_names())
+    if name_warnings:
+        print("\nCONDITION NAME WARNINGS — these will create minimal orphan nodes:")
+        for w in name_warnings:
+            print(f"  ! {w}")
+        print()
 
     print(f"Pairs to load: {len(pairs)}")
 

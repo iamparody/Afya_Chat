@@ -1,0 +1,236 @@
+condition: Nephrotic syndrome
+icd11: GB41
+icd_title: "Nephrotic syndrome"
+icd_entity_uri: "http://id.who.int/icd/release/11/2024-01/mms/1184209951"
+icd10: N04.9
+category: urological
+corpus_version: "1.0"
+schema_version: "2.2"
+review_status: draft
+reviewed_by:
+last_reviewed:
+icd_verified: true
+
+sources:
+  - organization: "Kenya Ministry of Health"
+    title: "Clinical Management and Referral Guidelines Vol. 2: Clinical Guidelines for Management of Conditions at Level 2–3 Health Facilities, Chapter 15.6"
+    year: "2024"
+  - organization: "KDIGO (Kidney Disease Improving Global Outcomes)"
+    title: "KDIGO 2021 Clinical Practice Guideline for the Management of Glomerular Diseases"
+    year: "2021"
+
+endemic_regions:
+  - nationwide
+
+environmental_signals: []
+
+graph:
+  cardinal_symptoms:
+    - periorbital oedema
+    - peripheral oedema
+    - heavy proteinuria
+    - frothy urine
+  associated_symptoms:
+    - ascites
+    - anasarca
+    - pleural effusion
+    - fatigue
+    - reduced exercise tolerance
+    - dyspnoea
+  risk_factors:
+    - diabetes mellitus
+    - low immunity
+  differentials:
+    - Acute glomerulonephritis
+    - Chronic kidney disease
+    - Iron deficiency anaemia
+    - acute decompensated heart failure
+  argues_against:
+    - haematuria
+    - normal urinalysis
+    - elevated blood pressure
+  red_flags:
+    - venous thromboembolism
+    - respiratory distress
+    - acute pulmonary oedema
+    - absent urine output
+    - sepsis
+  confirms:
+    - heavy proteinuria
+    - hypoalbuminaemia
+    - proteinuria
+    - dyslipidaemia
+
+sections:
+  cardinal_symptoms: |
+    Nephrotic syndrome is a clinical syndrome comprising heavy proteinuria and
+    hypoalbuminaemia, caused by increased permeability of the glomerular basement
+    membrane. The consequences of that protein loss are oedema, dyslipidaemia,
+    abnormalities of coagulation and fibrinolysis, reduced renal function, and
+    immunological compromise.
+
+    Oedema is the predominant symptom and usually the reason the patient presents. In the
+    early phase it appears on the eyelids. It then progresses gradually to involve the
+    lower limbs and the sacrum. When severe it becomes generalised, with ascites and
+    pleural or pericardial effusion — anasarca.
+
+    Frothy urine may be noticed and reflects the heavy protein loss.
+
+    Heavy proteinuria and hypoalbuminaemia are indispensable prerequisites for the
+    clinical diagnosis. Oedema alone, without both of these, is not nephrotic syndrome.
+
+  associated_symptoms: |
+    As oedema advances, ascites produces abdominal distension and discomfort, and pleural
+    effusion produces dyspnoea. Fatigue and reduced exercise tolerance accompany the
+    systemic protein deficit.
+
+    The syndrome may be primary, with no background disease and no identified cause, or
+    secondary to an underlying condition such as diabetes mellitus, systemic lupus
+    erythematosus, infection, or drug exposure. The distinction is made at specialist
+    level but the possibility of a secondary cause should prompt a careful history.
+
+    Susceptibility to infection is increased through urinary loss of immunoglobulins, and
+    a nephrotic patient presenting with fever should be assessed for infection rather than
+    assumed to have an uncomplicated relapse.
+
+  diagnostic_features: |
+    The clinical definition of adult nephrotic syndrome rests on four components. Heavy
+    proteinuria of 3.5 g per day or more. Hypoalbuminaemia, with serum albumin at or below
+    30 mg/dl, or total protein at or below 60 mg/dl. Oedema, peripheral and with ascites.
+    Dyslipidaemia, with elevated LDL cholesterol.
+
+    Heavy proteinuria and hypoalbuminaemia are the indispensable prerequisites. The other
+    two support the diagnosis but do not establish it.
+
+    At primary care level the accessible test is urinalysis, and proteinuria of 3+ or more
+    on dipstick is the practical trigger. Quantification and serum albumin are performed
+    at referral level.
+
+    This card is scoped to adult nephrotic syndrome, matching the Kenya MOH clinical
+    definition. Nephrotic syndrome in children follows a different diagnostic and treatment
+    pathway and is managed under separate guidance.
+
+  predisposing_factors: |
+    Primary nephrotic syndrome has no identifiable background disease and is idiopathic.
+
+    Secondary nephrotic syndrome arises from an underlying disorder. Diabetes mellitus is
+    the most important in the Kenyan primary care population, given the rising prevalence
+    of type 2 diabetes; diabetic nephropathy is a leading cause of heavy proteinuria.
+    Other causes include systemic lupus erythematosus, chronic infections, malignancy, and
+    certain drugs.
+
+    Immunocompromise is relevant both as a possible contributor to secondary disease and
+    as a consequence of the syndrome itself, since immunoglobulins are lost in the urine.
+
+    There is no established regional or seasonal pattern for nephrotic syndrome in Kenya.
+
+  typical_presentation: |
+    A patient presents with swelling that began around the eyes and has progressed over
+    days to weeks to involve the legs, and in more advanced cases the abdomen. The
+    swelling is not painful. There may be a report of frothy urine.
+
+    On examination there is pitting peripheral oedema, periorbital puffiness, and in
+    advanced disease ascites with shifting dullness and reduced air entry at the lung
+    bases from pleural effusion. Urinalysis shows heavy proteinuria at 3+ or more, without
+    the haematuria that would suggest a nephritic process.
+
+    The patient is not typically febrile and the blood pressure is not characteristically
+    raised, which separates the picture from acute glomerulonephritis.
+
+    Where the swelling has advanced to anasarca with breathlessness, the presentation is
+    urgent rather than routine.
+
+  differential_diagnoses: |
+    Acute glomerulonephritis shares oedema, proteinuria and referral-terminal status.
+    Discriminating features: acute glomerulonephritis produces haematuria as a cardinal
+    feature, sub-nephrotic proteinuria, prominent hypertension, and periorbital oedema
+    that is seldom severe or generalised, often with a preceding streptococcal infection.
+    Nephrotic syndrome produces heavy proteinuria with hypoalbuminaemia and progressive
+    generalised oedema. The two may coexist as nephritic nephrotic syndrome.
+
+    Chronic kidney disease shares oedema and proteinuria. Discriminating features: chronic
+    kidney disease develops over months with anaemia, pruritus, skin darkening, nocturia
+    and a sustained reduction in eGFR, whereas nephrotic syndrome is defined by the
+    magnitude of protein loss and may occur with preserved renal function. Proteinuria is
+    itself a risk factor for progression to chronic kidney disease.
+
+    Severe anaemia may produce oedema and fatigue. Discriminating features: anaemia
+    produces pallor and a flow murmur without heavy proteinuria or hypoalbuminaemia, and
+    urinalysis is not strongly positive for protein.
+
+    Decompensated heart failure produces peripheral oedema, ascites and dyspnoea.
+    Discriminating features: cardiac oedema is dependent, ascends from the ankles rather
+    than beginning periorbitally, and is accompanied by raised jugular venous pressure,
+    orthopnoea and paroxysmal nocturnal dyspnoea. Nephrotic oedema characteristically
+    starts at the eyelids. Urinalysis distinguishes them.
+
+    Hepatic causes of hypoalbuminaemia with ascites — chronic liver disease — may be
+    confused where ascites dominates. Discriminating features: liver disease produces
+    jaundice, stigmata of chronic liver disease and a normal urinalysis, with protein loss
+    from reduced synthesis rather than urinary loss.
+
+  argues_against: |
+    Haematuria as a prominent feature argues against uncomplicated nephrotic syndrome and
+    towards a nephritic process — acute glomerulonephritis — or a urinary tract source.
+    Nephrotic syndrome is defined by protein loss, not by bleeding.
+
+    A normal urinalysis argues strongly against the diagnosis. Heavy proteinuria is an
+    indispensable prerequisite, so oedema with clean urine requires a cardiac, hepatic or
+    nutritional explanation instead.
+
+    Prominent hypertension is more characteristic of the nephritic syndrome than of the
+    nephrotic, and its presence should prompt reassessment towards acute
+    glomerulonephritis, particularly where haematuria is also present.
+
+    Oedema confined to one limb is not nephrotic and suggests venous or lymphatic
+    obstruction, or deep vein thrombosis — which is itself a recognised complication of
+    nephrotic syndrome and requires its own assessment.
+
+  red_flags: |
+    Venous thromboembolism. Nephrotic syndrome causes a hypercoagulable state through
+    urinary loss of the anticoagulant proteins antithrombin III, protein C and protein S.
+    Deep vein thrombosis and pulmonary embolism are recognised complications. Unilateral
+    leg swelling and pain, or sudden dyspnoea and pleuritic chest pain, require urgent
+    assessment and referral.
+
+    Respiratory compromise. Large pleural effusions or gross anasarca may impair breathing
+    and require urgent referral for drainage and fluid management.
+
+    Acute pulmonary oedema with dyspnoea indicates that fluid overload has exceeded
+    circulatory tolerance.
+
+    Progression to renal failure, indicated by falling urine output or anuria, requires
+    immediate referral.
+
+    Sepsis. Urinary loss of immunoglobulins increases susceptibility to infection,
+    including spontaneous bacterial peritonitis in patients with ascites. Fever in a
+    nephrotic patient should be treated as a potential serious infection and not assumed
+    to be incidental.
+
+    Complications of treatment — corticosteroids and cytotoxic or immunosuppressant
+    agents — are themselves a recognised source of harm and are managed at specialist
+    level.
+
+  diagnostic_context: |
+    In Kenya primary care (Level 2-3), Vol 2 terminates nephrotic syndrome at referral —
+    "refer to higher level for definitive management". The task here is recognition,
+    urinalysis, and referral, together with the supportive measures Vol 2 does specify.
+
+    Recognition rests on a simple rule: progressive oedema that began around the eyes,
+    with heavy proteinuria on dipstick and without haematuria, is nephrotic syndrome until
+    proven otherwise. Dipstick urinalysis is available at this level and is the single
+    most useful test.
+
+    Supportive management specified in Vol 2 may be started while referral is arranged: a
+    low salt diet; protein intake of 1.0 to 1.1 g/kg body weight per day in minimal change
+    disease and 0.8 g/kg per day in other forms; calorie intake around 35 kcal/kg body
+    weight per day to maintain nitrogen balance; and a fat-restricted diet. Definitive
+    treatment, including corticosteroids and immunosuppression, is undertaken at referral
+    level after the underlying glomerular lesion has been characterised.
+
+    Note on the source. The Kenya MOH Vol 2 clinical features section for this condition
+    opens with a line describing symptoms of bacteraemia — fever, chills, joint pain and
+    muscle pain. That line duplicates the corresponding line in the acute bacterial
+    prostatitis section of the same chapter and is a transcription artefact, not a feature
+    of nephrotic syndrome. Fever in a nephrotic patient should prompt a search for
+    infection as a complication, which is covered under Red flags.

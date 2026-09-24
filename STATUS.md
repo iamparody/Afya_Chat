@@ -258,7 +258,16 @@ Independently (Phase 9 MVP):
   - **Stochastic case 5** (EH vs HC): new boundary, introduced by HC embedding addition. Confirmed genuine reasoning boundary — evidence correctly routed to Gemini via graph/context assembly; Rule 3 application is non-deterministic at temperature=0. `_enforce_arguing_against_ranking()` swap fires when Gemini applies Rule 3 (EH leads); does not fire when Gemini omits Rule 3 application (HC leads). No pipeline defect identified.
   - **5-run characterisation (2026-09-21)**: Case 1 pass rate 2/5 (40%); Case 5 pass rate 2/5 (40%); gate met (≥7/8) 3/5 runs (60%); 6/8 co-failure 2/5 runs (40%); deterministic cases 100% stable across all 5 runs.
   - **Associated card fixes**: Brucellosis `argues_against` graph block: added `productive cough` (source-supported; corpus_version 1.0→1.1). EH `red_flags` section reordered to lead with end-organ damage language (corpus_version 1.3→1.4).
+- 2026-09-22: Chronic kidney disease added (31 conditions/279 chunks); 11 GU pairwise edges (4 mandatory safety). Genitourinary inventory complete except nephrolithiasis. Full suite 343/343.
+  - **Authoring register affects retrieval rank materially.** Card prose written as pathophysiology retrieves poorly against patient presentations. `type_2_diabetes` cardinal_symptoms read "Polyuria results from osmotic diuresis driven by glucosuria when the renal glucose threshold is exceeded…" and ranked **9th of 9** on eval Case 4a — its own textbook presentation — leaving no headroom. Adding any 31st condition that outranked it pushed it out of `TOP_N_CANDIDATES=9` entirely, making Case 4a a deterministic failure.
+  - Rewritten to lead with how the patient presents, retaining the mechanism text after it: **rank 9 → 1**. Verified three ways — isolated cosine distance 0.46 → 0.36; temporary in-place chunk swap rank 10 → 1; committed card rank 9 → 1 with CKD present. `corpus_version` 1.3 → 1.4.
+  - Gate effect: CKD alone 6,6,4,4,6,5 (mean 5.2). CKD + register fix 7,6,7,7,6,4 (mean 6.2) against a master baseline of 3,6,6,6,6,7,7,7,7 (mean 6.1) — parity restored.
+  - **Applies corpus-wide.** The ten original cards are written in explanatory register; cards authored since read as presentations. Worth auditing the remaining nine — queries are always presentations, so cards should describe how the patient presents before explaining why.
 
+- 2026-09-21: Genitourinary domain — 6 cards (30 conditions/270 chunks). MOH Vol 2 Ch 15 + EAU 2026 / KDIGO. Coverage 7/7 (Cases 12, 13 added). Full suite 335/335 including integration. Neo4j: 8 GU pairwise edges (2 mandatory safety).
+  - **Gate variance measured.** n=9 runs on this corpus: 3, 6, 6, 6, 6, 7, 7, 7, 7 (median 6). `origin/master` on the same clean index: 6, 7. Same distribution — the new cards are score-neutral.
+  - **The variance is in generation, not retrieval.** With retrieval held byte-identical across 8 runs, Case 4a returns Type 2 diabetes 8/8, while Case 3 returns Malaria 4/8, Typhoid 2/8, Acute gastroenteritis 2/8. `temperature=0.0` does not make generation deterministic, and no seed is set.
+  - **Case 3's grading is self-contradictory.** Its manual check requires UTI and AGE as co-equal candidates; `primary_contains` grades on which single candidate leads. It passes ~25% of the time and accounts for most of the swing. A ≥7/8 single-run gate cannot distinguish a pass from a fail drawn from this distribution — consider k-of-N per case.
 ---
 
 ### 7f — New condition cards (Tier 1)
@@ -280,15 +289,26 @@ Independently (Phase 9 MVP):
 **Respiratory domain — COMPLETE (2026-09-17):**
 - [x] COPD — committed (MOH Vol 2 2024 + Medscape 2025; two-source pattern; 2026-09-17)
 
-**Cardiovascular domain — in progress:**
+**Cardiovascular domain — Phase 1 complete (feat/cardiovascular_2 for remaining):**
 - [x] Hypertensive Crisis — committed (MOH Vol 2 2024 §3.2 + Medscape 2024; two-source pattern; 2026-09-21)
 - [x] Deep vein thrombosis — committed (MOH Vol 2 2024 §3.3 + Medscape 2024; two-source pattern; 2026-09-23)
-- [ ] Pulmonary embolism — MOH Vol 2 §3.4 confirmed; not started
-- [ ] Heart Failure — MOH Vol 2 §3.5 confirmed; not started
-- [ ] Acute pulmonary oedema — MOH Vol 2 §3.6 confirmed; not started
-- [ ] Acute myocardial infarction — MOH Vol 2 §3.7 confirmed; not started
-- [ ] Acute rheumatic fever — MOH Vol 2 §3.8 confirmed; not started
-- [ ] Rheumatic heart disease — MOH Vol 2 §3.9 confirmed; not started
+- [x] Pulmonary embolism — committed (MOH Vol 2 §3.4 + Medscape 2026; two-source pattern; 2026-09-24)
+- [ ] Heart Failure — MOH Vol 2 §3.5 confirmed; feat/cardiovascular_2
+- [ ] Acute pulmonary oedema — MOH Vol 2 §3.6 confirmed; feat/cardiovascular_2
+- [ ] Acute myocardial infarction — MOH Vol 2 §3.7 confirmed; feat/cardiovascular_2
+- [ ] Acute rheumatic fever — MOH Vol 2 §3.8 confirmed; feat/cardiovascular_2
+- [ ] Rheumatic heart disease — MOH Vol 2 §3.9 confirmed; feat/cardiovascular_2
+
+**Genitourinary domain — COMPLETE (2026-09-22):**
+> MOH Vol 2 Chapter 15 only. Vol 3 (Level 4-6) excluded — mixed-tier authoring surfaces investigations unavailable at the target level of care. Neither volume carries differentials or argues-against for Ch 15, so every card uses the two-source pattern: EAU (infective/urological), KDIGO (renal).
+- [x] Urinary tract infection — enrichment only, v1.6 → v1.9 (Vol 2 §15.1 referral trigger in red_flags; pyelonephritis and prostatitis added to differentials; Vol 2 2024 source)
+- [x] Acute pyelonephritis — Vol 2 §15.2.1 + EAU 2026; ICD-11 GB51
+- [x] Acute bacterial prostatitis — Vol 2 §15.4.1 + EAU 2026; ICD-11 GA91.Y
+- [x] Acute glomerulonephritis — Vol 2 §15.5 + §15.7.1 + KDIGO 2021; ICD-11 GB40
+- [x] Nephrotic syndrome — Vol 2 §15.6 + KDIGO 2021; ICD-11 GB41
+- [x] Acute kidney injury — Vol 2 §15.8.1 + KDIGO 2012; ICD-11 GB60.Z
+- [x] Chronic kidney disease — Vol 2 §15.8.2 + KDIGO 2024; ICD-11 GB61.Z
+- [ ] Nephrolithiasis — deferred: no Vol 2 chapter
 
 **Excluded:**
 - Rift Valley fever — outbreak-only, not routine primary-care differential (AFI domain contract §3.4)
@@ -418,6 +438,16 @@ Independently (Phase 9 MVP):
 - [ ] **anaemia.md — WHO Hb threshold update:** card cites WHO 2011 haemoglobin cutoff document; WHO published revised guidance in 2024. Reconcile thresholds before clinical validation. Ref: WHO 2024 haemoglobin cutoffs publication.
 - [ ] **anaemia.md — ferritin language:** `serum ferritin <30 μg/L` as uncomplicated threshold is too broad. WHO 2020 guidance explicitly changes ferritin interpretation in inflammation/infection, including higher deficiency thresholds. Card wording must distinguish uncomplicated from inflammatory states before ingestion. Ref: WHO 2020 ferritin guideline.
 - [ ] **type_2_diabetes.md — ethnicity risk factor:** `East African ethnicity` in `risk_factors` is too broad a population category for individual diagnostic reasoning. Replace with specific, evidence-based risk factors (e.g. higher T2DM prevalence in urban East African populations, dietary pattern associations) before clinical validation. Colleague flagged risk of becoming an inappropriate diagnostic shortcut.
+
+---
+
+## Outstanding — AFI pairwise condition name mismatch
+
+- [ ] `afi_pairs.yaml` references `"Meningitis (bacterial)"`; the corpus card is `"Bacterial meningitis"`. The mismatch is in `MSP-01.condition_b` and `MSP-02.condition_a` — both mandatory safety pairs.
+
+  Latent so far: Neo4j has 0 nodes under the wrong name and 1 under the correct one, so the AFI pairs have not been loaded since the meningitis card was authored. The next `pairwise_loader.py` run (AFI is the default) will MERGE an orphan node under the wrong name and bind both mandatory safety pairs to it, leaving the real card unlinked. Nothing in the graph would surface the mismatch.
+
+  `afi_pairs.yaml` is AFI-owned, so the rename is left to that owner. `pairwise_loader.py` now warns on any pair condition with no matching card and suggests the likely intended name — `python neo4j/pairwise_loader.py --dry-run` shows it. AFI's 17 pairs remain unloaded; the 8 loaded edges are all Genitourinary.
 
 ---
 

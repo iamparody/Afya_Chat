@@ -5,7 +5,7 @@ icd_entity_uri: "http://id.who.int/icd/release/11/2024-01/mms/1848472780/unspeci
 icd10: N39.0
 icd_search_term: "Urinary tract infection, site and agent not specified"
 category: urological
-corpus_version: "1.6"
+corpus_version: "1.9"
 schema_version: "2.2"
 review_status: draft
 reviewed_by:
@@ -22,6 +22,9 @@ sources:
   - organization: Kenya MOH
     title: Kenya Clinical Guidelines
     year: "2022"
+  - organization: Kenya Ministry of Health
+    title: "Clinical Management and Referral Guidelines Vol. 2: Clinical Guidelines for Management of Conditions at Level 2–3 Health Facilities, Chapter 15.1"
+    year: "2024"
 
 endemic_regions:
   - nationwide
@@ -75,12 +78,13 @@ graph:
     - immunocompromise
     - HIV infection
   differentials:
+    - Acute pyelonephritis
     - chlamydia urethritis
     - gonorrhoea urethritis
     - vaginitis
     - bladder stone
     - overactive bladder syndrome
-    - prostatitis
+    - Acute bacterial prostatitis
   argues_against:
     - negative nitrite and negative leukocyte esterase on dipstick
     - sterile pyuria
@@ -183,6 +187,12 @@ sections:
     rather than simple cystitis.
 
   red_flags: |
+    Fever ≥38 °C, flank pain, or vomiting in a patient presenting with urinary
+    symptoms indicates complicated or upper tract infection and is the primary-care
+    referral trigger — refer to a higher level for care rather than treating as
+    uncomplicated cystitis. Any one of the three is sufficient; they do not all need
+    to be present.
+
     Signs of urosepsis — fever with tachycardia, hypotension, or altered
     consciousness in the context of a UTI — represent a medical emergency requiring
     immediate parenteral antibiotics, fluid resuscitation, and intensive monitoring.

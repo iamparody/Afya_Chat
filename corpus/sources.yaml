@@ -17,36 +17,6 @@
 
 sources:
 
-  - condition: Hypertensive Crisis
-    authority_tier: kenya_moh
-    authority: Kenya Ministry of Health
-    title: "Clinical Guidelines for Level 2 Dispensaries, Medical Clinics, Level 3 Health Centres, Nursing Homes Vol 2"
-    year: 2024
-    url: ""
-    supplementary_sources:
-      - authority: WHO
-        title: "Hypertension Key Facts"
-        year: 2023
-        url: "https://www.who.int/news-room/fact-sheets/detail/hypertension"
-        sections_covered:
-          - predisposing_factors
-          - diagnostic_context
-        reason: "Primary source (Kenya MOH 2024) §3.2 covers management protocol only (6 lines); WHO fact sheet provides epidemiological context and risk factor evidence base"
-      - authority: Medscape
-        title: "Hypertensive Emergencies"
-        year: 2024
-        url: "https://emedicine.medscape.com/article/1952052-overview"
-        sections_covered:
-          - cardinal_symptoms
-          - associated_symptoms
-          - diagnostic_features
-          - typical_presentation
-          - differential_diagnoses
-          - argues_against
-          - red_flags
-          - diagnostic_context
-        reason: "Primary source is thin on clinical detail; Medscape provides emergency vs urgency distinction, target organ assessment criteria, differential diagnosis content, and argues-against clinical features"
-
   - condition: Acute gastroenteritis (infectious)
     authority_tier: who_global
     authority: WHO
@@ -275,25 +245,6 @@ sources:
           - argues_against
         reason: "Primary source (Kenya MOH outbreak guide) does not contain differential diagnosis or argues-against content — supplemented with Medscape clinical reference"
 
-  - condition: Deep vein thrombosis
-    authority_tier: kenya_moh
-    authority: Kenya Ministry of Health
-    title: "Clinical Guidelines for Level 2 Dispensaries, Medical Clinics, Level 3 Health Centres, Nursing Homes Vol 2"
-    year: 2024
-    url: ""
-    section: "§3.3 Deep Vein Thrombosis"
-    supplementary_sources:
-      - authority: Medscape
-        title: "Deep Venous Thrombosis (DVT)"
-        year: 2024
-        url: "https://emedicine.medscape.com/article/1911303-overview"
-        sections_covered:
-          - differential_diagnoses
-          - argues_against
-          - diagnostic_features
-          - red_flags
-        reason: "MOH Vol 2 §3.3 is thin (2 paragraphs — clinical features and general management only). No differentials or argues-against content. Medscape used as supplementary clinical reference."
-
   - condition: Chronic obstructive pulmonary disease
     authority_tier: kenya_moh
     authority: Kenya Ministry of Health
@@ -312,23 +263,166 @@ sources:
           - red_flags
         reason: "MOH Vol 2 §12.4 covers clinical features and management principles only — no differentials or argues-against content. Medscape used as supplementary clinical reference."
 
+  # ── Genitourinary domain (MOH Vol 2 Chapter 15) ─────────────────────────────
+  # Domain contract: docs/domain_contracts/genitourinary.md
+  # Neither MOH volume contains differential-diagnosis or argues-against content
+  # for any Chapter 15 condition — every card in this domain uses the two-source
+  # pattern. EAU covers the infective/urological group; KDIGO the renal group.
+
+  - condition: Acute pyelonephritis
+    authority_tier: kenya_moh
+    authority: Kenya Ministry of Health
+    title: "Clinical Management and Referral Guidelines Vol. 2: Clinical Guidelines for Management of Conditions at Level 2–3 Health Facilities"
+    year: 2024
+    url: ""
+    supplementary_sources:
+      - authority: European Association of Urology (EAU)
+        title: "EAU Guidelines on Urological Infections"
+        year: 2026
+        url: "https://uroweb.org/guidelines/urological-infections"
+        sections_covered:
+          - typical_presentation
+          - differential_diagnoses
+          - argues_against
+        reason: "MOH Vol 2 §15.2.1 covers aetiology, clinical features, investigations and referral criteria but contains no differential-diagnosis or argues-against content. EAU is named in CLAUDE.md Sources and Standards. 2026 edition is a limited update of 2025."
+
+  - condition: Acute bacterial prostatitis
+    authority_tier: kenya_moh
+    authority: Kenya Ministry of Health
+    title: "Clinical Management and Referral Guidelines Vol. 2: Clinical Guidelines for Management of Conditions at Level 2–3 Health Facilities"
+    year: 2024
+    url: ""
+    supplementary_sources:
+      - authority: European Association of Urology (EAU)
+        title: "EAU Guidelines on Urological Infections"
+        year: 2026
+        url: "https://uroweb.org/guidelines/urological-infections"
+        sections_covered:
+          - cardinal_symptoms
+          - associated_symptoms
+          - diagnostic_features
+          - typical_presentation
+          - differential_diagnoses
+          - argues_against
+          - diagnostic_context
+        reason: "MOH Vol 2 §15.4.1 is the thinnest section in Chapter 15 — aetiology, risk factors, clinical features, DRE findings and complications only, terminating at 'Refer to higher facility level' for both diagnosis and treatment. EAU supplementation is mandatory rather than optional for this card. The MOH safety instruction against prostate massage is retained from the primary source."
+
+  - condition: Acute glomerulonephritis
+    authority_tier: kenya_moh
+    authority: Kenya Ministry of Health
+    title: "Clinical Management and Referral Guidelines Vol. 2: Clinical Guidelines for Management of Conditions at Level 2–3 Health Facilities"
+    year: 2024
+    url: ""
+    supplementary_sources:
+      - authority: KDIGO (Kidney Disease Improving Global Outcomes)
+        title: "KDIGO 2021 Clinical Practice Guideline for the Management of Glomerular Diseases"
+        year: 2021
+        url: "https://kdigo.org/guidelines/gd/"
+        sections_covered:
+          - typical_presentation
+          - differential_diagnoses
+          - argues_against
+        reason: "MOH Vol 2 covers acute GN at §15.5 (post-streptococcal presentation, referral) and §15.7.1 (RPGN typology) with no differential-diagnosis or argues-against content. KDIGO 2021 remains the base published Glomerular Diseases guideline; it is updated chapter-by-chapter, but no chapter update supersedes the acute nephritic syndrome content used here."
+
+  - condition: Nephrotic syndrome
+    authority_tier: kenya_moh
+    authority: Kenya Ministry of Health
+    title: "Clinical Management and Referral Guidelines Vol. 2: Clinical Guidelines for Management of Conditions at Level 2–3 Health Facilities"
+    year: 2024
+    url: ""
+    supplementary_sources:
+      - authority: KDIGO (Kidney Disease Improving Global Outcomes)
+        title: "KDIGO 2021 Clinical Practice Guideline for the Management of Glomerular Diseases"
+        year: 2021
+        url: "https://kdigo.org/guidelines/gd/"
+        sections_covered:
+          - typical_presentation
+          - differential_diagnoses
+          - argues_against
+        reason: "MOH Vol 2 §15.6 provides the adult clinical definition table, classification, clinical features and complications, but no differentials or argues-against content. Card is adult-scoped, matching MOH Table 15.2 ('Clinical Definition of Adult Nephrotic Syndrome') — the separate KDIGO 2025 paediatric nephrotic syndrome guideline is therefore out of scope. KNOWN PRIMARY-SOURCE DEFECT: MOH Vol 2 §15.6 Clinical Features opens with 'Symptoms of bacteremia (fever, chill, joint pain, and muscle pain)', a verbatim duplicate of the §15.4.1 prostatitis line. This is a copy-paste artefact in the source and must not be encoded on this card."
+
+  - condition: Acute kidney injury
+    authority_tier: kenya_moh
+    authority: Kenya Ministry of Health
+    title: "Clinical Management and Referral Guidelines Vol. 2: Clinical Guidelines for Management of Conditions at Level 2–3 Health Facilities"
+    year: 2024
+    url: ""
+    supplementary_sources:
+      - authority: KDIGO (Kidney Disease Improving Global Outcomes)
+        title: "KDIGO 2012 Clinical Practice Guideline for Acute Kidney Injury"
+        year: 2012
+        url: "https://kdigo.org/guidelines/acute-kidney-injury/"
+        sections_covered:
+          - diagnostic_features
+          - typical_presentation
+          - differential_diagnoses
+          - argues_against
+        reason: "MOH Vol 2 §15.8.1 cites KDIGO directly for the AKI diagnostic definition, so the supplementary source is the one the primary source already defers to. AGE-OF-EVIDENCE CAVEAT: KDIGO 2012 is the current *published* AKI guideline — the KDIGO 2026 AKI/AKD guideline was released for public review in March 2026 and remains in preparation, so it is not citable. The 2012 diagnostic criteria are unchanged and are those reproduced in MOH Vol 2. Revisit this entry when the 2026 guideline is published."
+
+  - condition: Chronic kidney disease
+    authority_tier: kenya_moh
+    authority: Kenya Ministry of Health
+    title: "Clinical Management and Referral Guidelines Vol. 2: Clinical Guidelines for Management of Conditions at Level 2–3 Health Facilities"
+    year: 2024
+    url: ""
+    supplementary_sources:
+      - authority: KDIGO (Kidney Disease Improving Global Outcomes)
+        title: "KDIGO 2024 Clinical Practice Guideline for the Evaluation and Management of Chronic Kidney Disease"
+        year: 2024
+        url: "https://kdigo.org/wp-content/uploads/2024/03/KDIGO-2024-CKD-Guideline.pdf"
+        sections_covered:
+          - diagnostic_features
+          - typical_presentation
+          - differential_diagnoses
+          - argues_against
+        reason: "MOH Vol 2 §15.8.2 Table 15.5 ('Criteria for Chronic Kidney Disease') is EMPTY in the extracted text — only its KDIGO 2012 citation survived extraction, so staging criteria must be taken from KDIGO directly. KDIGO 2024 is used rather than the KDIGO 2012 edition the MOH text cites: it is the current published CKD guideline and supersedes 2012. A focused update to Chapter 3 (delaying progression) is in progress and does not affect the evaluation/staging content used here."
+
+  # ── Cardiovascular domain (MOH Vol 2 Chapter 3) ──────────────────────────────
+
+  - condition: Hypertensive Crisis
+    authority_tier: kenya_moh
+    authority: Kenya Ministry of Health
+    title: "Clinical Management and Referral Guidelines Vol. 2: Clinical Guidelines for Management of Conditions at Level 2–3 Health Facilities"
+    year: 2024
+    url: ""
+    supplementary_sources:
+      - authority: Medscape
+        title: "Hypertensive Emergencies"
+        year: 2024
+        url: "https://emedicine.medscape.com/article/1952052-overview"
+        sections_covered:
+          - differential_diagnoses
+          - argues_against
+        reason: "MOH Vol 2 §3.1 covers diagnostic criteria and emergency management but contains limited differential-diagnosis content. Medscape used for differentials and argues-against sections."
+
+  - condition: Deep vein thrombosis
+    authority_tier: kenya_moh
+    authority: Kenya Ministry of Health
+    title: "Clinical Management and Referral Guidelines Vol. 2: Clinical Guidelines for Management of Conditions at Level 2–3 Health Facilities"
+    year: 2024
+    url: ""
+    supplementary_sources:
+      - authority: Medscape
+        title: "Deep Venous Thrombosis (DVT)"
+        year: 2024
+        url: "https://emedicine.medscape.com/article/1911303-overview"
+        sections_covered:
+          - differential_diagnoses
+          - argues_against
+        reason: "MOH Vol 2 §3.3 covers recognition and referral criteria. Medscape used for differentials and argues-against sections."
+
   - condition: Pulmonary embolism
     authority_tier: kenya_moh
     authority: Kenya Ministry of Health
-    title: "Clinical Guidelines for Level 2 Dispensaries, Medical Clinics, Level 3 Health Centres, Nursing Homes Vol 2"
+    title: "Clinical Management and Referral Guidelines Vol. 2: Clinical Guidelines for Management of Conditions at Level 2–3 Health Facilities"
     year: 2024
-    section: "§3.4 Pulmonary Embolism"
+    url: ""
     supplementary_sources:
       - authority: Medscape
         title: "Pulmonary Embolism (PE)"
         year: 2026
         url: "https://emedicine.medscape.com/article/300901-overview"
         sections_covered:
-          - cardinal_symptoms
-          - associated_symptoms
-          - diagnostic_features
-          - predisposing_factors
           - differential_diagnoses
           - argues_against
-          - red_flags
-        reason: "MOH Vol 2 §3.4 is very thin (6 bullet clinical features + refer immediately — no differentials, argues-against, or diagnostic detail). Medscape used as supplementary clinical reference."
+        reason: "MOH Vol 2 §3.4 covers recognition and referral criteria. Medscape used for differentials and argues-against sections."
