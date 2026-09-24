@@ -11,9 +11,11 @@ Clinical logic lives in prompts.py. Provider logic lives in providers.py.
 This file orchestrates only.
 """
 
+import hashlib
 import json
 import logging
 import os
+import re
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -44,8 +46,79 @@ from providers import get_provider
 from presentation_map import classify as _map_classify, get_map_candidates as _map_get_candidates
 
 CHROMA_DIR       = ROOT / "chroma" / "db"
+CHUNKS_PATH      = ROOT / "corpus_pipeline" / "output" / "chunks.jsonl"
 TOP_N_CANDIDATES = 9
 TOP_N_PASSAGES   = 5  # per candidate — wider window to ensure red flag + diagnostic sections are included
+RRF_K            = 60  # Cormack et al. 2009 standard default — swept in Phase 5b calibration
+
+
+# ── BM25 tokeniser + singleton ────────────────────────────────────────────────
+
+_STOPWORDS = frozenset({
+    # general
+    "the", "and", "with", "for", "this", "that", "from", "may", "can",
+    "are", "has", "have", "been", "will", "its", "also", "such", "due",
+    "more", "both", "into", "than", "often", "most", "other", "which",
+    "when", "does",
+    # corpus boilerplate (section headers, card metadata)
+    "symptoms", "features", "diagnosis", "diagnostic", "patient", "clinical",
+    "associated", "common", "typically", "present", "usually", "include",
+    "condition",
+})
+
+def _tokenize(text: str) -> list:
+    tokens = re.findall(r"[a-z0-9][a-z0-9'/\-]*", text.lower())
+    return [t for t in tokens if t not in _STOPWORDS and len(t) > 2]
+
+
+_bm25_cache: dict = {}   # {"hash": str, "index": BM25Okapi, "chunks": list}
+
+def _get_bm25():
+    """Return cached BM25 index, rebuilding if chunks.jsonl has changed."""
+    from rank_bm25 import BM25Okapi
+    raw = CHUNKS_PATH.read_bytes()
+    h = hashlib.md5(raw).hexdigest()
+    if _bm25_cache.get("hash") == h:
+        return _bm25_cache["index"], _bm25_cache["chunks"]
+    chunks = [json.loads(line) for line in raw.decode("utf-8").splitlines() if line.strip()]
+    corpus = [_tokenize(c["text"]) for c in chunks]
+    index = BM25Okapi(corpus)
+    _bm25_cache.update({"hash": h, "index": index, "chunks": chunks})
+    return index, chunks
+
+
+# ── Retrieval: BM25 + RRF ─────────────────────────────────────────────────────
+
+def _bm25_candidates(presentation: str, n: int = TOP_N_CANDIDATES) -> list:
+    """Return top-n condition names by BM25 score."""
+    index, chunks = _get_bm25()
+    tokens = _tokenize(presentation)
+    scores = index.get_scores(tokens)
+    ranked = sorted(enumerate(scores), key=lambda x: -x[1])
+    seen: dict = {}
+    for idx, _score in ranked:
+        cond = chunks[idx]["metadata"]["condition"]
+        if cond not in seen:
+            seen[cond] = True
+        if len(seen) >= n:
+            break
+    return list(seen.keys())
+
+
+def _rrf_candidates(
+    dense_list: list,
+    bm25_list: list,
+    n: int = TOP_N_CANDIDATES,
+    k: int = RRF_K,
+) -> list:
+    """Reciprocal Rank Fusion of dense and BM25 candidate lists."""
+    scores: dict = {}
+    for rank, cond in enumerate(dense_list):
+        scores[cond] = scores.get(cond, 0.0) + 1.0 / (k + rank)
+    for rank, cond in enumerate(bm25_list):
+        scores[cond] = scores.get(cond, 0.0) + 1.0 / (k + rank)
+    ranked = sorted(scores, key=lambda c: -scores[c])
+    return ranked[:n]
 
 
 # ── Retrieval: vector candidate generation ────────────────────────────────────
@@ -162,13 +235,13 @@ def get_filtered_passages(embedder, collection, presentation, conditions, query_
 
 class RetrievalRouter:
     """
-    Candidate generation seam. Currently: dense-only (Chroma vector search).
+    Candidate generation seam. Phase 5b: dense vector + BM25 fused via RRF.
     Returns candidates with provenance labels.
 
     Provenance values:
-        "retrieval"      — dense vector only (current)
-        "map+retrieval"  — map-confirmed + vector (step 2, presentation map boost)
-        "map"            — map-only, not found by vector (step 2)
+        "retrieval"      — RRF output (dense only — BM25 agreed but contributed no new candidates)
+        "map+retrieval"  — RRF output confirmed by presentation map
+        "map-only"       — map candidate not found by RRF (has a corpus card)
     """
 
     def __init__(self, embedder, collection):
@@ -179,20 +252,22 @@ class RetrievalRouter:
         """
         Return [{condition, source}, ...].
 
-        Dense retrieval candidates are listed first (preserving vector rank).
+        RRF candidates are listed first (preserving RRF rank as the vector rank signal).
         Map-only candidates are appended at the end.
 
         source values:
-            "retrieval"      — dense vector only
-            "map+retrieval"  — present in both map and dense vector
-            "map-only"       — map candidate not found by dense vector (has a corpus card)
+            "retrieval"      — RRF (dense + BM25)
+            "map+retrieval"  — RRF output also confirmed by presentation map
+            "map-only"       — map candidate not in RRF output
 
         query_embedding: optional precomputed embedding of `presentation` — see
         get_vector_candidates(). Computed here if not supplied.
         """
-        retrieval_conditions = get_vector_candidates(
+        dense_conditions    = get_vector_candidates(
             self.embedder, self.collection, presentation, n, query_embedding=query_embedding
         )
+        bm25_conditions     = _bm25_candidates(presentation, n)
+        retrieval_conditions = _rrf_candidates(dense_conditions, bm25_conditions, n)
         retrieval_set = set(retrieval_conditions)
 
         pathway_ids = _map_classify(presentation)
@@ -220,7 +295,7 @@ _GRAPH_WEIGHT  = 0.3
 
 # Ambiguity threshold — margin below this value means candidates #1 and #2 are
 # genuinely competing. Calibrate from Step 1 log distributions.
-AMBIGUITY_MARGIN_THRESHOLD = 0.15
+AMBIGUITY_MARGIN_THRESHOLD = 0.20
 
 
 def _compute_fused_scores(candidates: list) -> tuple:
@@ -231,8 +306,11 @@ def _compute_fused_scores(candidates: list) -> tuple:
     graph_score  : normalised matched_count — 1.0 for the candidate with the most matches.
     fused_score  : weighted sum (vector 70 %, graph 30 %).
 
-    Candidates are NOT re-sorted — vector rank remains the primary ordering passed
-    to the LLM. Scores are attached in-place for logging and margin computation only.
+    Candidates retain vector rank order — fused score is computed for margin
+    and audit purposes only. Sorting by fused score demotes strong graph
+    matches (e.g. Malaria) that have moderate vector rank, causing LLM
+    positional bias toward vector-dominant candidates. Reorder only after
+    weight calibration against the full regression suite.
 
     Returns (candidates_with_scores, margin).
     """
@@ -260,13 +338,35 @@ def _compute_fused_scores(candidates: list) -> tuple:
 _CONF_ORDER = {"low": 0, "moderate": 1, "high": 2}
 
 
+_HARD_THRESHOLD_TERMS = frozenset({
+    "BP below crisis threshold",
+    "below crisis threshold",
+    "below emergency threshold",
+})
+
+
+def _has_hard_threshold_violation(arguing_against: list) -> bool:
+    """Return True if any arguing_against item is a hard threshold violation."""
+    for term in arguing_against:
+        term_lower = term.lower()
+        if any(h.lower() in term_lower for h in _HARD_THRESHOLD_TERMS):
+            return True
+    return False
+
+
 def _enforce_arguing_against_ranking(data: dict) -> dict:
     """
-    Deterministic post-hoc enforcement of SIX RULES Rule 6.
+    Deterministic post-hoc enforcement of Rule 6.
 
-    If the leading candidate has non-empty arguing_against[] AND there exists
-    another candidate with empty arguing_against[] at equal or higher confidence,
-    the leading candidate is swapped to the best candidate without arguing_against.
+    Swap the leading candidate when:
+    1. The leader has a hard threshold violation in arguing_against[], OR
+    2. The leader has arguing_against[] AND a candidate with empty arguing_against[]
+       exists at equal or higher confidence.
+
+    For hard threshold violations (Rule 6A), swap to any candidate at equal/higher
+    confidence with fewer arguing_against items — replacement need not be empty.
+    For ordinary arguing_against matches, the original requirement (empty replacement)
+    still applies to avoid over-triggering.
 
     The LLM populates arguing_against[] only with matched evidence per Rule 3,
     so non-empty arguing_against reliably indicates an argues-against match in
@@ -277,25 +377,45 @@ def _enforce_arguing_against_ranking(data: dict) -> dict:
         return data
 
     leading = candidates[0]
-    if not leading.get("arguing_against"):
-        return data  # No match — no swap needed
+    lead_ag = leading.get("arguing_against", [])
+    if not lead_ag:
+        return data  # Nothing to act on
 
     lead_conf = _CONF_ORDER.get(leading.get("confidence_level", "low"), 0)
+    hard_violation = _has_hard_threshold_violation(lead_ag)
 
-    # Find first candidate with empty arguing_against at >= leading confidence
+    best_i = None
+    best_ag_count = len(lead_ag)
+
     for i, cand in enumerate(candidates[1:], 1):
-        if cand.get("arguing_against"):
-            continue
         cand_conf = _CONF_ORDER.get(cand.get("confidence_level", "low"), 0)
-        if cand_conf >= lead_conf:
-            _log("ARGUES_AGAINST_SWAP", {
-                "swapped_out": leading.get("diagnosis"),
-                "swapped_in":  cand.get("diagnosis"),
-                "reason":      "leading had arguing_against match; replacement has none at >= confidence",
-            })
-            candidates[0], candidates[i] = candidates[i], candidates[0]
-            data["leading_candidate"] = candidates[0]["diagnosis"]
-            return data
+        if cand_conf < lead_conf:
+            continue
+        cand_ag = cand.get("arguing_against", [])
+        if hard_violation:
+            # Hard threshold: swap to candidate with fewer arguing_against items
+            if len(cand_ag) < best_ag_count:
+                best_ag_count = len(cand_ag)
+                best_i = i
+        else:
+            # Ordinary match: original requirement — replacement must be empty
+            if not cand_ag and best_i is None:
+                best_i = i
+
+    if best_i is not None:
+        cand = candidates[best_i]
+        _log("ARGUES_AGAINST_SWAP", {
+            "swapped_out":   leading.get("diagnosis"),
+            "swapped_in":    cand.get("diagnosis"),
+            "hard_violation": hard_violation,
+            "reason": (
+                "leading has hard threshold violation; replacement has fewer arguing_against items"
+                if hard_violation
+                else "leading had arguing_against match; replacement has none at >= confidence"
+            ),
+        })
+        candidates[0], candidates[best_i] = candidates[best_i], candidates[0]
+        data["leading_candidate"] = candidates[0]["diagnosis"]
 
     return data
 
@@ -435,9 +555,30 @@ def run(
             ],
         })
 
-        # Step 3 — Vector: prose passages filtered to candidates only
+
+    # Step 3 — Vector: prose passages filtered to candidates only
         top_conditions = [c["condition"] for c in candidates]
         passages = get_filtered_passages(embedder, col, presentation, top_conditions, query_embedding=query_embedding)
+
+        # --- DEBUG LOGGING: COMPACT RETRIEVED EVIDENCE --- (gate: CDS_DEBUG=1)
+        if os.environ.get("CDS_DEBUG"):
+            print("\n" + "=" * 70)
+            print("DEBUG: RETRIEVED EVIDENCE SUMMARY")
+            print("=" * 70)
+            for i, item in enumerate(passages, 1):
+                print(f"\n--- #{i} ({item.get('condition', 'Unknown')} - {item.get('section', 'Unknown')}) ---")
+                print(str(item.get('text', ''))[:1000].replace("\n", " ") + "...")
+
+        # # Step 3 — Vector: prose passages filtered to candidates only
+        # top_conditions = [c["condition"] for c in candidates]
+        # passages = get_filtered_passages(embedder, col, presentation, top_conditions, query_embedding=query_embedding)
+
+        # print("\n" + "=" * 70)
+        # print("DEBUG: RETRIEVED EVIDENCE")
+        # print("=" * 70)
+        # for i, item in enumerate(passages, 1):
+        #     print(f"\n--- Retrieved #{i} ---")
+        #     print(item)
 
         # Step 3b — Environmental context (optional; no-op when no location/signals match)
         _enc = encounter_date or datetime.now()
@@ -455,15 +596,44 @@ def run(
         # Step 3c — Comorbidity context (deterministic; no-op when no triggers match)
         comorbidity_alerts = get_comorbidity_alerts(top_conditions, presentation)
 
-        # Step 4 — Build context and call LLM
+        # # Step 4 — Build context and call LLM
         context = build_context(
             presentation, candidates, passages,
             env_evidence=env_evidence,
             comorbidity_alerts=comorbidity_alerts,
+            score_margin=score_margin,
+            near_tie=score_margin < AMBIGUITY_MARGIN_THRESHOLD,
         )
         if hasattr(provider, "set_schema"):
             provider.set_schema(OUTPUT_SCHEMA)
+
+        # --- DEBUG LOGGING: FINAL GEMINI PROMPT --- (gate: CDS_DEBUG=1)
+        if os.environ.get("CDS_DEBUG"):
+            print("\n" + "=" * 70)
+            print("DEBUG: FINAL GEMINI PROMPT")
+            print("=" * 70)
+            print(f"SYSTEM PROMPT:\n{SYSTEM_PROMPT}\n\nUSER CONTEXT:\n{context}")
+            print("=" * 70)
+
         raw     = provider.generate(SYSTEM_PROMPT, context)
+
+        # --- DEBUG LOGGING: FULL GEMINI RESPONSE --- (gate: CDS_DEBUG=1)
+        if os.environ.get("CDS_DEBUG"):
+            print("\n" + "=" * 70)
+            print("DEBUG: FULL GEMINI RESPONSE")
+            print("=" * 70)
+            print(raw)
+            print("=" * 70)
+
+        # Step 4 — Build context and call LLM
+        # context = build_context(
+        #     presentation, candidates, passages,
+        #     env_evidence=env_evidence,
+        #     comorbidity_alerts=comorbidity_alerts,
+        # )
+        # if hasattr(provider, "set_schema"):
+        #     provider.set_schema(OUTPUT_SCHEMA)
+        # raw     = provider.generate(SYSTEM_PROMPT, context)
 
         # Step 5 — Validate (fail closed)
         result = validate(raw)

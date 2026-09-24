@@ -8,18 +8,19 @@ Symptom-driven diagnostic RAG system for East Africa / Kenya primary care. Given
 
 | Phase | Description | Status |
 |-------|-------------|--------|
-| 1 | Corpus — 22 condition cards (YAML) | ✅ Done |
-| 2 | Clinician review — 15 original cards verified | ✅ Done (7 new cards remain draft) |
+| 1 | Corpus — 27 condition cards (YAML) | ✅ Done |
+| 2 | Clinician review — 15 original cards verified | ✅ Done (12 new cards remain draft) |
 | 3 | Ingestion pipeline → Chroma vector store | ✅ Done |
-| 4 | Neo4j knowledge graph — 22 conditions | ✅ Done |
-| 5 | RAG pipeline — Gemini + SEVEN RULES prompt | ✅ Done |
+| 4 | Neo4j knowledge graph — 27 conditions | ✅ Done |
+| 5 | RAG pipeline — Gemini + EIGHT RULES prompt + near-tie injection | ✅ Done |
 | 6 | Streamlit MVP + approval workflow + SQLite | ✅ Done |
 | 7 | Environmental context layer — static calendar + ENSO + exposure gating | ✅ Done |
 | 8 | Interactive disambiguation loop | ✅ Done (CI-gated 4/5) |
 | 8b | Reasoning evaluation harness — 10-dim rubric + CI | ✅ Done (87/96, 90%) |
 | 9 | Live rainfall — Open-Meteo provider + source validation | 🟡 Partial |
+| 5b | Hybrid retrieval — BM25 + RRF live integration | 🔵 Next |
 
-**Eval:** Regression 7/8 GATE PASS · Coverage 2/2 · 87/96 (90%) reasoning · 4/5 disambiguation.
+**Eval:** Regression 7/8 GATE PASS · Coverage 6/7 · 87/96 (90%) reasoning · 4/5 disambiguation.
 
 **Production gate:** 15 original cards `clinician_verified`. 7 cards added post-review are `draft`. All `draft` cards are blocked from production ingestion.
 
@@ -28,7 +29,7 @@ Symptom-driven diagnostic RAG system for East Africa / Kenya primary care. Given
 ## Stack
 
 ```
-corpus/<condition>/condition.yaml  (22 condition cards, schema 2.2)
+corpus/<condition>/condition.yaml  (27 condition cards, schema 2.2)
         │
         ▼
 corpus_pipeline/ingest_yaml.py  ← chunking + graph extraction + vocab validation
@@ -37,14 +38,14 @@ corpus_pipeline/ingest_yaml.py  ← chunking + graph extraction + vocab validati
         └──► graph_entities.jsonl ──► neo4j/neo4j_loader.py ── Cypher MERGE → Neo4j AuraDB
 
 Patient presentation
-    → Cohere embed → Chroma (top 6 candidate conditions)
+    → Cohere embed → Chroma (top 9 candidate conditions)
     → Neo4j (symptom profiles + argues_against per candidate)
     → Cohere embed → Chroma (top 5 prose passages per candidate)
     → Environmental context engine
         ├── StaticCalendarProvider (signal activation — Kenya rainfall calendar)
         └── OpenMeteoProvider → RainfallFeatures (7/30/60d mm) → audit trail
     → Comorbidity engine (ASSOCIATED_WITH / COMPLICATED_BY / REQUIRES_CONTEXT alerts)
-    → Gemini (SEVEN RULES, temperature=0, JSON schema enforced)
+    → Gemini (EIGHT RULES, temperature=0, JSON schema enforced)
     → jsonschema validate → structured differential assessment
     → Disambiguation loop (tied candidates → discriminating questions → re-run)
     → Streamlit UI → approval → SQLite encounters
@@ -64,7 +65,7 @@ cds/
 ├── Makefile                              pipeline entry point (6 targets)
 ├── CLAUDE.md                             governance + schema reference + controlled vocabularies
 ├── STATUS.md                             build tracker
-├── corpus/                               22 condition cards (YAML)
+├── corpus/                               27 condition cards (YAML)
 │   ├── <condition>/condition.yaml        one file per condition
 │   └── sources.yaml                      provenance registry (one entry per condition)
 ├── corpus_pipeline/
@@ -85,7 +86,7 @@ cds/
 │   └── chroma_loader.py                  embeds chunks.jsonl → Chroma
 ├── phase5/
 │   ├── rag.py                            RAG orchestrator
-│   ├── prompts.py                        SEVEN RULES prompt + OUTPUT_SCHEMA + build_context()
+│   ├── prompts.py                        EIGHT RULES prompt + OUTPUT_SCHEMA + build_context()
 │   ├── providers.py                      GeminiProvider (retry) + AnthropicProvider fallback
 │   └── evaluate.py                       RAG evaluation harness (regression + coverage cases)
 ├── phase6/
@@ -107,6 +108,8 @@ cds/
 ├── docs/
 │   └── domain_contracts/
 │       └── acute_febrile_illness.md     AFI domain — condition inventory + pairwise matrix
+├── experiments/
+│   └── retrieval_comparison.py           Dense vs BM25 vs RRF comparison + growth test
 └── .github/workflows/
     └── cds_pipeline.yml                  CI — ingest → Neo4j → embed → eval
 ```
@@ -187,7 +190,7 @@ Confidence levels: `high` / `moderate` / `low`. No numerical probabilities.
 
 ---
 
-## Corpus (22 conditions)
+## Corpus (27 conditions)
 
 | Condition | ICD-11 | ICD-10 | Review |
 |-----------|--------|--------|--------|
@@ -213,6 +216,11 @@ Confidence levels: `high` / `moderate` / `low`. No numerical probabilities.
 | Acute Viral Hepatitis A | 1E50.0 | B15.9 | 🟡 draft |
 | Bacterial Meningitis | 1C1Z | G00.9 | 🟡 draft |
 | Chikungunya | 1D67 | A92.0 | 🟡 draft |
+| Brucellosis | 1B90 | A23.9 | 🟡 draft |
+| Leptospirosis | 1C10 | A27.9 | 🟡 draft |
+| COPD | CA22 | J44.1 | 🟡 draft |
+| Hypertensive Crisis | BA41 | I10 | 🟡 draft |
+| Deep Vein Thrombosis | BD71 | I82.9 | 🟡 draft |
 
 ---
 
@@ -235,12 +243,22 @@ The validator (`corpus_pipeline/validator.py`) checks vocabulary, ICD format, se
 
 ## What remains
 
+**Phase 5b — hybrid retrieval (next engineering block):**
+1. Capture 27-condition retrieval baseline: Recall@9/30/50 + MRR + per-case provenance
+2. BM25 + RRF live integration into `rag.py` (singleton keyed by `chunks.jsonl` hash)
+3. Regression gate post-BM25 (watch T2DM 4a→4b paired case — previous failure point)
+4. RRF k sweep (30/60/120) + graph weight calibration
+5. Near-tie threshold re-examination post-BM25 (score distributions change)
+
+**Corpus expansion (cardiovascular domain):**
+- PE, Heart Failure, AMI, ARF, RHD — chapter verification in Kenya MOH Vol 2 required before authoring (see `docs/domain_contracts/cardiovascular.md` §2.4)
+
 **Corpus expansion (AFI domain):**
-- Brucellosis, Leptospirosis, Rickettsial illness — governance decision on acceptable sources required before authoring (see `docs/domain_contracts/acute_febrile_illness.md` §2.5)
+- Rickettsial illness — governance decision on acceptable sources required (see `docs/domain_contracts/acute_febrile_illness.md` §2.5)
 
 **Phase 9 — rainfall thresholds:**
 1. Historical ERA5-Land baseline per ecology (≥5 years)
 2. Signal activation thresholds per ecology
 3. Replace `StaticCalendarProvider` with observed-rainfall gating
 
-**Clinician review:** 7 cards added after the 2026-09-14 review are `draft`. These need a second review pass before production ingestion.
+**Clinician review:** 12 cards are `draft` (7 added post-2026-09-14 review + 5 added since). These need a second review pass before production ingestion.

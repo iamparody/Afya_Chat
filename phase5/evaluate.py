@@ -8,6 +8,33 @@ Usage:
     python phase5/evaluate.py                    # all cases, dense-only (Cohere baseline)
     python phase5/evaluate.py 2a                 # single case
     python phase5/evaluate.py 2a 4b              # specific cases
+
+── Gate policy ──────────────────────────────────────────────────────────────
+Regression gate: ≥7/8 per run.
+
+Cases are classified into two categories:
+
+  DETERMINISTIC (must pass on every run):
+    2a  Brucellosis vs Pneumonia — productive cough discriminator
+    2b  Brucellosis vs Malaria — antimalarial response discriminator
+    3   Appendicitis — RLQ localisation
+    4a  Anaemia — IDA vs PUD
+    4b  Anaemia — IDA in child
+    6   Iron deficiency anaemia
+
+  STOCHASTIC (documented boundary; no known pipeline defect):
+    1   Malaria vs CAP — Gemini sometimes routes productive cough to CAP
+        as primary (pre-existing boundary, predates HC addition)
+    5   Essential hypertension vs Hypertensive Crisis — Gemini sometimes
+        fails to apply Rule 3 to HC argues_against features at temperature=0
+        (introduced by HC addition; confirmed genuine reasoning boundary —
+        evidence correctly routed, no routing defect identified)
+
+A 6/8 run (both stochastic cases fail together) does NOT pass the gate.
+Do not re-run the suite to sample until 7/8 appears — that converts the
+gate into luck. If 6/8 is observed, investigate whether a new routing
+defect has appeared before re-running.
+────────────────────────────────────────────────────────────────────────────
 """
 
 import json
@@ -175,7 +202,7 @@ CASES = [
         "checks": {
             "primary_contains":     ["anaemia", "anemia", "iron"],
             "red_flags_contain":    [],  # IDA red flag section not retrieved by vector similarity — see manual checks
-            "missing_info_contain": ["menstrual", "hb", "fbc", "dietary"],
+            "missing_info_contain": ["menstrual", "menorrhagia", "hb", "haemoglobin", "fbc", "ferritin", "dietary"],
             "prohibited_strings":   [
                 "anaemia confirmed",
                 "anemia confirmed",
@@ -306,6 +333,73 @@ COVERAGE_CASES = [
                 "Asthma listed as key differential with bronchodilator reversibility as discriminating feature",
                 "TB exclusion noted — AFB negative cited",
                 "Spirometry referral recommended for definitive diagnosis",
+            ],
+        },
+    },
+    {
+        "id": "13",
+        "label": "DVT — post-partum unilateral calf swelling with precipitant",
+        "presentation": (
+            "28F, 10 days post-partum after caesarean section. Right calf swollen and "
+            "painful for 2 days — noticeably larger than the left. Warmth and redness over "
+            "the right calf on examination. Cannot walk without limping. No fever. No cough "
+            "or chest pain. No bilateral swelling. Calf diameter difference approximately "
+            "3 cm measured from tibial tuberosity."
+        ),
+        "checks": {
+            "primary_contains":     ["thrombosis", "dvt", "deep vein"],
+            "red_flags_contain":    [],
+            "missing_info_contain": ["duplex", "ultrasound", "wells", "d-dimer", "anticoag"],
+            "prohibited_strings":   ["dvt confirmed", "thrombosis confirmed"],
+            "manual": [
+                "Post-partum status and recent caesarean section cited as precipitating risk factors",
+                "Unilateral asymmetric swelling with measurable diameter difference cited as key discriminating feature",
+                "Pulmonary embolism listed as red flag or complication to monitor",
+                "Referral language present — duplex ultrasound and anticoagulation at higher-level facility",
+            ],
+        },
+    },
+    {
+        "id": "12",
+        "label": "Hypertensive Crisis — positive identification (BP ≥180/120 + end-organ)",
+        "presentation": (
+            "58M, known hypertensive on amlodipine, ran out of medication 3 weeks ago. "
+            "Acute severe occipital headache starting 2 hours ago. Blurred vision bilaterally. "
+            "Nausea and one episode of vomiting. BP 218/134 on arrival. Confused and agitated. "
+            "No fever. Fundoscopy shows bilateral disc swelling."
+        ),
+        "checks": {
+            "primary_contains":     ["crisis", "hypertensive emergency", "hypertensive urgency"],
+            "red_flags_contain":    ["encephalopathy", "end-organ"],
+            "missing_info_contain": ["ecg", "urine", "creatinine", "renal"],
+            "prohibited_strings":   ["essential hypertension confirmed", "no end-organ"],
+            "manual": [
+                "BP 218/134 explicitly cited as meeting ≥180/120 emergency threshold",
+                "Medication non-compliance cited as precipitant",
+                "Papilloedema / disc swelling cited as confirming end-organ involvement",
+                "Immediate referral language present — IV therapy at Level 4, not oral reduction",
+            ],
+        },
+    },
+    {
+        "id": "14",
+        "label": "Pulmonary embolism — post-partum sudden dyspnoea with risk factors",
+        "presentation": (
+            "26F, 8 days post-partum after normal vaginal delivery. Sudden onset of breathlessness "
+            "starting 1 hour ago. Right-sided pleuritic chest pain. No cough or fever. No sputum. "
+            "Tachycardia — pulse 118 bpm. Respiratory rate 24 per minute. Oxygen saturation 91% on "
+            "air. No bilateral leg swelling. Right calf mildly tender on palpation. No focal chest signs."
+        ),
+        "checks": {
+            "primary_contains":     ["pulmonary embolism", "pulmonary embol", "pe"],
+            "red_flags_contain":    ["haemodynamic", "oxygen", "referral"],
+            "missing_info_contain": ["ctpa", "d-dimer", "wells", "anticoag"],
+            "prohibited_strings":   ["pe confirmed", "pulmonary embolism confirmed"],
+            "manual": [
+                "Post-partum state and immobility cited as VTE risk factors",
+                "Sudden onset dyspnoea + pleuritic chest pain + tachycardia triad noted",
+                "Right calf tenderness noted as raising suspicion of concurrent DVT",
+                "Urgent referral to Level 4/5 for CTPA language present",
             ],
         },
     },

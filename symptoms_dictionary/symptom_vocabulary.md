@@ -131,6 +131,7 @@
 | photophobia | light sensitivity, light intolerance |
 | undulating fever | relapsing fever, intermittent fever, undulant fever, quotidian fever |
 | back pain | lumbar pain, low back pain, spinal pain, backache |
+| syncope | fainting, loss of consciousness, blackout |
 
 ---
 
@@ -173,6 +174,8 @@
 | sacroiliitis | sacroiliac joint inflammation, sacroiliac pain, sacroiliac joint disease |
 | spondylitis | vertebral osteomyelitis, spinal brucellosis, vertebral infection, vertebral spondylitis |
 | orchitis | testicular inflammation, epididymo-orchitis, Brucella orchitis, epididymitis |
+| raised JVP | elevated JVP, elevated jugular venous pressure, distended neck veins, JVD |
+| loud P2 | accentuated pulmonary component, loud second heart sound pulmonary |
 
 ---
 
@@ -232,6 +235,8 @@
 | post-gastrectomy | after gastrectomy, post-gastric surgery |
 | proton pump inhibitor use | PPI use |
 | corticosteroid use | steroid use, glucocorticoid use |
+| known hypertension | pre-existing hypertension, previously diagnosed hypertension, established hypertension |
+| medication non-compliance | antihypertensive non-compliance, missed antihypertensives, stopped medication, drug non-adherence |
 | NSAID use | non-steroidal anti-inflammatory drug use |
 | aspirin use | low-dose aspirin |
 | antipsychotic use | antipsychotic medication |
@@ -243,6 +248,7 @@
 | anxiety | anxiety disorder, generalised anxiety |
 | asthma | |
 | COPD | chronic obstructive pulmonary disease |
+| heart failure | cardiac failure, congestive heart failure, CCF |
 | atopy | allergic sensitisation, atopic constitution, atopic predisposition |
 | family history of asthma | asthmatic family history |
 | occupational dust exposure | workplace dust exposure, occupational dust |
@@ -260,6 +266,8 @@
 | hiatus hernia | sliding hiatus hernia, para-oesophageal hernia |
 | caffeine use | excess caffeine, caffeine intake |
 | previous TB treatment | prior TB treatment |
+| thrombophilia | inherited thrombophilia, hypercoagulable state, clotting disorder, Factor V Leiden, antiphospholipid syndrome |
+| previous pulmonary embolism | prior PE, history of pulmonary embolism, past pulmonary embolism |
 | household contact with smear-positive TB | TB contact |
 | socioeconomic disadvantage | low socioeconomic status |
 | livestock exposure | livestock contact, animal husbandry contact |
@@ -437,6 +445,8 @@
 | elevated ALT and AST | transaminitis, raised liver enzymes, elevated transaminases |
 | elevated bilirubin | raised bilirubin, hyperbilirubinaemia |
 | positive anti-HAV IgM | HAV IgM positive, anti-HAV IgM detected, hepatitis A serology positive |
+| CT pulmonary angiography | CTPA, CT-PA, CT pulmonary angiogram, computed tomography pulmonary angiography |
+| Wells PE score | PE Wells score, Wells criteria for PE, clinical probability PE score |
 
 ---
 
@@ -457,6 +467,9 @@
 | complete absence of fever | afebrile |
 | single elevated reading only | isolated BP elevation |
 | consistently normal ambulatory readings | normal 24h BP monitoring |
+| no visual disturbance | visual changes absent, no visual changes, vision unaffected, no blurring, visual acuity normal |
+| no neurological features | no focal deficit, neurologically intact, no neurological symptoms, no confusion, no disorientation, no altered sensorium |
+| BP below crisis threshold | systolic BP below 180 mmHg, diastolic BP below 120 mmHg, BP not meeting crisis criteria, blood pressure below hypertensive emergency threshold |
 | no endemic area exposure | no malaria exposure |
 | onset more than 30 days after leaving endemic area | |
 | absence of epigastric pain | no epigastric pain |
@@ -533,3 +546,25 @@
 | clubbing | digital clubbing, finger clubbing, nail clubbing |
 | cor pulmonale | right heart failure from lung disease, chronic cor pulmonale |
 | irreversible airflow obstruction | fixed airflow obstruction, non-reversible obstruction, persistent airflow limitation |
+| unilateral leg swelling | unilateral lower limb swelling, one leg swollen, single leg oedema |
+| unilateral limb erythema | leg redness, limb erythema, unilateral leg erythema |
+| limb warmth | limb warm to touch, local limb warmth, leg warm |
+| pitting oedema | pitting leg oedema, pitting swelling |
+| prolonged immobility | immobilisation, bed rest prolonged, prolonged bed rest |
+| recent surgery | post-operative state, recent operative procedure |
+| oral contraceptive use | OCP use, combined oral contraceptive, hormonal contraceptive use |
+| pulmonary embolism | PE, thromboembolic event, venous thromboembolism PE |
+| bilateral leg swelling | bilateral lower limb oedema, both legs swollen |
+| D-dimer elevation | raised D-dimer, elevated D-dimer, D-dimer positive |
+| compression duplex ultrasound | venous duplex ultrasound, DVT ultrasound, lower limb venous USS |
+| Wells score | DVT Wells criteria, Wells clinical prediction score |
+| no unilateral leg swelling | bilateral swelling only, swelling not unilateral, no asymmetric limb swelling |
+| normal oxygen saturation | SpO2 normal, oxygen saturation within normal limits, no hypoxia |
+| low Wells PE score | Wells PE score low probability, Wells PE score 0–1 |
+| fever with productive cough | fever and sputum production |
+| bilateral symmetrical swelling | symmetrical bilateral leg swelling, equal bilateral oedema |
+| asymptomatic elevated BP | incidental blood pressure elevation, elevated BP without symptoms, asymptomatic hypertension, no acute hypertensive symptoms |
+| no documented end-organ features | absence of end-organ involvement, no end-organ symptoms, no acute target organ damage features |
+| recent long-haul travel | long-haul flight, prolonged travel, extended travel immobility |
+| leg pain | lower limb pain, limb pain, leg ache |
+| previous DVT | prior deep vein thrombosis, history of DVT, past DVT |

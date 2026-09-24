@@ -1,0 +1,170 @@
+condition: Deep vein thrombosis
+icd11: BD71
+icd_title: "Deep vein thrombosis"
+icd_entity_uri: "http://id.who.int/icd/release/11/2024-01/mms/925320484"
+icd10: I82.9
+icd_search_term: "Deep vein thrombosis"
+category: cardiovascular
+corpus_version: "1.2"
+schema_version: "2.3"
+review_status: clinician_verified
+reviewed_by: Colleague
+last_reviewed: "2026-09-23"
+icd_verified: true
+
+sources:
+  - organization: "Kenya Ministry of Health"
+    title: "Clinical Guidelines for Level 2 Dispensaries, Medical Clinics, Level 3 Health Centres, Nursing Homes Vol 2"
+    year: "2024"
+    section: "§3.3 Deep Vein Thrombosis"
+  - organization: "Medscape"
+    title: "Deep Venous Thrombosis (DVT)"
+    year: "2024"
+    url: "https://emedicine.medscape.com/article/1911303-overview"
+
+endemic_regions:
+  - nationwide
+
+environmental_signals: []
+
+comorbidity_signals: []
+
+retrieval_anchors:
+  positive:
+    - "unilateral calf swelling with warmth tenderness and measurable diameter difference between legs"
+    - "one leg swollen and painful with erythema and pitting oedema — contralateral limb normal"
+    - "unilateral limb swelling after prolonged travel with palpable calf tenderness and no respiratory symptoms"
+    - "painful enlarged calf with localised warmth and limb asymmetry — no breathlessness or chest pain"
+    - "asymmetric leg swelling with calf tenderness and elevated Wells DVT score — limb presentation only"
+confusable_with:
+  - "Pulmonary embolism"
+
+graph:
+  cardinal_symptoms:
+    - unilateral leg swelling
+    - calf muscle tenderness
+    - limb warmth
+    - unilateral limb erythema
+  associated_symptoms:
+    - pitting oedema
+    - leg pain
+    - limb warmth
+    - tachycardia
+  risk_factors:
+    - prolonged immobility
+    - recent surgery
+    - malignancy
+    - oral contraceptive use
+    - obesity
+    - pregnancy
+    - known hypertension
+    - previous DVT
+    - recent long-haul travel
+  argues_against:
+    - bilateral symmetrical swelling
+    - no unilateral leg swelling
+    - absence of calf muscle tenderness
+  red_flags:
+    - pulmonary embolism
+    - tachycardia
+  differentials:
+    - Pulmonary embolism
+    - Cellulitis
+    - Heart failure
+    - Superficial thrombophlebitis
+  confirms:
+    - compression duplex ultrasound
+    - D-dimer elevation
+    - Wells score
+
+sections:
+  cardinal_symptoms: |
+    Deep vein thrombosis (DVT) most commonly affects the deep veins of the calf (gastrocnemius and soleal sinuses), with the popliteal, femoral, and iliac veins involved in more proximal disease. The cardinal presentation at primary care level is unilateral leg swelling — the most specific symptom — combined with calf muscle tenderness, warmth on palpation, and erythema of the overlying skin. The MOH Vol 2 notes that a difference in extremity diameter of 2 cm or more compared to the opposite limb from a fixed anatomical point is abnormal and clinically significant.
+
+    Leg pain, occurring in approximately 50% of patients, is a common but non-specific symptom. Tenderness on palpation of the affected calf or thigh occurs in approximately 75% of patients. Warmth and erythema overlying the thrombosed segment reflect the inflammatory response to the clot.
+
+    Importantly, up to 50% of patients with image-documented DVT have no specific symptoms, and up to 46% of patients with classic symptoms have negative venograms. A single symptom or sign is insufficient to confirm or exclude the diagnosis — clinical probability scoring (Wells criteria) combined with imaging is required for definitive diagnosis.
+
+  associated_symptoms: |
+    Pitting oedema of the affected limb occurs when venous outflow obstruction causes fluid accumulation in the interstitial tissue. Tachycardia may be present as a non-specific response to pain, or may indicate concurrent pulmonary embolism when associated with dyspnoea and hypoxia.
+
+    In DVT related to pregnancy and its complications, the left lower limb is involved in over 80% of cases due to compression of the left iliac vein by the gravid uterus (May-Thurner anatomy). Collateral superficial venous dilatation may be visible on the affected side.
+
+    Clinical symptoms of pulmonary embolism — sudden dyspnoea, pleuritic chest pain, haemoptysis, and collapse — may be the primary presentation when a clot propagates to the pulmonary vasculature. PE must be considered as a complication in any confirmed or suspected DVT.
+
+  diagnostic_features: |
+    Diagnosis of DVT at primary care level is primarily clinical. The Wells DVT clinical prediction score stratifies pre-test probability using: active cancer, paralysis or recent immobilisation, bed rest >3 days or surgery within 12 weeks, localised tenderness along the deep venous system, entire leg swelling, calf swelling ≥3 cm greater than the asymptomatic side, pitting oedema confined to the symptomatic leg, collateral superficial veins, and prior DVT. A score ≥2 indicates high probability; ≤0 indicates low probability. An alternative diagnosis that is equally or more likely reduces the score by 2 points.
+
+    D-dimer testing is sensitive but non-specific — a negative result in a low-probability patient excludes DVT without imaging; a positive result requires compression duplex ultrasound for confirmation. D-dimer is elevated in pregnancy, infection, malignancy, and post-surgical states, reducing its specificity in these populations.
+
+    Compression duplex ultrasound (venous duplex) is the standard confirmatory investigation and should be arranged at referral level. The test is non-invasive, highly accurate for proximal DVT (sensitivity >95%), and moderately accurate for calf DVT. At Kenya Level 2–3, suspected DVT should be referred for duplex ultrasound; management decisions should not be based on clinical assessment alone when imaging is feasible.
+
+    Homan's sign (calf pain on passive dorsiflexion of the foot) has low specificity and sensitivity and is not a reliable diagnostic criterion.
+
+  predisposing_factors: |
+    DVT arises from Virchow's triad: venous stasis, endothelial injury, and hypercoagulability. Recognised risk factors at Kenya primary care level include:
+
+    Acquired risk factors: prolonged immobility or bed rest (>3 days), major surgery within the preceding 12 weeks (particularly orthopaedic and abdominal surgery), active malignancy (especially mucin-secreting adenocarcinomas), pregnancy and the puerperium, oral contraceptive and hormone replacement therapy use (oestrogen-containing preparations), obesity, dehydration, previous DVT or PE, recent long-haul travel (>4 hours), and advanced age.
+
+    DVT in pregnancy is a recognised complication — the puerperium (particularly the first 6 weeks post-partum) carries the highest risk. The MOH Vol 2 explicitly notes DVT as a complication of the puerperium requiring recognition and referral.
+
+    Inherited thrombophilia (factor V Leiden, protein C or S deficiency, antiphospholipid syndrome) should be considered in young patients with DVT without an obvious precipitant, or with recurrent episodes, but investigation is at specialist level.
+
+  typical_presentation: |
+    The typical primary care presentation is a patient with one painful, swollen lower limb — usually the calf — that is larger, warmer, and more tender than the contralateral limb. Onset may be sudden or gradual over days. A clearly identifiable precipitant is often present: recent surgery, prolonged travel, hospitalisation, or pregnancy.
+
+    In Kenya primary care, DVT most commonly presents in post-partum women, post-surgical patients referred from higher-level facilities, and patients with immobility from other conditions. The calf is the commonest site, followed by the popliteal and femoral segments. Pelvic DVT may present with more diffuse limb swelling and is clinically harder to detect.
+
+    Patients with concurrent PE may present primarily with respiratory symptoms — dyspnoea, pleuritic chest pain, or collapse — rather than limb signs. In such presentations, DVT should be sought as the source even if limb symptoms are absent or mild.
+
+    Primary care management is recognition and urgent referral. Anticoagulation (heparin, warfarin, or DOAC) is initiated at higher-level facilities; primary care clinicians should not withhold pain control and should encourage limited extension and flexion of the involved limb while awaiting referral.
+
+  differential_diagnoses: |
+    Cellulitis is the most common differential: both produce unilateral limb erythema, warmth, and tenderness, but cellulitis typically presents with a defined area of skin infection, fever, local skin break or wound, and lymphangitis. DVT rarely produces the degree of skin change seen in cellulitis, and cellulitis does not produce significant pitting oedema or limb enlargement.
+
+    Superficial thrombophlebitis affects superficial veins and presents as a tender, palpable, cord-like structure along the vein with localised erythema and warmth. Significant limb swelling is typically absent. Unlike DVT, the vein is visible and palpable through the skin. Superficial thrombophlebitis can coexist with DVT, particularly when it extends close to the saphenofemoral junction.
+
+    Heart failure produces bilateral, symmetrical, dependent pitting oedema — DVT produces unilateral asymmetric swelling. Bilateral leg swelling in a patient with dyspnoea, raised JVP, and orthopnoea points strongly to heart failure.
+
+    Lymphoedema produces chronic, non-pitting (late) unilateral or bilateral leg swelling without the acute inflammatory features of DVT. There is typically no warmth or erythema, and onset is gradual over weeks to months.
+
+    Baker's cyst (popliteal cyst) rupture can mimic calf DVT with acute posterior calf pain and swelling. Ultrasound distinguishes the two.
+
+    Musculoskeletal injury (muscle tear, haematoma) causes localised pain and swelling in relation to a specific traumatic event.
+
+    Pulmonary embolism is a consequence of DVT and not an alternative diagnosis, but when PE presents without overt limb symptoms, its source (DVT) may be overlooked. Both diagnoses may coexist.
+
+  argues_against: |
+    Bilateral symmetrical leg swelling argues strongly against DVT. DVT characteristically produces asymmetric, unilateral swelling — the affected limb is measurably larger than the contralateral side. Bilateral dependent oedema of equal degree suggests a systemic cause: heart failure, hypoalbuminaemia (nephrotic syndrome, liver disease), or chronic venous insufficiency.
+
+    Absence of calf muscle tenderness or limb swelling in a patient with unilateral leg pain reduces the clinical probability of DVT substantially. In low-probability patients (Wells score ≤0), the clinical picture does not support DVT and an alternative diagnosis should be sought.
+
+    Bilateral involvement without asymmetry argues against DVT in the absence of bilateral simultaneous DVT, which is rare. The MOH Vol 2 notes that unilateral swelling and the 2 cm diameter discrepancy are defining clinical features.
+
+    Chronic, non-pitting oedema with gradual onset over months without warmth or erythema argues against acute DVT and suggests lymphoedema or chronic venous insufficiency.
+
+    Localised erythema clearly confined to the skin surface with a defined wound or skin break and systemic fever argues more toward cellulitis than DVT, though both may coexist.
+
+  red_flags: |
+    Pulmonary embolism is the life-threatening complication of DVT. Features suggesting concurrent PE include: sudden dyspnoea, pleuritic chest pain, haemoptysis, tachycardia (heart rate >100 bpm), oxygen saturation <94%, hypotension, and syncope or collapse. Any suspected PE in a patient with DVT requires immediate resuscitation, oxygen, and emergency referral.
+
+    Phlegmasia cerulea dolens — massive proximal DVT causing total venous outflow obstruction — presents with severe pain, cyanosis, and a cold, pale, extremely swollen limb threatening venous gangrene. This is a vascular emergency.
+
+    Extensive proximal DVT (iliac or femoral vein involvement) carries higher embolic risk than isolated calf DVT and requires urgent referral for anticoagulation.
+
+    Suspected DVT in pregnancy — particularly post-partum — requires urgent evaluation; anticoagulation in pregnancy requires specialist supervision.
+
+    Tachycardia in a patient with DVT should trigger assessment for PE before attributing it to pain or anxiety.
+
+  diagnostic_context: |
+    DVT is a recognised condition at Kenya Level 2–3 primary care (MOH Vol 2 §3.3). Primary care clinical officers are expected to recognise the clinical presentation, assess for PE complications, initiate supportive care, and refer for confirmatory imaging and anticoagulation.
+
+    At Level 2–3, compression duplex ultrasound and D-dimer testing are not routinely available. The clinical decision is therefore: does this patient have sufficiently high clinical probability of DVT to warrant urgent referral for imaging and anticoagulation initiation?
+
+    The Wells score provides a structured framework for this decision. A score ≥2 in a patient with no alternative diagnosis warrants referral regardless of D-dimer availability. A low Wells score with a clear alternative diagnosis (cellulitis, musculoskeletal injury) may be managed conservatively with close follow-up.
+
+    DVT in pregnancy or the puerperium carries increased risk and should be referred more readily than DVT in low-risk adults.
+
+    Anticoagulation (unfractionated heparin, LMWH, or warfarin) is initiated at higher-level facilities. Primary care management: pain control, elevation of the affected limb, limited mobilisation, and urgent referral with clearly documented clinical findings and probability assessment.
+
+    ICD-10 I82.9 (unspecified venous embolism and thrombosis) is used when the specific vein is not documented. More specific codes apply when the site is known (e.g., I82.4 for DVT of femoral vein). ICD-11 coding will be confirmed by WHO API verification.

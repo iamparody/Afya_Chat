@@ -98,6 +98,10 @@
 | TB meningitis | tuberculous meningitis, TBM, tubercular meningitis |
 | cryptococcal meningitis | crypto meningitis, Cryptococcus neoformans meningitis, fungal meningitis |
 | subarachnoid haemorrhage | SAH, subarachnoid bleed, subarachnoid hemorrhage |
+| haemorrhagic stroke | intracerebral haemorrhage, ICH, intracranial haemorrhage, haemorrhagic CVA |
+| ischaemic stroke | cerebral infarction, thrombotic stroke, embolic stroke, cerebrovascular accident |
+| Acute myocardial infarction | AMI, heart attack, myocardial infarction, STEMI, NSTEMI |
+| aortic dissection | dissecting aortic aneurysm, dissecting aneurysm, aortic tear |
 | Acute viral hepatitis A | hepatitis A, HAV infection, hepatitis A virus infection, acute hepatitis A |
 | hepatitis E | HEV infection, hepatitis E virus infection, acute hepatitis E |
 | acute hepatitis B | HBV infection, hepatitis B virus infection, hepatitis B acute |
@@ -109,3 +113,10 @@
 | Zika virus infection | Zika fever, Zika virus disease, ZIKV infection |
 | Reactive arthritis | post-infectious arthritis, Reiter's syndrome, post-infectious reactive arthropathy |
 | Rheumatic fever | acute rheumatic fever, ARF, streptococcal arthritis, post-streptococcal arthritis |
+| Cellulitis | skin cellulitis, lower limb cellulitis |
+| Heart failure | cardiac failure, congestive heart failure, CCF |
+| Superficial thrombophlebitis | superficial vein thrombosis, phlebitis |
+| Deep vein thrombosis | DVT, deep venous thrombosis |
+| pneumothorax | collapsed lung, spontaneous pneumothorax |
+| pericarditis | pericardial inflammation, acute pericarditis |
+| musculoskeletal chest pain | chest wall pain, costochondritis, musculoskeletal pain chest |

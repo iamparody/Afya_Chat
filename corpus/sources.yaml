@@ -17,6 +17,36 @@
 
 sources:
 
+  - condition: Hypertensive Crisis
+    authority_tier: kenya_moh
+    authority: Kenya Ministry of Health
+    title: "Clinical Guidelines for Level 2 Dispensaries, Medical Clinics, Level 3 Health Centres, Nursing Homes Vol 2"
+    year: 2024
+    url: ""
+    supplementary_sources:
+      - authority: WHO
+        title: "Hypertension Key Facts"
+        year: 2023
+        url: "https://www.who.int/news-room/fact-sheets/detail/hypertension"
+        sections_covered:
+          - predisposing_factors
+          - diagnostic_context
+        reason: "Primary source (Kenya MOH 2024) §3.2 covers management protocol only (6 lines); WHO fact sheet provides epidemiological context and risk factor evidence base"
+      - authority: Medscape
+        title: "Hypertensive Emergencies"
+        year: 2024
+        url: "https://emedicine.medscape.com/article/1952052-overview"
+        sections_covered:
+          - cardinal_symptoms
+          - associated_symptoms
+          - diagnostic_features
+          - typical_presentation
+          - differential_diagnoses
+          - argues_against
+          - red_flags
+          - diagnostic_context
+        reason: "Primary source is thin on clinical detail; Medscape provides emergency vs urgency distinction, target organ assessment criteria, differential diagnosis content, and argues-against clinical features"
+
   - condition: Acute gastroenteritis (infectious)
     authority_tier: who_global
     authority: WHO
@@ -245,6 +275,25 @@ sources:
           - argues_against
         reason: "Primary source (Kenya MOH outbreak guide) does not contain differential diagnosis or argues-against content — supplemented with Medscape clinical reference"
 
+  - condition: Deep vein thrombosis
+    authority_tier: kenya_moh
+    authority: Kenya Ministry of Health
+    title: "Clinical Guidelines for Level 2 Dispensaries, Medical Clinics, Level 3 Health Centres, Nursing Homes Vol 2"
+    year: 2024
+    url: ""
+    section: "§3.3 Deep Vein Thrombosis"
+    supplementary_sources:
+      - authority: Medscape
+        title: "Deep Venous Thrombosis (DVT)"
+        year: 2024
+        url: "https://emedicine.medscape.com/article/1911303-overview"
+        sections_covered:
+          - differential_diagnoses
+          - argues_against
+          - diagnostic_features
+          - red_flags
+        reason: "MOH Vol 2 §3.3 is thin (2 paragraphs — clinical features and general management only). No differentials or argues-against content. Medscape used as supplementary clinical reference."
+
   - condition: Chronic obstructive pulmonary disease
     authority_tier: kenya_moh
     authority: Kenya Ministry of Health
@@ -262,3 +311,24 @@ sources:
           - associated_symptoms
           - red_flags
         reason: "MOH Vol 2 §12.4 covers clinical features and management principles only — no differentials or argues-against content. Medscape used as supplementary clinical reference."
+
+  - condition: Pulmonary embolism
+    authority_tier: kenya_moh
+    authority: Kenya Ministry of Health
+    title: "Clinical Guidelines for Level 2 Dispensaries, Medical Clinics, Level 3 Health Centres, Nursing Homes Vol 2"
+    year: 2024
+    section: "§3.4 Pulmonary Embolism"
+    supplementary_sources:
+      - authority: Medscape
+        title: "Pulmonary Embolism (PE)"
+        year: 2026
+        url: "https://emedicine.medscape.com/article/300901-overview"
+        sections_covered:
+          - cardinal_symptoms
+          - associated_symptoms
+          - diagnostic_features
+          - predisposing_factors
+          - differential_diagnoses
+          - argues_against
+          - red_flags
+        reason: "MOH Vol 2 §3.4 is very thin (6 bullet clinical features + refer immediately — no differentials, argues-against, or diagnostic detail). Medscape used as supplementary clinical reference."

@@ -91,6 +91,8 @@ def _base_metadata(card: ConditionCard) -> dict:
         "endemic_regions":        list(card.endemic_regions),
         "environmental_signals":  [s.model_dump() for s in card.environmental_signals],
         "comorbidity_signals":    [s.model_dump() for s in card.comorbidity_signals],
+        "retrieval_anchors":      card.retrieval_anchors.model_dump() if card.retrieval_anchors else {"positive": []},
+        "confusable_with":        list(card.confusable_with),
     }
 
 
@@ -111,9 +113,13 @@ def _clean_prose(text: str) -> str:
 
 def build_chunks(card: ConditionCard) -> list[dict]:
     """
-    One chunk per section in fixed order.
+    One chunk per section in fixed order, plus an optional retrieval_context chunk.
     Format: {"text": "<condition> — <heading>\\n\\n<prose>", "metadata": {...}}
     Exactly mirrors ingest.py split_sections() + process_file() output.
+
+    When retrieval_anchors.positive is non-empty, a dedicated retrieval_context chunk
+    is appended. Its text contains the anchor phrases as embedded sentences so they
+    enter the Chroma vector index. Clinical prose sections are never modified.
     """
     base = _base_metadata(card)
     chunks = []
@@ -125,6 +131,21 @@ def build_chunks(card: ConditionCard) -> list[dict]:
             "text":     f"{card.condition} — {display}\n\n{prose}",
             "metadata": {**base, "section": meta_key},
         })
+
+    # Retrieval context chunk — only when anchors are authored
+    anchors = card.retrieval_anchors.positive if card.retrieval_anchors else []
+    if anchors:
+        anchor_lines = "\n".join(f"- {phrase}" for phrase in anchors)
+        anchor_text = (
+            f"{card.condition} — Retrieval context\n\n"
+            f"Presentation patterns that should retrieve {card.condition}:\n\n"
+            f"{anchor_lines}"
+        )
+        chunks.append({
+            "text":     anchor_text,
+            "metadata": {**base, "section": "retrieval_context"},
+        })
+
     return chunks
 
 
