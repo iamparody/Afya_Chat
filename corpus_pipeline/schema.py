@@ -5,6 +5,8 @@ condition.yaml is the single source of truth. Markdown and ingest artifacts are
 generated from it; they are never edited directly.
 
 Schema version: 2.2 — adds comorbidity_signals block
+Schema version: 2.3 — adds retrieval_anchors.positive and confusable_with (optional)
+                       See docs/domain_evaluation_protocol.md for authoring rules.
 """
 
 from __future__ import annotations
@@ -236,6 +238,10 @@ class ComorbiditySignal(BaseModel):
         return v
 
 
+class RetrievalAnchors(BaseModel):
+    positive: list[str] = []
+
+
 class GraphBlock(BaseModel):
     cardinal_symptoms: list[str] = []
     associated_symptoms: list[str] = []
@@ -298,7 +304,7 @@ class ConditionCard(BaseModel):
     icd10: str
     category: str
     corpus_version: str
-    schema_version: Literal["2.2"]
+    schema_version: Literal["2.2", "2.3"]
     review_status: str
     reviewed_by: Optional[str] = None
     last_reviewed: Optional[str] = None
@@ -315,6 +321,10 @@ class ConditionCard(BaseModel):
 
     # ── Comorbidity signals ───────────────────────────────────────────────────
     comorbidity_signals: list[ComorbiditySignal] = []
+
+    # ── Retrieval evaluation (schema 2.3, optional) ───────────────────────────
+    retrieval_anchors: Optional[RetrievalAnchors] = None
+    confusable_with: list[str] = []
 
     # ── Graph ─────────────────────────────────────────────────────────────────
     graph: GraphBlock

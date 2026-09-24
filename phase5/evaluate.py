@@ -381,6 +381,28 @@ COVERAGE_CASES = [
             ],
         },
     },
+    {
+        "id": "14",
+        "label": "Pulmonary embolism — post-partum sudden dyspnoea with risk factors",
+        "presentation": (
+            "26F, 8 days post-partum after normal vaginal delivery. Sudden onset of breathlessness "
+            "starting 1 hour ago. Right-sided pleuritic chest pain. No cough or fever. No sputum. "
+            "Tachycardia — pulse 118 bpm. Respiratory rate 24 per minute. Oxygen saturation 91% on "
+            "air. No bilateral leg swelling. Right calf mildly tender on palpation. No focal chest signs."
+        ),
+        "checks": {
+            "primary_contains":     ["pulmonary embolism", "pulmonary embol", "pe"],
+            "red_flags_contain":    ["haemodynamic", "oxygen", "referral"],
+            "missing_info_contain": ["ctpa", "d-dimer", "wells", "anticoag"],
+            "prohibited_strings":   ["pe confirmed", "pulmonary embolism confirmed"],
+            "manual": [
+                "Post-partum state and immobility cited as VTE risk factors",
+                "Sudden onset dyspnoea + pleuritic chest pain + tachycardia triad noted",
+                "Right calf tenderness noted as raising suspicion of concurrent DVT",
+                "Urgent referral to Level 4/5 for CTPA language present",
+            ],
+        },
+    },
 ]
 
 

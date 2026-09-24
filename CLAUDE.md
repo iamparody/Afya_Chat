@@ -208,6 +208,13 @@ graph:
   red_flags: []
   differentials: []
   confirms: []
+
+# ── Retrieval evaluation (schema 2.3 — added in Phase D of domain evaluation) ──
+# Leave absent on new cards. Added only after Phase C baseline is recorded.
+# See docs/domain_evaluation_protocol.md for authoring rules.
+retrieval_anchors:
+  positive: []     # presentation phrases that should retrieve this card over confusables
+confusable_with: []  # condition names (from conditions_vocabulary.md) this card competes with
 ```
 
 ---
@@ -321,7 +328,7 @@ Every step is a hard gate. Do not proceed to the next step until the current ste
   - `last_reviewed:` (leave blank)
   - `icd_verified: false` — this is the default; do NOT change to `true` until Step 5 is complete.
   - `corpus_version: "1.0"`
-  - `schema_version: "2.2"` — do not change unless adding new schema fields
+  - `schema_version: "2.2"` — use for new cards; only bump to `"2.3"` when adding `retrieval_anchors` in Phase D
   - `endemic_regions` — use controlled vocabulary only
   - `environmental_signals` — only include signals with meaningful clinical evidence; leave empty list if none
 
@@ -457,6 +464,28 @@ python ingest.py
 | 9 | Live environmental feeds + empirical calibration | 🔴 Not started — needs Phase 8 validated |
 
 See [[STATUS]] for granular task tracking.
+
+---
+
+## Domain-Level Retrieval Evaluation
+
+Before committing a domain, run the full evaluation workflow defined in `docs/domain_evaluation_protocol.md`.
+
+**Workflow: B → A → C → D → E**
+
+| Phase | Action | Card changes? |
+|-------|--------|---------------|
+| B | Map confusable pairs — observation only | No |
+| A | Document protocol + schema + ingestion | No |
+| C | Capture Dense/BM25/RRF baseline for all direct confusable pairs | No |
+| D | Author `retrieval_anchors` for domain cards | Yes |
+| E | Re-ingest, compare before/after, run both gates | Yes |
+
+**Hard rule: Phase C must be completed and recorded before any card modifications (Phase D).**
+
+Two gates required for domain commit:
+1. **Retrieval gate** — correct card RRF rank improves and margin increases vs confusable
+2. **Reasoning gate** — regression suite ≥7/8
 
 ---
 
