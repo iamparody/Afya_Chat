@@ -338,13 +338,35 @@ def _compute_fused_scores(candidates: list) -> tuple:
 _CONF_ORDER = {"low": 0, "moderate": 1, "high": 2}
 
 
+_HARD_THRESHOLD_TERMS = frozenset({
+    "BP below crisis threshold",
+    "below crisis threshold",
+    "below emergency threshold",
+})
+
+
+def _has_hard_threshold_violation(arguing_against: list) -> bool:
+    """Return True if any arguing_against item is a hard threshold violation."""
+    for term in arguing_against:
+        term_lower = term.lower()
+        if any(h.lower() in term_lower for h in _HARD_THRESHOLD_TERMS):
+            return True
+    return False
+
+
 def _enforce_arguing_against_ranking(data: dict) -> dict:
     """
-    Deterministic post-hoc enforcement of SIX RULES Rule 6.
+    Deterministic post-hoc enforcement of Rule 6.
 
-    If the leading candidate has non-empty arguing_against[] AND there exists
-    another candidate with empty arguing_against[] at equal or higher confidence,
-    the leading candidate is swapped to the best candidate without arguing_against.
+    Swap the leading candidate when:
+    1. The leader has a hard threshold violation in arguing_against[], OR
+    2. The leader has arguing_against[] AND a candidate with empty arguing_against[]
+       exists at equal or higher confidence.
+
+    For hard threshold violations (Rule 6A), swap to any candidate at equal/higher
+    confidence with fewer arguing_against items — replacement need not be empty.
+    For ordinary arguing_against matches, the original requirement (empty replacement)
+    still applies to avoid over-triggering.
 
     The LLM populates arguing_against[] only with matched evidence per Rule 3,
     so non-empty arguing_against reliably indicates an argues-against match in
@@ -355,25 +377,45 @@ def _enforce_arguing_against_ranking(data: dict) -> dict:
         return data
 
     leading = candidates[0]
-    if not leading.get("arguing_against"):
-        return data  # No match — no swap needed
+    lead_ag = leading.get("arguing_against", [])
+    if not lead_ag:
+        return data  # Nothing to act on
 
     lead_conf = _CONF_ORDER.get(leading.get("confidence_level", "low"), 0)
+    hard_violation = _has_hard_threshold_violation(lead_ag)
 
-    # Find first candidate with empty arguing_against at >= leading confidence
+    best_i = None
+    best_ag_count = len(lead_ag)
+
     for i, cand in enumerate(candidates[1:], 1):
-        if cand.get("arguing_against"):
-            continue
         cand_conf = _CONF_ORDER.get(cand.get("confidence_level", "low"), 0)
-        if cand_conf >= lead_conf:
-            _log("ARGUES_AGAINST_SWAP", {
-                "swapped_out": leading.get("diagnosis"),
-                "swapped_in":  cand.get("diagnosis"),
-                "reason":      "leading had arguing_against match; replacement has none at >= confidence",
-            })
-            candidates[0], candidates[i] = candidates[i], candidates[0]
-            data["leading_candidate"] = candidates[0]["diagnosis"]
-            return data
+        if cand_conf < lead_conf:
+            continue
+        cand_ag = cand.get("arguing_against", [])
+        if hard_violation:
+            # Hard threshold: swap to candidate with fewer arguing_against items
+            if len(cand_ag) < best_ag_count:
+                best_ag_count = len(cand_ag)
+                best_i = i
+        else:
+            # Ordinary match: original requirement — replacement must be empty
+            if not cand_ag and best_i is None:
+                best_i = i
+
+    if best_i is not None:
+        cand = candidates[best_i]
+        _log("ARGUES_AGAINST_SWAP", {
+            "swapped_out":   leading.get("diagnosis"),
+            "swapped_in":    cand.get("diagnosis"),
+            "hard_violation": hard_violation,
+            "reason": (
+                "leading has hard threshold violation; replacement has fewer arguing_against items"
+                if hard_violation
+                else "leading had arguing_against match; replacement has none at >= confidence"
+            ),
+        })
+        candidates[0], candidates[best_i] = candidates[best_i], candidates[0]
+        data["leading_candidate"] = candidates[0]["diagnosis"]
 
     return data
 
