@@ -5,8 +5,8 @@ icd_entity_uri: "http://id.who.int/icd/release/11/2024-01/mms/761947693/unspecif
 icd10: I10
 icd_search_term: "Essential hypertension, unspecified"
 category: cardiovascular
-corpus_version: "1.4"
-schema_version: "2.2"
+corpus_version: "1.5"
+schema_version: "2.3"
 review_status: draft
 reviewed_by:
 last_reviewed:
@@ -27,6 +27,17 @@ endemic_regions:
   - nationwide
 
 environmental_signals: []
+
+retrieval_anchors:
+  positive:
+    - "blood pressure elevated on screening with no headache no visual disturbance and no neurological symptoms"
+    - "incidentally raised blood pressure in a stable patient attending for an unrelated complaint"
+    - "persistently elevated blood pressure confirmed on two separate occasions without acute symptoms"
+    - "elevated BP on repeat clinic measurement in a patient who is otherwise well with no end-organ features"
+    - "gradual blood pressure control requiring medication adjustment at routine follow-up with no acute presentation"
+    - "hypertension managed in primary care with stable readings and no new symptoms between visits"
+confusable_with:
+  - "Hypertensive Crisis"
 
 graph:
   cardinal_symptoms:

@@ -311,3 +311,24 @@ sources:
           - associated_symptoms
           - red_flags
         reason: "MOH Vol 2 §12.4 covers clinical features and management principles only — no differentials or argues-against content. Medscape used as supplementary clinical reference."
+
+  - condition: Pulmonary embolism
+    authority_tier: kenya_moh
+    authority: Kenya Ministry of Health
+    title: "Clinical Guidelines for Level 2 Dispensaries, Medical Clinics, Level 3 Health Centres, Nursing Homes Vol 2"
+    year: 2024
+    section: "§3.4 Pulmonary Embolism"
+    supplementary_sources:
+      - authority: Medscape
+        title: "Pulmonary Embolism (PE)"
+        year: 2026
+        url: "https://emedicine.medscape.com/article/300901-overview"
+        sections_covered:
+          - cardinal_symptoms
+          - associated_symptoms
+          - diagnostic_features
+          - predisposing_factors
+          - differential_diagnoses
+          - argues_against
+          - red_flags
+        reason: "MOH Vol 2 §3.4 is very thin (6 bullet clinical features + refer immediately — no differentials, argues-against, or diagnostic detail). Medscape used as supplementary clinical reference."

@@ -75,6 +75,7 @@
 - 2026-09-09: 8/8 after Phase 7d environmental context integration (within stochastic bounds; Case 5 hypertension has no environmental signals). Three bugs fixed: (1) Chroma collection pollution from multiple runs — stable IDs (condition::section::j) prevent growth; (2) RED_FLAG_SECTION "Red flags" → "red_flags" — force-retrieve was silently failing; (3) n_results=n*3 too small for 134-chunk corpus — changed to min(500, count()). Added _enforce_arguing_against_ranking() post-hoc code-level swap. SIX RULES prompt (Rule 6 arguing-against). Case 2b known ceiling now addressed by code-level swap. 3 consecutive runs all 7/8.
 - 2026-09-23: 7/8 GATE PASS after DVT addition (27 conditions / 243 chunks). Coverage 6/7. Growth test confirmed DVT addition caused zero rank shifts across Dense/BM25/RRF. Deterministic regression fixed: Case 3 (UTI vs AGE) was failing with Appendicitis as leading candidate (fused score margin 0.078 near-tie); fix = deterministic near-tie injection in rag.py + ## Retrieval note context section + Rule 8 in SYSTEM_PROMPT. Case 5 (EH vs HC) remains stochastic boundary — documented 40% pass rate, not a regression. Case 12 coverage: Hypertensive Crisis correctly identified but missing-info checker string mismatch (ECG/renal evidence terms) — not a diagnostic failure.
 - 2026-09-23: 7/8 GATE PASS after Phase 5b BM25+RRF integration (27 conditions / 243 chunks). MRR 0.649→0.744 (+14%). Recall@9=1.00 across Dense/BM25/RRF. RRF_K=60 locked. AMBIGUITY_MARGIN_THRESHOLD recalibrated 0.15→0.20: BM25+RRF raised Case 3 fused margin 0.078→0.17, pushing it above old 0.15 threshold; 0.20 restores near-tie injection correctly. Case 2b (margin=0.178) also now fires near-tie injection — acceptable. Case 5 stochastic only.
+- 2026-09-24: ⏳ PENDING VERIFICATION — Cardiovascular domain committed (EH, HC, PE, DVT cards + domain evaluation protocol B→A→C→D→E + retrieval anchor mechanism). _enforce_arguing_against_ranking() fix: hard threshold violations now trigger swap to candidate with fewer argues_against items (not requiring empty). Case 5 (EH vs HC) confirmed fixed via debug run — EH now leads after swap. Full regression gate pending Gemini API availability. Eval to be run and this entry updated to GATE PASS or FAIL.
 
 ---
 
@@ -461,10 +462,11 @@ Independently (Phase 9 MVP):
 | copd | CA22 | J44 | respiratory | 🟡 draft | — | — |
 | hypertensive_crisis | BA03 | I10 | cardiovascular | ✅ clinician_verified | Colleague | 2026-09-21 |
 | dvt | BD71 | I82.9 | cardiovascular | ✅ clinician_verified | Colleague | 2026-09-23 |
+| pe | BB00.Z | I26.9 | cardiovascular | 🟡 draft | — | — |
 
 **Legend:** 🟡 draft · 🔵 under_review · ✅ clinician_verified
 
-**Production gate:** 17/27 cards clinician_verified. 10 cards authored after 2026-09-14 are draft — blocked from production ingest until a second review pass.
+**Production gate:** 17/28 cards clinician_verified. 11 cards draft — blocked from production ingest until clinician review.
 Outstanding: ICD code verification for comorbidity-specific codes (e.g. Malaria in pregnancy combinations) — flagged by reviewer.
 
 ---

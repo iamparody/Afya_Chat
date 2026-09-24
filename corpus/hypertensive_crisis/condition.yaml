@@ -5,8 +5,8 @@ icd_entity_uri: "http://id.who.int/icd/release/11/2024-01/mms/1002963291"
 icd10: I10
 icd_search_term: "Hypertensive crisis"
 category: cardiovascular
-corpus_version: "1.1"
-schema_version: "2.2"
+corpus_version: "1.3"
+schema_version: "2.3"
 review_status: clinician_verified
 reviewed_by: Colleague
 last_reviewed: "2026-09-21"
@@ -27,6 +27,16 @@ endemic_regions:
   - nationwide
 
 environmental_signals: []
+
+retrieval_anchors:
+  positive:
+    - "acute severe headache with blurred vision and BP above 180 over 120 — fundoscopy shows disc swelling"
+    - "severely elevated blood pressure with confusion and altered consciousness requiring emergency referral"
+    - "BP crisis with acute neurological signs — encephalopathy or focal deficit — and markedly raised diastolic"
+    - "acute end-organ damage: papilloedema and visual disturbance at presentation with BP above crisis threshold"
+    - "sudden severe occipital headache with vomiting and agitation in a patient with BP above 200 systolic"
+confusable_with:
+  - "Essential hypertension"
 
 graph:
   cardinal_symptoms:
@@ -56,6 +66,8 @@ graph:
     - no visual disturbance
     - no neurological features
     - BP below crisis threshold
+    - asymptomatic elevated BP
+    - no documented end-organ features
   red_flags:
     - hypertensive encephalopathy
     - acute pulmonary oedema

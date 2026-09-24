@@ -116,3 +116,7 @@
 | Cellulitis | skin cellulitis, lower limb cellulitis |
 | Heart failure | cardiac failure, congestive heart failure, CCF |
 | Superficial thrombophlebitis | superficial vein thrombosis, phlebitis |
+| Deep vein thrombosis | DVT, deep venous thrombosis |
+| pneumothorax | collapsed lung, spontaneous pneumothorax |
+| pericarditis | pericardial inflammation, acute pericarditis |
+| musculoskeletal chest pain | chest wall pain, costochondritis, musculoskeletal pain chest |

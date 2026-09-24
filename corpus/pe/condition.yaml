@@ -1,0 +1,124 @@
+condition: Pulmonary embolism
+icd11: BB00.Z
+icd_title: "Pulmonary thromboembolism, unspecified"
+icd_entity_uri: "http://id.who.int/icd/release/11/2024-01/mms/1014964218/unspecified"
+icd_search_term: "Pulmonary embolism"
+icd10: I26.9
+category: cardiovascular
+corpus_version: "1.1"
+schema_version: "2.3"
+review_status: draft
+reviewed_by: ""
+last_reviewed: ""
+icd_verified: true
+
+sources:
+  - organization: "Kenya Ministry of Health"
+    title: "Clinical Guidelines for Level 2 Dispensaries, Medical Clinics, Level 3 Health Centres, Nursing Homes Vol 2"
+    year: "2024"
+    section: "§3.4 Pulmonary Embolism"
+  - organization: "Medscape"
+    title: "Pulmonary Embolism (PE)"
+    year: "2026"
+    url: "https://emedicine.medscape.com/article/300901-overview"
+
+endemic_regions:
+  - nationwide
+
+environmental_signals: []
+
+comorbidity_signals: []
+
+retrieval_anchors:
+  positive:
+    - "sudden onset dyspnoea with pleuritic chest pain and oxygen saturation below 94 percent"
+    - "acute breathlessness and chest pain on inspiration with tachycardia and low oxygen saturation"
+    - "unexplained hypoxia with tachycardia and tachypnoea in a patient with a recognised VTE risk factor"
+    - "haemoptysis with sudden respiratory deterioration and pleuritic chest pain — no fever or consolidation"
+    - "acute pulmonary presentation: dyspnoea onset within hours with pleuritic pain and Wells PE criteria"
+confusable_with:
+  - "Deep vein thrombosis"
+
+graph:
+  cardinal_symptoms:
+    - dyspnoea
+    - pleuritic chest pain
+    - haemoptysis
+    - syncope
+  associated_symptoms:
+    - tachycardia
+    - tachypnoea
+    - reduced oxygen saturation
+    - raised JVP
+    - cyanosis
+    - chest pain
+    - lightheadedness
+  risk_factors:
+    - prolonged immobility
+    - recent surgery
+    - malignancy
+    - pregnancy
+    - oral contraceptive use
+    - obesity
+    - previous DVT
+    - previous pulmonary embolism
+    - thrombophilia
+    - recent long-haul travel
+    - smoking
+    - heart failure
+    - COPD
+  argues_against:
+    - gradual insidious onset
+    - bilateral leg swelling
+    - fever with productive cough
+    - normal oxygen saturation
+    - low Wells PE score
+  red_flags:
+    - haemodynamic instability
+    - haemodynamic compromise
+    - cyanosis
+    - altered consciousness
+    - haemoptysis
+  differentials:
+    - Community-acquired pneumonia
+    - Acute myocardial infarction
+    - Heart failure
+    - aortic dissection
+    - pneumothorax
+    - pericarditis
+    - Asthma
+    - COPD
+    - Pulmonary tuberculosis
+    - musculoskeletal chest pain
+  confirms:
+    - CT pulmonary angiography
+    - D-dimer elevation
+    - Wells PE score
+
+sections:
+  cardinal_symptoms: |
+    Pulmonary embolism (PE) classically presents with an abrupt onset of dyspnoea, pleuritic chest pain, and haemoptysis — though this full triad occurs in fewer than 30% of confirmed cases. Many patients present with only one or two of these features, and some present with unexplained syncope or near-syncope without chest symptoms. A high index of suspicion is required, particularly in patients with known thromboembolic risk factors. Dyspnoea is the most common presenting symptom and may be the only feature in submassive PE. Haemoptysis, when present, is typically small in volume and results from pulmonary infarction.
+
+  associated_symptoms: |
+    Tachycardia (pulse ≥100 beats per minute) and tachypnoea are common and may be the only objective findings. Oxygen saturation is often reduced on pulse oximetry. Raised JVP and a loud P2 (accentuated pulmonary component of the second heart sound) may be present and reflect acute right heart strain. Cyanosis indicates significant haemodynamic compromise and is a late sign. Lightheadedness or presyncope reflects reduced cardiac output. Pleuritic chest pain, when present, usually indicates peripheral pulmonary infarction adjacent to the pleura.
+
+  diagnostic_features: |
+    PE diagnosis at primary care level is clinical and risk-based. The Wells PE score stratifies pre-test probability: a score >4 indicates PE likely and warrants direct referral for CTPA; a score ≤4 may be further assessed by D-dimer if available. The classic combination of risk factors + sudden dyspnoea + pleuritic chest pain + tachycardia in a patient without an alternative explanation should prompt urgent referral regardless of formal scoring. Reduced oxygen saturation without an alternative pulmonary diagnosis strengthens suspicion. D-dimer is sensitive but non-specific; a negative result in low-probability patients effectively excludes PE. Definitive confirmation requires CTPA, which is unavailable at Kenya Level 2–3 and necessitates referral.
+
+  predisposing_factors: |
+    PE arises from venous thromboembolism — a thrombus forming in the deep venous system (usually the proximal leg veins) that detaches and occludes the pulmonary arterial tree. Virchow's triad of venous stasis, endothelial injury, and hypercoagulability underlies most cases. Common predisposing factors in Kenya primary care include: prolonged immobility (bed rest, hospitalisation, long-haul travel ≥4 hours), recent surgery (especially lower limb and pelvic procedures), active malignancy, pregnancy and the puerperium, oral contraceptive use (combined oestrogen-progestogen preparations), obesity, previous DVT or PE, and hereditary thrombophilia. Medical conditions including heart failure and COPD also increase risk through venous stasis. Many patients have more than one concurrent risk factor.
+
+  typical_presentation: |
+    A typical primary care presentation involves a patient with one or more identifiable VTE risk factors presenting with sudden-onset breathlessness and pleuritic chest pain, often with leg swelling or pain suggesting concurrent DVT. The patient may be anxious and distressed, with tachycardia and tachypnoea on examination and a reduced oxygen saturation. In Kenya, the most common predisposing contexts include post-partum state, post-operative recovery, prolonged bed rest during illness, and advanced malignancy. Presentations may be atypical — some patients present only with unexplained tachycardia, syncope, or worsening functional capacity. Massive PE may present with collapse and haemodynamic instability requiring immediate resuscitation and referral.
+
+  differential_diagnoses: |
+    Community-acquired pneumonia shares dyspnoea and pleuritic chest pain but usually presents with fever, productive cough, and consolidation signs on examination. Acute myocardial infarction may present with acute breathlessness and chest pain, but pain is typically retrosternal, crushing, and may radiate to the arm or jaw with diaphoresis. Aortic dissection presents with severe tearing chest pain radiating to the back, usually with a difference in blood pressure between arms. Pneumothorax causes sudden pleuritic chest pain and dyspnoea with absent breath sounds on the affected side. Heart failure causes progressive dyspnoea with bilateral ankle oedema, raised JVP, and bilateral basal crackles. Pericarditis causes pleuritic-type chest pain that is relieved by sitting forward. Pulmonary tuberculosis typically has a subacute course with constitutional symptoms. Musculoskeletal chest pain is positional and reproducible with palpation, without associated dyspnoea or hypoxia.
+
+  argues_against: |
+    A gradual, insidious onset of breathlessness over weeks to months argues against acute PE and is more consistent with heart failure, COPD, or pulmonary tuberculosis. Bilateral symmetrical leg swelling argues against DVT-source PE and suggests a systemic cause of oedema. Fever with productive purulent sputum strongly favours pneumonia over PE. A normal oxygen saturation in a patient who is not significantly tachypnoeic substantially lowers PE probability. A low Wells PE score (≤4) in the absence of other concerning features makes PE unlikely, though does not exclude it without D-dimer. A clear alternative explanation for the symptoms (acute asthma exacerbation, acute decompensated heart failure) that accounts fully for the clinical picture reduces PE probability.
+
+  red_flags: |
+    Haemodynamic instability — systolic blood pressure below 90 mmHg or requiring vasopressor support — indicates massive PE and requires immediate resuscitation and emergency referral. Haemodynamic compromise with deteriorating consciousness or syncope signals right heart failure and is a pre-arrest state. Central cyanosis indicates critical hypoxaemia. Significant haemoptysis in the context of suspected PE may indicate pulmonary infarction. Cardiac arrest in the context of PE risk factors should prompt consideration of massive PE as the aetiology. All suspected PE with haemodynamic instability must be referred immediately to a Level 4 or 5 facility.
+
+  diagnostic_context: |
+    PE diagnosis and anticoagulation management are beyond the scope of Level 2–3 primary care. The primary care role is recognition, risk stratification using clinical features, and urgent referral. Apply oxygen if available and the patient is hypoxic. Do not delay referral for investigations — clinical suspicion in the context of risk factors is sufficient to initiate transfer. Document identified risk factors and presenting features clearly in the referral note. If concurrent DVT is suspected (unilateral leg swelling, calf tenderness), note this as it informs management at the receiving facility. Avoid empirical anticoagulation at primary care level unless definitive diagnosis has been confirmed at a higher level and the patient is returning for monitoring.
