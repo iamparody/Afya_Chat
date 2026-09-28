@@ -74,7 +74,7 @@ class AnthropicProvider(LLMProvider):
 
 
 class GroqProvider(LLMProvider):
-    def __init__(self, api_key: str, model: str = "llama-3.3-70b-versatile"):
+    def __init__(self, api_key: str, model: str = "qwen/qwen3.8-27b"):
         from groq import Groq
         self._client = Groq(api_key=api_key)
         self._model  = model
