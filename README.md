@@ -8,28 +8,28 @@ Symptom-driven diagnostic RAG system for East Africa / Kenya primary care. Given
 
 | Phase | Description | Status |
 |-------|-------------|--------|
-| 1 | Corpus — 27 condition cards (YAML) | ✅ Done |
-| 2 | Clinician review — 15 original cards verified | ✅ Done (12 new cards remain draft) |
-| 3 | Ingestion pipeline → Chroma vector store | ✅ Done |
-| 4 | Neo4j knowledge graph — 27 conditions | ✅ Done |
+| 1 | Corpus — 39 condition cards (YAML, schema 2.3) | ✅ Done |
+| 2 | Clinician review — 15 original cards verified | ✅ Done (24 new cards remain draft) |
+| 3 | Ingestion pipeline → Chroma vector store (355 chunks) | ✅ Done |
+| 4 | Neo4j knowledge graph — 39 conditions | ✅ Done |
 | 5 | RAG pipeline — Gemini + EIGHT RULES prompt + near-tie injection | ✅ Done |
 | 6 | Streamlit MVP + approval workflow + SQLite | ✅ Done |
 | 7 | Environmental context layer — static calendar + ENSO + exposure gating | ✅ Done |
 | 8 | Interactive disambiguation loop | ✅ Done (CI-gated 4/5) |
 | 8b | Reasoning evaluation harness — 10-dim rubric + CI | ✅ Done (87/96, 90%) |
 | 9 | Live rainfall — Open-Meteo provider + source validation | 🟡 Partial |
-| 5b | Hybrid retrieval — BM25 + RRF live integration | 🔵 Next |
+| — | Domain evaluation B→A→C→D→E (cardiovascular 10 cards) | 🔵 Next |
 
-**Eval:** Regression 7/8 GATE PASS · Coverage 6/7 · 87/96 (90%) reasoning · 4/5 disambiguation.
+**Eval:** Regression 8/8 ×3 GATE PASS · Coverage 12/12 · 87/96 (90%) reasoning · 4/5 disambiguation.
 
-**Production gate:** 15 original cards `clinician_verified`. 7 cards added post-review are `draft`. All `draft` cards are blocked from production ingestion.
+**Production gate:** 15 original cards `clinician_verified`. 24 cards added post-review are `draft`. All `draft` cards are blocked from production ingestion.
 
 ---
 
 ## Stack
 
 ```
-corpus/<condition>/condition.yaml  (27 condition cards, schema 2.2)
+corpus/<condition>/condition.yaml  (39 condition cards, schema 2.3)
         │
         ▼
 corpus_pipeline/ingest_yaml.py  ← chunking + graph extraction + vocab validation
@@ -65,7 +65,7 @@ cds/
 ├── Makefile                              pipeline entry point (6 targets)
 ├── CLAUDE.md                             governance + schema reference + controlled vocabularies
 ├── STATUS.md                             build tracker
-├── corpus/                               27 condition cards (YAML)
+├── corpus/                               39 condition cards (YAML)
 │   ├── <condition>/condition.yaml        one file per condition
 │   └── sources.yaml                      provenance registry (one entry per condition)
 ├── corpus_pipeline/
@@ -146,7 +146,7 @@ Credentials loaded from `.env` (local) or environment variables (CI).
 
 ## Condition cards
 
-Each condition is a `condition.yaml` file with YAML frontmatter (schema 2.2) and 9 fixed prose sections.
+Each condition is a `condition.yaml` file with YAML frontmatter (schema 2.3) and 9 fixed prose sections.
 
 **9 prose sections (fixed order — parser depends on it):**
 
@@ -190,7 +190,7 @@ Confidence levels: `high` / `moderate` / `low`. No numerical probabilities.
 
 ---
 
-## Corpus (27 conditions)
+## Corpus (39 conditions)
 
 | Condition | ICD-11 | ICD-10 | Review |
 |-----------|--------|--------|--------|
@@ -201,7 +201,7 @@ Confidence levels: `high` / `moderate` / `low`. No numerical probabilities.
 | Pulmonary Tuberculosis | 1B10 | A15 | ✅ verified |
 | Community-Acquired Pneumonia | CA40 | J18 | ✅ verified |
 | Urinary Tract Infection | GC08 | N39.0 | ✅ verified |
-| Iron Deficiency Anaemia | 3A00 | D50 | ✅ verified |
+| Iron Deficiency Anaemia | 3A00.Z | D50 | ✅ verified |
 | Peptic Ulcer Disease | DA62 | K27 | ✅ verified |
 | Acute Gastroenteritis (Infectious) | 1A09 | A09 | ✅ verified |
 | Typhoid Fever | 1A07 | A01.0 | ✅ verified |
@@ -221,6 +221,18 @@ Confidence levels: `high` / `moderate` / `low`. No numerical probabilities.
 | COPD | CA22 | J44.1 | 🟡 draft |
 | Hypertensive Crisis | BA41 | I10 | 🟡 draft |
 | Deep Vein Thrombosis | BD71 | I82.9 | 🟡 draft |
+| Pulmonary Embolism | BB00.Z | I26.9 | 🟡 draft |
+| Heart Failure | BD1Z | I50.9 | 🟡 draft |
+| Acute Pulmonary Oedema | CB01 | J81.0 | 🟡 draft |
+| Acute Myocardial Infarction | BA41.Z | I21.9 | 🟡 draft |
+| Acute Rheumatic Fever | 1B40.Z | I00 | 🟡 draft |
+| Rheumatic Heart Disease | BC20.1 | I09.9 | 🟡 draft |
+| Acute Pyelonephritis | GB51 | N10 | 🟡 draft |
+| Acute Bacterial Prostatitis | GA91.Y | N41.0 | 🟡 draft |
+| Acute Glomerulonephritis | GB40 | N00.9 | 🟡 draft |
+| Acute Kidney Injury | GB60.Z | N17.9 | 🟡 draft |
+| Nephrotic Syndrome | GB41 | N04.9 | 🟡 draft |
+| Chronic Kidney Disease | GB61.Z | N18.9 | 🟡 draft |
 
 ---
 
@@ -243,15 +255,9 @@ The validator (`corpus_pipeline/validator.py`) checks vocabulary, ICD format, se
 
 ## What remains
 
-**Phase 5b — hybrid retrieval (next engineering block):**
-1. Capture 27-condition retrieval baseline: Recall@9/30/50 + MRR + per-case provenance
-2. BM25 + RRF live integration into `rag.py` (singleton keyed by `chunks.jsonl` hash)
-3. Regression gate post-BM25 (watch T2DM 4a→4b paired case — previous failure point)
-4. RRF k sweep (30/60/120) + graph weight calibration
-5. Near-tie threshold re-examination post-BM25 (score distributions change)
-
-**Corpus expansion (cardiovascular domain):**
-- PE, Heart Failure, AMI, ARF, RHD — chapter verification in Kenya MOH Vol 2 required before authoring (see `docs/domain_contracts/cardiovascular.md` §2.4)
+**Domain evaluation — cardiovascular (next):**
+- B→A→C→D→E retrieval evaluation for all 10 cardiovascular cards
+- Case 3 fixture adjudication: UTI vs AGE vs pyelonephritis (clinical decision required)
 
 **Corpus expansion (AFI domain):**
 - Rickettsial illness — governance decision on acceptable sources required (see `docs/domain_contracts/acute_febrile_illness.md` §2.5)
@@ -261,4 +267,4 @@ The validator (`corpus_pipeline/validator.py`) checks vocabulary, ICD format, se
 2. Signal activation thresholds per ecology
 3. Replace `StaticCalendarProvider` with observed-rainfall gating
 
-**Clinician review:** 12 cards are `draft` (7 added post-2026-09-14 review + 5 added since). These need a second review pass before production ingestion.
+**Clinician review:** 24 cards are `draft`. These need a review pass before production ingestion.
