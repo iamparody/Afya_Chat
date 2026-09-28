@@ -73,13 +73,34 @@ class AnthropicProvider(LLMProvider):
         return message.content[0].text
 
 
+class GroqProvider(LLMProvider):
+    def __init__(self, api_key: str, model: str = "llama-3.3-70b-versatile"):
+        from groq import Groq
+        self._client = Groq(api_key=api_key)
+        self._model  = model
+
+    def generate(self, system_prompt: str, context: str) -> str:
+        response = self._client.chat.completions.create(
+            model=self._model,
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user",   "content": context},
+            ],
+            temperature=0.0,
+            response_format={"type": "json_object"},
+        )
+        return response.choices[0].message.content
+
+
 def get_provider() -> LLMProvider:
     """
     Return the active provider based on available env vars.
-    Priority: GEMINI_API_KEY → ANTHROPIC_API_KEY
+    Priority: GEMINI_API_KEY → ANTHROPIC_API_KEY → GROQ_API_KEY
     """
     if os.environ.get("GEMINI_API_KEY"):
         return GeminiProvider(api_key=os.environ["GEMINI_API_KEY"])
     if os.environ.get("ANTHROPIC_API_KEY"):
         return AnthropicProvider(api_key=os.environ["ANTHROPIC_API_KEY"])
-    raise EnvironmentError("No LLM provider key found. Set GEMINI_API_KEY or ANTHROPIC_API_KEY in .env")
+    if os.environ.get("GROQ_API_KEY"):
+        return GroqProvider(api_key=os.environ["GROQ_API_KEY"])
+    raise EnvironmentError("No LLM provider key found. Set GEMINI_API_KEY, ANTHROPIC_API_KEY, or GROQ_API_KEY in .env")
