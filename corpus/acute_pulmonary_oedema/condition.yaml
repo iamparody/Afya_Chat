@@ -1,0 +1,187 @@
+condition: Acute pulmonary oedema
+icd11: CB01
+icd_title: "Pulmonary oedema"
+icd_entity_uri: "http://id.who.int/icd/release/11/2024-01/mms/841348715"
+icd10: J81.0
+category: cardiovascular
+corpus_version: "1.0"
+schema_version: "2.3"
+review_status: draft
+reviewed_by: ""
+last_reviewed: ""
+icd_verified: true
+
+sources:
+  - organization: Kenya MOH
+    title: Clinical Guidelines for Management and Referral of Common Conditions at Levels 2–3, Volume 2
+    year: "2024"
+  - organization: Medscape
+    title: Cardiogenic Pulmonary Edema
+    year: "2025"
+    url: "https://emedicine.medscape.com/article/157452-overview"
+
+endemic_regions:
+  - nationwide
+
+environmental_signals: []
+
+retrieval_anchors:
+  positive: []
+confusable_with: []
+
+graph:
+  cardinal_symptoms:
+    - dyspnoea at rest
+    - frothy pink sputum
+    - orthopnoea
+  associated_symptoms:
+    - diaphoresis
+    - cyanosis
+    - tachypnoea
+    - accessory muscle use
+    - crackles
+    - wheeze
+    - raised JVP
+    - tachycardia
+    - S3 gallop
+    - confusion
+  risk_factors:
+    - hypertension
+    - ischaemic heart disease
+    - rheumatic heart disease
+    - mitral stenosis
+    - previous AMI
+    - atrial fibrillation
+    - cardiomyopathy
+    - chronic kidney disease
+    - valvular heart disease
+  differentials:
+    - Community-acquired pneumonia
+    - Asthma
+    - COPD
+    - Pulmonary embolism
+    - Heart failure
+  argues_against:
+    - gradual onset dyspnoea
+    - no frothy sputum
+    - no raised JVP
+    - fever with productive cough
+    - no orthopnoea
+  red_flags:
+    - respiratory distress
+    - cardiogenic shock
+    - cyanosis
+    - altered consciousness
+    - acute pulmonary oedema
+  confirms:
+    - bilateral pulmonary oedema on chest X-ray
+    - elevated BNP
+    - cardiomegaly on chest X-ray
+
+sections:
+  cardinal_symptoms: |
+    Acute pulmonary oedema presents with sudden, severe dyspnoea at rest —
+    onset over minutes, not hours. The patient cannot lie flat and typically
+    sits bolt upright or leans forward. Frothy pink sputum is pathognomonic:
+    fluid driven into the alveoli is aerated by breathing and stained by red
+    cells crossing the damaged capillary membrane. Orthopnoea is universally
+    present and severe. These three features together — sudden rest dyspnoea,
+    frothy pink sputum, and inability to lie flat — distinguish acute pulmonary
+    oedema from gradual-onset cardiac and respiratory conditions at primary
+    care level.
+
+  associated_symptoms: |
+    Diaphoresis is prominent — sympathetic activation drives profuse sweating.
+    Cyanosis reflects severe hypoxaemia. Tachypnoea is marked (respiratory rate
+    commonly >30/min). Accessory muscle use — intercostal and supraclavicular
+    recession — is visible on inspection. Auscultation reveals bilateral coarse
+    crackles from alveolar fluid; wheeze may be present (cardiac asthma from
+    bronchospasm). Raised JVP and tachycardia reflect the underlying cardiac
+    failure driving the oedema. S3 gallop may be audible. Agitation and
+    confusion from hypoxaemia are ominous signs indicating impending respiratory
+    failure.
+
+  diagnostic_features: |
+    Diagnosis is clinical at primary care level. The triad of sudden severe
+    dyspnoea at rest, frothy pink sputum, and bilateral basal crackles with
+    inability to lie flat is sufficient to act. Where available, chest X-ray
+    shows bilateral alveolar infiltrates in a bat-wing or perihilar distribution,
+    Kerley B lines, and cardiomegaly; upper lobe venous diversion may be seen.
+    ECG may reveal the precipitating cause — new ST changes (acute MI), rapid
+    atrial fibrillation, or LV hypertrophy from chronic hypertension. BNP or
+    NT-proBNP measurement (Level 4 and above) confirms cardiac aetiology and
+    discriminates from non-cardiogenic pulmonary oedema.
+
+  predisposing_factors: |
+    Acute pulmonary oedema is the acute expression of severely elevated left
+    atrial pressure, most commonly from left ventricular failure. In Kenya, the
+    leading causes at primary care level are hypertensive heart disease
+    (hypertension-driven LV dysfunction), acute myocardial infarction, and
+    rheumatic mitral stenosis — which obstructs left atrial outflow and raises
+    pulmonary venous pressure directly. New-onset rapid atrial fibrillation
+    commonly precipitates APO in a patient with pre-existing cardiac disease by
+    reducing LV filling time and increasing filling pressure. Other precipitants
+    include medication non-compliance (diuretics), severe anaemia, sepsis,
+    cardiomyopathy, and fluid overload in chronic kidney disease. Peripartum
+    cardiomyopathy must be considered in women of reproductive age.
+
+  typical_presentation: |
+    The typical patient wakes from sleep or is found acutely distressed —
+    unable to speak in full sentences, sitting upright, drenched in sweat,
+    with audible breathing and visible cyanosis. The onset is unmistakably
+    sudden. A background history of hypertension, known heart disease, or
+    recent medication non-compliance is frequently present. At primary care,
+    the presentation is usually unmistakable: the patient is visibly fighting
+    to breathe and cannot tolerate the supine position for any examination.
+    Any patient presenting this way requires immediate stabilisation — upright
+    position, oxygen, and IV frusemide — before diagnostic workup, and urgent
+    referral to Level 4.
+
+  differential_diagnoses: |
+    Community-acquired pneumonia shares acute dyspnoea and bilateral crackles
+    but has fever, productive purulent cough, and a gradual onset over 1–3
+    days rather than minutes; it does not produce frothy pink sputum.
+    Asthma presents with acute wheeze and dyspnoea but onset is typically
+    triggered by allergen or cold air, wheeze is expiratory and diffuse, sputum
+    is clear, and raised JVP is absent. COPD exacerbation causes dyspnoea with
+    wheeze and is distinguished by a smoking or biomass-smoke history, chronic
+    productive cough, and absence of frothy sputum or raised JVP in uncomplicated
+    disease. Pulmonary embolism causes acute dyspnoea and may raise JVP but
+    lacks bilateral crackles, frothy sputum, and orthopnoea; pleuritic pain
+    and DVT source suggest it. Chronic heart failure in decompensation shares
+    raised JVP and crackles but has a gradual onset over days with prominent
+    peripheral oedema rather than the acute alveolar flooding of APO.
+
+  argues_against: |
+    Gradual onset of breathlessness over days argues against acute pulmonary
+    oedema — APO develops over minutes to hours at most. Absence of frothy
+    sputum substantially reduces the probability; while not all APO produces
+    visible frothy sputum, its presence is highly specific. Normal jugular
+    venous pressure on examination makes left-sided cardiac failure as the
+    mechanism unlikely. Fever with productive purulent cough points to
+    pneumonia as the primary cause. The ability to lie flat without distress
+    makes significant acute pulmonary venous hypertension very unlikely.
+
+  red_flags: |
+    All presentations of acute pulmonary oedema are emergencies — there are
+    no mild cases at this diagnosis. Immediately life-threatening features
+    requiring stabilisation and emergency referral are: cyanosis (central,
+    indicating severe hypoxaemia), altered consciousness or agitation from
+    hypoxaemic encephalopathy, cardiogenic shock (hypotension, cold extremities,
+    oliguria), and respiratory failure with exhaustion. At primary care, the
+    correct action is: sit the patient upright, administer high-flow oxygen,
+    give IV frusemide 40mg, and arrange immediate ambulance transfer to Level 4.
+    Do not delay referral for investigations.
+
+  diagnostic_context: |
+    Acute pulmonary oedema is a clinical emergency diagnosed and acted upon
+    at the bedside, not in the laboratory. Stabilise first, investigate later.
+    At primary care, confirm the diagnosis clinically (sudden dyspnoea at rest,
+    frothy sputum, bilateral crackles, inability to lie flat) and identify the
+    most likely precipitant from the history — this guides Level 4 management.
+    Key precipitants to document before referral: known hypertension or heart
+    disease, medication non-compliance, recent chest pain (possible AMI),
+    new palpitations (possible atrial fibrillation), pregnancy or recent
+    delivery. Always distinguish from asthma and pneumonia before labelling
+    the episode cardiac — treatment differs significantly and steroid use in
+    presumed asthma can worsen cardiac APO.

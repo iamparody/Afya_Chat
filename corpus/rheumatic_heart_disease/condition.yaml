@@ -1,0 +1,197 @@
+condition: Rheumatic heart disease
+icd11: BC20.1
+icd_title: "Rheumatic heart disease, unspecified"
+icd_entity_uri: "http://id.who.int/icd/release/11/2024-01/mms/770085732"
+icd10: I09.9
+category: cardiovascular
+corpus_version: "1.0"
+schema_version: "2.3"
+review_status: draft
+reviewed_by: ""
+last_reviewed: ""
+icd_verified: true
+icd_search_term: "Rheumatic heart disease, unspecified"
+
+sources:
+  - organization: Kenya MOH
+    title: Clinical Guidelines for Management and Referral of Common Conditions at Levels 2–3, Volume 2
+    year: "2024"
+  - organization: Medscape
+    title: Rheumatic Heart Disease
+    year: "2024"
+    url: "https://emedicine.medscape.com/article/891897-overview"
+
+endemic_regions:
+  - nationwide
+
+environmental_signals: []
+
+retrieval_anchors:
+  positive: []
+confusable_with: []
+
+graph:
+  cardinal_symptoms:
+    - dyspnoea on exertion
+    - orthopnoea
+    - palpitations
+    - haemoptysis
+  associated_symptoms:
+    - fatigue
+    - peripheral oedema
+    - raised JVP
+    - crackles
+    - atrial fibrillation
+    - displaced apex beat
+  risk_factors:
+    - previous acute rheumatic fever
+    - streptococcal pharyngitis
+    - crowded living conditions
+    - socioeconomic disadvantage
+    - rheumatic heart disease
+  differentials:
+    - cardiomyopathy
+    - Heart failure
+    - Infective endocarditis
+    - cor pulmonale
+    - Acute pulmonary oedema
+  argues_against:
+    - no preceding streptococcal illness
+    - no valvular murmur
+    - normal ECG
+  red_flags:
+    - acute pulmonary oedema
+    - cardiogenic shock
+    - endocarditis
+    - haemodynamic compromise
+  confirms:
+    - echocardiographic valvular disease
+    - cardiomegaly on chest X-ray
+    - atrial fibrillation
+
+sections:
+  cardinal_symptoms: |
+    Rheumatic heart disease results from scarring and deformity of cardiac
+    valves following one or more episodes of acute rheumatic fever. The mitral
+    valve is most commonly affected (mitral stenosis or regurgitation), followed
+    by the aortic valve; combined lesions occur. Symptoms reflect the haemodynamic
+    consequences of the valve lesion and develop gradually over years as the
+    deformity progresses. Dyspnoea on exertion is typically the earliest symptom
+    — the effort required to trigger breathlessness decreasing as the lesion
+    worsens. Orthopnoea and paroxysmal nocturnal dyspnoea signal advanced disease
+    with elevated pulmonary venous pressure. Palpitations arise from atrial
+    fibrillation, which complicates established mitral stenosis and regurgitation
+    and carries significant embolic stroke risk. Haemoptysis from pulmonary
+    venous hypertension is a characteristic feature of severe mitral stenosis.
+
+  associated_symptoms: |
+    Fatigue reflects reduced cardiac output and effort intolerance. Peripheral
+    oedema — bilateral ankle and leg swelling — indicates right heart failure
+    secondary to elevated pulmonary pressures or biventricular involvement.
+    Raised JVP signals right heart decompensation. Bilateral basal crackles
+    reflect pulmonary venous congestion. Atrial fibrillation presents as an
+    irregularly irregular pulse; its onset often precipitates acute
+    decompensation in a patient with previously compensated valvular disease.
+    Displaced apex beat indicates left ventricular dilatation from volume
+    overload (mitral regurgitation, aortic regurgitation). A loud, low-pitched
+    mid-diastolic murmur at the apex (mitral stenosis) or a holosystolic
+    murmur radiating to the axilla (mitral regurgitation) may be the only
+    clinical clue in a patient with exertional breathlessness — careful
+    auscultation in the left lateral decubitus position is required.
+
+  diagnostic_features: |
+    Echocardiography with Doppler is definitive — it identifies the valves
+    affected, quantifies stenosis severity (valve area, mean gradient), and
+    assesses regurgitation severity, chamber dimensions, and left ventricular
+    function. At primary care, the clinical diagnosis rests on characteristic
+    murmurs in the context of a rheumatic history. Mitral stenosis: loud S1,
+    opening snap, mid-diastolic rumble, accentuated P2. Mitral regurgitation:
+    holosystolic murmur at apex radiating to axilla, soft S1. ECG may show
+    left atrial enlargement (P mitrale), right ventricular hypertrophy,
+    atrial fibrillation, or left ventricular hypertrophy. Chest X-ray may
+    show cardiomegaly, left atrial enlargement (splaying of the carina,
+    double shadow at right heart border), and pulmonary venous congestion.
+    Elevated ASO titre confirms antecedent streptococcal exposure but does
+    not indicate current activity.
+
+  predisposing_factors: |
+    Rheumatic heart disease is the consequence of inadequately treated or
+    recurrent acute rheumatic fever. Each ARF episode causes additional
+    valvular inflammation and fibrosis; severity of RHD is directly
+    proportional to the number and severity of ARF recurrences. In Kenya,
+    RHD is the leading cause of acquired heart disease in children and young
+    adults — a direct consequence of high rates of untreated GAS pharyngitis
+    in crowded, low-income settings. Globally, RHD disproportionately affects
+    sub-Saharan Africa, South Asia, and Pacific island nations. Young women
+    of childbearing age are at particular risk: pregnancy-related volume
+    expansion may precipitate acute decompensation in previously compensated
+    mitral stenosis. Mitral stenosis previously undiagnosed is a significant
+    cause of peripartum cardiac failure in Kenya.
+
+  typical_presentation: |
+    The typical patient is a young adult — often female, aged 15–35 — with
+    a childhood history of joint pain or documented rheumatic fever, or who
+    grew up in a crowded household and received no penicillin prophylaxis.
+    She presents with gradually worsening breathlessness on exertion over
+    months to years, punctuated by an acute decompensation triggered by
+    a new pregnancy, atrial fibrillation, or intercurrent infection. On
+    examination, there is a murmur — often loud enough to be felt as a thrill.
+    Alternatively, in Kenya, a patient may present for the first time in
+    acute pulmonary oedema or with a haemorrhagic stroke from a cardioembolic
+    event, with no prior cardiac diagnosis. Many patients in resource-limited
+    settings are unaware they have valvular disease until a complication forces
+    presentation.
+
+  differential_diagnoses: |
+    Cardiomyopathy causes exertional dyspnoea, raised JVP, and displaced apex
+    beat but lacks the characteristic valvular murmurs of RHD — echocardiography
+    distinguishes by showing dilated ventricle with poor function rather than
+    structural valve abnormality. Non-rheumatic heart failure (hypertensive,
+    ischaemic) shares dyspnoea and oedema but auscultation reveals no or only
+    functional murmurs, and there is no rheumatic history. Infective endocarditis
+    may occur on a rheumatically damaged valve — fever, changing murmur, embolic
+    phenomena, and systemic illness distinguish it from stable RHD; it is a
+    complication of RHD as well as a differential. Cor pulmonale presents with
+    right heart failure and raised JVP but reflects pulmonary disease (COPD, TB
+    with pulmonary destruction) — lung disease history and absence of mitral
+    lesion on echo distinguish it. Acute pulmonary oedema may be the presenting
+    event of advanced mitral stenosis — AMI, hypertensive crisis, and non-cardiac
+    causes must be distinguished.
+
+  argues_against: |
+    No history of ARF, rheumatic fever, or childhood joint illness — and no
+    history of close contact with such illness — substantially reduces the
+    probability of RHD, since the condition requires prior streptococcal exposure.
+    Absence of any cardiac murmur on careful auscultation makes significant
+    valvular disease less likely, though mild regurgitation may be subclinical
+    and detectable only on echo. A normal ECG — without P mitrale, right
+    ventricular hypertrophy, or atrial fibrillation — argues against advanced
+    valvular disease, though early RHD may have no ECG abnormality.
+
+  red_flags: |
+    RHD requires referral to Level 4 for echocardiography and specialist
+    assessment in all confirmed or suspected cases. Immediate referral
+    for acute decompensation: acute pulmonary oedema from mitral stenosis —
+    a medical emergency requiring IV frusemide, upright positioning, and
+    oxygen before transfer. Cardiogenic shock from acute valve rupture or
+    severe regurgitation requires emergency surgical consideration.
+    Infective endocarditis superimposed on rheumatic valves — fever, emboli,
+    changing murmur — mandates blood cultures and urgent admission for IV
+    antibiotics. Haemodynamic compromise from new-onset atrial fibrillation
+    with rapid ventricular rate requires rate control. Stroke or TIA in a
+    young patient with a murmur must raise immediate suspicion of
+    cardioembolic source from RHD — anticoagulation decision at Level 4.
+
+  diagnostic_context: |
+    At primary care, RHD is a clinical diagnosis based on murmur
+    characterisation, rheumatic history, and haemodynamic assessment.
+    The most important tasks are: identify the murmur and document its
+    character; assess haemodynamic stability; establish whether the patient
+    is on secondary prophylaxis. All patients with RHD require lifelong
+    monthly benzathine penicillin G secondary prophylaxis — a key question
+    to ask at every primary care encounter. Pregnancy is a high-risk period:
+    any woman of reproductive age with a murmur must have cardiac assessment
+    before or early in pregnancy. At primary care, do not attempt to manage
+    RHD complications beyond initial stabilisation — the management of valve
+    lesion severity, anticoagulation for atrial fibrillation, and surgical
+    candidacy all require Level 4 specialist input.

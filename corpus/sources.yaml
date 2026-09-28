@@ -250,7 +250,7 @@ sources:
     authority: Kenya Ministry of Health
     title: "Clinical Management and Referral Guidelines Vol. 2: Clinical Guidelines for Management of Conditions at Level 2–3 Health Facilities"
     year: 2024
-    url: ""
+    url: "file://kenya_moh_vol2_2024.md"
     supplementary_sources:
       - authority: Medscape
         title: "Chronic Obstructive Pulmonary Disease (COPD) Clinical Presentation and Differential Diagnosis"
@@ -274,7 +274,7 @@ sources:
     authority: Kenya Ministry of Health
     title: "Clinical Management and Referral Guidelines Vol. 2: Clinical Guidelines for Management of Conditions at Level 2–3 Health Facilities"
     year: 2024
-    url: ""
+    url: "file://kenya_moh_vol2_2024.md"
     supplementary_sources:
       - authority: European Association of Urology (EAU)
         title: "EAU Guidelines on Urological Infections"
@@ -291,7 +291,7 @@ sources:
     authority: Kenya Ministry of Health
     title: "Clinical Management and Referral Guidelines Vol. 2: Clinical Guidelines for Management of Conditions at Level 2–3 Health Facilities"
     year: 2024
-    url: ""
+    url: "file://kenya_moh_vol2_2024.md"
     supplementary_sources:
       - authority: European Association of Urology (EAU)
         title: "EAU Guidelines on Urological Infections"
@@ -312,7 +312,7 @@ sources:
     authority: Kenya Ministry of Health
     title: "Clinical Management and Referral Guidelines Vol. 2: Clinical Guidelines for Management of Conditions at Level 2–3 Health Facilities"
     year: 2024
-    url: ""
+    url: "file://kenya_moh_vol2_2024.md"
     supplementary_sources:
       - authority: KDIGO (Kidney Disease Improving Global Outcomes)
         title: "KDIGO 2021 Clinical Practice Guideline for the Management of Glomerular Diseases"
@@ -329,7 +329,7 @@ sources:
     authority: Kenya Ministry of Health
     title: "Clinical Management and Referral Guidelines Vol. 2: Clinical Guidelines for Management of Conditions at Level 2–3 Health Facilities"
     year: 2024
-    url: ""
+    url: "file://kenya_moh_vol2_2024.md"
     supplementary_sources:
       - authority: KDIGO (Kidney Disease Improving Global Outcomes)
         title: "KDIGO 2021 Clinical Practice Guideline for the Management of Glomerular Diseases"
@@ -346,7 +346,7 @@ sources:
     authority: Kenya Ministry of Health
     title: "Clinical Management and Referral Guidelines Vol. 2: Clinical Guidelines for Management of Conditions at Level 2–3 Health Facilities"
     year: 2024
-    url: ""
+    url: "file://kenya_moh_vol2_2024.md"
     supplementary_sources:
       - authority: KDIGO (Kidney Disease Improving Global Outcomes)
         title: "KDIGO 2012 Clinical Practice Guideline for Acute Kidney Injury"
@@ -364,7 +364,7 @@ sources:
     authority: Kenya Ministry of Health
     title: "Clinical Management and Referral Guidelines Vol. 2: Clinical Guidelines for Management of Conditions at Level 2–3 Health Facilities"
     year: 2024
-    url: ""
+    url: "file://kenya_moh_vol2_2024.md"
     supplementary_sources:
       - authority: KDIGO (Kidney Disease Improving Global Outcomes)
         title: "KDIGO 2024 Clinical Practice Guideline for the Evaluation and Management of Chronic Kidney Disease"
@@ -384,7 +384,7 @@ sources:
     authority: Kenya Ministry of Health
     title: "Clinical Management and Referral Guidelines Vol. 2: Clinical Guidelines for Management of Conditions at Level 2–3 Health Facilities"
     year: 2024
-    url: ""
+    url: "file://kenya_moh_vol2_2024.md"
     supplementary_sources:
       - authority: Medscape
         title: "Hypertensive Emergencies"
@@ -400,7 +400,7 @@ sources:
     authority: Kenya Ministry of Health
     title: "Clinical Management and Referral Guidelines Vol. 2: Clinical Guidelines for Management of Conditions at Level 2–3 Health Facilities"
     year: 2024
-    url: ""
+    url: "file://kenya_moh_vol2_2024.md"
     supplementary_sources:
       - authority: Medscape
         title: "Deep Venous Thrombosis (DVT)"
@@ -416,7 +416,7 @@ sources:
     authority: Kenya Ministry of Health
     title: "Clinical Management and Referral Guidelines Vol. 2: Clinical Guidelines for Management of Conditions at Level 2–3 Health Facilities"
     year: 2024
-    url: ""
+    url: "file://kenya_moh_vol2_2024.md"
     supplementary_sources:
       - authority: Medscape
         title: "Pulmonary Embolism (PE)"
@@ -426,3 +426,101 @@ sources:
           - differential_diagnoses
           - argues_against
         reason: "MOH Vol 2 §3.4 covers recognition and referral criteria. Medscape used for differentials and argues-against sections."
+
+  - condition: Acute pulmonary oedema
+    authority_tier: kenya_moh
+    authority: Kenya Ministry of Health
+    title: "Clinical Management and Referral Guidelines Vol. 2: Clinical Guidelines for Management of Conditions at Level 2–3 Health Facilities"
+    year: 2024
+    url: "file://kenya_moh_vol2_2024.md"
+    supplementary_sources:
+      - authority: Medscape
+        title: "Cardiogenic Pulmonary Edema"
+        year: 2025
+        url: "https://emedicine.medscape.com/article/157452-overview"
+        sections_covered:
+          - cardinal_symptoms
+          - associated_symptoms
+          - diagnostic_features
+          - predisposing_factors
+          - differential_diagnoses
+          - argues_against
+        reason: "MOH Vol 2 §3.6 covers clinical features and emergency management only. Medscape used for full clinical detail, differentials, and argues-against."
+
+  - condition: Heart failure
+    authority_tier: kenya_moh
+    authority: Kenya Ministry of Health
+    title: "Clinical Management and Referral Guidelines Vol. 2: Clinical Guidelines for Management of Conditions at Level 2–3 Health Facilities"
+    year: 2024
+    url: "file://kenya_moh_vol2_2024.md"
+    supplementary_sources:
+      - authority: Medscape
+        title: "Heart Failure"
+        year: 2025
+        url: "https://emedicine.medscape.com/article/163062-overview"
+        sections_covered:
+          - differential_diagnoses
+          - argues_against
+          - predisposing_factors
+        reason: "MOH Vol 2 §3.5 covers clinical features and management outline. Medscape used for differentials, argues-against, and predisposing factors."
+
+  - condition: Acute myocardial infarction
+    authority_tier: kenya_moh
+    authority: Kenya Ministry of Health
+    title: "Clinical Management and Referral Guidelines Vol. 2: Clinical Guidelines for Management of Conditions at Level 2–3 Health Facilities"
+    year: 2024
+    url: "file://kenya_moh_vol2_2024.md"
+    supplementary_sources:
+      - authority: Medscape
+        title: "Myocardial Infarction"
+        year: 2026
+        url: "https://emedicine.medscape.com/article/155919-overview"
+        sections_covered:
+          - cardinal_symptoms
+          - associated_symptoms
+          - diagnostic_features
+          - predisposing_factors
+          - differential_diagnoses
+          - argues_against
+          - confirms
+        reason: "MOH Vol 2 §3.7 is very thin (356 chars). Medscape is primary clinical source for all sections except management framing."
+
+  - condition: Acute rheumatic fever
+    authority_tier: kenya_moh
+    authority: Kenya Ministry of Health
+    title: "Clinical Management and Referral Guidelines Vol. 2: Clinical Guidelines for Management of Conditions at Level 2–3 Health Facilities"
+    year: 2024
+    url: "file://kenya_moh_vol2_2024.md"
+    supplementary_sources:
+      - authority: Medscape
+        title: "Acute Rheumatic Fever"
+        year: 2024
+        url: "https://emedicine.medscape.com/article/333103-overview"
+        sections_covered:
+          - cardinal_symptoms
+          - associated_symptoms
+          - diagnostic_features
+          - predisposing_factors
+          - differential_diagnoses
+          - confirms
+        reason: "MOH Vol 2 §3.8 covers Jones criteria summary and clinical features only. Medscape used for full diagnostic criteria, differentials, and confirms."
+
+  - condition: Rheumatic heart disease
+    authority_tier: kenya_moh
+    authority: Kenya Ministry of Health
+    title: "Clinical Management and Referral Guidelines Vol. 2: Clinical Guidelines for Management of Conditions at Level 2–3 Health Facilities"
+    year: 2024
+    url: "file://kenya_moh_vol2_2024.md"
+    supplementary_sources:
+      - authority: Medscape
+        title: "Rheumatic Heart Disease"
+        year: 2024
+        url: "https://emedicine.medscape.com/article/891897-overview"
+        sections_covered:
+          - cardinal_symptoms
+          - associated_symptoms
+          - diagnostic_features
+          - predisposing_factors
+          - differential_diagnoses
+          - confirms
+        reason: "MOH Vol 2 §38.7 covers valves affected and major complications. Medscape used for full clinical presentation, differentials, and diagnostic features."

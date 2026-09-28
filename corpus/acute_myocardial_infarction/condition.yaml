@@ -1,0 +1,208 @@
+condition: Acute myocardial infarction
+icd11: BA41.Z
+icd_title: "Acute myocardial infarction, unspecified"
+icd_entity_uri: "http://id.who.int/icd/release/11/2024-01/mms/1334938734/unspecified"
+icd10: I21.9
+category: cardiovascular
+corpus_version: "1.0"
+schema_version: "2.3"
+review_status: draft
+reviewed_by: ""
+last_reviewed: ""
+icd_verified: true
+icd_search_term: "Acute myocardial infarction, unspecified"
+
+sources:
+  - organization: Kenya MOH
+    title: Clinical Guidelines for Management and Referral of Common Conditions at Levels 2–3, Volume 2
+    year: "2024"
+  - organization: Medscape
+    title: Myocardial Infarction
+    year: "2026"
+    url: "https://emedicine.medscape.com/article/155919-overview"
+
+endemic_regions:
+  - nationwide
+
+environmental_signals: []
+
+retrieval_anchors:
+  positive: []
+confusable_with: []
+
+graph:
+  cardinal_symptoms:
+    - chest pain
+    - left arm radiation
+    - jaw pain
+    - diaphoresis
+  associated_symptoms:
+    - nausea
+    - vomiting
+    - dyspnoea
+    - syncope
+    - tachycardia
+    - pallor
+    - lightheadedness
+  risk_factors:
+    - hypertension
+    - diabetes mellitus
+    - smoking
+    - dyslipidaemia
+    - obesity
+    - ischaemic heart disease
+    - male sex
+    - advancing age
+    - physical inactivity
+    - family history of ischaemic heart disease
+  differentials:
+    - Unstable angina
+    - pericarditis
+    - aortic dissection
+    - pulmonary embolism
+    - musculoskeletal chest pain
+    - Acute pulmonary oedema
+  argues_against:
+    - no radiation of chest pain
+    - pleuritic chest pain
+    - normal ECG
+  red_flags:
+    - cardiogenic shock
+    - ventricular arrhythmia
+    - complete heart block
+    - acute pulmonary oedema
+  confirms:
+    - ST elevation on ECG
+    - troponin elevation
+    - new Q waves on ECG
+
+sections:
+  cardinal_symptoms: |
+    Acute myocardial infarction presents with chest pain that is severe,
+    unremitting, and typically lasts 30 minutes or more — distinguishing it
+    from stable angina, which resolves with rest within 5–10 minutes. The
+    pain is retrosternal or epigastric with a crushing, pressure, or burning
+    quality. Radiation to the left arm — down its inner aspect — or to the
+    jaw is a cardinal discriminating feature; neck and shoulder radiation
+    also occur. Diaphoresis is prominent from sympathoadrenal activation and
+    is a strong indicator of haemodynamic significance. In patients with
+    diabetes or the elderly, the chest pain may be atypical or absent —
+    presenting instead as epigastric discomfort, fatigue, or sudden dyspnoea.
+
+  associated_symptoms: |
+    Nausea and vomiting occur from vagal stimulation and are common with
+    inferior MI. Dyspnoea reflects acute left ventricular dysfunction and
+    rising pulmonary venous pressure; severe dyspnoea with orthopnoea
+    indicates concomitant acute pulmonary oedema. Syncope or near-syncope may
+    result from transient arrhythmia or haemodynamic compromise. Tachycardia
+    is characteristic — driven by catecholamine release and pain; bradycardia
+    may paradoxically occur with inferior MI from vagal stimulation or
+    sinoatrial node involvement. Pallor reflects peripheral vasoconstriction.
+    Lightheadedness may precede syncope or indicate haemodynamic instability.
+    Patients frequently report a sense of impending doom.
+
+  diagnostic_features: |
+    ECG is the cornerstone investigation at primary care level. STEMI is
+    identified by new ST-segment elevation ≥1 mm in two anatomically
+    contiguous limb leads or ≥2 mm in contiguous precordial leads; NSTEMI
+    shows ST depression, T-wave inversion, or no ECG change with rising
+    troponin. New left bundle branch block with chest pain should be treated
+    as STEMI until proven otherwise. Pathological Q waves develop within
+    hours to days confirming transmural infarction. Cardiac troponin (cTnI
+    or cTnT) rises within 3–6 hours of symptom onset, peaks at 12–24 hours,
+    and may remain elevated for 1–2 weeks; a rise-and-fall pattern with at
+    least one value above the 99th percentile is the biomarker definition of
+    MI. At facilities with echocardiography, a regional wall motion
+    abnormality in a coronary territory confirms myocardial injury.
+
+  predisposing_factors: |
+    Atherosclerosis underlies approximately 90% of acute MI: plaque rupture
+    or erosion triggers coronary thrombosis and occlusion. In Kenya, the
+    major modifiable risk factors driving cardiovascular disease are
+    hypertension, diabetes mellitus, and smoking — all with rising prevalence
+    in urban populations. Dyslipidaemia, obesity, physical inactivity, and
+    ultra-processed diets are rapidly increasing with urbanisation. Male sex
+    and advancing age carry inherent risk. Family history of premature
+    ischaemic heart disease — a first-degree male relative with MI before age
+    45, or female relative before age 55 — markedly raises individual risk.
+    Pre-existing ischaemic heart disease (prior MI, known stable angina)
+    substantially raises risk of a further acute event. Cocaine and
+    amphetamine use cause coronary spasm and acute thrombosis in younger
+    patients and should be considered in atypical presentations.
+
+  typical_presentation: |
+    The typical patient is a middle-aged or older male with a history of
+    hypertension, diabetes, or smoking — or all three. He develops sudden,
+    severe retrosternal crushing chest pain at rest or during exertion,
+    radiating to the left arm or jaw, accompanied by sweating and a sense
+    of impending doom. He is pale and diaphoretic. He may have nausea or
+    vomiting. At primary care, he arrives in distress or is brought in
+    collapsed. Women, patients with diabetes, and the elderly frequently
+    present atypically: epigastric pain, fatigue, or dyspnoea without
+    classic chest pain — misdiagnosis risk is higher in these groups.
+    Delayed presentation is common in Kenya due to distance from facility
+    and initial self-treatment; patients may arrive hours after symptom
+    onset, which narrows the reperfusion window.
+
+  differential_diagnoses: |
+    Unstable angina is the closest mimic — identical pain quality and
+    radiation, but episodes are shorter (typically <30 minutes), triggered
+    by minimal exertion or at rest, and troponin does not rise; ECG changes
+    may be present or absent. Pericarditis causes chest pain that is sharp,
+    pleuritic (worse on inspiration and lying flat, relieved by sitting
+    forward), with a pericardial friction rub and saddle-shaped (diffuse)
+    ST elevation without reciprocal changes — the distribution is not
+    coronary-territory. Aortic dissection presents with tearing or ripping
+    chest pain radiating to the back, unequal blood pressure between arms
+    (>15 mmHg difference), and an aortic regurgitation murmur; it is an
+    absolute contraindication to thrombolysis. Pulmonary embolism causes
+    acute dyspnoea with pleuritic chest pain and may show sinus tachycardia
+    or right heart strain on ECG; troponin may rise mildly without the
+    rise-and-fall pattern. Musculoskeletal chest pain is reproducible on
+    chest wall palpation, positional, and worsened by specific movements;
+    ECG and troponin are normal. Acute pulmonary oedema may complicate AMI
+    or present independently — if both are present, AMI is the precipitant.
+
+  argues_against: |
+    Chest pain without any radiation — to the arm, jaw, neck, or shoulder —
+    substantially reduces the probability of AMI compared to non-radiating
+    presentations, though atypical AMI does occur. Pain that is sharp,
+    pleuritic (worsened by inspiration), and positional points to
+    pericarditis, pulmonary embolism, or musculoskeletal cause. A completely
+    normal ECG at the time of chest pain does not exclude NSTEMI or early
+    STEMI, but significantly lowers probability of a large transmural event
+    — serial ECGs are required before excluding AMI. Pain that is reproduced
+    by chest wall palpation makes musculoskeletal chest pain the leading
+    diagnosis. Rapid relief with antacids strongly suggests oesophageal or
+    peptic disease as the cause.
+
+  red_flags: |
+    All confirmed or strongly suspected AMI must be treated as an emergency
+    and referred immediately to Level 4. Cardiogenic shock — hypotension
+    below 90 mmHg systolic with cold, clammy extremities and oliguria —
+    indicates massive myocardial loss and carries >50% mortality without
+    urgent revascularisation. Ventricular arrhythmia (ventricular tachycardia
+    or fibrillation) is the leading cause of death in the first hour; it
+    requires immediate defibrillation. Complete heart block complicating
+    inferior MI presents with bradycardia and haemodynamic compromise.
+    Acute pulmonary oedema as a complication signals severe left ventricular
+    dysfunction requiring urgent diuresis and respiratory support. At primary
+    care: give aspirin 300 mg stat, sublingual GTN if systolic BP >90 mmHg,
+    oxygen if SpO₂ <94%, and arrange emergency transfer — do not delay for
+    ECG if clinical probability is high and an ECG machine is unavailable.
+
+  diagnostic_context: |
+    At primary care in Kenya, the diagnosis of AMI is predominantly clinical
+    and ECG-based — troponin assays are typically not available at Level 2–3.
+    Any patient with chest pain lasting >30 minutes, especially with
+    diaphoresis, radiation, and cardiovascular risk factors, must be treated
+    as probable AMI and transferred immediately. ECG is the critical
+    discriminating test: perform it without delay if available. STEMI requires
+    time-critical reperfusion — the window for thrombolysis is typically
+    12 hours from symptom onset. If STEMI is identified at primary care and
+    transfer to PCI-capable facility will take >2 hours, administer
+    streptokinase (if no contraindications) as per Kenya MOH protocol and
+    refer. Document the exact time of symptom onset — this guides reperfusion
+    decision-making at Level 4. In diabetic patients, the absence of chest
+    pain does not exclude AMI; dyspnoea, fatigue, or collapse alone warrants
+    ECG and urgent assessment.

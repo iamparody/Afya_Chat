@@ -5,147 +5,155 @@
 
 ---
 
-## What This Project Is
+## Session Orientation — Read This First
 
-A **symptom-driven clinical decision support system** for East Africa / Kenya primary care. Given a patient presentation, the system returns candidate diagnoses with differentials and discriminating features — it is a reasoning aid, not a single-answer lookup.
+**What this project is:** A symptom-driven clinical decision support system for Kenya primary care. Given a patient presentation, it returns candidate diagnoses with differentials and discriminating features — a reasoning aid, not a single-answer lookup.
 
-**Core stack (built):**
-```
-Markdown condition cards (symptoms_dictionary/)
-    → ingest.py (section-level chunking)
-        → chunks.jsonl + graph_entities.jsonl
-            → Cohere embed → Chroma vector store (semantic retrieval)
-                → Neo4j knowledge graph (symptom/argues-against traversal)
-                    → Gemini RAG layer (FIVE RULES prompt, JSON schema output)
-                        → Streamlit MVP (phase6/app.py) — approval + SQLite persistence
-```
+**Current state:**
+- 32 condition cards in `corpus/` (YAML format), all `draft` pending clinician review
+- Corpus pipeline: `corpus_pipeline/ingest_yaml.py` (current) — not the legacy `ingest.py`
+- Regression gate: 7/8 (last run 2026-09-24)
+- Active branch: `feat/cardiovascular_2` — HF, APO, AMI, ARF, RHD authored + validated; pending ingest/eval/commit
 
-**Planned additions (Phase 7+):**
-```
-Environmental context layer (static calendar + ENSO flag + exposure tags)
-    → Context engine (four-layer: Temporal / Environmental / Geographic / Exposure)
-        → Contextual candidate re-ranking (before LLM reasoning)
-
-Interactive disambiguation loop (Phase 8)
-    → Follow-up question generation from missing_information
-        → Multi-turn enriched presentation → re-rank → result
-
-Live environmental feeds — CHIRPS / Kenya Met API (Phase 9)
-```
-
-**Key constraint:** Only `review_status: clinician_verified` cards are allowed into production ingestion. All 10 current cards are `draft`.
+**Where to look:**
+- [[STATUS]] — source of truth for what's built vs. planned, eval history, domain progress
+- `corpus/` — all condition cards (YAML, one directory per condition)
+- `symptoms_dictionary/index.md` — condition index with ICD codes (quick navigation)
+- `symptoms_dictionary/symptom_vocabulary.md` — all valid graph block terms
+- `symptoms_dictionary/glossary.md` — clinical term definitions
+- `symptoms_dictionary/conditions_vocabulary.md` — valid condition names for `differentials` and `confusable_with`
+- `corpus/sources.yaml` — source registry (validator checks this)
+- `docs/domain_evaluation_protocol.md` — B→A→C→D→E retrieval evaluation workflow
 
 ---
 
-## Directory Map
+## Card Authoring Quick-Start
 
-```
-cds/
-├── CLAUDE.md                     ← you are here (governance)
-├── STATUS.md                     ← build tracker (Obsidian)
-├── README.md                     ← public-facing design documentation
-├── ingest.py                     ← ingestion script (chunker + graph extractor)
-├── requirements.txt
-├── phase5/
-│   ├── prompts.py                ← FIVE RULES system prompt + JSON schema
-│   ├── rag.py                    ← retrieval pipeline (Cohere → Chroma → Neo4j → Gemini)
-│   ├── providers.py              ← Gemini provider with retry
-│   └── evaluate.py               ← 8-case eval suite
-├── phase6/
-│   ├── app.py                    ← Streamlit MVP entry point
-│   ├── db.py                     ← SQLite encounters persistence
-│   └── cds_theme.py              ← CSS + Phosphor icon helpers
-├── neo4j/
-│   └── neo4j_loader.py           ← loads graph_entities.jsonl → Neo4j Aura
-└── symptoms_dictionary/
-    ├── index.md                  ← machine-readable condition index (ICD-11 + filenames)
-    ├── glossary.md               ← shared clinical term definitions
-    ├── type_2_diabetes.md
-    ├── hypertension.md
-    ├── obesity.md
-    ├── malaria.md
-    ├── pulmonary_tb.md
-    ├── pneumonia.md
-    ├── uti.md
-    ├── anaemia.md
-    ├── peptic_ulcer_disease.md
-    └── acute_gastroenteritis.md
+**Template:** Copy `corpus/hypertension/condition.yaml` — it is the most recent card at schema_version 2.3 with retrieval anchors.
+
+**Source workflow (three tools, always in this order):**
+1. **Primary — MOH Vol 2 (local):** `kenya_moh_vol2_2024.md` in the project root. Read the relevant section for clinical content. This is the first and authoritative source for all Kenya cardiovascular cards.
+2. **Supplementary — Medscape (Firecrawl):** When MOH is thin on differentials, argues_against, or clinical discriminators, scrape the relevant Medscape condition page via the Firecrawl API (key in `.env` as `FIRECRAWL_API_KEY`). Document as a two-source entry in `corpus/sources.yaml`.
+3. **ICD verification — WHO API (script):** Run `python scripts/verify_icd.py corpus/<condition>/condition.yaml`. The script authenticates with the WHO ICD-11 API (credentials `WHO_ICD_CLIENT_ID` / `WHO_ICD_CLIENT_SECRET` in `.env`), finds the canonical code and title, and sets `icd_verified: true` automatically. If the condition name does not match WHO canonical exactly, add `icd_search_term: "<exact WHO title>"` to frontmatter and re-run.
+
+**Pipeline scripts (run from `cds/` root in order):**
+
+```bash
+# 1. Validate the card (must be 0 errors before proceeding)
+python corpus_pipeline/validator.py corpus/<condition>/condition.yaml
+
+# 2. ICD verification via WHO API
+python scripts/verify_icd.py corpus/<condition>/condition.yaml
+
+# 3. Ingest into chunks + graph entities
+python corpus_pipeline/ingest_yaml.py corpus/<condition>/condition.yaml
+
+# 4. Reload Chroma vector store
+python chroma/chroma_loader.py
+
+# 5. Run eval gate (must be ≥7/8)
+python phase5/evaluate.py 2>&1 | Select-Object -Last 20
+
+# 6. Load Neo4j graph
+python neo4j/neo4j_loader.py
 ```
 
-**Obsidian quick-jump:**
-- [[STATUS]] — review tracker for all cards + pipeline phases
-- [[README]] — full architecture spec and design decisions
-- [[index]] — machine-readable condition index
-- [[glossary]] — shared clinical terminology
+**Pipeline distinction:**
+- `corpus_pipeline/ingest_yaml.py` — current pipeline; processes YAML cards in `corpus/`
+- `ingest.py` (root) — legacy pipeline for old markdown cards in `symptoms_dictionary/`; do not use for new cards
+
+**Neo4j note:** Free-tier AuraDB pauses after inactivity. Resume the `afyachat` instance at console.neo4j.io before running `neo4j_loader.py`.
 
 ---
 
-## Architecture
+## Adding a New Condition Card — Mandatory Gate Checklist
 
-### Layer 1 — Markdown Corpus (`symptoms_dictionary/`)
+Every step is a hard gate. Do not proceed to the next step until the current step is complete. Do not commit until all steps are checked.
 
-Each condition card is a `.md` file with:
-- **YAML frontmatter** — governance metadata + clinical metadata + environmental context (see Frontmatter Schema below)
-- **9 mandatory clinical sections** (in fixed order):
-  1. Cardinal symptoms
-  2. Associated symptoms and signs
-  3. Diagnostic features
-  4. Predisposing factors
-  5. Typical presentation
-  6. Important differential diagnoses
-  7. Features that argue against this diagnosis
-  8. Red flags
-  9. Diagnostic context
+**STEP 1 — Choose authoring method and source**
+- **Method A (preferred):** Source a WHO guideline or Kenya MOH protocol PDF. Feed to LLM with the card schema as target format. Clinician reviews draft, not blank page. ~20 min review per card.
+- **Method B:** Query PrimeKG for symptom/differential skeleton. Author Kenya-specific content (endemic regions, environmental signals, primary care framing) manually — PrimeKG has no regional epidemiology. Clinician reviews full card.
+- Document the source in `sources:` frontmatter before writing any prose.
+- ⛔ STOP if no qualifying source exists — do not author from memory or general knowledge alone.
 
-Section order is **fixed** — do not reorder. The ingestion parser depends on it.
+**STEP 2 — Add new graph terms to `symptom_vocabulary.md` first**
+- Grep `symptom_vocabulary.md` for each graph block term you intend to use. Add missing terms before writing the card.
+- ⛔ STOP if vocabulary terms would need to be added after the card is written.
 
-### Layer 2 — Ingestion Pipeline (`ingest.py`)
+**STEP 3 — Define new clinical terms in `glossary.md`**
+- Add definitions for any new condition-specific terms or abbreviations before the card is written.
+- ⛔ STOP if a term appears in the card but has no glossary entry.
 
-Reads condition cards → chunks by section header → extracts graph entities → outputs:
-- `chunks.jsonl` — one JSON object per section chunk; carries: `condition`, `section`, `category`, `icd11`, `icd10`, `review_status`, `sources`, `endemic_regions`, `text`
-- `graph_entities.jsonl` — structured graph records per condition
-- `chunks_inspect.txt` / `graph_inspect.txt` — human-readable validation previews
+**STEP 4 — Write the card**
+- Copy `corpus/hypertension/condition.yaml` as template (schema_version 2.3, has retrieval_anchors).
+- Fill all 9 clinical sections in fixed order. No section may be omitted or left blank.
+- Set frontmatter: `review_status: draft`, `reviewed_by: ""`, `last_reviewed: ""`, `icd_verified: false`, `corpus_version: "1.0"`, `schema_version: "2.3"`
+- Use controlled vocabulary only for `endemic_regions`, `environmental_signals`, `category`.
+- Leave `retrieval_anchors` and `confusable_with` empty (`[]`) — populated in Phase D of domain evaluation.
 
-Run with: `python ingest.py` from `cds/` root. Always run after any card modification.
-
-### Layer 3 — Retrieval Pipeline (`phase5/`)
-
-Built and operational:
-- **Cohere embed** → **Chroma vector store** — semantic retrieval, top 6 candidates
-- **Neo4j knowledge graph** — symptom matching + argues-against traversal
-- **Gemini RAG** — FIVE RULES prompt, temperature=0, JSON schema output, jsonschema validation
-- **Eval baseline:** 7/8 correct leading diagnoses across 8 Kenya primary care test cases
-
-### Layer 4 — Environmental Context Layer (`phase7/`) ← IN DESIGN
-
-Four-layer context injected into the RAG pipeline before LLM reasoning:
+**STEP 5 — Verify ICD codes via WHO API**
+```bash
+python scripts/verify_icd.py corpus/<condition>/condition.yaml
 ```
-Temporal     → encounter_date (auto), onset_date (optional), season_phase (derived)
-Environmental → signals from static calendar + ENSO flag
-Geographic   → region, ecology, altitude_band (from patient_location)
-Exposure     → documented patient exposures (livestock, floodwater, occupation, etc.)
+- The script authenticates with the WHO ICD-11 API and sets `icd_verified: true`, `icd_title`, and `icd_entity_uri` automatically on a confirmed match.
+- If no exact match: add `icd_search_term: "<exact WHO canonical title>"` to frontmatter and re-run.
+- Verify `icd10` manually at icd.who.int — the API covers ICD-11 only. Confirm the ICD-10 code maps to the same condition.
+- ⛔ STOP if the script does not confirm MATCH. The validator ERRORs on `icd_verified: false`.
+
+**STEP 6 — Add to `corpus/sources.yaml` registry**
+- Add the condition entry with `authority_tier`, `authority`, `title`, `year`, and `url`. The validator checks for this entry.
+
+**STEP 7 — Run the validator — must be 0 errors**
+```bash
+python corpus_pipeline/validator.py corpus/<condition>/condition.yaml
+```
+- ⛔ STOP if any ERROR remains. Warnings should be addressed but do not block.
+
+**STEP 8 — Send to colleague for clinical review**
+- Clinical review is required before `review_status` changes from `draft`.
+- ⛔ Do not set `review_status: clinician_verified` until a named clinician has reviewed and approved.
+- This step runs in parallel with Steps 9–12 — the card is ingested as `draft` and blocked from production until clinician-verified.
+
+**STEP 9 — Ingest**
+```bash
+python corpus_pipeline/ingest_yaml.py corpus/<condition>/condition.yaml
+```
+- Confirm: 9 chunks (+ 1 retrieval_context chunk if retrieval_anchors are populated), 0 unknown graph terms.
+
+**STEP 10 — Chroma reload**
+```bash
+python chroma/chroma_loader.py
 ```
 
-Context engine produces a **confidence-labelled natural language statement** naming the evidence source explicitly. The LLM receives this statement as supplied evidence — it does not infer epidemiology from the calendar itself.
+**STEP 11 — Add coverage case to `evaluate.py`**
+- Add a case to `COVERAGE_CASES` in `phase5/evaluate.py` for the new condition.
+- Run coverage case and confirm it passes.
 
-**Design principles (non-negotiable):**
-- Retrieval is seasonally aware; diagnosis is not seasonally determined
-- The context engine is deterministic; the LLM receives a labelled statement, not raw environmental data
-- Contextual signals can increase, decrease, or have no effect on a candidate (not only a boost mechanism)
-- Static calendar for Phase 7; schema designed so Phase 9 can replace calendar with live feeds without structural changes
+**STEP 12 — Eval gate**
+```bash
+python phase5/evaluate.py 2>&1 | Select-Object -Last 20
+```
+- Regression must be ≥7/8. If it drops below 7, do not proceed.
 
-### Layer 5 — Streamlit MVP (`phase6/`)
+**STEP 13 — Neo4j load**
+```bash
+python neo4j/neo4j_loader.py
+```
 
-Built and operational:
-- `app.py` — clinical presentation input → RAG → structured output → approval workflow
-- `db.py` — SQLite encounters table; analyst-queryable fields (corpus-controlled arrays, ISO timestamps, ICD codes, 0/1 agreement flag)
-- CSS: editorial minimal, Phosphor icons, Montserrat
+**STEP 14 — Update `STATUS.md` and domain contract**
+- Add eval history line: date, regression score, condition count, coverage case result.
+- Mark the condition as committed in `docs/domain_contracts/<domain>.md`.
+
+**STEP 15 — Commit**
+- Commit only after Steps 7 and 12 pass (0 validator errors, regression ≥7/8).
+- Commit message format: `feat(corpus): <Condition> card — <domain>, <source>`
+- Do NOT add Co-Authored-By trailers to any commit message.
 
 ---
 
 ## Frontmatter Schema Reference
 
-Every condition card frontmatter must include all fields below. Do not add fields without incrementing `schema_version` and updating `ingest.py`.
+Every condition card frontmatter must include all fields below. Do not add fields without incrementing `schema_version`.
 
 ```yaml
 # ── Governance ────────────────────────────────────────────────────────────────
@@ -153,12 +161,12 @@ condition: <string>
 icd11: <ICD-11 code>            # verify at icd.who.int — must match icd10 equivalent
 icd10: <ICD-10 code>            # must match icd11
 category: <string>              # controlled — see Category Vocabulary below
-corpus_version: "1.x"           # increment minor on content change; major on schema change
-schema_version: "2.0"           # increment ONLY if frontmatter structure changes
+corpus_version: "1.0"           # increment minor on content change; major on schema change
+schema_version: "2.3"           # increment ONLY if frontmatter structure changes
 review_status: draft            # draft | under_review | clinician_verified
 reviewed_by: ""
 last_reviewed: ""
-icd_verified: false             # MUST be set to true after verifying BOTH codes at icd.who.int
+icd_verified: false             # set to true only after manual verification at icd.who.int
 sources:
   - organization: ""
     title: ""
@@ -166,23 +174,21 @@ sources:
 
 # ── Location and ecology ──────────────────────────────────────────────────────
 endemic_regions:                # controlled vocabulary — list all that apply
-  - nationwide                  # present in all ecological zones
-  - coast                       # coastal lowlands, Mombasa, Kilifi, etc.
-  - lake_basin                  # Lake Victoria basin and shores
-  - highland                    # >1500m — Nairobi, central highlands, Rift Valley rim
-  - highland_margins            # 1000–1500m — transition zones
-  - arid_semi_arid              # ASAL counties — Turkana, Marsabit, Garissa, etc.
-  - northern_kenya              # northern border counties (overlaps arid_semi_arid)
-  - urban_informal              # informal settlements in any region
+  - nationwide
+  - coast
+  - lake_basin
+  - highland
+  - highland_margins
+  - arid_semi_arid
+  - northern_kenya
+  - urban_informal
 
 # ── Environmental context signals ────────────────────────────────────────────
-# Only include signals that have a clinically meaningful relationship with this condition.
-# Use controlled vocabularies only. Do not invent new signal names.
-# Maximum ~3 signals per card — if a condition has more, re-examine the evidence.
+# Only include signals with clinically meaningful evidence. Max 3 per card.
 environmental_signals:
-  - signal: <signal_name>       # controlled — see Signal Vocabulary below
-    pathways:                   # controlled — see Pathway Vocabulary below
-      - <pathway>
+  - signal: <signal_name>       # controlled — see docs/environmental_vocabulary.md
+    pathways:
+      - <pathway>               # controlled — see docs/environmental_vocabulary.md
     effect_type: <type>         # transmission_opportunity | severity_modifier
     effect_direction: up        # up | neutral | down
     lag_weeks:
@@ -190,16 +196,16 @@ environmental_signals:
       max: <int>
     strength: moderate          # low | moderate | strong
     confidence: moderate        # low | moderate | high
-    causal_distance: direct     # direct | indirect — see Causal Distance Vocabulary below
+    causal_distance: direct     # direct | indirect
     evidence_type: expert_estimate  # see Evidence Type Vocabulary below
-    regions:                    # subset of endemic_regions — where signal applies
-      - <region>
+    regions:
+      - <region>                # subset of endemic_regions
     seasonal_basis: <string>    # typical_long_rains | typical_short_rains | dry_season | perennial | outbreak_associated
     applicability:
-      requires_exposure: []     # signal only applies if patient has this exposure — see Exposure Vocabulary
-      amplifiers: []            # signal is stronger if patient also has this exposure
+      requires_exposure: []
+      amplifiers: []
 
-# ── Graph structure (machine-read by ingest.py) ───────────────────────────────
+# ── Graph structure (machine-read by ingest pipeline) ────────────────────────
 graph:
   cardinal_symptoms: []
   associated_symptoms: []
@@ -209,8 +215,8 @@ graph:
   differentials: []
   confirms: []
 
-# ── Retrieval evaluation (schema 2.3 — added in Phase D of domain evaluation) ──
-# Leave absent on new cards. Added only after Phase C baseline is recorded.
+# ── Retrieval evaluation (schema 2.3 — populated in Phase D of domain eval) ──
+# Leave as empty lists on new cards. Populated only after Phase C baseline is recorded.
 # See docs/domain_evaluation_protocol.md for authoring rules.
 retrieval_anchors:
   positive: []     # presentation phrases that should retrieve this card over confusables
@@ -221,7 +227,7 @@ confusable_with: []  # condition names (from conditions_vocabulary.md) this card
 
 ## Controlled Vocabularies
 
-These are the only valid values for vocabulary-controlled fields. Do not use free text where a controlled value exists. Add new values only by updating this section AND incrementing `schema_version`.
+These are the only valid values for vocabulary-controlled fields. Do not use free text where a controlled value exists.
 
 ### Category Vocabulary
 `gastroenterological` | `respiratory` | `cardiovascular` | `endocrine` | `haematological` | `infectious` | `urological` | `obstetric` | `neurological` | `dermatological` | `musculoskeletal`
@@ -229,247 +235,28 @@ These are the only valid values for vocabulary-controlled fields. Do not use fre
 ### Endemic Region Vocabulary
 `nationwide` | `coast` | `lake_basin` | `highland` | `highland_margins` | `arid_semi_arid` | `northern_kenya` | `urban_informal`
 
-### Signal Vocabulary (Phase 7 — 8 signals maximum)
-| Signal | Description |
-|--------|-------------|
-| `post_long_rains` | 4–8 weeks after Kenya long rains (March–May) |
-| `post_short_rains` | 4–8 weeks after Kenya short rains (October–November) |
-| `flooding` | Active flooding or heavy localised rainfall causing water contamination |
-| `water_scarcity` | Prolonged dry spell reducing safe water access |
-| `prolonged_drought` | Multi-month drought causing nutritional vulnerability |
-| `dry_dusty_season` | Northeast monsoon dry season (November–March); mucosal drying |
-| `cold_dry_season` | Highland cold season (June–August); indoor crowding |
-| `heat_dehydration` | Hot dry season causing dehydration stress |
-
-### Pathway Vocabulary
-`vector_borne` | `waterborne` | `zoonotic` | `respiratory_mucosal` | `nutritional_vulnerability` | `airborne`
-
-### Effect Type Vocabulary
-`transmission_opportunity` — environmental condition increases disease acquisition risk
-`severity_modifier` — environmental condition worsens disease severity or complications (does not increase incidence)
-
-### Causal Distance Vocabulary
-`direct` — signal operates via ≤2 causal steps with established epidemiological evidence (e.g. rainfall → mosquito breeding → malaria transmission)
-`indirect` — signal operates via ≥3 steps or through a behavioral/physiological intermediate (e.g. drought → food scarcity → nutritional vulnerability → iron deficiency). Indirect signals require more hedged language in the context engine explanation and should never override strong clinical evidence.
-
-### Evidence Type Vocabulary
-`observed_outbreaks` | `surveillance_data` | `regional_epidemiological_evidence` | `expert_estimate`
-
-### Exposure Vocabulary (patient-documented)
-`floodwater_contact` | `livestock_contact` | `occupational_dust` | `unsafe_water` | `mosquito_exposure_high` | `pastoralist_mobility` | `fishing_lakeshore`
-
-### Interannual Context (maintained annually — not per-card)
-```yaml
-# Maintained in phase7/context_engine.py — updated once per year from NOAA/KMD
-interannual_context:
-  enso_phase: neutral           # neutral | el_nino | la_nina
-  effect: modifies_rainfall_prior
-  confidence: moderate
-  evidence_type: surveillance_data
-```
-ENSO acts as an amplifier on existing seasonal signals — it does not directly name a disease or override clinical evidence.
+### Environmental Signal / Pathway / Effect / Evidence / Exposure Vocabularies
+→ See [[docs/environmental_vocabulary.md]] for all valid values.
 
 ---
 
-## Governance Rules
+## Graph Block Rules
 
-### Approved Card Authoring Methods
-
-Two methods are approved for creating new condition cards. Both require clinician review before ingest — the method changes how the draft is produced, not the review gate.
-
-**Method A — LLM-assisted drafting from WHO/MOH guidelines (preferred)**
-1. Source a WHO clinical guideline, Kenya MOH protocol, or equivalent trusted PDF for the condition
-2. Feed the PDF to an LLM with the card schema (9 sections + frontmatter) as the target format and a prompt to extract structured clinical content
-3. LLM produces a draft card — clinician reviews and corrects the draft, not a blank page
-4. Pin the source document in the card's `sources:` frontmatter field
-5. Authoring time: ~20 minutes of clinician review per card (vs. hours from scratch)
-
-**Method B — PrimeKG scaffold + clinical authorship**
-1. Query PrimeKG (open knowledge graph, Harvard/Nature 2023 — disease-symptom-differential relationships, 17,080 diseases) for the target condition
-2. Use the returned symptom and differential relationships as the skeleton for the `graph:` block and Section 1–2 prose
-3. Author Kenya-specific content (endemic regions, environmental signals, primary care framing) manually — PrimeKG has no regional epidemiology
-4. Clinician reviews the full card before ingest
-5. Use for: conditions with clear global disease burden data but limited Kenya-specific guidelines
-
-**What neither method changes:**
-- All 9 sections are still mandatory
-- Clinician review is still required before `review_status` moves from `draft`
-- `ingest.py` validation still gates on unknown vocabulary terms
-- ICD codes must still be verified at icd.who.int
-- Kenya-specific context (endemic regions, environmental signals, primary care framing) must be authored — it cannot be sourced from PrimeKG or generic guidelines
-
----
-
-### Adding a New Condition Card — Mandatory Gate Checklist
-
-Every step is a hard gate. Do not proceed to the next step until the current step is complete. Do not commit until all steps are checked. No exceptions.
-
-**STEP 1 — Choose authoring method and source**
-- Choose Method A or B (see above). Document the source in `sources:` frontmatter before writing any prose.
-- If the primary source PDF is inaccessible or thin on differentials/argues-against, apply the two-source pattern (supplementary source covers those sections; document in `corpus/sources.yaml`).
-- ⛔ STOP if no qualifying source exists — do not author from memory or general knowledge alone.
-
-**STEP 2 — Add new graph terms to `symptom_vocabulary.md` first**
-- Before writing the card, identify all graph block terms you intend to use.
-- Grep `symptom_vocabulary.md` for each term. If any are missing, add them now — before writing the card.
-- ⛔ STOP if you would have to add vocabulary terms after the card is written — that means the card drove the vocabulary, not the other way around.
-
-**STEP 3 — Define new clinical terms in `glossary.md`**
-- Identify any condition-specific clinical terms or abbreviations introduced in the prose sections (e.g. disease-specific syndromes, diagnostic test names, clinical signs unique to this condition).
-- Add definitions to `glossary.md` before the card is written.
-- ⛔ STOP if a term appears in the card but has no glossary entry and no definition elsewhere in the corpus.
-
-**STEP 4 — Write the card**
-- Copy `corpus/brucellosis/condition.yaml` as template — it has all current fields at schema_version 2.2.
-- Fill all 9 clinical sections in fixed order. No section may be omitted or left blank.
-- Set frontmatter:
-  - `review_status: draft`
-  - `reviewed_by:` (leave blank)
-  - `last_reviewed:` (leave blank)
-  - `icd_verified: false` — this is the default; do NOT change to `true` until Step 5 is complete.
-  - `corpus_version: "1.0"`
-  - `schema_version: "2.2"` — use for new cards; only bump to `"2.3"` when adding `retrieval_anchors` in Phase D
-  - `endemic_regions` — use controlled vocabulary only
-  - `environmental_signals` — only include signals with meaningful clinical evidence; leave empty list if none
-
-**STEP 5 — Verify ICD-11 code via WHO API script**
-```bash
-python scripts/verify_icd.py corpus/<condition>/condition.yaml
-```
-- The script authenticates with the WHO ICD-11 API, finds the exact canonical match, and sets `icd_verified: true`, `icd_title`, and `icd_entity_uri` in the card automatically.
-- If the condition name does not match the WHO canonical title exactly, add `icd_search_term: "<exact WHO title>"` to the frontmatter and re-run.
-- Verify `icd10` manually at icd.who.int — the API only covers ICD-11. Confirm the ICD-10 code maps to the same condition.
-- ⛔ STOP — the validator will ERROR on `icd_verified: false`. Do not proceed until the script reports MATCH.
-
-**STEP 6 — Run the validator — must be 0 errors**
-```bash
-python corpus_pipeline/validator.py corpus/<condition>/condition.yaml
-```
-- Fix every ERROR before proceeding. Warnings should be addressed but do not block.
-- ⛔ STOP if any ERROR remains. Do not proceed to ingest with a failing validator.
-
-**STEP 7 — Send to colleague for clinical review**
-- Send the card file to a clinician for review. Record their name and credential.
-- Clinical review is required before `review_status` changes from `draft`.
-- ⛔ Do not change `review_status: clinician_verified` until a named clinician has reviewed and approved.
-- (This step does not block the pipeline steps below — those proceed in parallel with the review process. The card is ingested as `draft` and blocked from production ingestion until clinician-verified.)
-
-**STEP 8 — Add to `corpus/sources.yaml` registry**
-- Add the condition entry to `corpus/sources.yaml` with `authority_tier`, `authority`, `title`, `year`, and `url`.
-- The validator checks for this entry. Step 6 already confirmed it passes.
-
-**STEP 9 — Ingest**
-```bash
-python corpus_pipeline/ingest_yaml.py corpus/<condition>/condition.yaml
-```
-- Confirm: 9 chunks, 0 unknown graph terms.
-
-**STEP 10 — Chroma reload**
-```bash
-python chroma/chroma_loader.py
-```
-- Confirm embeddings computed for the new card.
-
-**STEP 11 — Eval gate**
-```bash
-python phase5/evaluate.py
-```
-- Regression must be ≥7/8. If regression drops below 7, do not proceed.
-- Add a coverage case for the new condition to `COVERAGE_CASES` in `evaluate.py`.
-- Run the coverage case and confirm it passes.
-
-**STEP 12 — Neo4j load**
-```bash
-python neo4j/neo4j_loader.py
-```
-- Confirm condition loaded.
-
-**STEP 13 — Update `STATUS.md` and domain contract**
-- Add eval history line (date, regression score, condition count, coverage case).
-- Mark the condition as committed in the relevant domain contract.
-
-**STEP 14 — Commit**
-- Commit only after Steps 6 and 11 pass (0 validator errors, regression ≥7/8).
-- Commit message format: `feat(corpus): <Condition> card — <domain>, <source>`
-- Do NOT add Co-Authored-By trailers to any commit message.
-
-### Clinical Review Workflow
-
-```
-draft → under_review → clinician_verified
-```
-
-- `draft` — authored but not reviewed; blocked from production ingestion
-- `under_review` — sent to clinician for review
-- `clinician_verified` — reviewed and approved; may enter production
-
-To update a card after clinician review:
-1. Set `review_status: clinician_verified`
-2. Set `reviewed_by: <name + credential>`
-3. Set `last_reviewed: YYYY-MM-DD`
-4. Increment `corpus_version` minor version
-5. Re-run `ingest.py` to regenerate chunks
-
-### Running Ingestion
-
-```bash
-python ingest.py
-```
-
-- Only runs cleanly when called from `cds/` root
-- Validates `review_status` and warns on `draft` cards
-- Outputs `chunks.jsonl` and `chunks_inspect.txt` (both gitignored or committed depending on workflow)
-- Do NOT commit `chunks.jsonl` if downstream pipeline reads directly from disk — treat as build artifact
-
-### Modifying Condition Cards
-
-- **Clinical prose** — always preserve hedging language ("may", "usually", "commonly"). Do not flatten qualifiers.
-- **Section headers** — do not rename; the parser matches exact strings
-- **Frontmatter keys** — do not add new keys without updating `ingest.py` and `schema_version`
-- **Glossary** — if a new term appears in a card, define it in `glossary.md` before submitting
-
-### Knowledge Graph (Neo4j) Rules
-
-- Node types: `Condition`, `Symptom`, `Sign`, `RiskFactor`, `Differential`, `RedFlag`
-- Relationship types: `HAS_CARDINAL_SYMPTOM`, `HAS_DIFFERENTIAL`, `ARGUES_AGAINST`, `ESCALATES_TO`
-- Cypher scripts go in `neo4j/`
-- Every `CREATE` or `MERGE` must be idempotent (safe to re-run)
-- Schema migrations: numbered files `neo4j/migrations/001_initial_schema.cypher`
-- **Do not build an environmental pathway graph in Neo4j.** Environmental signals live in corpus card frontmatter + `context_engine.py` as controlled vocabulary. A separate pathway ontology in Neo4j violates the Phase 7 scope constraint.
-
-### Environmental Context Layer Rules (Phase 7)
-
-- Environmental signals live in condition card frontmatter — not in a separate database or graph
-- Signal names, pathways, effect types, and evidence types must come from Controlled Vocabularies above
-- Maximum 3 `environmental_signals` entries per card — if a condition needs more, review the evidence
-- The context engine (`phase7/context_engine.py`) is deterministic Python — it produces a labelled statement, not a probability
-- The LLM must receive the evidence source label explicitly: "seasonal prior based on regional climatology, not observed rainfall"
-- `effect_direction: down` is valid — a signal can reduce a candidate's relevance (e.g., dry year in malaria-endemic region reduces vector-borne prior)
-- ENSO flag is maintained annually in `context_engine.py` — not per-card, not inferred by the LLM
-
----
-
-## Current Phase
-
-| Phase | Description | Status |
-|-------|-------------|--------|
-| 1 | Corpus build — 10 condition cards | ✅ Complete (all draft) |
-| 2 | Clinician review — all 10 cards | 🔴 Not started |
-| 3 | Ingestion → Cohere embed → Chroma vector store | ✅ Complete |
-| 4 | Neo4j knowledge graph | ✅ Complete |
-| 5 | RAG interface — Gemini + FIVE RULES prompt (7/8 eval) | ✅ Complete |
-| 6 | Streamlit MVP + approval workflow + SQLite | ✅ Complete |
-| 7 | Corpus expansion + environmental context layer | 🟡 In design |
-| 8 | Interactive disambiguation loop (follow-up questions) | 🔴 Not started — needs ≥15 conditions |
-| 9 | Live environmental feeds + empirical calibration | 🔴 Not started — needs Phase 8 validated |
-
-See [[STATUS]] for granular task tracking.
+- **Short canonical forms only** — max ~4 words, no conditional phrases, no conjunctions (`with`, `or`, `and`, `without`), no age qualifiers appended.
+  - ✓ `new onset dyspepsia` | ✗ `age over 55 with new dyspepsia`
+  - ✓ `male UTI` | ✗ `UTI in man under 50 without precipitating factor`
+  - ✓ `severe dehydration` | ✗ `severe dehydration in child under five`
+- **`argues_against` must be individually matchable** — each feature must be establishable by a single, direct clinical finding or explicit denial. No compound criteria joined by `and`. No umbrella absence categories.
+  - ✓ `no dysuria`, `no urinary frequency` (separate entries)
+  - ✗ `negative RDT and negative blood film` (compound — split)
+  - ✗ `no urinary symptoms` (umbrella — use specific denials)
+- Add new terms to `symptom_vocabulary.md` **before** using them in a card.
 
 ---
 
 ## Domain-Level Retrieval Evaluation
 
-Before committing a domain, run the full evaluation workflow defined in `docs/domain_evaluation_protocol.md`.
+Before committing a domain, run the full evaluation workflow in `docs/domain_evaluation_protocol.md`.
 
 **Workflow: B → A → C → D → E**
 
@@ -489,61 +276,60 @@ Two gates required for domain commit:
 
 ---
 
-## What Claude Should Know
+## Governance Rules
 
-### Do
-- Read `symptoms_dictionary/index.md` first to find a condition without reading all files
-- Read `symptoms_dictionary/glossary.md` before interpreting clinical terms in cards
-- Run `python ingest.py` after any card modification — check for chunk validation errors and unknown graph terms
-- Run `python neo4j/neo4j_loader.py` after ingest when graph fields changed
-- Check `review_status` in frontmatter before treating card content as production-ready
-- Use [[STATUS]] as the source of truth for what's built vs. planned
-- Verify ICD-11 codes at icd.who.int — confirm icd11 and icd10 map to the same condition; only then set `icd_verified: true` (the validator ERRORs on `false`)
-- Use only controlled vocabularies for `endemic_regions`, `environmental_signals`, `pathways`, `effect_type`, `evidence_type`, `exposure`
-- Send new condition cards to colleague for clinical review before ingesting
-- **Graph block terms must be short canonical forms** — max ~4 words, no conditional phrases, no conjunctions (`with`, `or`, `and`, `without`, age qualifiers appended). Clinical nuance belongs in prose sections, not graph fields. Examples: `new onset dyspepsia` ✓ / `age over 55 with new dyspepsia` ✗; `male UTI` ✓ / `UTI in man under 50 without precipitating factor` ✗; `severe dehydration` ✓ / `severe dehydration in child under five` ✗
-- **`argues_against` features must be specific and individually matchable** — each feature must be establishable by a single, direct clinical finding or explicit denial. Do not use compound criteria joined by `and` (e.g. `negative RDT and negative blood film`) or umbrella absence categories (e.g. `no urinary symptoms`). Split compound features into separate entries; use the specific term the presentation can directly deny (e.g. `no dysuria`, `no urinary frequency`).
-- Add new graph terms to `symptom_vocabulary.md` **before** using them in a card — prevents unknown-term warnings at ingest
+### Clinical Review
+```
+draft → under_review → clinician_verified
+```
+- `draft` — authored but not reviewed; blocked from production ingestion
+- `clinician_verified` — named clinician has reviewed and approved; may enter production
+- Do not set `clinician_verified` without an actual named clinician review.
 
-### Don't
-- Do not rename section headers in condition cards (breaks the parser)
-- Do not skip sections when authoring a new card
-- Do not add `clinician_verified` status without an actual clinician review
-- Do not flatten or remove clinical hedging language ("may", "usually") in prose
-- Do not add new frontmatter keys without updating `schema_version` and `ingest.py`
-- Do not build an environmental pathway graph in Neo4j — environmental signals live in corpus card frontmatter
-- Do not use free text where a controlled vocabulary value exists
-- Do not encode more than 3 `environmental_signals` per card without strong evidence for each
-- Do not let the context engine (or the LLM) make a diagnosis based on season alone — context adjusts priors, clinical evidence decides
-- Do not use `effect_direction: up` as the only direction — signals can be neutral or down
-- Do not use compound graph block terms with conjunctions or conditional clauses — break into shortest canonical matchable units
-- Do not add Co-Authored-By trailers to any commit message
+To update a card after clinician review:
+1. Set `review_status: clinician_verified`, `reviewed_by: <name + credential>`, `last_reviewed: YYYY-MM-DD`
+2. Increment `corpus_version` minor version
+3. Re-run `corpus_pipeline/ingest_yaml.py`
 
-### Orientation (when new to session)
-1. Read this file (`CLAUDE.md`) — especially Frontmatter Schema and Controlled Vocabularies
-2. Read [[STATUS]] for current build state
-3. Read `symptoms_dictionary/index.md` to navigate condition cards
-4. Only read individual condition cards when working on that specific condition
+### Knowledge Graph (Neo4j)
+- Node types: `Condition`, `Symptom`, `Sign`, `RiskFactor`, `Differential`, `RedFlag`
+- Relationship types: `HAS_CARDINAL_SYMPTOM`, `HAS_DIFFERENTIAL`, `ARGUES_AGAINST`, `ESCALATES_TO`
+- Every `CREATE` or `MERGE` must be idempotent (safe to re-run)
+- Do not build an environmental pathway graph in Neo4j — environmental signals live in corpus card frontmatter only.
 
----
+### Environmental Context Layer (Phase 7)
+- Environmental signals live in condition card frontmatter — not in a separate database or graph
+- Signal names, pathways, effect types, and evidence types must come from [[docs/environmental_vocabulary.md]]
+- Maximum 3 `environmental_signals` entries per card
+- The context engine (`phase7/context_engine.py`) is deterministic Python — it produces a labelled statement, not a probability
+- The LLM must receive the evidence source label explicitly: "seasonal prior based on regional climatology, not observed rainfall"
+- `effect_direction: down` is valid — a signal can reduce a candidate's relevance
+- ENSO flag is maintained annually in `context_engine.py` — not per-card, not inferred by the LLM
 
-## Sources and Standards
+### Modifying Existing Cards
+- Preserve hedging language ("may", "usually", "commonly") — do not flatten qualifiers
+- Do not rename section headers — the parser matches exact strings
+- Do not add new frontmatter keys without incrementing `schema_version`
 
-- ICD-11 codes: verified at https://icd.who.int/ — both icd11 and icd10 must be verified per card
-- Clinical content anchored to: WHO guidelines, Kenya MOH, Kenya NLTP, British Thoracic Society, ADA, EAU, ISDA
-- Environmental signals anchored to: Kenya Malaria Strategy 2023–2027, WHO outbreak reports, regional epidemiological literature
-- ENSO data source: NOAA (updated annually) + Kenya Meteorological Department
-- Regional orientation: East Africa / Kenya primary care (not generic global medicine)
-- Target users: clinical officers, nurses, general practitioners in primary care settings
+### Commit Rules
+- Commit only after validator 0 errors AND regression ≥7/8
+- Format: `feat(corpus): <Condition> card — <domain>, <source>`
+- Do NOT add Co-Authored-By trailers to any commit message
+- Never commit directly to master
 
 ---
 
-## Evolution Path — Environmental Context
+## Architecture Reference
 
-| Phase | Environmental capability | Data source |
-|-------|--------------------------|-------------|
-| 7 | Static seasonal calendar + ENSO flag + exposure tags | Hard-coded Kenya rainfall calendar; NOAA annual ENSO |
-| 8 | Validated contextual scoring from encounter data | SQLite encounters DB (system_clinician_agreement) |
-| 9 | Live environmental feeds replacing calendar lookups | CHIRPS / Kenya Met API / NDVI / SPI |
+**9 mandatory clinical sections (fixed order — do not reorder):**
+1. Cardinal symptoms
+2. Associated symptoms and signs
+3. Diagnostic features
+4. Predisposing factors
+5. Typical presentation
+6. Important differential diagnoses
+7. Features that argue against this diagnosis
+8. Red flags
+9. Diagnostic context
 
-**The schema is designed so Phase 9 replaces `seasonal_basis` with observed data without changing corpus cards, the graph structure, or the LLM interface.**
+**Retrieval:** Dense (Cohere) + BM25 + RRF (K=60), TOP_N=9. Post-retrieval: `_enforce_arguing_against_ranking()` in `phase5/rag.py` — swaps leading candidate if it has arguing_against features that hard-threshold-violate and a lower-ranked candidate has fewer such features.

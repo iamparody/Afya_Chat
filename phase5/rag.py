@@ -344,12 +344,23 @@ _HARD_THRESHOLD_TERMS = frozenset({
     "below emergency threshold",
 })
 
+# Stopwords stripped before matching so article variants ("below the crisis threshold")
+# match the canonical forms ("below crisis threshold") without accumulating phrase variants.
+_STOPWORDS = frozenset({"the", "a", "an", "of", "in", "with", "and", "or", "is", "are", "that", "this"})
+
+
+def _normalize_phrase(text: str) -> str:
+    return " ".join(w for w in text.lower().split() if w not in _STOPWORDS)
+
+
+_HARD_THRESHOLD_TERMS_NORM = frozenset(_normalize_phrase(h) for h in _HARD_THRESHOLD_TERMS)
+
 
 def _has_hard_threshold_violation(arguing_against: list) -> bool:
     """Return True if any arguing_against item is a hard threshold violation."""
     for term in arguing_against:
-        term_lower = term.lower()
-        if any(h.lower() in term_lower for h in _HARD_THRESHOLD_TERMS):
+        norm = _normalize_phrase(term)
+        if any(h in norm for h in _HARD_THRESHOLD_TERMS_NORM):
             return True
     return False
 
