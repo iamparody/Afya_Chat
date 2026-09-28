@@ -1,4 +1,6 @@
 ﻿cohere
+fastapi
+uvicorn[standard]
 chromadb
 neo4j
 google-genai
