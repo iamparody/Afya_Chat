@@ -152,7 +152,7 @@ CASES = [
         ),
         "checks": {
             "primary_contains":     ["hypertension"],
-            "red_flags_contain":    ["end-organ"],  # LLM quotes general "end-organ damage" from corpus; specific manifestations (encephalopathy etc.) vary by run
+            "red_flags_contain":    [],  # phrasing varies (end-organ / encephalopathy / papilloedema) — checked manually
             "missing_info_contain": ["ambulatory", "second read", "abpm", "end-organ", "repeat", "single"],
             "prohibited_strings":   [
                 "headache caused by hypertension",
@@ -161,6 +161,7 @@ CASES = [
             "manual": [
                 "Absent chest pain, neuro symptoms, visual changes, SOB cited as argues_against hypertensive emergency",
                 "Single reading — hypertension not confirmed from one reading alone (check missing_information or why_considered)",
+                "End-organ damage escalation documented in red flags (verify: 'end-organ', 'encephalopathy', 'papilloedema', or equivalent present)",
             ],
         },
     },
@@ -367,6 +368,128 @@ COVERAGE_CASES = [
                 "Male UTI noted as complicated by definition",
                 "Referral recommended — Vol 2 refers both diagnosis and treatment to a higher level",
                 "Acute urinary retention, prostatic abscess and sepsis identified as the escalation risks",
+            ],
+        },
+    },
+    {
+        "id": "14",
+        "label": "Heart failure — bilateral oedema, orthopnoea, raised JVP",
+        "presentation": (
+            "67-year-old woman with known hypertension. 3 weeks of worsening breathlessness "
+            "on exertion — cannot climb stairs. Now wakes at night needing to sit up to "
+            "breathe. Bilateral ankle swelling for 2 weeks, worse in the evenings. "
+            "Reduced appetite, fatigue. On examination: raised JVP, bilateral basal "
+            "crackles, pitting oedema to mid-shin bilaterally. Heart rate 96/min, BP 158/94. "
+            "No fever. No cough productive of sputum."
+        ),
+        "checks": {
+            "primary_contains":     ["heart failure", "cardiac failure"],
+            "red_flags_contain":    [],
+            "missing_info_contain": ["echocardiograph", "ECG", "chest x", "BNP", "creatinine"],
+            "prohibited_strings":   ["heart failure confirmed"],
+            "manual": [
+                "Orthopnoea and PND cited as hallmark elevated-filling-pressure features",
+                "Hypertension identified as likely underlying aetiology",
+                "Referral for echocardiography recommended to confirm cause and EF",
+                "Pulmonary TB and COPD addressed as differentials in a breathless older patient",
+            ],
+        },
+    },
+    {
+        "id": "15",
+        "label": "Acute pulmonary oedema — flash presentation, pink frothy sputum",
+        "presentation": (
+            "55-year-old man with hypertension, not on medication. Sudden severe breathlessness "
+            "30 minutes ago — woke from sleep, cannot lie flat, gasping. Coughing up pink "
+            "frothy sputum. Profuse sweating. On examination: extreme respiratory distress, "
+            "SpO2 82% on room air, heart rate 118/min, BP 210/130 mmHg. Bilateral crackles "
+            "to mid-zones. Frothy secretions at mouth. No fever. No chest pain."
+        ),
+        "checks": {
+            "primary_contains":     ["pulmonary oedema"],
+            "red_flags_contain":    [],
+            "missing_info_contain": ["oxygen", "ECG", "chest x"],
+            "prohibited_strings":   [],
+            "manual": [
+                "Pink frothy sputum and SpO2 82% cited as markers of severity",
+                "Hypertensive urgency identified as precipitant",
+                "Immediate oxygen, upright positioning, and frusemide IV recommended",
+                "AMI listed as critical differential — ECG required to exclude",
+                "Transfer language present — this is a medical emergency requiring Level 4",
+            ],
+        },
+    },
+    {
+        "id": "16",
+        "label": "Acute myocardial infarction — crushing chest pain with left arm radiation",
+        "presentation": (
+            "54-year-old male smoker with hypertension and diabetes. 2 hours of severe "
+            "crushing central chest pain radiating to the left arm and jaw. Profuse sweating, "
+            "nausea, one episode of vomiting. Feels faint. On examination: pale, diaphoretic, "
+            "heart rate 102/min, BP 100/70 mmHg. No fever. No cough. No pleuritic component "
+            "to the pain. ECG not yet done."
+        ),
+        "checks": {
+            "primary_contains":     ["myocardial infarction", "ami", "stemi", "ischaemia", "ischemia"],
+            "red_flags_contain":    [],
+            "missing_info_contain": ["ECG", "troponin", "aspirin"],
+            "prohibited_strings":   [],
+            "manual": [
+                "Radiation to left arm and jaw cited as discriminating features vs musculoskeletal chest pain",
+                "Diaphoresis and haemodynamic compromise (BP 100/70) flagged as red flags",
+                "Aspirin 300 mg immediately recommended",
+                "Urgent ECG and transfer to Level 4 for reperfusion therapy recommended",
+                "Aortic dissection addressed as differential — nature of pain, BP asymmetry assessed",
+            ],
+        },
+    },
+    {
+        "id": "17",
+        "label": "Acute rheumatic fever — migratory polyarthritis after sore throat",
+        "presentation": (
+            "14-year-old boy from Kibera informal settlement. 2 weeks after a sore throat "
+            "treated with paracetamol only. Now 5 days of fever and painful, swollen joints "
+            "— started in the right knee, moved to left ankle yesterday, now also involving "
+            "right wrist. Cannot bear weight. Heart rate 112/min, temperature 38.6°C. "
+            "Examination of the heart reveals a soft systolic murmur at the apex. "
+            "No skin rash. No abnormal movements."
+        ),
+        "checks": {
+            "primary_contains":     ["rheumatic fever"],
+            "red_flags_contain":    [],
+            "missing_info_contain": ["ASO", "antistreptolysin", "throat culture", "echocardiograph"],
+            "prohibited_strings":   ["rheumatic fever confirmed"],
+            "manual": [
+                "Migratory polyarthritis sequence and preceding streptococcal sore throat cited as key Jones criteria",
+                "New murmur flagged as evidence of carditis — a major Jones criterion",
+                "Penicillin benzathine secondary prophylaxis discussed",
+                "Referral for echocardiography recommended — carditis requires confirmation",
+                "Septic arthritis listed as differential, with migratory pattern arguing against it",
+            ],
+        },
+    },
+    {
+        "id": "18",
+        "label": "Rheumatic heart disease — young woman with murmur and dyspnoea",
+        "presentation": (
+            "27-year-old woman, grew up in crowded household, history of joint pain and "
+            "fever age 11 (not formally diagnosed). Now 4 months of progressive dyspnoea "
+            "on exertion — cannot walk more than 100 metres. Orthopnoea for 2 weeks. "
+            "Pulse irregularly irregular, rate 96/min. BP 110/70 mmHg. On auscultation: "
+            "loud, low-pitched mid-diastolic murmur at the apex, opening snap. "
+            "Bilateral basal crackles. No fever."
+        ),
+        "checks": {
+            "primary_contains":     ["rheumatic heart disease", "rhd", "mitral stenosis", "valvular"],
+            "red_flags_contain":    [],
+            "missing_info_contain": ["echocardiograph", "echo"],
+            "prohibited_strings":   [],
+            "manual": [
+                "Mid-diastolic murmur with opening snap at apex cited as hallmark of mitral stenosis",
+                "Childhood rheumatic history identified as the aetiological link",
+                "Atrial fibrillation (irregularly irregular pulse) flagged — embolic stroke risk noted",
+                "Secondary prophylaxis (monthly benzathine penicillin) discussed",
+                "Referral for echocardiography and specialist assessment recommended",
             ],
         },
     },

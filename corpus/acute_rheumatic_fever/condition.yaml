@@ -1,0 +1,191 @@
+condition: Acute rheumatic fever
+icd11: 1B40.Z
+icd_title: "Acute rheumatic fever without mention of heart involvement, unspecified"
+icd_entity_uri: "http://id.who.int/icd/release/11/2024-01/mms/2058300982/unspecified"
+icd10: I00
+category: cardiovascular
+corpus_version: "1.0"
+schema_version: "2.3"
+review_status: draft
+reviewed_by: ""
+last_reviewed: ""
+icd_verified: true
+icd_search_term: "Acute rheumatic fever without mention of heart involvement, unspecified"
+
+sources:
+  - organization: Kenya MOH
+    title: Clinical Guidelines for Management and Referral of Common Conditions at Levels 2–3, Volume 2
+    year: "2024"
+  - organization: Medscape
+    title: Acute Rheumatic Fever
+    year: "2024"
+    url: "https://emedicine.medscape.com/article/333103-overview"
+
+endemic_regions:
+  - nationwide
+
+environmental_signals: []
+
+retrieval_anchors:
+  positive: []
+confusable_with: []
+
+graph:
+  cardinal_symptoms:
+    - fever
+    - migratory polyarthritis
+    - carditis
+  associated_symptoms:
+    - joint swelling
+    - Sydenham's chorea
+    - erythema marginatum
+    - subcutaneous nodules
+    - tachycardia
+    - arthralgia
+  risk_factors:
+    - streptococcal pharyngitis
+    - recent sore throat
+    - crowded living conditions
+    - socioeconomic disadvantage
+    - age under five
+  differentials:
+    - Septic arthritis
+    - Reactive arthritis
+    - chikungunya
+    - Juvenile idiopathic arthritis
+    - leptospirosis
+  argues_against:
+    - no preceding streptococcal illness
+    - no carditis
+  red_flags:
+    - carditis
+    - haemodynamic compromise
+    - endocarditis
+  confirms:
+    - elevated ASO titre
+    - echocardiographic valvular disease
+    - positive throat culture
+
+sections:
+  cardinal_symptoms: |
+    Acute rheumatic fever is diagnosed by the Jones criteria, which require
+    evidence of preceding Group A streptococcal (GAS) infection plus either
+    two major criteria or one major and two minor criteria. The three most
+    common major criteria presenting at primary care are fever, migratory
+    polyarthritis, and carditis. The fever is acute, typically 38.5–40°C,
+    and accompanies the arthritis. Migratory polyarthritis is the most
+    frequent major criterion — large joints (knees, ankles, elbows, wrists)
+    are involved sequentially, each inflamed for days before the inflammation
+    moves to the next joint; this migratory pattern is highly characteristic.
+    Carditis — manifest as a new murmur, pericardial rub, tachycardia out
+    of proportion to fever, or signs of heart failure — is the most serious
+    major criterion and the one determining long-term prognosis.
+
+  associated_symptoms: |
+    Joint swelling, warmth, and exquisite tenderness accompany the migratory
+    arthritis; even light bedsheet contact may be unbearable. Sydenham's
+    chorea — involuntary, purposeless, irregular movements predominantly of
+    the face and upper limbs — is a major criterion occurring weeks to months
+    after the initial GAS infection, sometimes after fever has resolved;
+    it is virtually pathognomonic. Erythema marginatum, a spreading erythema
+    with central clearing on the trunk, and subcutaneous nodules over bony
+    prominences are minor major criteria, seen less commonly. Tachycardia
+    disproportionate to the degree of fever is a minor criterion and signals
+    early carditis. Arthralgia without objective arthritis is a minor criterion
+    only — do not count as major arthritis if joint swelling is absent.
+
+  diagnostic_features: |
+    Jones criteria (2015 revision — high-risk populations including Kenya)
+    require evidence of preceding GAS infection — either positive throat
+    culture for GAS, elevated or rising anti-streptolysin O (ASO) titre
+    (elevated >400 IU/mL in children, >200 IU/mL in adults in high-risk
+    populations), or elevated anti-DNase B — PLUS at least two major or
+    one major and two minor criteria. Major criteria: carditis (clinical
+    or subclinical on echo), polyarthritis, chorea, erythema marginatum,
+    subcutaneous nodules. Minor criteria: fever ≥38.5°C, elevated ESR or
+    CRP, elevated PR interval on ECG. Echocardiography with Doppler can
+    detect subclinical valvular regurgitation in children who clinically
+    appear to have no carditis — this upgrades the diagnosis to carditis
+    as a major criterion. Elevated WBC and CRP are non-specific supportive
+    findings. Throat swab for GAS culture should be taken on all suspected
+    cases.
+
+  predisposing_factors: |
+    ARF follows untreated or inadequately treated Group A streptococcal
+    pharyngitis, typically by 2–4 weeks. It does not follow streptococcal
+    skin infection. The attack rate after GAS pharyngitis is approximately
+    3% in epidemic settings and lower in endemic ones. In Kenya, ARF is
+    the leading cause of heart disease in children — reflecting the high
+    prevalence of GAS pharyngitis in overcrowded, low-resource settings with
+    limited access to penicillin treatment. Crowded living conditions and
+    socioeconomic disadvantage are the dominant structural risk factors.
+    Recurrent ARF episodes cause cumulative valve damage leading to
+    rheumatic heart disease — prevention of recurrence with penicillin
+    prophylaxis is therefore the critical long-term intervention.
+
+  typical_presentation: |
+    The typical patient is a school-age child (5–15 years) from a crowded
+    household, presenting 2–4 weeks after a sore throat — which may have
+    been untreated or self-limited. The child has high fever and is in
+    significant distress from exquisite joint pain in one or two large joints.
+    Over the following days, the inflammation visibly moves from joint to
+    joint — the knee swells as the ankle settles. A murmur may be heard
+    for the first time on examination, or an existing murmur may change in
+    character. In Kenya at primary care, ARF is frequently missed because
+    the streptococcal pharyngitis was not documented, the migratory pattern
+    is not specifically elicited, or the child presents late with isolated
+    chorea — recognised only by the involuntary movements.
+
+  differential_diagnoses: |
+    Septic arthritis presents with fever and a single hot, swollen joint —
+    not migratory; the child refuses all movement of that joint. Reactive
+    arthritis follows gut or genital infection (not pharyngitis), typically
+    involves lower limbs asymmetrically, and does not cause carditis or
+    elevated ASO titre. Chikungunya causes acute polyarthralgia with rash
+    and high fever, predominantly in adults and often affecting small joints;
+    it resolves without carditis and ASO is not elevated. Juvenile idiopathic
+    arthritis has a more insidious onset, prolonged course without migratory
+    pattern, and no antecedent streptococcal infection. Leptospirosis causes
+    fever with myalgia and may have arthralgia, but the epidemiological
+    context (flood or animal exposure), conjunctival suffusion, and elevated
+    bilirubin differentiate it from ARF.
+
+  argues_against: |
+    No history of preceding sore throat or upper respiratory illness in the
+    2–4 weeks before symptom onset substantially reduces the probability of
+    ARF — while throat infection may be subclinical, a completely absent
+    history should prompt consideration of alternative diagnoses. Absence of
+    carditis on careful auscultation and ECG — particularly no new murmur,
+    no pericardial rub, and no PR prolongation — does not exclude ARF (since
+    carditis may be subclinical), but the diagnosis without major carditis
+    requires two other major criteria to be met.
+
+  red_flags: |
+    Carditis is the red flag that determines urgency and long-term
+    outcome — any child with confirmed or suspected ARF must be examined
+    for cardiac involvement. Features demanding immediate referral to Level 4:
+    signs of heart failure (raised JVP, tachycardia, hepatomegaly, oedema,
+    cardiomegaly) indicating carditis with haemodynamic compromise; rapidly
+    worsening murmur suggesting mitral regurgitation from acute valvular
+    damage; infective endocarditis superimposed on damaged valves (high
+    fever, embolic features, worsening murmur in a child already known to
+    have ARF or rheumatic heart disease). Chorea, while alarming in
+    presentation, is not immediately life-threatening but should prompt
+    paediatric neurology referral. All confirmed ARF should be started on
+    penicillin prophylaxis before referral — the prevention of recurrence
+    begins from the first episode.
+
+  diagnostic_context: |
+    ARF diagnosis at primary care is primarily clinical, supported by ASO
+    titre when available. The key clinical task is applying Jones criteria:
+    identify whether two major or one major plus two minor criteria are met,
+    and confirm antecedent GAS infection either by history (documented sore
+    throat) or laboratory. At primary care, even if ASO titre is unavailable,
+    a clinical diagnosis is valid if Jones criteria are met with a clear
+    streptococcal history. Every confirmed ARF must be notified, started on
+    benzathine penicillin G (1.2 MU IM), and referred for echocardiography
+    to detect subclinical carditis. Long-term secondary prophylaxis with
+    monthly benzathine penicillin G is mandatory — the interval between
+    ARF episodes determines the rate of progressive valve destruction.
+    Document whether this is a first attack or recurrence — recurrence on
+    prophylaxis carries a worse prognosis.

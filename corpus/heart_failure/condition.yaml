@@ -1,0 +1,199 @@
+condition: Heart failure
+icd11: BD1Z
+icd_title: "Heart failure, unspecified"
+icd_entity_uri: "http://id.who.int/icd/release/11/2024-01/mms/1458683894/unspecified"
+icd10: I50.9
+icd_search_term: "Heart failure, unspecified"
+category: cardiovascular
+corpus_version: "1.0"
+schema_version: "2.3"
+review_status: draft
+reviewed_by:
+last_reviewed:
+icd_verified: true
+
+sources:
+  - organization: Kenya MOH
+    title: Clinical Guidelines for Management and Referral of Common Conditions at Levels 2–3, Volume 2
+    year: "2024"
+  - organization: Medscape
+    title: Heart Failure
+    year: "2025"
+
+endemic_regions:
+  - nationwide
+
+environmental_signals: []
+
+retrieval_anchors:
+  positive: []
+confusable_with: []
+
+graph:
+  cardinal_symptoms:
+    - dyspnoea on exertion
+    - orthopnoea
+    - paroxysmal nocturnal dyspnoea
+  associated_symptoms:
+    - peripheral oedema
+    - fatigue
+    - nocturia
+    - palpitations
+    - reduced exercise tolerance
+    - raised JVP
+    - S3 gallop
+    - displaced apex beat
+    - crackles
+    - hepatomegaly
+    - ascites
+    - tachycardia
+  risk_factors:
+    - hypertension
+    - ischaemic heart disease
+    - rheumatic heart disease
+    - valvular heart disease
+    - cardiomyopathy
+    - previous AMI
+    - diabetes mellitus
+    - excessive alcohol
+    - anaemia
+    - advancing age
+    - obesity
+    - HIV infection
+  differentials:
+    - Community-acquired pneumonia
+    - COPD
+    - Pulmonary embolism
+    - Nephrotic syndrome
+    - Iron deficiency anaemia
+    - Hypertensive crisis
+    - pericarditis
+    - cor pulmonale
+  argues_against:
+    - no orthopnoea
+    - no raised JVP
+    - unilateral leg swelling
+    - fever with productive cough
+    - normal ECG
+  red_flags:
+    - acute pulmonary oedema
+    - cardiogenic shock
+    - haemodynamic instability
+    - ventricular arrhythmia
+    - altered consciousness
+    - cyanosis
+    - respiratory distress
+  confirms:
+    - cardiomegaly on chest X-ray
+    - elevated BNP
+    - echocardiographic valvular disease
+
+sections:
+  cardinal_symptoms: |
+    The dominant symptom of heart failure is dyspnoea, which worsens progressively as
+    cardiac output falls. It first appears on exertion — climbing stairs, walking on flat
+    ground — and advances to dyspnoea at rest in severe disease. Orthopnoea (breathlessness
+    on lying flat, relieved by sitting upright) reflects rising pulmonary venous pressure
+    when the supine position redistributes blood from the periphery into the central
+    circulation. Paroxysmal nocturnal dyspnoea is sudden breathlessness waking the patient
+    1–3 hours after sleep onset, sometimes with bronchospasm ("cardiac asthma"), and
+    requires the patient to sit upright or stand for 20–30 minutes before relief. These
+    three symptoms together — exertional dyspnoea, orthopnoea, and PND — are cardinal
+    indicators of left ventricular failure at Kenya primary care level.
+
+  associated_symptoms: |
+    Peripheral oedema — typically bilateral, pitting, and ascending from the ankles — is
+    the hallmark of right-sided or biventricular failure. Fatigue, weakness, and markedly
+    reduced exercise tolerance reflect low cardiac output. Nocturia is common; recumbency
+    at night mobilises dependent oedema into the circulation, increasing renal perfusion
+    and urine output. Palpitations may indicate an underlying arrhythmia (atrial fibrillation
+    is frequent in heart failure). On examination: raised JVP is the most reliable sign of
+    right-sided failure; S3 gallop and displaced apex beat indicate left ventricular
+    enlargement; basal crackles indicate pulmonary congestion; tender hepatomegaly and
+    ascites indicate systemic venous congestion; tachycardia reflects sympathetic
+    compensation. Anorexia, nausea, and abdominal distension may occur from gut congestion.
+
+  diagnostic_features: |
+    At primary care level, diagnosis is clinical. The combination of exertional dyspnoea,
+    orthopnoea or PND, bilateral peripheral oedema, raised JVP, and basal crackles provides
+    strong diagnostic support. Chest X-ray (where available) may show cardiomegaly
+    (cardiothoracic ratio >0.5), pulmonary venous redistribution, Kerley B lines, or
+    pleural effusion. ECG may show evidence of the underlying cause — left ventricular
+    hypertrophy (hypertensive aetiology), Q waves or ST changes (ischaemic aetiology),
+    atrial fibrillation, or bundle branch block. Definitive diagnosis — echocardiography
+    and BNP/NT-proBNP measurement — is available at Level 4 and above and should be
+    sought before committing to long-term management.
+
+  predisposing_factors: |
+    In Kenya, hypertension is the most common cause of heart failure at primary care level.
+    Rheumatic heart disease — following inadequately treated group A streptococcal
+    pharyngitis — is the dominant valvular cause and affects younger adults more than in
+    high-income settings. Ischaemic heart disease and cardiomyopathy (including
+    HIV-associated and alcoholic) are important contributors. Reversible precipitants must
+    always be sought: anaemia, infection (particularly pneumonia), medication non-compliance,
+    uncontrolled hypertension, cardiac arrhythmia (especially new atrial fibrillation),
+    pulmonary embolism, and infective endocarditis. Pregnancy-related peripartum
+    cardiomyopathy is an important cause in women of reproductive age. Advancing age,
+    obesity, and diabetes amplify risk from all aetiologies.
+
+  typical_presentation: |
+    The typical patient presents with a history of worsening breathlessness over days to
+    weeks, inability to lie flat without propping up with multiple pillows, and swollen
+    ankles by the end of the day. Fatigue limits ordinary daily activity. A known history
+    of hypertension, rheumatic heart disease, or a previous cardiac event is commonly
+    present. In younger adults in Kenya, an underlying valvular lesion from rheumatic
+    disease should be actively sought. Acute presentations — sudden severe breathlessness
+    at rest with frothy sputum — represent acute pulmonary oedema and require immediate
+    stabilisation and referral. Decompensation in a known patient is often triggered by
+    a reversible precipitant.
+
+  differential_diagnoses: |
+    Community-acquired pneumonia shares crackles, dyspnoea, and tachycardia, but is
+    distinguished by fever, productive cough, and localised rather than bilateral basal
+    consolidation; it may also precipitate heart failure decompensation. COPD presents
+    with progressive dyspnoea and wheeze but has a smoking or biomass-smoke history,
+    prolonged expiratory phase, and absent raised JVP or S3 in uncomplicated disease.
+    Pulmonary embolism causes acute dyspnoea and may cause raised JVP but lacks
+    orthopnoea, peripheral oedema, or cardiomegaly, and commonly has pleuritic chest
+    pain and a DVT source. Nephrotic syndrome causes bilateral peripheral oedema and
+    ascites but without raised JVP, S3, or pulmonary crackles; heavy proteinuria and
+    hypoalbuminaemia are defining features. Iron deficiency anaemia causes dyspnoea on
+    exertion and fatigue from a high-output state, but without orthopnoea, raised JVP,
+    or fluid overload. Cor pulmonale (right heart failure from chronic lung disease)
+    causes raised JVP and peripheral oedema but without the left-sided signs of
+    orthopnoea or pulmonary crackles.
+
+  argues_against: |
+    The ability to lie flat without breathlessness argues strongly against significant
+    pulmonary venous hypertension from left ventricular failure. Normal jugular venous
+    pressure on examination makes right-sided or biventricular failure unlikely.
+    Unilateral leg swelling should prompt DVT evaluation rather than a heart failure
+    diagnosis — heart failure produces bilateral dependent oedema. Fever with productive
+    purulent cough points to pneumonia as the primary diagnosis; while pneumonia can
+    precipitate heart failure, an isolated infective presentation without other heart
+    failure features should not be labelled cardiac. A normal ECG does not exclude heart
+    failure but substantially reduces the probability of significant structural heart
+    disease in the absence of other supporting findings.
+
+  red_flags: |
+    Acute pulmonary oedema — sudden severe breathlessness at rest, frothy or blood-tinged
+    sputum, cyanosis, and marked respiratory distress — is an immediate life-threatening
+    emergency requiring stabilisation (upright positioning, oxygen, IV frusemide) and
+    urgent referral. Cardiogenic shock — hypotension, cold peripheries, oliguria, and
+    altered consciousness — indicates critically inadequate cardiac output and mandates
+    emergency referral. Ventricular arrhythmia (ventricular tachycardia or fibrillation)
+    requires immediate resuscitation and referral. Haemodynamic instability at any severity
+    of heart failure is an indication for same-day escalation to Level 4. New-onset atrial
+    fibrillation with rapid ventricular rate in a patient with known heart failure requires
+    urgent review.
+
+  diagnostic_context: |
+    Heart failure is a clinical diagnosis at primary care level. Apply the Framingham
+    criteria where available: two major criteria (orthopnoea, PND, raised JVP, cardiomegaly,
+    pulmonary oedema on CXR, S3 gallop) or one major plus two minor (bilateral ankle
+    oedema, nocturnal cough, dyspnoea on exertion, hepatomegaly, pleural effusion,
+    tachycardia >120). Identify and treat reversible precipitants before concluding
+    that the heart failure is truly refractory. Refer all newly diagnosed patients for
+    echocardiography and BNP measurement at Level 4 to establish aetiology and guide
+    long-term management. In Kenya, always examine for a murmur suggesting underlying
+    valvular disease from rheumatic heart disease.

@@ -100,6 +100,7 @@
 | frothy urine | foamy urine, bubbly urine |
 | bone pain | skeletal pain, aching bones |
 | recent sore throat | preceding pharyngitis, recent tonsillitis |
+| migratory polyarthritis | flitting arthritis, migratory arthritis, migrating joint inflammation, migratory joint swelling |
 | perineal pain | pain between scrotum and anus, perineal discomfort |
 | rectal pain | pain on defecation, anorectal pain |
 | genital pain | scrotal pain, testicular discomfort |
@@ -144,6 +145,12 @@
 | undulating fever | relapsing fever, intermittent fever, undulant fever, quotidian fever |
 | back pain | lumbar pain, low back pain, spinal pain, backache |
 | syncope | fainting, loss of consciousness, blackout |
+| orthopnoea | cannot lie flat, breathlessness supine, must sleep upright |
+| paroxysmal nocturnal dyspnoea | PND, waking breathless at night, nocturnal breathlessness |
+| dyspnoea at rest | breathlessness at rest, resting dyspnoea, breathless without exertion |
+| frothy pink sputum | pink frothy sputum, blood-tinged frothy sputum, acute pulmonary oedema sputum |
+| left arm radiation | arm radiation, radiation to left arm, left arm pain radiation |
+| jaw pain | jaw radiation, pain radiating to jaw, mandibular pain ischaemic |
 
 ---
 
@@ -194,6 +201,15 @@
 | orchitis | testicular inflammation, epididymo-orchitis, Brucella orchitis, epididymitis |
 | raised JVP | elevated JVP, elevated jugular venous pressure, distended neck veins, JVD |
 | loud P2 | accentuated pulmonary component, loud second heart sound pulmonary |
+| S3 gallop | third heart sound, ventricular gallop, S3 heart sound |
+| displaced apex beat | laterally displaced apex, displaced apical impulse, apex displaced laterally |
+| atrial fibrillation | AF, irregular irregular pulse, AF rhythm |
+| carditis | rheumatic carditis, valvular carditis, cardiac inflammation ARF |
+| Sydenham's chorea | rheumatic chorea, St Vitus dance, chorea minor |
+| subcutaneous nodules | hard nodules over bony prominences, rheumatic nodules |
+| erythema marginatum | spreading erythematous rings, erythema with central clearing |
+| ST elevation on ECG | STEMI pattern, ST segment elevation, ECG ST elevation |
+| new Q waves on ECG | pathological Q waves, Q wave development ECG, new pathological Q waves |
 
 ---
 
@@ -237,6 +253,7 @@
 | sedentary lifestyle | sedentary behaviour |
 | high sodium intake | high salt diet |
 | family history of hypertension | |
+| family history of ischaemic heart disease | family history of CAD, family history of heart attack, premature coronary disease |
 | family history of type 2 diabetes | |
 | gestational diabetes history | previous gestational diabetes |
 | impaired fasting glucose | pre-diabetes, borderline diabetes |
@@ -291,6 +308,7 @@
 | previous TB treatment | prior TB treatment |
 | thrombophilia | inherited thrombophilia, hypercoagulable state, clotting disorder, Factor V Leiden, antiphospholipid syndrome |
 | previous pulmonary embolism | prior PE, history of pulmonary embolism, past pulmonary embolism |
+| previous acute rheumatic fever | history of ARF, prior rheumatic fever, past rheumatic fever, known ARF history |
 | household contact with smear-positive TB | TB contact |
 | socioeconomic disadvantage | low socioeconomic status |
 | livestock exposure | livestock contact, animal husbandry contact |
@@ -300,6 +318,13 @@
 | ultra-processed food diet | ultra-processed food intake |
 | urbanisation | urban living |
 | genetic predisposition | genetic susceptibility |
+| ischaemic heart disease | coronary artery disease, IHD, CAD, coronary heart disease |
+| mitral stenosis | MS, rheumatic mitral stenosis, mitral valve stenosis |
+| cardiomyopathy | dilated cardiomyopathy, DCM, hypertrophic cardiomyopathy, idiopathic cardiomyopathy |
+| valvular heart disease | valve disease, heart valve disease, valvular disease |
+| previous AMI | prior myocardial infarction, prior MI, previous MI, history of heart attack |
+| streptococcal pharyngitis | strep throat, GAS pharyngitis, group A streptococcal sore throat |
+| rheumatic heart disease | RHD, chronic rheumatic heart disease |
 
 ---
 
@@ -336,6 +361,9 @@
 | haemodynamic compromise | haemodynamic instability |
 | haemodynamic instability | cardiovascular instability |
 | hypotension | low blood pressure |
+| cardiogenic shock | cardiogenic collapse, pump failure shock, cardiac pump failure |
+| complete heart block | third-degree AV block, CHB, total AV block |
+| ventricular arrhythmia | ventricular fibrillation, VF, ventricular tachycardia, VT |
 | silent chest | absent wheeze in severe obstruction |
 | cyanosis | central cyanosis, blue discolouration |
 | plasma leakage | haemoconcentration, third-space fluid shift |
@@ -488,6 +516,12 @@
 | positive anti-HAV IgM | HAV IgM positive, anti-HAV IgM detected, hepatitis A serology positive |
 | CT pulmonary angiography | CTPA, CT-PA, CT pulmonary angiogram, computed tomography pulmonary angiography |
 | Wells PE score | PE Wells score, Wells criteria for PE, clinical probability PE score |
+| troponin elevation | raised troponin, elevated cardiac troponin, troponin I positive, troponin T positive |
+| elevated BNP | brain natriuretic peptide elevation, NT-proBNP elevation, BNP raised |
+| cardiomegaly on chest X-ray | enlarged cardiac silhouette, cardiomegaly CXR, cardiac silhouette enlarged |
+| bilateral pulmonary oedema on chest X-ray | bilateral infiltrates CXR, bat-wing shadowing, alveolar oedema on CXR, pulmonary congestion on chest X-ray |
+| elevated ASO titre | raised anti-streptolysin O, ASOT positive, anti-streptolysin O elevated |
+| echocardiographic valvular disease | structural valve disease on echo, echo valvular abnormality, valve disease on echocardiography |
 
 ---
 
@@ -581,6 +615,7 @@
 | no floodwater exposure | no flood contact, no water exposure, no floodwater contact history |
 | absence of calf muscle tenderness | calf tenderness absent, no gastrocnemius tenderness, negative calf compression |
 | positive Leptospira serology | MAT positive, Leptospira IgM positive, leptospiral serology positive |
+| positive throat culture | throat swab GAS positive, group A streptococcus throat culture, streptococcal throat swab positive |
 | chronic productive cough | chronic cough with sputum, persistent productive cough |
 | progressive dyspnoea | gradually worsening breathlessness, progressive breathlessness, slowly progressive dyspnoea |
 | barrel chest | hyperinflated chest, increased AP diameter, chest hyperinflation |
@@ -612,3 +647,12 @@
 | recent long-haul travel | long-haul flight, prolonged travel, extended travel immobility |
 | leg pain | lower limb pain, limb pain, leg ache |
 | previous DVT | prior deep vein thrombosis, history of DVT, past DVT |
+| no orthopnoea | able to lie flat, orthopnoea absent, no positional breathlessness |
+| no raised JVP | JVP normal, jugular venous pressure not elevated, neck veins not distended |
+| gradual onset dyspnoea | slowly progressive breathlessness, insidious dyspnoea onset |
+| no frothy sputum | sputum not frothy, clear or purulent sputum only |
+| normal ECG | ECG within normal limits, no ECG changes, normal electrocardiogram |
+| no radiation of chest pain | no arm radiation, no jaw pain, chest pain without radiation |
+| no preceding streptococcal illness | no recent sore throat, no recent pharyngitis, no GAS illness history |
+| no valvular murmur | murmur absent, no cardiac murmur, auscultation normal, no detectable murmur |
+| no carditis | no cardiac involvement, carditis absent, no cardiac inflammation |

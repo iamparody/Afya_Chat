@@ -126,3 +126,13 @@
 | pneumothorax | collapsed lung, spontaneous pneumothorax |
 | pericarditis | pericardial inflammation, acute pericarditis |
 | musculoskeletal chest pain | chest wall pain, costochondritis, musculoskeletal pain chest |
+| Rheumatic heart disease | RHD, chronic rheumatic heart disease, rheumatic valvular disease |
+| Hypertensive crisis | hypertensive emergency, hypertensive urgency, hypertensive crisis |
+| cardiomyopathy | dilated cardiomyopathy, DCM, idiopathic cardiomyopathy, alcoholic cardiomyopathy |
+| cor pulmonale | right heart failure from lung disease, pulmonary heart disease |
+| Septic arthritis | bacterial arthritis, pyogenic arthritis, septic joint |
+| viral myocarditis | myocarditis, acute myocarditis, viral cardiomyopathy |
+| Acute pulmonary oedema | flash pulmonary oedema, acute pulmonary edema, APO |
+| Unstable angina | UA, unstable angina pectoris, crescendo angina, preinfarction angina |
+| Juvenile idiopathic arthritis | JIA, juvenile rheumatoid arthritis, childhood arthritis |
+| Infective endocarditis | IE, bacterial endocarditis, subacute bacterial endocarditis, SBE |
