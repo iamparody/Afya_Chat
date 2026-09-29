@@ -492,8 +492,8 @@ def run(
     db       = chromadb.PersistentClient(path=str(CHROMA_DIR))
     col      = db.get_or_create_collection(embedder.COLLECTION)
     driver   = GraphDatabase.driver(
-        os.environ["NEO4J_URI"],
-        auth=(os.environ["NEO4J_USERNAME"], os.environ["NEO4J_PASSWORD"]),
+        os.environ["NEO4J_URI"].strip(),
+        auth=(os.environ["NEO4J_USERNAME"].strip(), os.environ["NEO4J_PASSWORD"].strip()),
     )
     provider = get_provider()
 
@@ -572,7 +572,7 @@ def run(
         passages = get_filtered_passages(embedder, col, presentation, top_conditions, query_embedding=query_embedding)
 
         # --- DEBUG LOGGING: COMPACT RETRIEVED EVIDENCE --- (gate: CDS_DEBUG=1)
-        if os.environ.get("CDS_DEBUG"):
+        if os.environ.get("CDS_DEBUG", "").strip():
             print("\n" + "=" * 70)
             print("DEBUG: RETRIEVED EVIDENCE SUMMARY")
             print("=" * 70)
@@ -619,7 +619,7 @@ def run(
             provider.set_schema(OUTPUT_SCHEMA)
 
         # --- DEBUG LOGGING: FINAL GEMINI PROMPT --- (gate: CDS_DEBUG=1)
-        if os.environ.get("CDS_DEBUG"):
+        if os.environ.get("CDS_DEBUG", "").strip():
             print("\n" + "=" * 70)
             print("DEBUG: FINAL GEMINI PROMPT")
             print("=" * 70)
@@ -629,7 +629,7 @@ def run(
         raw     = provider.generate(SYSTEM_PROMPT, context)
 
         # --- DEBUG LOGGING: FULL GEMINI RESPONSE --- (gate: CDS_DEBUG=1)
-        if os.environ.get("CDS_DEBUG"):
+        if os.environ.get("CDS_DEBUG", "").strip():
             print("\n" + "=" * 70)
             print("DEBUG: FULL GEMINI RESPONSE")
             print("=" * 70)

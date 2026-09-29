@@ -21,7 +21,7 @@ class GoogleEmbedder:
     def __init__(self):
         from google import genai
         from google.genai import types
-        self._client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+        self._client = genai.Client(api_key=os.environ["GEMINI_API_KEY"].strip())
         self._types = types
 
     def embed_query(self, text: str) -> list:
@@ -47,7 +47,7 @@ class CohereEmbedder:
 
     def __init__(self):
         import cohere
-        self._co = cohere.Client(os.environ["COHERE_API_KEY"])
+        self._co = cohere.Client(os.environ["COHERE_API_KEY"].strip())
 
     def embed_query(self, text: str) -> list:
         return self._co.embed(

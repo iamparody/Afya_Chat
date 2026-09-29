@@ -24,8 +24,8 @@ CONDITIONS = get_condition_names_from_graph()
 def neo4j_session():
     from neo4j import GraphDatabase
     driver = GraphDatabase.driver(
-        os.environ["NEO4J_URI"],
-        auth=(os.environ["NEO4J_USERNAME"], os.environ["NEO4J_PASSWORD"]),
+        os.environ["NEO4J_URI"].strip(),
+        auth=(os.environ["NEO4J_USERNAME"].strip(), os.environ["NEO4J_PASSWORD"].strip()),
     )
     with driver.session() as session:
         yield session

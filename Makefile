@@ -2,6 +2,7 @@
 #
 # Targets:
 #   make ingest          — parse condition cards → chunks.jsonl + graph_entities.jsonl
+#   make neo4j-up        — start local Neo4j (Docker) and wait until ready
 #   make load-neo4j      — load graph_entities.jsonl → Neo4j AuraDB
 #   make embed           — embed chunks.jsonl → Chroma vector store
 #   make eval            — run 8-case RAG evaluation harness (exits non-zero if < 7/8)
@@ -14,7 +15,11 @@
 
 PYTHON ?= python
 
-.PHONY: ingest load-neo4j embed eval eval-disam eval-reasoning pipeline
+.PHONY: neo4j-up ingest load-neo4j embed eval eval-disam eval-reasoning pipeline
+
+# Start local Neo4j in Docker (writes NEO4J_* to .env on first run)
+neo4j-up:
+	bash scripts/neo4j_local_setup.sh
 
 ingest:
 	$(PYTHON) corpus_pipeline/ingest_yaml.py corpus/
