@@ -97,10 +97,10 @@ def get_provider() -> LLMProvider:
     Return the active provider based on available env vars.
     Priority: GEMINI_API_KEY → ANTHROPIC_API_KEY → GROQ_API_KEY
     """
-    if os.environ.get("GEMINI_API_KEY"):
-        return GeminiProvider(api_key=os.environ["GEMINI_API_KEY"])
-    if os.environ.get("ANTHROPIC_API_KEY"):
-        return AnthropicProvider(api_key=os.environ["ANTHROPIC_API_KEY"])
-    if os.environ.get("GROQ_API_KEY"):
-        return GroqProvider(api_key=os.environ["GROQ_API_KEY"])
+    if os.environ.get("GEMINI_API_KEY", "").strip():
+        return GeminiProvider(api_key=os.environ["GEMINI_API_KEY"].strip())
+    if os.environ.get("ANTHROPIC_API_KEY", "").strip():
+        return AnthropicProvider(api_key=os.environ["ANTHROPIC_API_KEY"].strip())
+    if os.environ.get("GROQ_API_KEY", "").strip():
+        return GroqProvider(api_key=os.environ["GROQ_API_KEY"].strip())
     raise EnvironmentError("No LLM provider key found. Set GEMINI_API_KEY, ANTHROPIC_API_KEY, or GROQ_API_KEY in .env")

@@ -39,8 +39,8 @@ if sys.stdout.encoding != "utf-8":
 _ROOT = Path(__file__).parent.parent
 load_dotenv(_ROOT / ".env")
 
-CLIENT_ID     = os.getenv("WHO_ICD_CLIENT_ID", "")
-CLIENT_SECRET = os.getenv("WHO_ICD_CLIENT_SECRET", "")
+CLIENT_ID     = os.getenv("WHO_ICD_CLIENT_ID", "").strip()
+CLIENT_SECRET = os.getenv("WHO_ICD_CLIENT_SECRET", "").strip()
 
 TOKEN_URL  = "https://icdaccessmanagement.who.int/connect/token"
 SEARCH_URL = "https://id.who.int/icd/release/11/2024-01/mms/search"

@@ -49,9 +49,9 @@ except ImportError:
 ROOT = Path(__file__).parent.parent
 load_dotenv(ROOT / ".env")
 
-URI      = os.environ["NEO4J_URI"]
-USERNAME = os.environ["NEO4J_USERNAME"]
-PASSWORD = os.environ["NEO4J_PASSWORD"]
+URI      = os.environ["NEO4J_URI"].strip()
+USERNAME = os.environ["NEO4J_USERNAME"].strip()
+PASSWORD = os.environ["NEO4J_PASSWORD"].strip()
 
 CONTRACTS_DIR = ROOT / "docs" / "domain_contracts"
 PAIRS_YAML    = CONTRACTS_DIR / "afi_pairs.yaml"   # default — preserves prior behaviour

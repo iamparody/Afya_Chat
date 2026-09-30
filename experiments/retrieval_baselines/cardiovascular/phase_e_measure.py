@@ -131,7 +131,7 @@ def rrf_score_of(rrf_ranked, rrf_scores_dict, condition_name):
 
 
 def main():
-    co = cohere.Client(os.environ["COHERE_API_KEY"])
+    co = cohere.Client(os.environ["COHERE_API_KEY"].strip())
     chroma = chromadb.PersistentClient(path=str(_ROOT / "chroma" / "db"))
     col = chroma.get_collection("cds_conditions")
 

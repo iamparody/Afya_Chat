@@ -1,0 +1,35 @@
+# Local Neo4j for CDS (replaces the free-tier AuraDB instance for development).
+#
+#   docker compose up -d neo4j      # start
+#   docker compose logs -f neo4j    # watch startup
+#   docker compose down             # stop (data persists in the neo4j_data volume)
+#
+# Credentials come from .env (NEO4J_USERNAME / NEO4J_PASSWORD).
+# Browser UI: http://localhost:7474   Bolt: bolt://localhost:7687
+
+services:
+  neo4j:
+    image: neo4j:5-community
+    container_name: cds-neo4j
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:7474:7474"
+      - "127.0.0.1:7687:7687"
+    environment:
+      NEO4J_AUTH: ${NEO4J_USERNAME:-neo4j}/${NEO4J_PASSWORD:?set NEO4J_PASSWORD in .env}
+      NEO4J_server_memory_heap_initial__size: 512m
+      NEO4J_server_memory_heap_max__size: 1g
+      NEO4J_server_memory_pagecache_size: 512m
+    volumes:
+      - neo4j_data:/data
+      - neo4j_logs:/logs
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:7474 >/dev/null 2>&1 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+
+volumes:
+  neo4j_data:
+  neo4j_logs:

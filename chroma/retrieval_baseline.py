@@ -170,12 +170,12 @@ def vector_retrieve(co, collection, query, n=3):
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 def main():
-    co     = cohere.Client(os.environ["COHERE_API_KEY"])
+    co     = cohere.Client(os.environ["COHERE_API_KEY"].strip())
     db     = chromadb.PersistentClient(path=str(CHROMA_DIR))
     col    = db.get_or_create_collection(COLLECTION_NAME)
     driver = GraphDatabase.driver(
-        os.environ["NEO4J_URI"],
-        auth=(os.environ["NEO4J_USERNAME"], os.environ["NEO4J_PASSWORD"]),
+        os.environ["NEO4J_URI"].strip(),
+        auth=(os.environ["NEO4J_USERNAME"].strip(), os.environ["NEO4J_PASSWORD"].strip()),
     )
     driver.verify_connectivity()
 
