@@ -59,9 +59,10 @@ class ExtractRequest(BaseModel):
 
 @app.post("/assess")
 def assess(req: AssessRequest) -> dict:
-    extraction = extract_intake(req.presentation)
+    extraction = {}
     presentation, onset_date = req.presentation, req.onset_date
     if req.enrich_presentation:
+        extraction = extract_intake(req.presentation)
         presentation = enriched_presentation(extraction)
         onset_date = onset_date or onset_from_duration(extraction, req.encounter_date)
     try:
@@ -80,8 +81,6 @@ def assess(req: AssessRequest) -> dict:
         raise HTTPException(status_code=500, detail=str(exc))
     corrected = 0
     if req.enrich_presentation:
-        # HMIS writes documented red flags into the patient record, so a
-        # "Documented" claim the transcript does not support is downgraded.
         result["red_flags"], corrected = reconcile_red_flags(
             result.get("red_flags", []), extraction["normalized_transcript"])
     result["extraction"] = extraction
